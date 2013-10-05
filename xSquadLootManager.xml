@@ -13,6 +13,10 @@
     />
     <Events>
         <Event name="ON_COMPONENT_LOAD"        bind="OnComponentLoad"/>
+
+        <Event name="MY_HUD_SHOW"              bind="OnHudShow"/>
+        <Event name="ON_INPUT_MODE_CHANGED"    bind="OnInputModeChanged"/>
+
         <Event name="ON_UI_ENTITY_AVAILABLE"   bind="OnEntityAvailable"/>
         <Event name="ON_SQUAD_ROSTER_UPDATE"   bind="OnSquadRosterUpdate"/>
         <Event name="ON_LOOT_COLLECTED"        bind="OnLootCollected"/>

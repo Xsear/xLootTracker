@@ -38,6 +38,9 @@ local bLoaded = false -- Set by the __LOADED message through options, allowing m
 local bInSquad = false -- Whether we are currently in a squad or not
 local bIsSquadLeader = false -- Whether we are currently the squad leader or not
 
+local bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudShow
+local bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
+
 local mCurrentlyRolling = false -- false if not rolling, table otherwise, all the wtfs you want
 local aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadroster with additional fields like rolltype, rollvalue etc. Merge this with mCurrentlyRolling sometime for awesomeness
 
@@ -86,6 +89,26 @@ function OnComponentLoad()
     end
 end
 
+--[[
+    OnHudShow(args)
+    Callback for MY_HUD_SHOW event.
+    Used to determine if the tracker should be displayed or not.
+]]--
+function OnHudShow(args)
+    local hide = args.loading_screen or args.logout_bonus or args.freecamera
+    bHUD = not hide
+    UpdateTracker()
+end
+
+--[[
+    OnInputModeChanged(args)
+    Callback for ON_INPUT_MODE_CHANGED event.
+    Used to determine if the tracker should be displayed or not.
+]]--
+function OnInputModeChanged(args)
+    bCursor = (args.mode == 'cursor')
+    UpdateTracker()
+end
 
 --[[
     OnSquadRosterUpdate()
@@ -177,46 +200,6 @@ function OnSlash(args)
     elseif args.text == 'list' then
         ListUnAssigned()
     end
-end
-
-
---[[
-    ToggleEnabled(cmd)
-    Toggles whether xSquadLootManager is enabled.
-    If cmd == disable, sets Enabled to false
-    If cmd == toggle, inverts Enabled
-    Any other value sets Enabled to true
-]]--
-function ToggleEnabled(cmd)
-
-    local newStatus = true
-
-    if cmd == 'disable' then
-        newStatus = false
-    elseif cmd == 'toggle' then
-        newStatus = not Options['Enabled']
-    end
-
-    OnOptionChange({'Enabled', newStatus})
-end
-
---[[
-    ClearIdentified()
-    Clears the aIdentifiedLoot list.
-]]--
-function ClearIdentified()
-
-    RollCancel()
-
-    -- YOLO
-    while not table.empty(aIdentifiedLoot) do
-        for num, item in ipairs(aIdentifiedLoot) do 
-            RemoveIdentifiedItem(item)
-        end
-    end
-    --aIdentifiedLoot = {}
-    
-    UpdateTracker()
 end
 
 --[[
@@ -1349,10 +1332,10 @@ function UpdateTracker()
 
         -- Should we display the tracker?
         if Options['Tracker']['Visibility'] == 'always' 
-        or Options['Tracker']['Visibility'] == 'hud'
-        or Options['Tracker']['Visibility'] == 'mousemode'  
+        or (Options['Tracker']['Visibility'] == 'hud' and bHUD)
+        or (Options['Tracker']['Visibility'] == 'mousemode' and bCursor)
         then
-            -- Yes, display racker
+            -- Yes, display tracker
             TRACKER:Show(true)
         end
 
@@ -1857,6 +1840,50 @@ function OnIdentify(args)
 
 end
 
+
+
+
+
+-- Shitty stuff below
+
+--[[
+    ToggleEnabled(cmd)
+    Toggles whether xSquadLootManager is enabled.
+    If cmd == disable, sets Enabled to false
+    If cmd == toggle, inverts Enabled
+    Any other value sets Enabled to true
+]]--
+function ToggleEnabled(cmd)
+
+    local newStatus = true
+
+    if cmd == 'disable' then
+        newStatus = false
+    elseif cmd == 'toggle' then
+        newStatus = not Options['Enabled']
+    end
+
+    OnOptionChange({'Enabled', newStatus})
+end
+
+--[[
+    ClearIdentified()
+    Clears the aIdentifiedLoot list.
+]]--
+function ClearIdentified()
+
+    RollCancel()
+
+    -- YOLO
+    while not table.empty(aIdentifiedLoot) do
+        for num, item in ipairs(aIdentifiedLoot) do 
+            RemoveIdentifiedItem(item)
+        end
+    end
+    --aIdentifiedLoot = {}
+    
+    UpdateTracker()
+end
 
 
 --[[
