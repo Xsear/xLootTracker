@@ -914,7 +914,7 @@ function DistributeItem()
 
             -- dice looting mode
             elseif Options['Manager']['LootMode'] == 'dice' then
-                local highest = 0
+                local highest = nil
                 local winner = ''
                 local rolls = {}
                 -- Roll for each member in order to determine winner
@@ -924,9 +924,11 @@ function DistributeItem()
                     roll = math.random(Options['Manager']['RollMin'], Options['Manager']['RollMax'])
 
                     -- Determine if highest roll
-                    if roll > highest then
+                    if highest == nil -- First roll automatically becomes the highest 
+                    or roll > highest -- Subsequent rolls must be larger than the highest in order to become the highest (Yeah!)
+                    then
                         highest = roll
-                        winner = member.name
+                        winner = member.name -- Determine winner as we roll
                     end
 
                     -- Append to rolls table
