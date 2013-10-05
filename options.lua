@@ -13,7 +13,7 @@ Options = {
     ['NoSquadMessages'] = false,
     ['NoSystemMessages'] = false,
 
-    
+
     ['Manager'] = {
         ['LootMode'] = 'need-before-greed',
         ['LootWeighting'] = 'archetype',
@@ -97,7 +97,7 @@ Options = {
         ['MessageSystem_OnLootStolen'] = false,
         ['MessageFormatSystem_OnLootStolen'] = '%l stole %a\'s [%iq]',
 
-        ['OnLootSnatched_Enabled'] =true ,
+        ['OnLootSnatched_Enabled'] = true,
         ['MessageSquad_OnLootSnatched'] = true,
         ['MessageFormatSquad_OnLootSnatched'] = '%l snatched [%iq]',
         ['MessageSystem_OnLootSnatched'] = false,
@@ -175,6 +175,7 @@ Options = {
             ['ItemName_ColorMode'] = 'custom',
             ['Color_ItemName_ColorMode_Custom'] = {alpha=1, tint='FFFFFF'},
             ['Display_AssignedTo'] = true,
+            ['Display_AssignedTo_Hide_nil'] = true,
             ['Color_AssignedTo_nil'] = {alpha=1, tint='FFFFFF'},
             ['Color_AssignedTo_free'] = {alpha=1, tint='00FF00'},
             ['Color_AssignedTo_player'] = {alpha=1, tint='00FF00'},
@@ -484,6 +485,9 @@ function OnOptionChange(args)
 
     elseif args.id == 'Panels_Display_AssignedTo' then
         Options['Panels']['Display_AssignedTo'] = args.val
+
+    elseif args.id == 'Panels_Display_AssignedTo_Hide_nil' then
+        Options['Panels']['Display_AssignedTo_Hide_nil'] = args.val
 
     elseif args.id == 'Panels_Color_AssignedTo_nil' then
         Options['Panels']['Color_AssignedTo_nil'] = args.val
@@ -1639,6 +1643,14 @@ function SetupInterfaceOptions()
             default=Options['Panels']['Display_AssignedTo'],
             label=Lokii.GetString('Panels_Display_AssignedTo_Label'),
             tooltip=Lokii.GetString('Panels_Display_AssignedTo_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Markers')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id='Panels_Display_AssignedTo_Hide_nil',
+            default=Options['Panels']['Display_AssignedTo_Hide_nil'],
+            label=Lokii.GetString('Panels_Display_AssignedTo_Hide_nil_Label'),
+            tooltip=Lokii.GetString('Panels_Display_AssignedTo_Hide_nil_ToolTip'),
             subtab={Lokii.GetString('Subtab_Markers')}
         })
 
