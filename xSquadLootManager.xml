@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Component
+    xmlns="http://www.red5studios.com/" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.red5studios.com/ ../../../schemas/component.xsd"
+    >
+    <Info
+        title="SquadLootManager"
+        author="Xsear"
+        description="Helps the user with keeping an eye on item drops, and can assist with distributing that loot within a squad."
+        url="http://forums.firefallthegame.com/community/threads/addon-xsears-squad-loot-manager.1914241/"
+        uiVersion="1000"
+    />
+    <Events>
+        <Event name="ON_COMPONENT_LOAD"        bind="OnComponentLoad"/>
+        <Event name="ON_UI_ENTITY_AVAILABLE"   bind="OnEntityAvailable"/>
+        <Event name="ON_SQUAD_ROSTER_UPDATE"   bind="OnSquadRosterUpdate"/>
+        <Event name="ON_LOOT_COLLECTED"        bind="OnLootCollected"/>
+        <Event name="ON_CHAT_MESSAGE"          bind="OnChatMessage"/>
+    </Events>
+
+    <Textures>
+        <Texture name="PanelTex" src="./obj/panel/loot_panel.dds" premultiplied="false">
+            <Region name="Panel" top="26" left="26" right="486" bottom="272" />
+            <Region name="ArrowMarker1" top="310" left="28" right="75" bottom="343" />
+            <Region name="ArrowMarker2" top="310" left="78" right="125" bottom="343" />
+            <Region name="Dragon" top="360" left="26" right="486" bottom="440" />
+        </Texture>
+    </Textures>
+    
+    <Styles>
+        <StyleSheet name="ItemHeader">  
+            font:Demi_17;
+            halign:center;
+            valign:middle;
+            color:FFFFFF;
+            scaleX:2;
+            scaleY:2";
+        </StyleSheet>
+        <StyleSheet name="TrackerEntry">  
+            font:UbuntuMedium_12;
+            halign:left;
+            valign:middle;
+            color:FFFFFF;
+            scaleX:0.8;
+            scaleY:0.8;
+            clip-children:true;
+        </StyleSheet>
+
+
+        <StyleSheet name="LootPanel_Text_Large">  
+            font:Demi_17;
+            halign:center;
+            valign:top;
+            color:FFFFFF;
+            scaleX:2;
+            scaleY:2;
+        </StyleSheet>
+        <StyleSheet name="LootPanel_Text_Timer">
+            font:Demi_17;
+            halign:center;
+            valign:middle;
+            color:FFFFFF;
+            scaleX:2;
+            scaleY:2;
+        </StyleSheet>
+        <StyleSheet name="LootPanel_Text_Small">  
+            font:UbuntuMedium_12;
+            halign:left
+            color:FFFFFF;
+            scaleX:2;
+            scaleY:2;
+        </StyleSheet>
+
+    </Styles>
+    
+    <BluePrints>
+        <BluePrint name="ItemHeader" instantiable="true">
+            <StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#030000; alpha:0.8;"/>
+            <Text name="text" dimensions="dock:fill;" class="ItemHeader"/>
+        </BluePrint>
+
+        <BluePrint name="TrackerEntry" instantiable="true">
+            <Text name="itemName" dimensions="top:0; left:0; width:100%-150; height:100%;" class="TrackerEntry"/>
+            <Text name="assignedTo" dimensions="top:0; left:100%-150; width:150; height:100%;" class="TrackerEntry"/>
+        </BluePrint>
+
+        <BluePrint name="LootPanel_Stat" instantiable="true">
+            <StillArt dimensions="top:0; left:10%; width:40% -8; height:100%;" style="texture:colors; region:white; tint:#000000; alpha:0.5;"/>
+            <StillArt dimensions="top:0; left:50%; width:40%; height:100%;" style="texture:colors; region:white; tint:#000000; alpha:0.5;"/>
+            <Text name="statName" dimensions="top:0; left:10%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
+            <Text name="statValue" dimensions="top:0; left:50%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
+        </BluePrint>
+
+
+    </BluePrints>
+
+    <Frames>
+        <HUDFrame name="Tracker" dimensions="left:0; center-y:74%; width:400; height:150">
+            <Children>
+                <Group name="Status" dimensions="center-x:50%; center-y:50%; width:92%; height:42%;">
+                    <Text name="Mode" dimensions="top:0;dock:fill;"/>
+                </Group>
+                <Group name="List" dimensions="center-x:50%; center-y:50%; width:92%; height:42%;">
+                    
+                </Group>
+            </Children>
+        </HUDFrame>
+    </Frames>
+
+</Component>
