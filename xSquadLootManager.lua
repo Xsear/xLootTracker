@@ -1291,47 +1291,56 @@ function UpdateTracker()
     -- Only update and show tracker if enabled
     if Options['Tracker']['Enabled'] then
 
-        -- Update Mode
-        if Options['Tracker']['Display_Mode'] and not (Options['Tracker']['Display_Mode_OnlySquadLeader'] and not bIsSquadLeader) then
-            TRACKER:GetChild('Status'):GetChild('Mode'):SetText(tostring(Options['Manager']['LootMode']))
-            TRACKER:GetChild('Status'):GetChild('Mode'):Show(true)
-        else
-            TRACKER:GetChild('Status'):GetChild('Mode'):Show(false)
-        end
-
         -- Update List of tracked items
         RemoveAllChildren(TRACKER:GetChild('List')) -- clear previous entries
         local rowHeight = 32 -- Fixme: magic number
         local row = 0
         if not table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
+
+                -- Calc row height
                 row = row + rowHeight
-                if num == 1 and Options['Tracker']['Display_Headings'] then 
-                    ENTRY = Component.CreateWidget("TrackerEntry", TRACKER:GetChild('List'))
-                    ENTRY:GetChild('itemName'):SetText('Item Name')
-                    ENTRY:GetChild('assignedTo'):SetText('Assigned To')
-                end
-                ENTRY = Component.CreateWidget("TrackerEntry", TRACKER:GetChild('List'))
-                ENTRY:SetDims("top:".. row .."; left0; width:100%; height:24;");
 
-                -- Item Name text
-                ENTRY:GetChild('itemName'):SetText(FixItemNameTag(item.name, item.quality))
+                -- Create widget
+                ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
+                ENTRY:SetDims("top:".. row .."; left:0; width:100%; height:24;");
 
-                -- Assigned To text
-                if item.assignedTo == nil then
-                    ENTRY:GetChild('assignedTo'):SetText('Not yet assigned')
-                elseif assignedTo == false or assignedTo == true then
-                    ENTRY:GetChild('assignedTo'):SetText('Free for all')
-                else
-                    ENTRY:GetChild('assignedTo'):SetText(tostring(item.assignedTo))
-                end
+                -- Left
+                    -- Setup Buttons
+                        -- ENTRY:GetChild('leftbar'):GetChild('buttons')
+
+                    -- Setup Assigned To text
+                    if item.assignedTo == nil then
+                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText('Not yet assigned')
+                    elseif assignedTo == false or assignedTo == true then
+                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText('Free for all')
+                    else
+                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
+                    end
+
+                -- Right
+                    -- Item Name text
+                    ENTRY:GetChild('itemName'):SetText(FixItemNameTag(item.name, item.quality))
+
+                -- Determine what to display
+                    if item.assignedTo == nil then
+                        ENTRY:GetChild('leftbar'):GetChild('buttons'):Show(true)
+                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):Show(false)
+                    else
+                        ENTRY:GetChild('leftbar'):GetChild('buttons'):Show(false)
+                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):Show(true)
+                    end
+
+                    ENTRY:GetChild('itemName'):Show(true)
+
+        
             end
         else
             -- Clear?
         end
 
         -- Should we display the tracker?
-        if Options['Tracker']['Visibility'] == 'always' 
+        if  Options['Tracker']['Visibility'] == 'always' 
         or (Options['Tracker']['Visibility'] == 'hud' and bHUD)
         or (Options['Tracker']['Visibility'] == 'mousemode' and bCursor)
         then
