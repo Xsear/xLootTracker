@@ -357,6 +357,13 @@ LANG = {
 
 	Tracker_Enabled_Label							=   "Enabled",
 	Tracker_Enabled_ToolTip							=   "Enables a HUDFrame that displays the currently tracked items.",
+
+	Tracker_Visibility_Label 						=   "Visibility",
+	Tracker_Visibility_ToolTip 						=   "When to display the tracker.\nAlways - I wanna be with you~\nHUD - Follow suit with rest of HUD\nMousemode - Only when in Mousemode",
+	Tracker_Visibility_always_Label 				=   "Always",
+	Tracker_Visibility_hud_Label 					=   "HUD",
+	Tracker_Visibility_mousemode_Label 				=   "Mousemode",
+
 	Tracker_Display_Mode_Label 						= 	"Display Ruleset",
 	Tracker_Display_Mode_ToolTip 					=	"Display the active ruleset (local)",
 	Tracker_Display_Mode_OnlySquadLeader_Label  	=	"Only Display Ruleset when Squad Leader",

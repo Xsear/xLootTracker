@@ -184,9 +184,14 @@ Options = {
 
     ['Tracker'] = {
         ['Enabled'] = false,
+
+        ['Visibility'] = 'mousemode', -- always, hud, mousemode 
+
         ['Display_Mode'] = true,
         ['Display_Mode_OnlySquadLeader'] = true,
         ['Display_Headings'] = true,
+
+
     },
 
     ['Sounds'] = {
@@ -1785,6 +1790,35 @@ function SetupInterfaceOptions()
             tooltip=Lokii.GetString('Tracker_Enabled_ToolTip'),
             subtab={Lokii.GetString('Subtab_Tracker')}
         })
+
+        InterfaceOptions.AddChoiceMenu({
+            id = 'Tracker_Visibility',
+            default = Options['Tracker']['Visibility'],
+            label = Lokii.GetString('Tracker_Visibility_Label'),
+            tooltip = Lokii.GetString('Tracker_Visibility_ToolTip'),
+            subtab = {Lokii.GetString('Subtab_Markers')}
+        })
+
+                InterfaceOptions.AddChoiceEntry({
+                    menuId='Tracker_Visibility',
+                    val='always',
+                    label=Lokii.GetString('Tracker_Visibility_always_Label'),
+                    subtab={Lokii.GetString('Subtab_Markers')}
+                })
+
+                InterfaceOptions.AddChoiceEntry({
+                    menuId='Tracker_Visibility',
+                    val='hud',
+                    label=Lokii.GetString('Tracker_Visibility_hud_Label'),
+                    subtab={Lokii.GetString('Subtab_Markers')}
+                })
+
+                InterfaceOptions.AddChoiceEntry({
+                    menuId='Tracker_Visibility',
+                    val='mousemode',
+                    label=Lokii.GetString('Tracker_Visibility_mousemode_Label'),
+                    subtab={Lokii.GetString('Subtab_Markers')}
+                })
 
         InterfaceOptions.AddCheckBox({
             id='Tracker_Display_Mode',

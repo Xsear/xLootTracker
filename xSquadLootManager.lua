@@ -1347,9 +1347,16 @@ function UpdateTracker()
             -- Clear?
         end
 
-        -- Display tracker
-        TRACKER:Show(true)
-    -- Not in a squad, just make sure tracker is hidden
+        -- Should we display the tracker?
+        if Options['Tracker']['Visibility'] == 'always' 
+        or Options['Tracker']['Visibility'] == 'hud'
+        or Options['Tracker']['Visibility'] == 'mousemode'  
+        then
+            -- Yes, display racker
+            TRACKER:Show(true)
+        end
+
+    -- Tracker not enabled, so do nothing but make sure it's hidden.
     else
         -- Hide tracker
         TRACKER:Show(false)
