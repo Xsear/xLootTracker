@@ -1128,9 +1128,11 @@ function RollFinish()
         mCurrentlyRolling.timer:KillAlarm('roll_timeout') -- Prevent timeout callback
         Debug.Log('RollFinish killing roll timeout alarm')
 
+
+
         -- Declare vars
-        local winner
-        local highest = 0
+        local winner = ''
+        local highest = nil
         local rolls = {}
 
         -- Figure out if someone has need rolled, and set any un-decided roll types to the default
@@ -1153,9 +1155,11 @@ function RollFinish()
                 roll = math.random(Options['Manager']['RollMin'], Options['Manager']['RollMax'])
 
                 -- Determine if highest roll
-                if roll > highest then
+                if highest == nil -- First roll automatically becomes the highest 
+                or roll > highest -- Subsequent rolls must be larger than the highest in order to become the highest (Yeah!)
+                then
                     highest = roll
-                    winner = row.name
+                    winner = row.name -- Determine winner as we roll
                 end
 
                 -- Append to rolls table
