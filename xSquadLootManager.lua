@@ -1312,7 +1312,7 @@ function UpdateTracker()
                     -- Setup Assigned To text
                     if item.assignedTo == nil then
                         ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText('Not yet assigned')
-                    elseif assignedTo == false or assignedTo == true then
+                    elseif item.assignedTo == false or item.assignedTo == true then
                         ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText('Free for all')
                     else
                         ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
