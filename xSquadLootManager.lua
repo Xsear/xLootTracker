@@ -10,7 +10,8 @@ require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item 
 require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
 require 'lib/lib_Slash' -- Slash commands
 require 'lib/lib_Vector' -- Vector coordinates
-require 'lib/lib_Button' -- Buttons!
+require 'lib/lib_Button' -- Buttons used by Tracker
+require 'lib/lib_ToolTip' -- ToolTip used by Tracker
 
 -- Custom
 require './lib/Lokii' -- Localization
@@ -22,7 +23,8 @@ require './util/xSounds' -- Database of sounds
 
 -- Frames
 TRACKER = Component.GetFrame('Tracker')
-TRACKER_TOOLTIP = LIB_ITEMS.CreateToolTip(TRACKER)
+TOOLTIP = LIB_ITEMS.CreateToolTip(TRACKER)
+TOOLTIP.GROUP:Show(false)
 
 -- Constants
 csVersion = '0.77'
@@ -1292,49 +1294,110 @@ function UpdateTracker()
     -- Only update and show tracker if enabled
     if Options['Tracker']['Enabled'] then
 
+        local cTrackerEntrySize = 30
+        local cTrackerButtonSize = 25
+
         -- Update List of tracked items
         RemoveAllChildren(TRACKER:GetChild('List')) -- clear previous entries
-        local rowHeight = 32 -- Fixme: magic number
-        local row = 0
         if not table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
 
-                -- Calc row height
-                row = row + rowHeight
-
                 -- Create widget
-                ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
-                ENTRY:SetDims("top:".. row .."; left:0; width:100%; height:24;");
+                local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
+                ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
+                --PLATE = HoloPlate.Create(ENTRY:GetChild('plate'))
+                --PLATE:SetColor(LIB_ITEMS.GetResourceQualityColor(item.quality))
+
+
+                ENTRY:GetChild('plate'):SetTag(item.itemTypeId)
+
+                ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
+                    Debug.Table(args)
+                    Debug.Log(args.widget:GetTag())
+                    TOOLTIP:DisplayInfo(Game.GetItemInfoByType(args.widget:GetTag()))
+                    TOOLTIP.GROUP:Show(true)
+                    ToolTip.Show(TOOLTIP.GROUP)
+                end);
+                ENTRY:GetChild('plate'):BindEvent("OnMouseLeave", function(args)
+                    Debug.Table(args)
+                    TOOLTIP.GROUP:Show(false)
+                    ToolTip.Show(false)
+                end);
+
+                ENTRY:GetChild('plate'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                ENTRY:GetChild('plate'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                ENTRY:GetChild('itemIcon'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                ENTRY:GetChild('itemIcon'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+
+                -- Icon
+                ENTRY:GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
+
+
 
                 -- Left
-                    -- Setup Buttons
-                        -- ENTRY:GetChild('leftbar'):GetChild('buttons')
+                -- Setup Buttons
+                    -- Need
+                    BUTTON1 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                    -- Setup Assigned To text
-                    if item.assignedTo == nil then
-                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText('Not yet assigned')
-                    elseif item.assignedTo == false or item.assignedTo == true then
-                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText('Free for all')
-                    else
-                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
-                    end
+                    BUTTON1_ICON = MultiArt.Create(BUTTON1:GetWidget())
+                    BUTTON1_ICON:SetTexture('TrackerIcons')
+                    BUTTON1_ICON:SetRegion('Need')
 
-                -- Right
-                    -- Item Name text
-                    ENTRY:GetChild('itemName'):SetText(FixItemNameTag(item.name, item.quality))
+                    BUTTON1:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
 
-                -- Determine what to display
-                    if item.assignedTo == nil then
-                        ENTRY:GetChild('leftbar'):GetChild('buttons'):Show(true)
-                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):Show(false)
-                    else
-                        ENTRY:GetChild('leftbar'):GetChild('buttons'):Show(false)
-                        ENTRY:GetChild('leftbar'):GetChild('assignedTo'):Show(true)
-                    end
+                    BUTTON1:Bind(function() 
+                            System.PlaySound('Play_UI_Beep_06')
+                        end)
 
-                    ENTRY:GetChild('itemName'):Show(true)
+                    -- Greed
+                    BUTTON2 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-        
+                    BUTTON2_ICON = MultiArt.Create(BUTTON2:GetWidget())
+                    BUTTON2_ICON:SetTexture('TrackerIcons')
+                    BUTTON2_ICON:SetRegion('Greed')
+
+                    BUTTON2:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                    BUTTON2:Bind(function() 
+                            System.PlaySound('Play_UI_Beep_06')
+                        end)
+
+                    -- Pass
+                    BUTTON3 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+
+                    BUTTON3_ICON = MultiArt.Create(BUTTON3:GetWidget())
+                    BUTTON3_ICON:SetTexture('TrackerIcons')
+                    BUTTON3_ICON:SetRegion('Pass')
+
+                    BUTTON3:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                    BUTTON3:Bind(function() 
+                            System.PlaySound('Play_UI_Beep_06')
+                        end)
+
+
+                -- Setup Assigned To text
+                if item.assignedTo == nil then
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText('Not yet assigned')
+                elseif item.assignedTo == false or item.assignedTo == true then
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText('Free for all')
+                else
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
+                end
+
+            -- Right
+                -- Item Name text
+                ENTRY:GetChild('itemName'):SetText(itemPrefixShortener(FixItemNameTag(item.name, item.quality)))
+
+            -- Determine what to display
+                if item.assignedTo == nil then
+                    ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(true)
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(false)
+                else
+                    ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(false)
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(true)
+                end
+
+                ENTRY:GetChild('itemName'):Show(true)
+
             end
         else
             -- Clear?
@@ -1355,6 +1418,35 @@ function UpdateTracker()
         TRACKER:Show(false)
     end
 end
+
+
+
+function itemPrefixShortener(itemName)
+
+    -- Keys to prefix
+    -- Lua sorts these differently than inputed
+    local prefixes = {
+        ['Surplus'] = 'S.',
+        ['Chosen'] = 'C.',
+        ['Accord'] = 'A.',
+        ['Accord Prototype'] = 'A.P.',
+    }
+
+    Debug.Table(prefixes)
+
+    for key, prefix in pairs(prefixes) do
+        Debug.Log('Checking for '..key..' in '..itemName)
+        if string.find(itemName, key, 0, string.len(key)) then
+            Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
+            itemName = prefix..string.sub(itemName, string.len(key) + 1)
+            break
+        end
+    end
+
+    return itemName
+end
+
+
 
 --[[
     RemoveAllChildren(PARENT)

@@ -30,6 +30,15 @@
             <Region name="ArrowMarker2" top="310" left="78" right="125" bottom="343" />
             <Region name="Dragon" top="360" left="26" right="486" bottom="440" />
         </Texture>
+        <Texture name="TrackerIcons" src="./trackericons.dds" premultiplied="false">
+            <Region name="Need" top="0" left="0" right="25" bottom="25" />
+            <Region name="Greed" top="30" left="0" right="25" bottom="55" />
+            <Region name="Pass" top="60" left="0" right="25" bottom="85" />
+
+            <Region name="Dismiss" top="0" left="30" right="55" bottom="25" />
+            <Region name="Info" top="30" left="30" right="55" bottom="55" />
+            <Region name="Compare" top="60" left="30" right="55" bottom="85" />
+        </Texture>
     </Textures>
     
     <Styles>
@@ -41,14 +50,14 @@
             scaleX:2;
             scaleY:2";
         </StyleSheet>
-        <StyleSheet name="TrackerEntry">  
-            font:UbuntuMedium_12;
+        
+        <StyleSheet name="Tracker_Text">  
+            font:UbuntuMedium_10;
             halign:left;
             valign:middle;
             color:FFFFFF;
-            scaleX:0.8;
-            scaleY:0.8;
-            clip-children:true;
+            alpha:1.0;
+            shadow:0;
         </StyleSheet>
 
 
@@ -88,40 +97,38 @@
         </BluePrint>
 
 
-        <BluePrint name="Tracker_List_Entry" instantiable="true">
-            <!--<Group name="entry" dimensions="left:0; top:0; width:100%; height:50;">-->
-                <!-- List Entry Backplate -->
-                <StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#0000FF; alpha:0.5;"/>
+        <BluePrint name="Tracker_List_Entry" instantiable="true">      
+            <!-- Item icon -->
+            <WebImage name="itemIcon" dimensions="width:35; height:35; left:0; top:0" style="fixed-bounds:true; valign:center;">
+                <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
+                <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
+            </WebImage>
 
-                <!-- Item Icon on the very left -->
-                <StillArt name="bg_itemIcon" dimensions="width:30; height:30; left:0%;" style="fixed-bounds:true; valign:center;" style="texture:colors; region:white; tint:#FF0000; alpha:0.7;"/>
+            <!-- Plate -->
+            <FocusBox name="plate" dimensions="width:100%-35; height:100%; left:32; top:2;">
+                <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
+                <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
+            </FocusBox>
+            
 
-                <!--
-                <WebImage name="itemIcon" dimensions="width:30; height:30; left:0%;" style="fixed-bounds:true; valign:center;"/>
-                -->
+            <!-- Bar on the left -->
+            <Group name="leftBar" dimensions="left:35+2%; width:25%; height:100%; top:2;">
 
-                <!-- Bar on the left -->
-                <!-- Width: entry width - item icon width - spacing - itemName area -->
-                <Group name="leftbar" dimensions="width:100% - 30 - 2% - 50%; height:100%;">
+                 <!-- Bar Backplate -->
+                <!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#00FF00; alpha:0.6;"/>-->
 
-                     <!-- Bar Backplate -->
-                    <StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#00FF00; alpha:0.6;"/>
+                <!-- Primary Button Group -->
+                <ListLayout name="buttons" dimensions="width:87; height:25" style="halign:center; valign:center; horizontal:true; hpadding:4;" >
+                    <!-- Buttons dynamically created -->
+                </ListLayout>
 
-                    <!-- Primary Button Group -->
-                    <Group name="buttons" dimensions="width:100%;height:40;">
-                        <StillArt dimensions="width:25; height:25; left:0+25;" style="texture:colors; region:white; tint:#FF0000; alpha:0.7; valign:center;"/>
-                        <StillArt dimensions="width:25; height:25; left:0+25+25;" style="texture:colors; region:white; tint:#FF0000; alpha:0.7; valign:center;"/>
-                        <StillArt dimensions="width:25; height:25; left:0+25+25;" style="texture:colors; region:white; tint:#FF0000; alpha:0.7; valign:center;"/>
-                    </Group>
+                <!-- Alternate Text -->
+                <Text name="assignedTo" dimensions="width:100%; height:100%;" style="halign:center;" class="Tracker_Text"/>
 
-                    <!-- Alternate Text -->
-                    <Text name="assignedTo" dimensions="width:100%; height:100%; left:0;" class="TrackerEntry"/>
+            </Group>
 
-                </Group>
-
-                <!-- Item name on the right -->
-                <Text name="itemName" dimensions="width:100% - 30 - 2% - 50%; height:100%; right:0;" class="TrackerEntry"/>
-             <!--</Group>-->
+            <!-- Item name on the right -->
+            <Text name="itemName" dimensions="left:30+29%; width:20%; height:100%; top:2;" class="Tracker_Text"/>
         </BluePrint>
 
 
@@ -129,13 +136,20 @@
     </BluePrints>
 
     <Frames>
-        <HUDFrame name="Tracker" dimensions="left:0; center-y:74%; width:400; height:150">
+        <!-- Tracker -->
+        <PanelFrame name="Tracker" visible="true" dimensions="left:0; center-y:74%; width:400; height:150">
             <Children>
-                <Group name="List" dimensions="center-x:50%; center-y:50%; width:92%; height:62%;" style="clip-children:true;">
-                    
-                </Group>
+                <StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>
+
+                
+                    <!-- List -->
+                    <ListLayout name="List" dimensions="width:100%; height:98%; top:2%; center-x:50%;" style="vertical:true; vpadding:9; clip-children:true;">
+                        <!-- Tracker_List_Entry:ies go in here -->
+                    </ListLayout>
+
+                
             </Children>
-        </HUDFrame>
+        </PanelFrame>
     </Frames>
 
 </Component>
