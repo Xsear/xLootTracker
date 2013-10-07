@@ -1796,28 +1796,28 @@ function SetupInterfaceOptions()
             default = Options['Tracker']['Visibility'],
             label = Lokii.GetString('Tracker_Visibility_Label'),
             tooltip = Lokii.GetString('Tracker_Visibility_ToolTip'),
-            subtab = {Lokii.GetString('Subtab_Markers')}
+            subtab = {Lokii.GetString('Subtab_Tracker')}
         })
 
                 InterfaceOptions.AddChoiceEntry({
                     menuId='Tracker_Visibility',
                     val='always',
                     label=Lokii.GetString('Tracker_Visibility_always_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
+                    subtab={Lokii.GetString('Subtab_Tracker')}
                 })
 
                 InterfaceOptions.AddChoiceEntry({
                     menuId='Tracker_Visibility',
                     val='hud',
                     label=Lokii.GetString('Tracker_Visibility_hud_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
+                    subtab={Lokii.GetString('Subtab_Tracker')}
                 })
 
                 InterfaceOptions.AddChoiceEntry({
                     menuId='Tracker_Visibility',
                     val='mousemode',
                     label=Lokii.GetString('Tracker_Visibility_mousemode_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
+                    subtab={Lokii.GetString('Subtab_Tracker')}
                 })
 
         InterfaceOptions.AddCheckBox({
