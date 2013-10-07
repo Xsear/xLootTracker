@@ -718,7 +718,7 @@ function UpdatePanel(loot)
                 RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetText('Not yet assigned')
                 RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_nil'].tint)
 
-                if options['Panels']['Display_AssignedTo_Hide_nil'] then
+                if Options['Panels']['Display_AssignedTo_Hide_nil'] then
                     RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):Show(false)
                 else
                     RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):Show(true)
