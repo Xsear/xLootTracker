@@ -6,7 +6,7 @@ require 'string' -- Because why not
 -- Firefall
 require 'lib/lib_Debug' -- Debug library, used for logging
 require 'lib/lib_InterfaceOptions' -- Interface Options
-require 'lib/lib_Items' -- Item library, used to get color-by-quality
+require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item tooltips
 require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
 require 'lib/lib_Slash' -- Slash commands
 require 'lib/lib_Vector' -- Vector coordinates
@@ -22,6 +22,7 @@ require './util/xSounds' -- Database of sounds
 
 -- Frames
 TRACKER = Component.GetFrame('Tracker')
+TRACKER_TOOLTIP = LIB_ITEMS.CreateToolTip(TRACKER)
 
 -- Constants
 csVersion = '0.77'
@@ -1480,23 +1481,30 @@ end
 ]]--
 function RunMessageFilters(message, args)
     -- Fix undefined arguments
-    args.item            = args.item or {}
-    args.item.name       = args.item.name           or 'NOT_SET'
-    args.item.quality    = args.item.quality        or 'NOT_SET'
-    args.item.entityId   = args.item.entityId       or 'NOT_SET'
-    args.item.itemTypeId = args.item.itemTypeId     or 'NOT_SET'
-    args.playerName      = args.playerName          or 'NOT_SET'
-    args.roll            = args.roll                or 'NOT_SET'
-    args.rollType        = args.rollType            or 'NOT_SET'
-    args.lootedTo        = args.lootedTo            or 'NOT_SET'
-    args.assignedTo      = args.assignedTo          or 'NOT_SET'
-    args.eligible        = args.eligibleNames       or 'NOT_SET'
+    args.item                = args.item or {}
+    args.item.name           = args.item.name               or 'NOT_SET'
+    args.item.quality        = args.item.quality            or 'NOT_SET'
+    args.item.entityId       = args.item.entityId           or 'NOT_SET'
+    args.item.itemTypeId     = args.item.itemTypeId         or 'NOT_SET'
+    args.item.craftingTypeId = args.item.craftingTypeId     or 'NOT_SET'
+    args.playerName          = args.playerName              or 'NOT_SET'
+    args.roll                = args.roll                    or 'NOT_SET'
+    args.rollType            = args.rollType                or 'NOT_SET'
+    args.lootedTo            = args.lootedTo                or 'NOT_SET'
+    args.assignedTo          = args.assignedTo              or 'NOT_SET'
+    args.eligible            = args.eligibleNames           or 'NOT_SET'
 
     -- Create local mixes
     local itemNameQuality = FixItemNameTag(args.item.name, args.item.quality)
 
     -- Adjust item name
     local itemNameClean = FixItemNameTag(args.item.name)
+
+    -- Archetype/Frame replacements
+    local itemForArchetype, itemForFrame = 'NOT_SET'
+    if args.item.craftingTypeId ~= 'NOT_SET' then
+        itemForArchetype, itemForFrame = DWFrameIDX.ItemIdxString(args.item.craftingTypeId)
+    end
 
     -- Start building the output
     local output = message
@@ -1518,6 +1526,15 @@ function RunMessageFilters(message, args)
 
     -- Item itemTypeId
     output = string.gsub(output, '%%tId', tostring(args.item.itemTypeId))
+
+    -- Item craftingTypeId
+    output = string.gsub(output, '%%cId', tostring(args.item.craftingTypeId))
+
+    -- Item For Archetype
+    output = string.gsub(output, '%%fA', itemForArchetype)
+
+    -- Item For Frame
+    output = string.gsub(output, '%%fF', itemForFrame)
 
     -- Player name
     output = string.gsub(output, '%%n', args.playerName)
