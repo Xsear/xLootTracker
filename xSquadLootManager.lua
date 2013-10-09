@@ -676,6 +676,7 @@ function CreatePanel(targetInfo, itemInfo)
         RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(true)
     end
  
+--[[
 
     BUTTON1 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
     BUTTON1:SetText('Need')
@@ -698,6 +699,7 @@ function CreatePanel(targetInfo, itemInfo)
             System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
         end)
 
+--]]
 
     -- We spent all this time building, best make sure it shows
     RenderTarget:GetChild('content'):Show(true)
