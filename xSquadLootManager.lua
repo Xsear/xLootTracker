@@ -227,6 +227,11 @@ function OnEntityAvailable(args)
 
         -- Determine if it is a lootable entity
         if IsLootableTarget(targetInfo) and IsLootableItem(itemInfo) then
+            Debug.Log('OnEntityAvailable')
+            Debug.Log('targetInfo')
+            Debug.Table(targetInfo)
+            Debug.Log('itemInfo')
+            Debug.Table(itemInfo)
             -- Determine if it is something we want to track
             if (IsPastThreshold(targetInfo.quality) or Options['IdentifyAllLoot']) and not IsIdentified(args.entityId) then
                 Identify(args.entityId, targetInfo)
@@ -351,7 +356,7 @@ function OnLootCollected(args)
     -- Exit if addon is disabled
     if not Options['Enabled'] then return end
 
-    --Debug.Log('OnLootCollected')
+    Debug.Log('OnLootCollected')
     --Debug.Log('args')
     --Debug.Table(args)
 
@@ -359,8 +364,8 @@ function OnLootCollected(args)
 
     -- Get item info
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId)
-    --Debug.Log('iteminfo')
-    --Debug.Table(itemInfo)
+    Debug.Log('iteminfo')
+    Debug.Table(itemInfo)
 
 
     -- Is it loot that we care about?
