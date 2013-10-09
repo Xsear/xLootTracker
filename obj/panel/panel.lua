@@ -15,12 +15,13 @@ PANEL =
 		RTGlobal	= false,
 		RT			= {width=1024, height=1024},
 		Widget		= [[<Group dimensions="dock:fill;" style="alpha:1.0">
-
 							<!--StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#FFFFFF; alpha:0.5;"/>-->
 
-							<Group name="content" dimensions="top:20%;width:98%;height:98%;">
+							<Border dimensions="top:20%;width:100%;height:100%;" class="ButtonBorder" style="padding:8; tint:#FF0000;" />
+							<Group name="content" dimensions="top:20%;width:98%;height:98%;" style="clip-children:true;">
 
 								<StillArt name="contentBackground" dimensions="dock:fill" style="texture:colors; region:white; tint:#00000; alpha:0.8;"/>
+								
 								
 								<Group name="Header" dimensions="width:100%;height:200;top:0">
 									
@@ -33,10 +34,14 @@ PANEL =
 
 								<Group name="IconBar" dimensions="left:0; top:15%; width:100%; height:30%;" style="clip-children:true;">
 
-									<WebImage name="itemIcon"         dimensions="left:10%; width:120; height:120;" style="fixed-bounds:true; valign:center;"/>
+									<WebImage name="itemIcon"         dimensions="left:10%; width:120; height:120;" style="fixed-bounds:true; valign:center;">
+
+									</WebImage>
 
 									<!-- width:20%; height:30%;-->
-									<WebImage name="battleframeIcon"         dimensions="left:40%+60; width:80; height:80;" style="fixed-bounds:true; valign:center;"/>
+									<WebImage name="battleframeIcon"         dimensions="left:40%+60; width:80; height:80;" style="fixed-bounds:true; valign:center;">
+										<FocusBox name="fb" dimensions="dock:fill"/>
+									</WebImage>
 									<!--<StillArt name="timerBackground"            dimensions="left:70%; width:20%; height:30%;" style="texture:colors; region:white; tint:#000000; alpha:0.8;"/>-->
 									<Text name="timer" dimensions="left:70%; width:20%; height:30%;" class="LootPanel_Text_Timer"/>
 

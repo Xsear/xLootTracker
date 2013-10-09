@@ -576,6 +576,15 @@ function CreatePanel(targetInfo, itemInfo)
         end
         RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
         RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):Show(true)
+
+        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
+        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
+            ToolTip.Show(args.widget:GetTag())
+        end);
+        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
+            ToolTip.Show(false)
+        end);
+
     else
         RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):Show(false)
     end
