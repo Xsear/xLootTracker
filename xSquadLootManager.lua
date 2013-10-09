@@ -98,6 +98,7 @@ end
     Used to determine if the tracker should be displayed or not.
 ]]--
 function OnHudShow(args)
+    --Debug.Log('OnHudShow')
     local hide = args.loading_screen or args.logout_bonus or args.freecamera
     bHUD = not hide
     UpdateTracker()
@@ -109,6 +110,7 @@ end
     Used to determine if the tracker should be displayed or not.
 ]]--
 function OnInputModeChanged(args)
+    --Debug.Log('OnInputModeChanged')
     bCursor = (args.mode == 'cursor')
     UpdateTracker()
 end
@@ -190,6 +192,8 @@ function OnSlash(args)
         SendSystemMessage('/slm clear : Clears list of identified items')
     elseif args.text == 'test' then
         Test()
+    elseif args.text == 'ut' then
+        UpdateTracker()
     elseif args.text == 'clear' then
         ClearIdentified()
     elseif args.text == 'enable' or args.text == 'disable' or args.text == 'toggle' then
@@ -1299,7 +1303,7 @@ end
     Updates the UI tracker view.
 ]]--
 function UpdateTracker()
-
+    --Debug.Log('UpdateTracker')
     -- Only update and show tracker if enabled
     if Options['Tracker']['Enabled'] then
 
@@ -1414,16 +1418,26 @@ function UpdateTracker()
         end
 
         -- Should we display the tracker?
+        --Debug.Log('Should we display the Tracker?')
+        --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
+        --Debug.Log('bHUD == '..tostring(bHUD))
+        --Debug.Log('bCursor == '..tostring(bCursor))
         if  Options['Tracker']['Visibility'] == 'always' 
         or (Options['Tracker']['Visibility'] == 'hud' and bHUD)
         or (Options['Tracker']['Visibility'] == 'mousemode' and bCursor)
         then
+            --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
             TRACKER:Show(true)
+        else
+            --Debug.Log('No, hide the tracker')
+            -- No, hide the tracker
+            TRACKER:Show(false)
         end
 
     -- Tracker not enabled, so do nothing but make sure it's hidden.
     else
+        --Debug.Log('Tracker not enabled, hide')
         -- Hide tracker
         TRACKER:Show(false)
     end

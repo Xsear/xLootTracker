@@ -154,12 +154,11 @@
         </BluePrint>
 
 
-
     </BluePrints>
 
     <Frames>
         <!-- Tracker -->
-        <PanelFrame name="Tracker" visible="true" dimensions="left:0; center-y:74%; width:400; height:150">
+        <PanelFrame name="Tracker" permanent="true" visible="true" dimensions="left:0; center-y:74%; width:400; height:150">
             <Children>
                 <!--<StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>-->
 
@@ -172,6 +171,7 @@
                 
             </Children>
         </PanelFrame>
+
     </Frames>
 
 </Component>
