@@ -25,7 +25,7 @@ require './util/xSounds' -- Database of sounds
 TRACKER = Component.GetFrame('Tracker')
 
 -- Constants
-csVersion = '0.77'
+csVersion = '0.81'
 ciSaveVersion = 0.67
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
