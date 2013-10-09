@@ -39,6 +39,23 @@
             <Region name="Info" top="30" left="30" right="55" bottom="55" />
             <Region name="Compare" top="60" left="30" right="55" bottom="85" />
         </Texture>
+
+
+        <Texture name="ItemPlates" src="components/MainUI/HUD/Loot/itemplates.png" premultiplied="false" >
+            <Region name="epic_64" top="0" bottom="64" left="392" right="456" />
+            <Region name="epic_96" top="0" bottom="96" left="196" right="292" />
+            <Region name="legendary_64" top="98" bottom="162" left="164" right="228" />
+            <Region name="legendary_96" top="0" bottom="96" left="0" right="96" />
+            <Region name="rare_64" top="164" bottom="228" left="98" right="162" />
+            <Region name="rare_96" top="0" bottom="96" left="98" right="194" />
+            <Region name="salvage_64" top="98" bottom="162" left="230" right="294" />
+            <Region name="salvage_96" top="98" bottom="194" left="0" right="96" />
+            <Region name="common_64" top="98" bottom="162" left="230" right="294" />
+            <Region name="common_96" top="98" bottom="194" left="0" right="96" />
+            <Region name="uncommon_64" top="98" bottom="162" left="98" right="162" />
+            <Region name="uncommon_96" top="0" bottom="96" left="294" right="390" />
+        </Texture>
+
     </Textures>
     
     <Styles>
@@ -97,19 +114,24 @@
         </BluePrint>
 
 
-        <BluePrint name="Tracker_List_Entry" instantiable="true">      
-            <!-- Item icon -->
-            <WebImage name="itemIcon" dimensions="width:35; height:35; left:0; top:0" style="fixed-bounds:true; valign:center;">
-                <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
-                <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
-            </WebImage>
+        <BluePrint name="Tracker_List_Entry" instantiable="true">
+
 
             <!-- Plate -->
             <FocusBox name="plate" dimensions="width:100%-35; height:100%; left:32; top:2;">
+                <StillArt name="bg" dimensions="width:99%; height:99%;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
                 <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
                 <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
             </FocusBox>
-            
+
+            <!-- Item icon -->
+            <FocusBox name="item" dimensions="width:35; height:35; left:0; top:0;">
+                <StillArt name="bg" dimensions="width:0; height:0;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
+                <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common_64"/>
+                <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
+                <Border name="shade" dimensions="width:0;height:0" class="ButtonFade"/>
+                <WebImage name="itemIcon" dimensions="width:35; height:35; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
+            </FocusBox>
 
             <!-- Bar on the left -->
             <Group name="leftBar" dimensions="left:35+2%; width:25%; height:100%; top:2;">

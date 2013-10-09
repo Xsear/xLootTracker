@@ -1314,36 +1314,37 @@ function UpdateTracker()
                 -- Create widget
                 local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
                 ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
-                --PLATE = HoloPlate.Create(ENTRY:GetChild('plate'))
-                --PLATE:SetColor(LIB_ITEMS.GetResourceQualityColor(item.quality))
-
 
                 ENTRY:GetChild('plate'):SetTag(item.itemTypeId)
 
+                --[[
                 ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
                     Debug.Table(args)
                     Debug.Log(args.widget:GetTag())
-                    TOOLTIP:DisplayInfo(Game.GetItemInfoByType(args.widget:GetTag()))
-                    TOOLTIP.GROUP:Show(true)
-                    ToolTip.Show(TOOLTIP.GROUP)
+
+
                 end);
                 ENTRY:GetChild('plate'):BindEvent("OnMouseLeave", function(args)
                     Debug.Table(args)
-                    TOOLTIP.GROUP:Show(false)
+
+
+                    --TOOLTIP.GROUP:Show(false)
                     ToolTip.Show(false)
                 end);
+                --]]
 
                 ENTRY:GetChild('plate'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
                 ENTRY:GetChild('plate'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                ENTRY:GetChild('itemIcon'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                ENTRY:GetChild('itemIcon'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                ENTRY:GetChild('item'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                ENTRY:GetChild('item'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
 
                 -- Icon
-                ENTRY:GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
+                ENTRY:GetChild('item'):GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
 
 
 
                 -- Left
+                --[[
                 -- Setup Buttons
                     -- Need
                     BUTTON1 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
@@ -1381,8 +1382,8 @@ function UpdateTracker()
                     BUTTON3:Bind(function() 
                             System.PlaySound('Play_UI_Beep_06')
                         end)
-
-
+                --]]
+                
                 -- Setup Assigned To text
                 if item.assignedTo == nil then
                     ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText('Not yet assigned')
