@@ -23,8 +23,6 @@ require './util/xSounds' -- Database of sounds
 
 -- Frames
 TRACKER = Component.GetFrame('Tracker')
-TOOLTIP = LIB_ITEMS.CreateToolTip(TRACKER)
-TOOLTIP.GROUP:Show(false)
 
 -- Constants
 csVersion = '0.77'
@@ -1456,12 +1454,12 @@ function itemPrefixShortener(itemName)
         ['Accord Prototype'] = 'A.P.',
     }
 
-    Debug.Table(prefixes)
+    --Debug.Table(prefixes)
 
     for key, prefix in pairs(prefixes) do
-        Debug.Log('Checking for '..key..' in '..itemName)
+        --Debug.Log('Checking for '..key..' in '..itemName)
         if string.find(itemName, key, 0, string.len(key)) then
-            Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
+            --Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
             itemName = prefix..string.sub(itemName, string.len(key) + 1)
             break
         end
@@ -2035,6 +2033,8 @@ end
 function Test()
 
     SendSystemMessage('Test')
+
+
 
     Debug.Log('test')
     Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
