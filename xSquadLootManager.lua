@@ -381,7 +381,7 @@ function OnLootCollected(args)
     end
 
     -- Is it loot that we care about?
-    if IsLootableItem(itemInfo) and (IsPastThreshold(args.quality) or Options['IdentifyAllLoot']) then
+    if IsLootableItem(itemInfo) then
 
         -- Todo: Check if we have assigned any items, if not just skip to Claimed ?
 
@@ -403,23 +403,20 @@ function OnLootCollected(args)
             -- If we found the item, we will return from this function within this block after firing the appropriate event function.
             if loot ~= nil then
 
-                -- If the item had not been assigned
-                if loot.assignedTo == nil then
-                    OnLootSnatched({lootedTo=args.lootedTo, item=loot})
+                -- If we care about this item, send a message
+                if (IsPastThreshold(args.quality)) then
+                    -- If the item had not been assigned
+                    if loot.assignedTo == nil then
+                        OnLootSnatched({lootedTo=args.lootedTo, item=loot})
 
-                    -- If we were rolling for this item, we should make sure the roll is cancelled
-                    if mCurrentlyRolling and mCurrentlyRolling.entityId == loot.entityId then
-                        RollCancel({item=loot})
+                    -- Else if the item was looted by the person it was assigned to
+                    elseif namecompare(loot.assignedTo, args.lootedTo) then
+                        OnLootReceived({lootedTo=args.lootedTo, item=loot})
+
+                    -- Else it was a ninja
+                    else
+                        OnLootStolen({lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot})
                     end
-
-
-                -- Else if the item was looted by the person it was assigned to
-                elseif namecompare(loot.assignedTo, args.lootedTo) then
-                    OnLootReceived({lootedTo=args.lootedTo, item=loot})
-
-                -- Else it was a ninja
-                else
-                    OnLootStolen({lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot})
                 end
 
                 -- End the function, we're done here.
@@ -430,7 +427,9 @@ function OnLootCollected(args)
         end
 
         -- No identified loot or this item wasn't identified
-        OnLootClaimed({lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
+        if (IsPastThreshold(args.quality) or Options['IdentifyAllLoot']) then
+            OnLootClaimed({lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
+        end
     end
 end
 
