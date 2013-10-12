@@ -15,13 +15,13 @@ PANEL =
 		RTGlobal	= false,
 		RT			= {width=1024, height=1024},
 		Widget		= [[<Group dimensions="dock:fill;" style="alpha:1.0">
-							<!--StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#FFFFFF; alpha:0.5;"/>-->
+							<!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#FFFFFF; alpha:0.5;"/>-->
 
-							<Border dimensions="top:20%;width:100%;height:100%;" class="ButtonBorder" style="padding:8; tint:#FF0000;" />
-							<Group name="content" dimensions="top:20%;width:98%;height:98%;" style="clip-children:true;">
+							<Group name="content" dimensions="top:20%;width:98%;height:80%;" style="clip-children:true;">
 
-								<StillArt name="contentBackground" dimensions="dock:fill" style="texture:colors; region:white; tint:#00000; alpha:0.8;"/>
-								
+								<!--<StillArt name="contentBackground" dimensions="dock:fill" style="texture:colors; region:white; tint:#00000; alpha:0.8;"/>-->
+								<Border name="contentBackground" dimensions="dock:fill" class="PanelBackDrop" style="tint:#00000;" />
+
 								
 								<Group name="Header" dimensions="width:100%;height:200;top:0">
 									
@@ -32,7 +32,7 @@ PANEL =
 
 								</Group>
 
-								<Group name="IconBar" dimensions="left:0; top:15%; width:100%; height:30%;" style="clip-children:true;">
+								<Group name="IconBar" dimensions="left:0; top:20%; width:100%; height:30%;" style="clip-children:true;">
 
 									<WebImage name="itemIcon"         dimensions="left:10%; width:120; height:120;" style="fixed-bounds:true; valign:center;">
 
@@ -48,7 +48,7 @@ PANEL =
 								</Group>
 
 
-								<Group name="ItemStats" dimensions="center-x:50%; top:35%; width:100%; height:40%;" style="clip-children:true;">
+								<Group name="ItemStats" dimensions="center-x:50%; top:40%; width:100%; height:40%;" style="clip-children:true;">
 									<!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#0000FF; alpha:0.5;"/>-->
 
 									<!--<StillArt dimensions="top:0; left:10%; width:40%; height:100%;" style="texture:colors; region:white; tint:#FF0000; alpha:0.5;"/>-->
@@ -64,6 +64,9 @@ PANEL =
 
 
 							</Group>
+
+							<!--<Border dimensions="top:20%-4;width:98%;bottom:78%+4;" class="PanelBackDrop" style="tint:#FFFFFF; alpha:0.5;"/>-->
+
 
 							<!--<Stillart name="Marker" dimensions="center-x:50%; center-y:80%; width:20%; height:20%;" style="texture:PanelTex; region:ArrowMarker1; tint:FF0000;"/>-->
 						</Group>]],
