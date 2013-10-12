@@ -121,7 +121,7 @@ end
 function OnSquadRosterUpdate()
     -- Remember previous number of squad members
     local previousRosterMemberCount = 0
-    if aSquadRoster ~= nil and not table.empty(aSquadRoster) then
+    if aSquadRoster ~= nil and not _table.empty(aSquadRoster) then
         previousRosterMemberCount = #aSquadRoster.members
     end
 
@@ -129,7 +129,7 @@ function OnSquadRosterUpdate()
     aSquadRoster = Squad.GetRoster()
 
     -- If in Squad
-    if aSquadRoster ~= nil and not table.empty(aSquadRoster) then
+    if aSquadRoster ~= nil and not _table.empty(aSquadRoster) then
         -- Update Squad status
         bInSquad = true
 
@@ -382,7 +382,7 @@ function OnLootCollected(args)
         -- Todo: Check if we have assigned any items, if not just skip to Claimed ?
 
         -- Okay, do we have any identified loot?
-        if not table.empty(aIdentifiedLoot) then
+        if not _table.empty(aIdentifiedLoot) then
 
             -- Todo: Determine or at least guess which entity it was that the looter interacted with in order to collect this item.
             -- Todo: Maybe I can exclude potential duplicates by checking if identified entities are still around
@@ -616,7 +616,7 @@ function CreatePanel(targetInfo, itemInfo)
     local rowHeight = 38 -- Fixme: magic number
     local row = 0
     local ENTRY = nil
-    if itemInfo.attributes ~= nil and not table.empty(itemInfo.attributes) then
+    if itemInfo.attributes ~= nil and not _table.empty(itemInfo.attributes) then
         for num, attribute in ipairs(itemInfo.attributes) do
             row = rowHeight * num
             ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
@@ -632,7 +632,7 @@ function CreatePanel(targetInfo, itemInfo)
     end
 
     -- Shitty solution to display interesting stats that are not attributes
-    if itemInfo.stats ~= nil and not table.empty(itemInfo.stats) then
+    if itemInfo.stats ~= nil and not _table.empty(itemInfo.stats) then
 
         if itemInfo.stats['damagePerSecond'] then
             row = row + rowHeight 
@@ -678,7 +678,7 @@ function CreatePanel(targetInfo, itemInfo)
     end
 
     -- Shitty way to hide stats if none shown
-    if (itemInfo.attributes == nil or table.empty(itemInfo.attributes)) and (itemInfo.stats == nil or table.empty(itemInfo.stats)) then
+    if (itemInfo.attributes == nil or _table.empty(itemInfo.attributes)) and (itemInfo.stats == nil or _table.empty(itemInfo.stats)) then
         RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(false)
     else
         RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(true)
@@ -813,7 +813,7 @@ end
     Whether or not an entity has been found and identified before
 ]]--
 function IsIdentified(entityId)
-    if aIdentifiedLoot ~= nil and not table.empty(aIdentifiedLoot) then
+    if aIdentifiedLoot ~= nil and not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
             if item.entityId == entityId then
                 return true
@@ -908,7 +908,7 @@ function DistributeItem()
     if not bIsSquadLeader or not Options['Enabled'] then return end
 
     -- Check that we have any loot at all
-    if not table.empty(aIdentifiedLoot) then
+    if not _table.empty(aIdentifiedLoot) then
 
         -- Get the first unrolled item from the list of identified loot
         local loot = nil
@@ -1286,7 +1286,7 @@ end
     This functionality should be replaced by the UI tracker but may come in handy for loot master mode.
 ]]--
 function ListUnAssigned()
-    if not table.empty(aIdentifiedLoot) then
+    if not _table.empty(aIdentifiedLoot) then
         vardump(aIdentifiedLoot)
         local unAssignedLoot = {}
 
@@ -1325,7 +1325,7 @@ function UpdateTracker()
 
         -- Update List of tracked items
         RemoveAllChildren(TRACKER:GetChild('List')) -- clear previous entries
-        if not table.empty(aIdentifiedLoot) then
+        if not _table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
 
                 -- Create widget
@@ -2032,7 +2032,7 @@ function ClearIdentified()
     RollCancel()
 
     -- YOLO
-    while not table.empty(aIdentifiedLoot) do
+    while not _table.empty(aIdentifiedLoot) do
         for num, item in ipairs(aIdentifiedLoot) do 
             RemoveIdentifiedItem(item)
         end
@@ -2151,14 +2151,14 @@ end
 
 
 -- Why the fucking fuck are these not standard functions
-function table.empty(table)
+function _table.empty(table)
     if next(table) == nil then
        return true
     end
     return false
 end
 
-function table.length(table)
+function _table.length(table)
   local count = 0
   for _ in pairs(table) do count = count + 1 end
   return count
