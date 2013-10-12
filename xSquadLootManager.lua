@@ -1464,9 +1464,11 @@ function itemPrefixShortener(itemName)
     -- Lua sorts these differently than inputed
     local prefixes = {
         ['Surplus'] = 'S.',
+        ['Recovered'] = 'R.',
         ['Chosen'] = 'C.',
         ['Accord'] = 'A.',
         ['Accord Prototype'] = 'A.P.',
+        ['Accord Elite'] = 'A.E.',
     }
 
     --Debug.Table(prefixes)
