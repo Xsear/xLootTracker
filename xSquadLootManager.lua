@@ -1365,7 +1365,6 @@ function UpdateTrackerTooltip(itemTypeId)
     tip_args.frame_color = itemInfo.rarity
     
     return TRACKER_TOOLTIP, tip_args
-
 end
 
 
@@ -1378,9 +1377,8 @@ function UpdateTracker()
     -- Only update and show tracker if enabled
     if Options['Tracker']['Enabled'] then
 
-        local cTrackerEntrySize = 30
+        local cTrackerEntrySize = 30 -- Fixme: Wat
         local cTrackerButtonSize = 25
-
        
         -- Hide tooltip if is currently being displayed
         if bToolTipActive then
@@ -1392,12 +1390,11 @@ function UpdateTracker()
         RemoveAllChildren(TRACKER:GetChild('List')) -- clear previous entries
         if not _table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
-
                 -- Create widget
                 local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
                 ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
 
-                ENTRY:GetChild('plate'):SetTag(item.itemTypeId)
+                ENTRY:GetChild('plate'):SetTag(tostring(item.itemTypeId))
                 
                 ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
                     TRACKER_TOOLTIP:Show(true)
