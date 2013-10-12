@@ -225,13 +225,18 @@ function OnEntityAvailable(args)
         -- Todo: Crystite from Daily Reward Crates is a known match for this.
         if IsLootableTarget(targetInfo) and targetInfo.quality == nil then Debug.Warn('Detected lootable entity without quality. Dumping args and targetinfo: ') vardump(args) vardump(targetInfo) end
 
-        -- Determine if it is a lootable entity
-        if IsLootableTarget(targetInfo) and IsLootableItem(itemInfo) then
+        -- Debug
+        if IsLootableTarget(targetInfo) then
             Debug.Log('OnEntityAvailable')
             Debug.Log('targetInfo')
             Debug.Table(targetInfo)
             Debug.Log('itemInfo')
             Debug.Table(itemInfo)
+        end
+
+        -- Determine if it is a lootable entity
+        if IsLootableTarget(targetInfo) and IsLootableItem(itemInfo) then
+
             -- Determine if it is something we want to track
             if (IsPastThreshold(targetInfo.quality) or Options['IdentifyAllLoot']) and not IsIdentified(args.entityId) then
                 Identify(args.entityId, targetInfo)
@@ -356,7 +361,7 @@ function OnLootCollected(args)
     -- Exit if addon is disabled
     if not Options['Enabled'] then return end
 
-    Debug.Log('OnLootCollected')
+    --Debug.Log('OnLootCollected')
     --Debug.Log('args')
     --Debug.Table(args)
 
@@ -364,9 +369,12 @@ function OnLootCollected(args)
 
     -- Get item info
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId)
-    Debug.Log('iteminfo')
-    Debug.Table(itemInfo)
 
+    if itemInfo.type == 'crafting_component' then
+        Debug.Log('OnLootCollected - Crafting Component')
+        Debug.Log('iteminfo')
+        Debug.Table(itemInfo)
+    end
 
     -- Is it loot that we care about?
     if IsLootableItem(itemInfo) and (IsPastThreshold(args.quality) or Options['IdentifyAllLoot']) then
