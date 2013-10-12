@@ -83,8 +83,10 @@ LANG = {
 
 
 	Subtab_Messages									=	"Messages",
-
 	Group_Messages 									=	"Messages",
+	Subtab_Messages_Distribution					= 	"Distribution"
+	Subtab_Messages_Communication					= 	"Communication"
+
 
 	Group_Messages_Generic_Label					=	"Generic",	
 	Generic_Prefix_Label							=	"Prefix",
