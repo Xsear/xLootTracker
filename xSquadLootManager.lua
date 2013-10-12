@@ -551,11 +551,15 @@ function CreatePanel(targetInfo, itemInfo)
     panel.pos:SetParam('Translation', Vec3.New(targetInfo.lootPos.x, targetInfo.lootPos.y, targetInfo.lootPos.z+2))
     panel.pos:SetParam('Rotation', {axis={x=0,y=0,z=1},angle=0})
 
+
     local RenderTarget = panel.panel_rt
+    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('content')
+    local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
+    local LOOT_PANEL_ICONBAR = LOOT_PANEL_CONTENT:GetChild('IconBar')
 
 
     -- Header
-    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):SetText(FixItemNameTag(targetInfo.name, targetInfo.quality))
+    LOOT_PANEL_HEADER:GetChild('itemName'):SetText(FixItemNameTag(targetInfo.name, targetInfo.quality))
 
     local qualityColor, headerBarColor, itemNameColor
     if targetInfo.quality then
@@ -576,13 +580,13 @@ function CreatePanel(targetInfo, itemInfo)
         itemNameColor = Options['Panels']['Color_ItemName_ColorMode_Custom'].tint
     end
 
-    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('headerBar'):SetParam("tint", headerBarColor)
+    LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
 
-    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):SetTextColor(itemNameColor)
+    LOOT_PANEL_HEADER:GetChild('itemName'):SetTextColor(itemNameColor)
 
 
     -- Iconbar
-    RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('itemIcon'):SetUrl(itemInfo.web_icon)
+    LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetUrl(itemInfo.web_icon)
 
    
     -- Battleframe icon
@@ -593,28 +597,25 @@ function CreatePanel(targetInfo, itemInfo)
             vardump(itemInfo)
             itemFrame = 'Assault' -- Fixme: properly solve this
         end
-        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
-        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):Show(true)
+        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
+        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
 
-        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
-        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
+        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
+        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
             ToolTip.Show(args.widget:GetTag())
         end);
-        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
+        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
             ToolTip.Show(false)
         end);
 
     else
-        RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('battleframeIcon'):Show(false)
+        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
     end
     
-
     -- Timer text
-    RenderTarget:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText('00:00')
+    LOOT_PANEL_ICONBAR:GetChild('timer'):SetText('00:00')
 
 
-    -- Marker
-    --RenderTarget:GetChild('Marker'):Show(false)
 
     -- Stat list (attributes data first)
     local rowHeight = 38 -- Fixme: magic number
@@ -714,7 +715,7 @@ function CreatePanel(targetInfo, itemInfo)
 --]]
 
     -- We spent all this time building, best make sure it shows
-    RenderTarget:GetChild('content'):Show(true)
+    LOOT_PANEL_CONTENT:Show(true)
 
 
     return panel
@@ -727,45 +728,46 @@ end
 function UpdatePanel(loot)
 
     local RenderTarget = loot.panel.panel_rt
-
+    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('content')
+    local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
 
     -- Overall mode
     if Options['Panels']['Mode'] == 'small' then
         -- Small mode display settings
-        RenderTarget:GetChild('content'):GetChild('contentBackground'):Show(false)
-        RenderTarget:GetChild('content'):GetChild('IconBar'):Show(false)
-        RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(false)
+        LOOT_PANEL_CONTENT:GetChild('contentBackground'):Show(false)
+        LOOT_PANEL_CONTENT:GetChild('IconBar'):Show(false)
+        LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(false)
 
     else
         -- Large/Normal mode display settings
-        RenderTarget:GetChild('content'):GetChild('contentBackground'):Show(true)
-        RenderTarget:GetChild('content'):GetChild('IconBar'):Show(true)
-        RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(true)
+        LOOT_PANEL_CONTENT:GetChild('contentBackground'):Show(true)
+        LOOT_PANEL_CONTENT:GetChild('IconBar'):Show(true)
+        LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(true)
 
         -- Asigned To text
         if Options['Panels']['Display_AssignedTo'] then
 
             -- Debug.Log(RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):GetTextDims()) -- To be used to detect when title wraps
             if loot.assignedTo == nil then
-                RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetText('Not yet assigned')
-                RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_nil'].tint)
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Not yet assigned')
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_nil'].tint)
 
                 if Options['Panels']['Display_AssignedTo_Hide_nil'] then
-                    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):Show(false)
+                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(false)
                 else
-                    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):Show(true)
+                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(true)
                 end
 
             elseif loot.assignedTo == true or loot.assignedTo == false then
-                RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetText('Free for all')
-                RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_free'].tint)
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Free for all')
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_free'].tint)
             else
-                RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetText('Assigned To: '..loot.assignedTo)
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Assigned To: '..loot.assignedTo)
 
                 if namecompare(loot.assignedTo, Player.GetInfo()) then
-                    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_player'].tint)
+                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_player'].tint)
                 else
-                    RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_other'].tint)
+                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_other'].tint)
                 end
 
             end
