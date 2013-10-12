@@ -20,13 +20,14 @@ require './lib/lib_LKObjects' -- 3d markers
 require './obj/panel/panel' -- 3d marker template
 require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
 require './util/xSounds' -- Database of sounds
+require './util/xItemFormatting' -- Awesome functions from lib_Items that weren't available for use. Used by tracker when generating tooltips.
 
 -- Frames
 TRACKER = Component.GetFrame('Tracker')
 TRACKER_TOOLTIP = TRACKER:GetChild('Tooltip')
 
 -- Constants
-csVersion = '0.81'
+csVersion = '0.84'
 ciSaveVersion = 0.67
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
@@ -1311,14 +1312,6 @@ function ListUnAssigned()
         SendSystemMessage('No Identified Loot to distribute')
     end
 end
-
-
-
-
-
-
-require "lib/lib_TextFormat";
-require "./util/xItemFormatting";
 
 function UpdateTrackerTooltip(itemTypeId)
     -- Get info
