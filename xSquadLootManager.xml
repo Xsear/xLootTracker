@@ -168,7 +168,19 @@
                         <!-- Tracker_List_Entry:ies go in here -->
                     </ListLayout>
 
-                
+                    <ListLayout name="Tooltip" dimensions="width:400; height:400; top:0; left:0" style="visible:false">
+                    <Group name="header" dimensions="left:0; top:0; width:100%; height:50">
+                        <WebImage name="icon" dimensions="left:0; top:0; height:50; width:50;"/>
+                        <Text name="name" dimensions="left:50; right:100%; height:100%" style="font:Demi_15; halign:left; valign:top; wrap:true;"/>
+                        <Text name="subname" dimensions="left:50; right:100%; height:100%" style="font:Demi_13; halign:left; valign:bottom; wrap:true;"/>
+                    </Group>
+                    <Text name="yields" dimensions="dock:fill" style="font:Demi_11; halign:left; valign:center"/>
+                    <StillArt dimensions="left:0; right:100%; height:1; top:100" style="texture:colors; region:white; alpha:0.6"/>
+                    <Text name="requirements" dimensions="dock:fill" style="font:Demi_11; leading-mult:1.5; halign:left; valign:center"/>
+                    <StillArt dimensions="left:0; right:100%; height:1; top:100" style="texture:colors; region:white; alpha:0.6"/>
+                    <Text name="desc" dimensions="top:45; bottom:100%; width:100%" style="font:Demi_10; leading-mult:1.5; alpha:0.6; halign:left; valign:center; wrap:true;"/>
+                </ListLayout>
+
             </Children>
         </PanelFrame>
 

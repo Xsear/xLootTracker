@@ -23,6 +23,7 @@ require './util/xSounds' -- Database of sounds
 
 -- Frames
 TRACKER = Component.GetFrame('Tracker')
+TRACKER_TOOLTIP = TRACKER:GetChild('Tooltip')
 
 -- Constants
 csVersion = '0.81'
@@ -41,6 +42,8 @@ local bIsSquadLeader = false -- Whether we are currently the squad leader or not
 
 local bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudShow
 local bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
+
+local bToolTipActive = false -- Whether addon is currently utilizing the ToolTip. Updated manually within the addon when ToolTip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling ToolTip.Show(false) could interfere with other addons, so I use this addon to keep track of when I've called it. As long as no other addon/ui element randomly calls ToolTip.Show (without mine being unfocused) it should serve its purpose.
 
 local mCurrentlyRolling = false -- false if not rolling, table otherwise, all the wtfs you want
 local aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadroster with additional fields like rolltype, rollvalue etc. Merge this with mCurrentlyRolling sometime for awesomeness
@@ -1311,6 +1314,66 @@ end
 
 
 
+
+
+
+require "lib/lib_TextFormat";
+require "./util/xItemFormatting";
+
+function UpdateTrackerTooltip(itemTypeId)
+    -- Get info
+    local itemInfo = Game.GetItemInfoByType(itemTypeId)
+
+    -- Refs
+    local TRACKER_TOOLTIP_HEADER = TRACKER_TOOLTIP:GetChild("header")
+    local TRACKER_TOOLTIP_ICON = TRACKER_TOOLTIP:GetChild("header.icon")
+    local TRACKER_TOOLTIP_NAME = TRACKER_TOOLTIP:GetChild("header.name")
+    local TRACKER_TOOLTIP_SUBNAME = TRACKER_TOOLTIP:GetChild("header.subname")
+    local TRACKER_TOOLTIP_YIELDS = TRACKER_TOOLTIP:GetChild("yields")
+    local TRACKER_TOOLTIP_REQS = TRACKER_TOOLTIP:GetChild("requirements")
+    local TRACKER_TOOLTIP_DESC= TRACKER_TOOLTIP:GetChild("desc")
+
+
+    -- Icon
+    if itemInfo.web_icon then
+        TRACKER_TOOLTIP_ICON:SetUrl(itemInfo.web_icon)
+        TRACKER_TOOLTIP_ICON:Show(true)
+    else
+        TRACKER_TOOLTIP_ICON:Show(false)
+    end
+    
+    -- Name
+    TRACKER_TOOLTIP_NAME:SetText(FixItemNameTag(itemInfo.name, itemInfo.quality))
+    TRACKER_TOOLTIP_NAME:SetTextColor(itemInfo.rarity)
+
+    -- Stats
+    xItemFormatting.PrintLines( xItemFormatting.getStatLines(itemInfo), TRACKER_TOOLTIP_YIELDS)
+
+    -- Requirements
+    xItemFormatting.PrintLines( xItemFormatting.getRequirementLines(itemInfo), TRACKER_TOOLTIP_REQS)
+
+    -- Description
+    TRACKER_TOOLTIP_DESC:SetText(itemInfo.description)
+
+    -- Fix text size
+    local function AutosizeText(TEXT)
+        TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
+    end
+    
+    AutosizeText(TRACKER_TOOLTIP_YIELDS)
+    AutosizeText(TRACKER_TOOLTIP_REQS)
+    AutosizeText(TRACKER_TOOLTIP_DESC)
+
+    -- Return ToolTip
+    local tip_args = {height=0}
+    tip_args.height = TRACKER_TOOLTIP:GetLength()
+    tip_args.frame_color = itemInfo.rarity
+    
+    return TRACKER_TOOLTIP, tip_args
+
+end
+
+
 --[[
     UpdateTracker()
     Updates the UI tracker view.
@@ -1323,7 +1386,14 @@ function UpdateTracker()
         local cTrackerEntrySize = 30
         local cTrackerButtonSize = 25
 
-        -- Update List of tracked items
+       
+        -- Hide tooltip if is currently being displayed
+        if bToolTipActive then
+            ToolTip.Show(false)
+            TRACKER_TOOLTIP:Show(false) -- No need to display tooltip info now.
+        end
+
+         -- Update List of tracked items
         RemoveAllChildren(TRACKER:GetChild('List')) -- clear previous entries
         if not _table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
@@ -1333,22 +1403,19 @@ function UpdateTracker()
                 ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
 
                 ENTRY:GetChild('plate'):SetTag(item.itemTypeId)
-
-                --[[
+                
                 ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
-                    Debug.Table(args)
-                    Debug.Log(args.widget:GetTag())
-
+                    TRACKER_TOOLTIP:Show(true)
+                    ToolTip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
+                    bToolTipActive = true
 
                 end);
                 ENTRY:GetChild('plate'):BindEvent("OnMouseLeave", function(args)
-                    Debug.Table(args)
-
-
-                    --TOOLTIP.GROUP:Show(false)
+                    TRACKER_TOOLTIP:Show(false)
                     ToolTip.Show(false)
+                    bToolTipActive = false
                 end);
-                --]]
+                
 
                 ENTRY:GetChild('plate'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
                 ENTRY:GetChild('plate'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
@@ -1446,6 +1513,11 @@ function UpdateTracker()
             --Debug.Log('No, hide the tracker')
             -- No, hide the tracker
             TRACKER:Show(false)
+
+            -- Ensure no tooltip is displayed
+            TRACKER_TOOLTIP:Show(false)
+            ToolTip.Show(false)
+            bToolTipActive = false
         end
 
     -- Tracker not enabled, so do nothing but make sure it's hidden.
@@ -1453,6 +1525,11 @@ function UpdateTracker()
         --Debug.Log('Tracker not enabled, hide')
         -- Hide tracker
         TRACKER:Show(false)
+
+        -- Ensure no tooltip is displayed
+        TRACKER_TOOLTIP:Show(false)
+        ToolTip.Show(false)
+        bToolTipActive = false
     end
 end
 
