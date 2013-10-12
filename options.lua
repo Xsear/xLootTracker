@@ -655,7 +655,25 @@ function SetupInterfaceOptions()
 
     InterfaceOptions.StopGroup()
 
-    
+
+    -- Detection Settings
+    InterfaceOptions.StartGroup({
+        id='Group_Detection_General',
+        label=Lokii.GetString('Group_Detection_General_Label'),
+        tooltip=Lokii.GetString('Group_Detection_General_ToolTip'),
+        subtab={Lokii.GetString('Subtab_Detection')}
+    })
+        InterfaceOptions.AddCheckBox({
+            id = 'IdentifyAllLoot',
+            default = true,
+            label = Lokii.GetString('IdentifyAllLoot_Label'),
+            tooltip = Lokii.GetString('IdentifyAllLoot_ToolTip'),
+            subtab = {Lokii.GetString('Subtab_Detection')}
+        })
+
+    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Detection')}})
+
+
     -- Manager General Settings
     InterfaceOptions.StartGroup({
         id='Group_Loot_General',
@@ -792,14 +810,6 @@ function SetupInterfaceOptions()
             subtab={Lokii.GetString('Subtab_LootingRules')}
         })
 
-        InterfaceOptions.AddCheckBox({
-            id = 'IdentifyAllLoot',
-            default = true,
-            label = Lokii.GetString('IdentifyAllLoot_Label'),
-            tooltip = Lokii.GetString('IdentifyAllLoot_ToolTip'),
-            subtab = {Lokii.GetString('Subtab_LootingRules')}
-        })
-
     InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_LootingRules')}})
 
 
@@ -889,57 +899,17 @@ function SetupInterfaceOptions()
             label=Lokii.GetString('NoSquadMessages_Label'),
             tooltip=Lokii.GetString('NoSquadMessages_ToolTip'),
             default=Options['NoSquadMessages'],
+            subtab={Lokii.GetString('Subtab_Messages')}
         })
 
         InterfaceOptions.AddCheckBox({id='NoSystemMessages',
             label=Lokii.GetString('NoSystemMessages_Label'),
             tooltip=Lokii.GetString('NoSystemMessages_ToolTip'),
             default=Options['NoSystemMessages'],
+            subtab={Lokii.GetString('Subtab_Messages')}
         })
 
     InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnDistributeItem_Enabled',
-        default=Options['Messages']['OnDistributeItem_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnDistributeItem_Enabled_Label'),
-        tooltip=Lokii.GetString('OnDistributeItem_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnDistributeItem',
-            default=Options['Messages']['MessageSquad_OnDistributeItem'],
-            label=Lokii.GetString('MessageSquad_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnDistributeItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnDistributeItem',
-            label=Lokii.GetString('MessageFormatSquad_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnDistributeItem_ToolTip'),
-            default=Options['Messages']['MessageFormatSquad_OnDistributeItem'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({id='MessageSystem_OnDistributeItem',
-            default=Options['Messages']['MessageSystem_OnDistributeItem'],
-            label=Lokii.GetString('MessageSystem_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnDistributeItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({id='MessageFormatSystem_OnDistributeItem',
-            default=Options['Messages']['MessageFormatSystem_OnDistributeItem'],
-            label=Lokii.GetString('MessageFormatSystem_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnDistributeItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution'), Lokii.GetString('Subtab_Messages_Distribution')}})
 
 
     InterfaceOptions.StartGroup({
@@ -985,138 +955,6 @@ function SetupInterfaceOptions()
 
     InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
 
-
-    InterfaceOptions.StartGroup({
-        id='OnRolls_Enabled',
-        default=Options['Messages']['OnRolls_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnRolls_Enabled_Label'),
-        tooltip=Lokii.GetString('OnRolls_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnRolls',
-            default=Options['Messages']['MessageSquad_OnRolls'],
-            label=Lokii.GetString('MessageSquad_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnRolls',
-            label=Lokii.GetString('MessageFormatSquad_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSquad_OnRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnRolls',
-            default=Options['Messages']['MessageSystem_OnRolls'],
-            label=Lokii.GetString('MessageSystem_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnRolls',
-            label=Lokii.GetString('MessageFormatSystem_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSystem_OnRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnAcceptingRolls_Enabled',
-        default=Options['Messages']['OnAcceptingRolls_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnAcceptingRolls_Enabled_Label'),
-        tooltip=Lokii.GetString('OnAcceptingRolls_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnAcceptingRolls',
-            default=Options['Messages']['MessageSquad_OnAcceptingRolls'],
-            label=Lokii.GetString('MessageSquad_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnAcceptingRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnAcceptingRolls',
-            label=Lokii.GetString('MessageFormatSquad_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnAcceptingRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSquad_OnAcceptingRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnAcceptingRolls',
-            default=Options['Messages']['MessageSystem_OnRolls'],
-            label=Lokii.GetString('MessageSystem_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnAcceptingRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnAcceptingRolls',
-            label=Lokii.GetString('MessageFormatSystem_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnAcceptingRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSystem_OnAcceptingRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnAssignItem_Enabled',
-        default=Options['Messages']['OnAssignItem_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnAssignItem_Enabled_Label'),
-        tooltip=Lokii.GetString('OnAssignItem_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnAssignItem',
-            default=Options['Messages']['MessageSquad_OnAssignItem'],
-            label=Lokii.GetString('MessageSquad_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnAssignItem',
-            default=Options['Messages']['MessageFormatSquad_OnAssignItem'],
-            label=Lokii.GetString('MessageFormatSquad_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnAssignItem',
-            default=Options['Messages']['MessageSystem_OnAssignItem'],
-            label=Lokii.GetString('MessageSystem_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnAssignItem',
-            default=Options['Messages']['MessageFormatSystem_OnAssignItem'],
-            label=Lokii.GetString('MessageFormatSystem_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
 
 
     InterfaceOptions.StartGroup({
@@ -1336,6 +1174,181 @@ function SetupInterfaceOptions()
         })
 
     InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
+
+
+    InterfaceOptions.StartGroup({
+        id='OnDistributeItem_Enabled',
+        default=Options['Messages']['OnDistributeItem_Enabled'],
+        checkbox=true,
+        label=Lokii.GetString('OnDistributeItem_Enabled_Label'),
+        tooltip=Lokii.GetString('OnDistributeItem_Enabled_ToolTip'),
+        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSquad_OnDistributeItem',
+            default=Options['Messages']['MessageSquad_OnDistributeItem'],
+            label=Lokii.GetString('MessageSquad_OnDistributeItem_Label'),
+            tooltip=Lokii.GetString('MessageSquad_OnDistributeItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSquad_OnDistributeItem',
+            label=Lokii.GetString('MessageFormatSquad_OnDistributeItem_Label'),
+            tooltip=Lokii.GetString('MessageFormatSquad_OnDistributeItem_ToolTip'),
+            default=Options['Messages']['MessageFormatSquad_OnDistributeItem'],
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddCheckBox({id='MessageSystem_OnDistributeItem',
+            default=Options['Messages']['MessageSystem_OnDistributeItem'],
+            label=Lokii.GetString('MessageSystem_OnDistributeItem_Label'),
+            tooltip=Lokii.GetString('MessageSystem_OnDistributeItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({id='MessageFormatSystem_OnDistributeItem',
+            default=Options['Messages']['MessageFormatSystem_OnDistributeItem'],
+            label=Lokii.GetString('MessageFormatSystem_OnDistributeItem_Label'),
+            tooltip=Lokii.GetString('MessageFormatSystem_OnDistributeItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
+
+    InterfaceOptions.StartGroup({
+        id='OnAcceptingRolls_Enabled',
+        default=Options['Messages']['OnAcceptingRolls_Enabled'],
+        checkbox=true,
+        label=Lokii.GetString('OnAcceptingRolls_Enabled_Label'),
+        tooltip=Lokii.GetString('OnAcceptingRolls_Enabled_ToolTip'),
+        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSquad_OnAcceptingRolls',
+            default=Options['Messages']['MessageSquad_OnAcceptingRolls'],
+            label=Lokii.GetString('MessageSquad_OnAcceptingRolls_Label'),
+            tooltip=Lokii.GetString('MessageSquad_OnAcceptingRolls_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSquad_OnAcceptingRolls',
+            label=Lokii.GetString('MessageFormatSquad_OnAcceptingRolls_Label'),
+            tooltip=Lokii.GetString('MessageFormatSquad_OnAcceptingRolls_ToolTip'),
+            default=Options['Messages']['MessageFormatSquad_OnAcceptingRolls'],
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSystem_OnAcceptingRolls',
+            default=Options['Messages']['MessageSystem_OnRolls'],
+            label=Lokii.GetString('MessageSystem_OnAcceptingRolls_Label'),
+            tooltip=Lokii.GetString('MessageSystem_OnAcceptingRolls_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSystem_OnAcceptingRolls',
+            label=Lokii.GetString('MessageFormatSystem_OnAcceptingRolls_Label'),
+            tooltip=Lokii.GetString('MessageFormatSystem_OnAcceptingRolls_ToolTip'),
+            default=Options['Messages']['MessageFormatSystem_OnAcceptingRolls'],
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
+
+
+    InterfaceOptions.StartGroup({
+        id='OnRolls_Enabled',
+        default=Options['Messages']['OnRolls_Enabled'],
+        checkbox=true,
+        label=Lokii.GetString('OnRolls_Enabled_Label'),
+        tooltip=Lokii.GetString('OnRolls_Enabled_ToolTip'),
+        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+    })
+
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSquad_OnRolls',
+            default=Options['Messages']['MessageSquad_OnRolls'],
+            label=Lokii.GetString('MessageSquad_OnRolls_Label'),
+            tooltip=Lokii.GetString('MessageSquad_OnRolls_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSquad_OnRolls',
+            label=Lokii.GetString('MessageFormatSquad_OnRolls_Label'),
+            tooltip=Lokii.GetString('MessageFormatSquad_OnRolls_ToolTip'),
+            default=Options['Messages']['MessageFormatSquad_OnRolls'],
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSystem_OnRolls',
+            default=Options['Messages']['MessageSystem_OnRolls'],
+            label=Lokii.GetString('MessageSystem_OnRolls_Label'),
+            tooltip=Lokii.GetString('MessageSystem_OnRolls_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSystem_OnRolls',
+            label=Lokii.GetString('MessageFormatSystem_OnRolls_Label'),
+            tooltip=Lokii.GetString('MessageFormatSystem_OnRolls_ToolTip'),
+            default=Options['Messages']['MessageFormatSystem_OnRolls'],
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
+
+
+    InterfaceOptions.StartGroup({
+        id='OnAssignItem_Enabled',
+        default=Options['Messages']['OnAssignItem_Enabled'],
+        checkbox=true,
+        label=Lokii.GetString('OnAssignItem_Enabled_Label'),
+        tooltip=Lokii.GetString('OnAssignItem_Enabled_ToolTip'),
+        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSquad_OnAssignItem',
+            default=Options['Messages']['MessageSquad_OnAssignItem'],
+            label=Lokii.GetString('MessageSquad_OnAssignItem_Label'),
+            tooltip=Lokii.GetString('MessageSquad_OnAssignItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSquad_OnAssignItem',
+            default=Options['Messages']['MessageFormatSquad_OnAssignItem'],
+            label=Lokii.GetString('MessageFormatSquad_OnAssignItem_Label'),
+            tooltip=Lokii.GetString('MessageFormatSquad_OnAssignItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id='MessageSystem_OnAssignItem',
+            default=Options['Messages']['MessageSystem_OnAssignItem'],
+            label=Lokii.GetString('MessageSystem_OnAssignItem_Label'),
+            tooltip=Lokii.GetString('MessageSystem_OnAssignItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+        InterfaceOptions.AddTextInput({
+            id='MessageFormatSystem_OnAssignItem',
+            default=Options['Messages']['MessageFormatSystem_OnAssignItem'],
+            label=Lokii.GetString('MessageFormatSystem_OnAssignItem_Label'),
+            tooltip=Lokii.GetString('MessageFormatSystem_OnAssignItem_ToolTip'),
+            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
+        })
+
+    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
+
 
 
     InterfaceOptions.StartGroup({

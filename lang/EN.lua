@@ -33,7 +33,13 @@ LANG = {
 	Debug_FakeOnSquadRoster_ToolTip					=	"If not in a squad but override squad leader, put fake squad members in the roster",
 
 
-	Subtab_LootingRules								=	"Manager",
+	Subtab_Detection 								=   "Detection",
+	Group_Detection_General_Label					=   "Detection",
+
+	IdentifyAllLoot_Label							=	"Track all Loot",
+	IdentifyAllLoot_ToolTip							=	"Check this if you want to see loot panels and waypoints for all loot. When unchecked, the addon will only track loot over the quality threshold.",
+
+	Subtab_LootingRules								=	"Distribution",
 
 	Group_Loot_General_Label						=   "General",
 	LootMode_Label									=	"Ruleset",
@@ -60,8 +66,6 @@ LANG = {
 	AutoDistribute_Label							=   "Auto distribute",
 	AutoDistribute_ToolTip							=   "If checked the addon will automatically distribute/roll items according to the current ruleset as soon as they are identified",
 
-	IdentifyAllLoot_Label							=	"Track all Loot",
-	IdentifyAllLoot_ToolTip							=	"Check this if you want to see loot panels and waypoints for all loot. When unchecked, the addon will only track loot over the quality threshold.",
 
 	Group_Loot_Rolls_Label							=	"Rolls",
 	RollMin_Label									=	"Roll range minimum",
@@ -85,6 +89,7 @@ LANG = {
 	Subtab_Messages									=	"Messages",
 	Group_Messages 									=	"Messages",
 	Subtab_Messages_Distribution					= 	"Distribution",
+	Subtab_Messages_Detection						=   "Detection",
 	Subtab_Messages_Communication					= 	"Communication",
 
 
