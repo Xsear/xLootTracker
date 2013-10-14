@@ -453,7 +453,8 @@ function IsLootableItem(itemInfo)
     -- Verify that the looted item is of a type that we care about
     if  itemInfo.type == 'frame_module' or
         itemInfo.type == 'ability_module' or
-        itemInfo.type == 'weapon' then
+        itemInfo.type == 'weapon' or
+        itemInfo.type == 'crafting_component' then
         return true
     end
 
