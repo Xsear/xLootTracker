@@ -224,8 +224,8 @@ function OnEntityAvailable(args)
         if IsLootableTarget(targetInfo) and targetInfo.quality == nil then Debug.Warn('Detected lootable entity without quality. Dumping args and targetinfo: ') vardump(args) vardump(targetInfo) end
 
         -- Debug
-        if IsLootableTarget(targetInfo) then
-            Debug.Log('OnEntityAvailable')
+        if Options['Debug']['LogLootableTargets'] and IsLootableTarget(targetInfo) then
+            Debug.Log('Lootable Target Available')
             Debug.Log('targetInfo')
             Debug.Table(targetInfo)
             Debug.Log('itemInfo')

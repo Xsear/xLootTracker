@@ -862,6 +862,8 @@ Options = {
     ['Debug'] = {
         ['Enabled'] = false,
         ['FakeOnSquadRoster'] = false,
+        ['LogLootableTargets'] = false, 
+        ['LogLootableCollection'] = false,
     },
 }
 
@@ -1174,6 +1176,20 @@ function BuildInterfaceOptions_Front()
             default = Options['Debug']['FakeOnSquadRoster'],
             label   = Lokii.GetString('Debug_FakeOnSquadRoster_Label'),
             tooltip = Lokii.GetString('Debug_FakeOnSquadRoster_ToolTip'),
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_LogLootableTargets',
+            default = Options['Debug']['LogLootableTargets'],
+            label   = Lokii.GetString('Debug_LogLootableTargets_Label'),
+            tooltip = Lokii.GetString('Debug_LogLootableTargets_ToolTip'),
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_LogLootableCollection',
+            default = Options['Debug']['LogLootableCollection'],
+            label   = Lokii.GetString('Debug_LogLootableCollection_Label'),
+            tooltip = Lokii.GetString('Debug_LogLootableCollection_ToolTip'),
         })
 
     InterfaceOptions.StopGroup()
