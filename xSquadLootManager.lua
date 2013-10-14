@@ -359,10 +359,6 @@ function OnLootCollected(args)
     -- Exit if addon is disabled
     if not Options['Core']['Enabled'] then return end
 
-    --Debug.Log('OnLootCollected')
-    --Debug.Log('args')
-    --Debug.Table(args)
-
     if not args.itemTypeId then Debug.Warn('OnLootCollected args.itemTypeId is nil') return end
 
     -- Get item info
@@ -376,6 +372,14 @@ function OnLootCollected(args)
 
     -- Is it loot that we care about?
     if IsLootableItem(itemInfo) then
+
+        -- Debug Log
+        if Options['Debug']['LogLootableCollection'] then
+            Debug.Log('OnLootCollected')
+            Debug.Log('iteminfo')
+            Debug.Table(itemInfo)
+        end
+
 
         -- Todo: Check if we have assigned any items, if not just skip to Claimed ?
 
