@@ -483,8 +483,8 @@ end
     Determine whether player is the current squad leader or not
 ]]--
 function IsSquadLeader(localPlayer)
-    if aSquadRoster == nil then OnSquadRosterUpdate() end -- If we're doomed from the start, try to resolve
-    if aSquadRoster ~= nil then -- Fixme: table is never nil?
+    if aSquadRoster.leader == nil then OnSquadRosterUpdate() end -- If we're doomed from the start, try to resolve
+    if aSquadRoster.leader ~= nil then
         if namecompare(localPlayer, aSquadRoster.leader) then
             return true
         else
