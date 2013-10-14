@@ -61,17 +61,19 @@ require './options' -- Everything options related
     Sets up Interace options, slash commands and prints a version message
 ]]--
 function OnComponentLoad()
-
     -- Setup Lokii
     Lokii.AddLang("en", "./lang/EN");
     Lokii.SetBaseLang("en");
     Lokii.SetToLocale();
 
+     -- Setup Debug
+    Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
+
     -- Setup Interface Options
     SetupInterfaceOptions()
 
     -- Best make sure option visibility is set up quickly
-    UpdateOptionVisibility()
+    SetOptionsAvailability()
 
     -- Best make sure to update the squad roster so we set the var
     OnSquadRosterUpdate()
@@ -85,11 +87,9 @@ function OnComponentLoad()
     -- Best make sure the tracker is set up
     UpdateTracker()
 
-    -- Setup Debug
-    Debug.EnableLogging(Component.GetSetting('DebugMode'))
-
+   
     -- Print version message
-    if Component.GetSetting('VersionMessage') then
+    if Component.GetSetting('Core_VersionMessage') then
         SendSystemMessage('Xsear\'s Squad Loot Manager v'..csVersion..' Loaded')
     end
 end
@@ -138,7 +138,7 @@ function OnSquadRosterUpdate()
         bInSquad = true
 
         -- Update Squad Leader status
-        if Options['AlwaysSquadLeader'] then
+        if Options['Distribution']['AlwaysSquadLeader'] then
             bIsSquadLeader = true
         else
             bIsSquadLeader = IsSquadLeader(Player.GetInfo())
@@ -165,7 +165,7 @@ function OnSquadRosterUpdate()
         end
 
         -- Update Squad leader status
-        if Options['AlwaysSquadLeader'] then
+        if Options['Distribution']['AlwaysSquadLeader'] then
             bIsSquadLeader = true
         else
             bIsSquadLeader = false
@@ -187,8 +187,6 @@ function OnSlash(args)
         SendSystemMessage('Command list')
         SendSystemMessage('/slm [help|?]: Version message and command list')
         SendSystemMessage('/slm <enable|disable|toggle> : Turn addon on or off')
-        SendSystemMessage('/slm mode : Outputs current ruleset')
-        SendSystemMessage('/slm <dice|round-robin|need-before-greed|random> : Set new ruleset')
         SendSystemMessage('/slm <distribute|roll> : Distribute first rollable item')
         SendSystemMessage('/slm list : List rollable items')
         SendSystemMessage('/slm clear : Clears list of identified items')
@@ -200,10 +198,6 @@ function OnSlash(args)
         ClearIdentified()
     elseif args.text == 'enable' or args.text == 'disable' or args.text == 'toggle' then
         ToggleEnabled(args.text)
-    elseif args.text == 'mode' then  
-        SendSystemMessage('Current Mode: '..Options['Manager']['LootMode'])
-    elseif args.text == 'dice' or args.text == 'round-robin' or args.text == 'need-before-greed' or args.text == 'random' then
-        OnOptionChange({id='LootMode', val=args.text})
     elseif args.text == 'distribute' or args.text == 'roll' then
         DistributeItem()
     elseif args.text == 'list' then
@@ -218,7 +212,7 @@ end
 ]]--
 function OnEntityAvailable(args)
     -- Exit if addon is disabled
-    if not Options['Enabled'] then return end
+    if not Options['Core']['Enabled'] then return end
 
     -- Filter away any entities that are not loot
     if args.type == 'loot' then
@@ -256,7 +250,7 @@ end
     Todo: Move logic into separate functions
 ]]--
 function OnChatMessage(args)
-    if not Options['Enabled'] then return end
+    if not Options['Core']['Enabled'] then return end
     -- Filter for only Squad messages
     if args.channel == 'squad' then
 
@@ -363,7 +357,7 @@ end
 ]]--
 function OnLootCollected(args)
     -- Exit if addon is disabled
-    if not Options['Enabled'] then return end
+    if not Options['Core']['Enabled'] then return end
 
     --Debug.Log('OnLootCollected')
     --Debug.Log('args')
@@ -471,11 +465,11 @@ end
 ]]--
 function IsPastThreshold(quality)
     if quality == nil then Debug.Warn('IsPastThreshold called with nil quality') return false end
-    if     Options['Manager']['LootThreshold'] == 'any'    then return true
-    elseif Options['Manager']['LootThreshold'] == 'green'  and quality > 300   then return true
-    elseif Options['Manager']['LootThreshold'] == 'blue'   and quality > 700   then return true
-    elseif Options['Manager']['LootThreshold'] == 'purple' and quality > 900   then return true
-    elseif Options['Manager']['LootThreshold'] == 'orange' and quality == 1000 then return true end
+    if     Options['Distribution']['LootThreshold'] == 'any'    then return true
+    elseif Options['Distribution']['LootThreshold'] == 'green'  and quality > 300   then return true
+    elseif Options['Distribution']['LootThreshold'] == 'blue'   and quality > 700   then return true
+    elseif Options['Distribution']['LootThreshold'] == 'purple' and quality > 900   then return true
+    elseif Options['Distribution']['LootThreshold'] == 'orange' and quality == 1000 then return true end
     return false
 end
 
@@ -567,16 +561,16 @@ function CreatePanel(targetInfo, itemInfo)
         qualityColor = LIB_ITEMS.GetItemColor(itemInfo)
     end
 
-    if Options['Panels']['HeaderBar_ColorMode'] == 'item-quality' then
+    if Options['Panels']['ColorMode']['HeaderBar'] == ColorModes.MatchQuality then
         headerBarColor = qualityColor
-    else
-        headerBarColor = Options['Panels']['Color_HeaderBar_ColorMode_Custom'].tint
+    else -- ColorMode.Custom
+        headerBarColor = Options['Panels']['ColorMode']['HeaderBarCustomValue'].tint
     end
 
-    if Options['Panels']['ItemName_ColorMode'] == 'item-quality' then
+    if Options['Panels']['ColorMode']['ItemName'] == ColorModes.MatchQuality then
         itemNameColor = qualityColor
-    else
-        itemNameColor = Options['Panels']['Color_ItemName_ColorMode_Custom'].tint
+    else -- ColorMode.Custom
+        itemNameColor = Options['Panels']['ColorMode']['ItemNameCustomValue'].tint
     end
 
     LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
@@ -731,27 +725,27 @@ function UpdatePanel(loot)
     local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
 
     -- Overall mode
-    if Options['Panels']['Mode'] == 'small' then
+    if Options['Panels']['Mode'] == LootPanelModes.Small then
         -- Small mode display settings
         LOOT_PANEL_CONTENT:GetChild('contentBackground'):Show(false)
         LOOT_PANEL_CONTENT:GetChild('IconBar'):Show(false)
         LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(false)
 
-    else
+    else -- LootPanelModes.Standard
         -- Large/Normal mode display settings
         LOOT_PANEL_CONTENT:GetChild('contentBackground'):Show(true)
         LOOT_PANEL_CONTENT:GetChild('IconBar'):Show(true)
         LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(true)
 
         -- Asigned To text
-        if Options['Panels']['Display_AssignedTo'] then
+        if Options['Panels']['Display']['AssignedTo'] then
 
             -- Debug.Log(RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):GetTextDims()) -- To be used to detect when title wraps
             if loot.assignedTo == nil then
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Not yet assigned')
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_nil'].tint)
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Nil'].tint)
 
-                if Options['Panels']['Display_AssignedTo_Hide_nil'] then
+                if Options['Panels']['Display']['AssignedToHideNil'] then
                     LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(false)
                 else
                     LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(true)
@@ -759,14 +753,14 @@ function UpdatePanel(loot)
 
             elseif loot.assignedTo == true or loot.assignedTo == false then
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Free for all')
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_free'].tint)
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Free'].tint)
             else
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Assigned To: '..loot.assignedTo)
 
                 if namecompare(loot.assignedTo, Player.GetInfo()) then
-                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_player'].tint)
+                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Player'].tint)
                 else
-                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color_AssignedTo_other'].tint)
+                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Other'].tint)
                 end
 
             end
@@ -910,7 +904,7 @@ end
 ]]--
 function DistributeItem()
     -- Check that we are allowed to distribute loot
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Check that we have any loot at all
     if not _table.empty(aIdentifiedLoot) then
@@ -930,14 +924,14 @@ function DistributeItem()
             local weightedRoster = GetEntitled(loot)
 
             -- Random looting mode
-            if Options['Manager']['LootMode'] == 'random' then
+            if Options['Distribution']['LootMode'] == 'random' then
                 local winner = weightedRoster[math.random(#weightedRoster)].name
 
                 OnDistributeItem({item=loot})
                 AssignItem(loot.entityId, winner)
 
             -- dice looting mode
-            elseif Options['Manager']['LootMode'] == 'dice' then
+            elseif Options['Distribution']['LootMode'] == 'dice' then
                 local highest = nil
                 local winner = ''
                 local rolls = {}
@@ -945,7 +939,7 @@ function DistributeItem()
                 for num, member in ipairs(weightedRoster) do
 
                     -- Calc roll
-                    roll = math.random(Options['Manager']['RollMin'], Options['Manager']['RollMax'])
+                    roll = math.random(Options['Distribution']['RollMin'], Options['Distribution']['RollMax'])
 
                     -- Determine if highest roll
                     if highest == nil -- First roll automatically becomes the highest 
@@ -963,7 +957,7 @@ function DistributeItem()
                 AssignItem(loot.entityId, winner)
 
             -- round-robin looting mode
-            elseif Options['Manager']['LootMode'] == 'round-robin' then
+            elseif Options['Distribution']['LootMode'] == 'round-robin' then
                 
                 Debug.Log('Round Robin')
                 Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex))
@@ -993,7 +987,7 @@ function DistributeItem()
                 -- Distribute
                 OnDistributeItem({item=loot})
                 AssignItem(loot.entityId, winner)
-            elseif Options['Manager']['LootMode'] == 'need-before-greed' then
+            elseif Options['Distribution']['LootMode'] == 'need-before-greed' then
 
                 -- Check that we're not busy rolling something else
                 if mCurrentlyRolling then
@@ -1040,7 +1034,7 @@ function DistributeItem()
                 if eligibleNames == '' then eligibleNames = 'No one' end
 
                 -- Start roll timeout timer
-                mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Manager']['RollTimeout'], RollTimeout, {item=loot})
+                mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=loot})
 
                 -- Announce that we're rolling
                 OnAcceptingRolls({item=loot, eligibleNames=eligibleNames})
@@ -1165,7 +1159,7 @@ function RollFinish()
             if row.rollType == 'need' then
                 someoneHasNeeded = true
             elseif row.rollType == false then
-                row.rollType = Options['Manager']['RollTypeDefault']
+                row.rollType = Options['Distribution']['RollTypeDefault']
             end
         end
 
@@ -1176,7 +1170,7 @@ function RollFinish()
             if not(someoneHasNeeded and row.rollType == 'greed') and not (row.rollType == 'pass' or row.rollType == false) then
 
                 -- Calc roll
-                roll = math.random(Options['Manager']['RollMin'], Options['Manager']['RollMax'])
+                roll = math.random(Options['Distribution']['RollMin'], Options['Distribution']['RollMax'])
 
                 -- Determine if highest roll
                 if highest == nil -- First roll automatically becomes the highest 
@@ -1208,7 +1202,7 @@ function RollFinish()
         RollCleanup()
 
         -- If auto distribute start next roll
-        if Options['Manager']['AutoDistribute'] then DistributeItem() end
+        if Options['Distribution']['AutoDistribute'] then DistributeItem() end
 
     else
         Debug.Warn('RollFinish but not currently rolling')
@@ -1263,13 +1257,13 @@ end
     Returns a list of people able to roll for loot under the current loot weighing settings
 ]]--
 function GetEntitled(loot)
-    if Options['Manager']['LootWeighting'] ~= 'disabled' then 
+    if Options['Distribution']['LootWeighting'] ~= 'disabled' then 
         local entitledRoster = {}
         local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(loot.craftingTypeId))
 
-        --if Options['Manager']['LootWeighting'] == 'frame' then
+        --if Options['Distribution']['LootWeighting'] == 'frame' then
         --end
-        --if Options['Manager']['LootWeighting'] == 'archetype' or #entitledRoster == 0 then
+        --if Options['Distribution']['LootWeighting'] == 'archetype' or #entitledRoster == 0 then
             for num, member in ipairs(aSquadRoster.members) do
                 if member.battleframe == itemArchetype then
                     table.insert(entitledRoster, member)
@@ -1579,7 +1573,7 @@ function SendMessage(message, alert, communication)
     if Options['NoSquadMessages'] then return end
 
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Setup alert prefix
     local alertPrefix = ''
@@ -1648,10 +1642,7 @@ end
 ]]--
 function SendSystemMessage(message)
     -- Exit if disabled
-    if Options['NoSystemMessages'] then return end
-
-    -- Exit if the addon is disabled
-    if not Options['Enabled'] then return end
+    if not Options['Core']['Enabled'] or not Options['Messages']['Channels']['System'] then return end
 
     -- Send system message
     Component.GenerateEvent('MY_SYSTEM_MESSAGE', {text=message})
@@ -1709,7 +1700,7 @@ function RunMessageFilters(message, args)
     local output = message
 
     -- Loot mode
-    output = string.gsub(output, '%%m', Options['Manager']['LootMode'])
+    output = string.gsub(output, '%%m', Options['Distribution']['LootMode'])
 
     -- Item name with quality
     output = string.gsub(output, '%%iq', itemNameQuality)
@@ -1778,7 +1769,7 @@ end
 ]]--
 function OnAcceptingRolls(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     if Options['Messages']['MessageSquad_OnAcceptingRolls'] then
         SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnAcceptingRolls'], args))
@@ -1795,7 +1786,7 @@ end
 ]]--
 function OnLootReceived(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     if Options['Messages']['MessageSquad_OnLootReceived'] then
         SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootReceived'], args))
@@ -1812,7 +1803,7 @@ end
 ]]--
 function OnLootStolen(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     if Options['Messages']['MessageSquad_OnLootStolen'] then
         SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootStolen'], args))
@@ -1829,7 +1820,7 @@ end
 ]]--
 function OnLootSnatched(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     if Options['Messages']['MessageSquad_OnLootSnatched'] then
         SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootSnatched'], args))
@@ -1846,7 +1837,7 @@ end
 ]]--
 function OnLootClaimed(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     if Options['Messages']['MessageSquad_OnLootClaimed'] then
         SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootClaimed'], args))
@@ -1864,7 +1855,7 @@ end
 function OnDistributeItem(args)
 
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Message Squad
     if Options['Messages']['MessageSquad_OnDistributeItem'] then
@@ -1897,7 +1888,7 @@ end
 ]]--
 function OnAssignItem(args)
     -- Exit if addon is disabled
-    if not Options['Enabled'] then return end
+    if not Options['Core']['Enabled'] then return end
 
     -- Update tracker
     UpdateTracker()
@@ -1951,7 +1942,7 @@ end
 ]]--
 function OnRollChange(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Messages
     if Options['Messages']['MessageSquad_OnRollChange'] then
@@ -1967,7 +1958,7 @@ end
 ]]--
 function OnRollBusy(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Messages
     if Options['Messages']['MessageSquad_OnRollBusy'] then
@@ -1983,7 +1974,7 @@ end
 ]]--
 function OnRollNobody(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Messages
     if Options['Messages']['MessageSquad_OnRollNobody'] then
@@ -1999,7 +1990,7 @@ end
 ]]--
 function OnRollAccept(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Messages
     if Options['Messages']['MessageSquad_OnRollAccept'] then
@@ -2015,7 +2006,7 @@ end
 ]]--
 function OnLootDespawn(args)
     -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Enabled'] then return end
+    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
 
     -- Messages
     if Options['Messages']['MessageSquad_OnLootDespawn'] then
@@ -2034,7 +2025,7 @@ end
 ]]--
 function OnIdentify(args)
     -- Exit if addon is disabled
-    if not Options['Enabled'] then return end
+    if not Options['Core']['Enabled'] then return end
 
     -- Update the tracker
     UpdateTracker()
@@ -2059,7 +2050,7 @@ function OnIdentify(args)
     end
 
     -- If auto distribute is enabled, distribute the item
-    if Options['Manager']['AutoDistribute'] then
+    if Options['Distribution']['AutoDistribute'] then
         DistributeItem()
     end
 
@@ -2085,7 +2076,7 @@ function ToggleEnabled(cmd)
     if cmd == 'disable' then
         newStatus = false
     elseif cmd == 'toggle' then
-        newStatus = not Options['Enabled']
+        newStatus = not Options['Core']['Enabled']
     end
 
     OnOptionChange({'Enabled', newStatus})
@@ -2123,8 +2114,8 @@ function Test()
 
     Debug.Log('test')
     Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
-    Debug.Log('Options[\'Enabled\']: '..tostring(Options['Enabled']))
-    Debug.Log('Options[\'AlwaysSquadLeader\']: '..tostring(Options['AlwaysSquadLeader']))
+    Debug.Log('Options[\'Enabled\']: '..tostring(Options['Core']['Enabled']))
+    Debug.Log('Options[\'AlwaysSquadLeader\']: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
 
 --Game.GetItemAttributeModifiers(itemTypeId,quality)
 

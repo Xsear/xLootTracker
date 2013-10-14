@@ -1,218 +1,869 @@
--- Options
+
 uiSounds = xSounds.GetSounds()
 
+TriggerModeOptions = {
+    Simple = 'simple',
+    Advanced = 'advanced',
+}
+
+TierOptions = {
+    Any = 'any',
+    Tier1 = '1',
+    Tier2 = '2',
+    Tier3 = '3',
+    Tier4 = '4',
+}
+
+QualityOptions = {
+    Any = 'any',
+    Common = 'common',
+    Uncommon = 'uncommon',
+    Rare = 'rare',
+    Epic = 'epic',
+    Legendary = 'legendary',
+    Custom = 'custom',
+}
+
+WeightingOptions = {
+    None = 'none',
+    Archetype = 'archetype',
+    Battleframe = 'battleframe',
+}
+
+DistributionMode = {
+    Random = 'random',
+    Dice = 'dice',
+    RoundRobin = 'round-robin',
+    YayNay = 'yaynay',
+    NeedBeforeGreed = 'need-before-greed',
+    LootMaster = 'lootmaster',
+}
+
+RollType = {
+    Pass = 'pass',
+    Greed = 'greed',
+    Need = 'need',
+}
+
+TrackerVisibilityOptions = {
+    Always = 'always',
+    HUD = 'hud',
+    MouseMode = 'mousemode',
+}
+
+LootPanelModes = {
+    Standard = 'standard',
+    Small = 'small',
+}
+
+ColorModes = {
+    MatchItem = 'match-quality',
+    Custom = 'custom',
+}
+
+RadarEdgeModes = {
+    None = MapMarker.EDGE_NONE,
+    Arrow = MapMarker.EDGE_ARROW,
+    Icon = MapMarker.EDGE_ICON,
+}
+
 Options = {
-    ['Enabled'] = true,
-    
-    -- Put this shit in Manager
-    ['AlwaysSquadLeader'] = false,
-    ['IdentifyAllLoot'] = true,
+    ['Core'] = {
+        ['Enabled'] = true,
+        ['VersionMessage'] = true,
+    },
 
-    -- Put this shit in Messages
-    ['VersionMessage'] = true,
-    ['NoSquadMessages'] = false,
-    ['NoSystemMessages'] = false,
+    ['Detection'] = {
+        ['Enabled'] = true,
 
+        ['EquipmentItems'] = {
 
-    ['Manager'] = {
-        ['LootMode'] = 'need-before-greed',
-        ['LootWeighting'] = 'archetype',
-        ['LootThreshold'] = 'green',
+            ['Enabled'] = true,
 
+            ['Mode'] = TriggerModeOptions.Simple,
 
-        ['Weighting'] = {
-            ['Battleframe'] = 'archetype',
-        },
-
-        ['Threshold'] = {
-            ['Standard'] = {
-                ['Quality'] = 'rare',
-                ['Quality_Custom_Value'] = 500,
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
             },
-            ['Stage0'] = {
-                ['Enabled'] = false,
-                ['Quality'] = 'rare',
-                ['Quality_Custom_Value'] = 500,
-            },
+
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['Quality'] = 'rare',
-                ['Quality_Custom_Value'] = 500,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
             },
+
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['Quality'] = 'rare',
-                ['Quality_Custom_Value'] = 500,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
             },
+
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['Quality'] = 'uncommon',
-                ['Quality_Custom_Value'] = 500,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
             },
+
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['Quality'] = 'uncommon',
-                ['Quality_Custom_Value'] = 500,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
             },
         },
 
+        ['CraftingComponents'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+    },
+
+    ['Distribution'] = {
+        ['Enabled'] = true,
+
+        ['AlwaysSquadLeader'] = false,
+
         ['AutoDistribute'] = true,
+
         ['RollMin'] = 1,
         ['RollMax'] = 100,
         ['RollTimeout'] = 15,
-        ['RollTypeDefault'] = 'pass',
+        ['RollTypeDefault'] = RollType.Pass,
+
+        ['EquipmentItems'] = {
+
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['CraftingComponents'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.Archetype,
+
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
     },
-
-
-    ['Messages'] = {
-        ['Generic_Prefix'] = '',
-
-        ['OnDistributeItem_Enabled'] = true,
-        ['MessageSquad_OnDistributeItem'] = true,
-        ['MessageFormatSquad_OnDistributeItem'] = 'Distributing [%iq] by %m',
-        ['MessageSystem_OnDistributeItem'] = false,
-        ['MessageFormatSystem_OnDistributeItem'] = 'Distributing [%iq] by %m',
-
-        ['OnRolls_Enabled'] = true,
-        ['MessageSquad_OnRolls'] = true,
-        ['MessageFormatSquad_OnRolls'] = '%n rolls %r for [%iq]',
-        ['MessageSystem_OnRolls'] = false,
-        ['MessageFormatSystem_OnRolls'] = '%n rolls %r for [%iq]',
-
-        ['OnAcceptingRolls_Enabled'] = true,
-        ['MessageSquad_OnAcceptingRolls'] = true,
-        ['MessageFormatSquad_OnAcceptingRolls'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
-        ['MessageSystem_OnAcceptingRolls'] = false,
-        ['MessageFormatSystem_OnAcceptingRolls'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
-
-        ['OnLootReceived_Enabled'] = true,
-        ['MessageSquad_OnLootReceived'] = true,
-        ['MessageFormatSquad_OnLootReceived'] = '%l looted [%iq]',
-        ['MessageSystem_OnLootReceived'] = false,
-        ['MessageFormatSystem_OnLootReceived'] = '%l looted [%iq]',
-
-        ['OnLootStolen_Enabled'] = true,
-        ['MessageSquad_OnLootStolen'] = true,
-        ['MessageFormatSquad_OnLootStolen'] = '%l stole %a\'s [%iq]',
-        ['MessageSystem_OnLootStolen'] = false,
-        ['MessageFormatSystem_OnLootStolen'] = '%l stole %a\'s [%iq]',
-
-        ['OnLootSnatched_Enabled'] = true,
-        ['MessageSquad_OnLootSnatched'] = true,
-        ['MessageFormatSquad_OnLootSnatched'] = '%l snatched [%iq]',
-        ['MessageSystem_OnLootSnatched'] = false,
-        ['MessageFormatSystem_OnLootSnatched'] = '%l snatched [%q]',
-
-        ['OnLootClaimed_Enabled'] = true,
-        ['MessageSquad_OnLootClaimed'] = true,
-        ['MessageFormatSquad_OnLootClaimed'] = '%l claimed [%iq]',
-        ['MessageSystem_OnLootClaimed'] = false,
-        ['MessageFormatSystem_OnLootClaimed'] = '%l claimed [%iq]',
-
-        ['OnAssignItem_Enabled'] = true,
-        ['MessageSquad_OnAssignItem'] = true,
-        ['MessageFormatSquad_OnAssignItem'] = '%n won [%iq]',
-        ['MessageSystem_OnAssignItem'] = false,
-        ['MessageFormatSystem_OnAssignItem'] = '%n won [%iq]',
-
-        ['OnRollChange_Enabled'] = true,
-        ['MessageSquad_OnRollChange'] = false,
-        ['MessageFormatSquad_OnRollChange'] = 'Correcting roll of %n, attempted need but not eligible',
-        ['MessageSystem_OnRollChange'] = true,
-        ['MessageFormatSystem_OnRollChange'] = 'Correcting roll of %n, attempted need but not eligible',
-
-        ['OnRollBusy_Enabled'] = true,
-        ['MessageSquad_OnRollBusy'] = false,
-        ['MessageFormatSquad_OnRollBusy']  = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
-        ['MessageSystem_OnRollBusy'] = true,
-        ['MessageFormatSystem_OnRollBusy'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
-
-        ['OnRollAccept_Enabled'] = true,
-        ['MessageSquad_OnRollAccept'] = false,
-        ['MessageFormatSquad_OnRollAccept'] = 'Recognizing that %n has selected %t',
-        ['MessageSystem_OnRollAccept'] = true,
-        ['MessageFormatSystem_OnRollAccept'] = 'Recognizing that %n has selected %t',
-
-        ['OnRollNobody_Enabled'] = true,
-        ['MessageSquad_OnRollNobody'] = false,
-        ['MessageFormatSquad_OnRollNobody'] = 'Nobody rolled! D:',
-        ['MessageSystem_OnRollNobody'] = true,
-        ['MessageFormatSystem_OnRollNobody'] = 'Nobody rolled! D:',
-
-        ['OnLootDespawn_Enabled'] = true,
-        ['MessageSquad_OnLootDespawn'] = false,
-        ['MessageFormatSquad_OnLootDespawn'] = '[%iq] has despawned.',
-        ['MessageSystem_OnLootDespawn'] = true,
-        ['MessageFormatSystem_OnLootDespawn'] = '[%iq] has despawned.',
-
-        ['OnIdentify_Enabled'] = true,
-        ['MessageSquad_OnIdentify'] = false,
-        ['MessageFormatSquad_OnIdentify'] = 'Detected a new loot drop: [%iq]',
-        ['MessageSystem_OnIdentify'] = true,
-        ['MessageFormatSystem_OnIdentify'] = 'Detected a new loot drop: [%iq]',
-
-        ['Communication_Custom'] = false,
-        ['Communication_Prefix'] = 'xSLM:',
-        ['Communication_Assign'] = true,
-        ['Communication_Assign_Format'] = 'A:%tId:%q:%n',
-    },
-
 
     ['Waypoints'] = {
+        ['Enabled'] = true,
+
+        ['ShowOnHud'] = true,
+        ['ShowOnWorldMap'] = true,
+        ['ShowOnRadar'] = true,
+        ['RadarEdgeMode'] = RadarEdgeModes.Icon,
+        ['TrailAssigned'] = true,
+        ['PingAssigned'] = true,
+
+        ['EquipmentItems'] = {
+
             ['Enabled'] = true,
-            ['ShowOnHud'] = true,
-            ['ShowOnWorldMap'] = true,
-            ['ShowOnRadar'] = true,
-            ['RadarEdgeMode'] = MapMarker.EDGE_ICON,
-            ['TrailAssigned'] = true,
-            ['PingAssigned'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['CraftingComponents'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
     },
 
+
     ['Panels'] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = LootPanelModes.Standard,
+
+        ['Display'] = {
+            ['AssignedTo'] = true,
+            ['AssignedToHideNil'] = true,
+        },
+
+        ['Color'] = {
+            ['AssignedTo'] = {
+                ['Nil'] = {alpha=1, tint='FFFFFF'},
+                ['Free'] = {alpha=1, tint='00FF00'},
+                ['Player'] = {alpha=1, tint='00FF00'},
+                ['Other'] = {alpha=1, tint='FF0000'},
+            },
+        },
+
+        ['ColorMode'] = {
+            ['HeaderBar'] = ColorModes.MatchQuality,
+            ['HeaderBarCustomValue'] = {alpha=1, tint='00000'},
+            ['ItemName'] = ColorModes.Custom,
+            ['ItemNameCustomValue'] = {alpha=1, tint='FFFFFF'},
+        },
+
+        ['EquipmentItems'] = {
+
             ['Enabled'] = true,
-            ['HeaderBar_ColorMode'] = 'item-quality',
-            ['Color_HeaderBar_ColorMode_Custom'] = {alpha=1, tint='00000'},
-            ['ItemName_ColorMode'] = 'custom',
-            ['Color_ItemName_ColorMode_Custom'] = {alpha=1, tint='FFFFFF'},
-            ['Display_AssignedTo'] = true,
-            ['Display_AssignedTo_Hide_nil'] = true,
-            ['Color_AssignedTo_nil'] = {alpha=1, tint='FFFFFF'},
-            ['Color_AssignedTo_free'] = {alpha=1, tint='00FF00'},
-            ['Color_AssignedTo_player'] = {alpha=1, tint='00FF00'},
-            ['Color_AssignedTo_other'] = {alpha=1, tint='FF0000'},
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['CraftingComponents'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+    },
+
+    ['Messages'] = {
+        ['Enabled'] = true,
+
+        ['Channels'] = {
+            ['Squad'] = true,
+            ['System'] = true,
+            ['Notifications'] = true,
+        },
+
+        ['Prefix'] = '',
+
+        ['Events'] = {
+            
+            ['Detection'] = {
+
+                ['OnIdentify'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Detected a new loot drop: [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Detected a new loot drop: [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Detected a new loot drop: [%iq]',
+                        },
+                    },
+
+                },
+
+                ['OnLootReceived'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%l looted [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l looted [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l looted [%iq]',
+                        },
+                    },
+
+                },
+
+
+                ['OnLootStolen'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%l stole %a\'s [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l stole %a\'s [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l stole %a\'s [%iq]',
+                        },
+                    },
+
+                },
+
+
+                ['OnLootSnatched'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%l snatched [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l snatched [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l snatched [%iq]',
+                        },
+                    },
+
+                },
+
+
+                ['OnLootClaimed'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%l claimed [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l claimed [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%l claimed [%iq]',
+                        },
+                    },
+
+                },
+
+                ['OnLootDespawn'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '[%iq] has despawned.',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '[%iq] has despawned.',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '[%iq] has despawned.',
+                        },
+                    },
+
+                },
+
+            },
+
+            ['Distribution'] = {
+                ['OnDistributeItem'] = {
+                    ['Enabled'] = false,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Distributing [%iq] by %m',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Distributing [%iq] by %m',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Distributing [%iq] by %m',
+                        },
+                    },
+
+                },
+
+                ['OnAssignItem'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%n won [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%n won [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%n won [%iq]',
+                        },
+                    },
+
+                },
+
+                ['OnRolls'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%n rolls %r for [%iq]',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = ' %n rolls %r for [%iq]',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%n rolls %r for [%iq]',
+                        },
+                    },
+
+                },
+
+                ['OnAcceptingRolls'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
+                        },
+                    },
+
+                },
+
+                ['OnRollChange'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Correcting roll of %n, attempted need but not eligible',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Correcting roll of %n, attempted need but not eligible',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Correcting roll of %n, attempted need but not eligible',
+                        },
+                    },
+
+                },
+
+                ['OnRollBusy'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
+                        },
+                    },
+
+                },
+
+                ['OnRollAccept'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Recognizing that %n has selected %t',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Recognizing that %n has selected %t',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Recognizing that %n has selected %t',
+                        },
+                    },
+
+                },
+
+                ['OnRollNobody'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = 'Nobody rolled! D:',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Nobody rolled! D:',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = 'Nobody rolled! D:',
+                        },
+                    },
+
+                },
+
+            },
+ 
+        },
+
+        ['Communication'] = {
+            ['Custom'] = false,
+            ['Prefix'] = 'xSLM:',
+            ['Assign'] = {
+                ['Enabled'] = true,
+                ['Format'] = 'A:%tId:%q:%n',
+            },
+        },
     },
 
     ['Tracker'] = {
-        ['Enabled'] = false,
+        ['Enabled'] = true,
 
-        ['Visibility'] = 'mousemode', -- always, hud, mousemode 
-
-        ['Display_Mode'] = true,
-        ['Display_Mode_OnlySquadLeader'] = true,
-        ['Display_Headings'] = true,
-
+        ['Visibility'] = TrackerVisibilityOptions.MouseMode,
 
     },
 
     ['Sounds'] = {
+        ['Enabled'] = true,
+
         ['Mute'] = false,
 
         ['OnIdentify'] = 'Play_UI_Beep_13',
-        ['OnIdentify_Rollable'] = uiSounds[1],
-        ['OnAssignItem_ToMe'] = 'Play_SFX_UI_Ding',
-        ['OnAssignItem_ToOther'] = 'Play_SFX_UI_Ticker',
-    },
+        ['OnIdentifyRollable'] = uiSounds[1],
+        ['OnAssignItemToMe'] = 'Play_SFX_UI_Ding',
+        ['OnAssignItemToOther'] = 'Play_SFX_UI_Ticker',
 
+    },
 
     ['Debug'] = {
         ['Enabled'] = false,
         ['FakeOnSquadRoster'] = false,
     },
-
 }
-
-
-
 
 
 --[[
@@ -223,343 +874,128 @@ Options = {
 ]]--
 function OnOptionChange(args)
 
+    -- InterfaceOptions Specials
     if args.id == "__LOADED" then
         bLoaded = true
 
-    elseif args.id == 'Enabled' then
-        Options['Enabled'] = args.val
-    
-    elseif args.id == 'VersionMessage' then
-        Options['VersionMessage'] = args.val
-        Component.SaveSetting('VersionMessage', Options['VersionMessage'])
-
-    elseif args.id == 'AlwaysSquadLeader' then
-        Options['AlwaysSquadLeader'] = args.val
-        OnSquadRosterUpdate()
-    
-    elseif args.id == 'NoSquadMessages' then
-        Options['NoSquadMessages'] = args.val
-
-    elseif args.id == 'NoSystemMessages' then
-        Options['NoSystemMessages'] = args.val
-
-    elseif args.id == 'IdentifyAllLoot' then
-        Options['IdentifyAllLoot'] = args.val
-
-
-
-
-    elseif args.id == 'LootMode' then
-        Options['Manager']['LootMode'] = args.val
-
-    elseif args.id == 'LootWeighting' then
-        Options['Manager']['LootWeighting'] = args.val
-
-    elseif args.id == 'LootThreshold' then
-        Options['Manager']['LootThreshold'] = args.val
-    
-    elseif args.id == 'AutoDistribute' then
-        Options['Manager']['AutoDistribute'] = args.val
-
-    elseif args.id == 'RollMin' then
-        Options['Manager']['RollMin'] = args.val
-    elseif args.id == 'RollMax' then
-        Options['Manager']['RollMax'] = args.val
-    elseif args.id == 'RollTimeout' then
-        Options['Manager']['RollTimeout'] = args.val
-    elseif args.id == 'RollTypeDefault' then
-        Options['Manager']['RollTypeDefault'] = args.val
-
-
-
-
-    elseif args.id == 'Generic_Prefix' then
-        Options['Messages']['Generic_Prefix'] = args.val
-
-    elseif args.id == 'Messages_OnDistributeItem_Enabled' then
-        Options['Messages']['OnDistributeItem_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnDistributeItem' then
-        Options['Messages']['MessageSquad_OnDistributeItem'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnDistributeItem' then
-        Options['Messages']['MessageFormatSquad_OnDistributeItem'] = args.val
-    elseif args.id == 'MessageSystem_OnDistributeItem' then
-        Options['Messages']['MessageSystem_OnDistributeItem'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnDistributeItem' then
-        Options['Messages']['MessageFormatSystem_OnDistributeItem'] = args.val
-
-    elseif args.id == 'Messages_OnRolls_Enabled' then
-        Options['Messages']['OnRolls_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnRolls' then
-        Options['Messages']['MessageSquad_OnRolls'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnRolls' then
-        Options['Messages']['MessageFormatSquad_OnRolls'] = args.val
-    elseif args.id == 'MessageSystem_OnRolls' then
-        Options['Messages']['MessageSystem_OnRolls'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnRolls' then
-        Options['Messages']['MessageFormatSystem_OnRolls'] = args.val
-
-    elseif args.id == 'Messages_OnAcceptingRolls_Enabled' then
-        Options['Messages']['OnAcceptingRolls_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnAcceptingRolls' then
-        Options['Messages']['MessageSquad_OnAcceptingRolls'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnAcceptingRolls' then
-        Options['Messages']['MessageFormatSquad_OnAcceptingRolls'] = args.val
-    elseif args.id == 'MessageSystem_OnAcceptingRolls' then
-        Options['Messages']['MessageSystem_OnRolls'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnAcceptingRolls' then
-        Options['Messages']['MessageFormatSystem_OnAcceptingRolls'] = args.val
-
-    elseif args.id == 'Messages_OnLootReceived_Enabled' then
-        Options['Messages']['OnLootReceived_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnLootReceived' then
-        Options['Messages']['MessageSquad_OnLootReceived'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnLootReceived' then
-        Options['Messages']['MessageFormatSquad_OnLootReceived'] = args.val
-    elseif args.id == 'MessageSystem_OnLootReceived' then
-        Options['Messages']['MessageSystem_OnLootReceived'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnLootReceived' then
-        Options['Messages']['MessageFormatSystem_OnLootReceived'] = args.val
-
-    elseif args.id == 'Messages_OnLootStolen_Enabled' then
-        Options['Messages']['OnLootStolen_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnLootStolen' then
-        Options['Messages']['MessageSquad_OnLootStolen'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnLootStolen' then
-        Options['Messages']['MessageFormatSquad_OnLootStolen'] = args.val
-    elseif args.id == 'MessageSystem_OnLootStolen' then
-        Options['Messages']['MessageSystem_OnLootStolen'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnLootStolen' then
-        Options['Messages']['MessageFormatSystem_OnLootStolen'] = args.val
-
-    elseif args.id == 'Messages_OnLootSnatched_Enabled' then
-        Options['Messages']['OnLootSnatched_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnLootSnatched' then
-        Options['Messages']['MessageSquad_OnLootSnatched'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnLootSnatched' then
-        Options['Messages']['MessageFormatSquad_OnLootSnatched'] = args.val
-    elseif args.id == 'MessageSystem_OnLootSnatched' then
-        Options['Messages']['MessageSystem_OnLootSnatched'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnLootSnatched' then
-        Options['Messages']['MessageFormatSystem_OnLootSnatched'] = args.val
-
-    elseif args.id == 'Messages_OnLootClaimed_Enabled' then
-        Options['Messages']['OnLootClaimed_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnLootClaimed' then
-        Options['Messages']['MessageSquad_OnLootClaimed'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnLootClaimed' then
-        Options['Messages']['MessageFormatSquad_OnLootClaimed'] = args.val
-    elseif args.id == 'MessageSystem_OnLootClaimed' then
-        Options['Messages']['MessageSystem_OnLootClaimed'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnLootClaimed' then
-        Options['Messages']['MessageFormatSystem_OnLootClaimed'] = args.val
-
-    elseif args.id == 'Messages_OnAssignItem_Enabled' then
-        Options['Messages']['OnAssignItem_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnAssignItem' then
-        Options['Messages']['MessageSquad_OnAssignItem'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnAssignItem' then
-        Options['Messages']['MessageFormatSquad_OnAssignItem'] = args.val
-    elseif args.id == 'MessageSystem_OnAssignItem' then
-        Options['Messages']['MessageSystem_OnAssignItem'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnAssignItem' then
-        Options['Messages']['MessageFormatSystem_OnAssignItem'] = args.val
-
-    elseif args.id == 'Messages_OnRollChange_Enabled' then
-        Options['Messages']['OnRollChange_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnRollChange' then
-        Options['Messages']['MessageSquad_OnRollChange'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnRollChange' then
-        Options['Messages']['MessageFormatSquad_OnRollChange'] = args.val
-    elseif args.id == 'MessageSystem_OnRollChange' then
-        Options['Messages']['MessageSystem_OnRollChange'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnRollChange' then
-        Options['Messages']['MessageFormatSystem_OnRollChange'] = args.val
-
-    elseif args.id == 'Messages_OnRollAccept_Enabled' then
-        Options['Messages']['OnRollAccept_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnRollAccept' then
-        Options['Messages']['MessageSquad_OnRollAccept'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnRollAccept' then
-        Options['Messages']['MessageFormatSquad_OnRollAccept'] = args.val
-    elseif args.id == 'MessageSystem_OnRollAccept' then
-        Options['Messages']['MessageSystem_OnRollAccept'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnRollAccept' then
-        Options['Messages']['MessageFormatSystem_OnRollAccept'] = args.val
-
-    elseif args.id == 'Messages_OnRollBusy_Enabled' then
-        Options['Messages']['OnRollBusy_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnRollBusy' then
-        Options['Messages']['MessageSquad_OnRollBusy'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnRollBusy' then
-        Options['Messages']['MessageFormatSquad_OnRollBusy'] = args.val
-    elseif args.id == 'MessageSystem_OnRollBusy' then
-        Options['Messages']['MessageSystem_OnRollBusy'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnRollBusy' then
-        Options['Messages']['MessageFormatSystem_OnRollBusy'] = args.val
-
-    elseif args.id == 'Messages_OnRollNobody_Enabled' then
-        Options['Messages']['OnRollNobody_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnRollNobody' then
-        Options['Messages']['MessageSquad_OnRollNobody'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnRollNobody' then
-        Options['Messages']['MessageFormatSquad_OnRollNobody'] = args.val
-    elseif args.id == 'MessageSystem_OnRollNobody' then
-        Options['Messages']['MessageSystem_OnRollNobody'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnRollNobody' then
-        Options['Messages']['MessageFormatSystem_OnRollNobody'] = args.val
-
-    elseif args.id == 'Messages_OnLootDespawn_Enabled' then
-        Options['Messages']['OnLootDespawn_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnLootDespawn' then
-        Options['Messages']['MessageSquad_OnLootDespawn'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnLootDespawn' then
-        Options['Messages']['MessageFormatSquad_OnLootDespawn'] = args.val
-    elseif args.id == 'MessageSystem_OnLootDespawn' then
-        Options['Messages']['MessageSystem_OnLootDespawn'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnLootDespawn' then
-        Options['Messages']['MessageFormatSystem_OnLootDespawn'] = args.val
-
-    elseif args.id == 'Messages_OnIdentify_Enabled' then
-        Options['Messages']['OnIdentify_Enabled'] = args.val
-    elseif args.id == 'MessageSquad_OnIdentify' then
-        Options['Messages']['MessageSquad_OnIdentify'] = args.val
-    elseif args.id == 'MessageFormatSquad_OnIdentify' then
-        Options['Messages']['MessageFormatSquad_OnIdentify'] = args.val
-    elseif args.id == 'MessageSystem_OnIdentify' then
-        Options['Messages']['MessageSystem_OnIdentify'] = args.val
-    elseif args.id == 'MessageFormatSystem_OnIdentify' then
-        Options['Messages']['MessageFormatSystem_OnIdentify'] = args.val
-
-
-
-    elseif args.id == 'Communication_Custom' then
-        Options['Messages']['Communication_Custom'] = args.val
-        UpdateOptionVisibility()
-
-    elseif args.id == 'Communication_Prefix' then
-        Options['Messages']['Communication_Prefix'] = args.val
-
-    elseif args.id == 'Communication_Assign' then
-        Options['Messages']['Communication_Assign'] = args.val
-
-    elseif args.id == 'Communication_Assign_Format' then
-        Options['Messages']['Communication_Assign_Format'] = args.val
-
-
-
-    elseif args.id == 'Group_Waypoints' then
-        Options['Waypoints']['Enabled'] = args.val
-
-    elseif args.id == 'Waypoints_ShowOnHud' then
-        Options['Waypoints']['ShowOnHud'] = args.val
-
-    elseif args.id == 'Waypoints_ShowOnWorldMap' then
-        Options['Waypoints']['ShowOnWorldMap'] = args.val
-
-    elseif args.id == 'Waypoints_ShowOnRadar' then
-        Options['Waypoints']['ShowOnRadar'] = args.val
-
-    elseif args.id == 'Waypoints_RadarEdgeMode' then
-        Options['Waypoints']['RadarEdgeMode'] = args.val
-
-    elseif args.id == 'Waypoints_TrailAssigned' then
-        Options['Waypoints']['TrailAssigned'] = args.val
-
-    elseif args.id == 'Waypoints_PingAssigned' then
-        Options['Waypoints']['PingAssigned'] = args.val
-
-
-
-    elseif args.id == 'Group_Panels' then
-        Options['Panels']['Enabled'] = args.val
-
-    elseif args.id == 'Panels_Mode' then
-        Options['Panels']['Mode'] = args.val
-
-    elseif args.id == 'Panels_HeaderBar_ColorMode' then
-        Options['Panels']['HeaderBar_ColorMode'] = args.val
-
-    elseif args.id == 'Panels_Color_ItemName_ColorMode' then
-        Options['Panels']['Color_ItemName_ColorMode'] = args.val
-
-    elseif args.id == 'Panels_ItemName_ColorMode' then
-        Options['Panels']['ItemName_ColorMode'] = args.val
-
-    elseif args.id == 'Panels_Color_ItemName_ColorMode_Custom' then
-        Options['Panels']['Color_ItemName_ColorMode_Custom'] = args.val
-
-    elseif args.id == 'Panels_Display_AssignedTo' then
-        Options['Panels']['Display_AssignedTo'] = args.val
-
-    elseif args.id == 'Panels_Display_AssignedTo_Hide_nil' then
-        Options['Panels']['Display_AssignedTo_Hide_nil'] = args.val
-
-    elseif args.id == 'Panels_Color_AssignedTo_nil' then
-        Options['Panels']['Color_AssignedTo_nil'] = args.val
-
-    elseif args.id == 'Panels_Color_AssignedTo_free' then
-        Options['Panels']['Color_AssignedTo_free'] = args.val
-
-    elseif args.id == 'Panels_Color_AssignedTo_player' then
-        Options['Panels']['Color_AssignedTo_player'] = args.val
-
-    elseif args.id == 'Panels_Color_AssignedTo_other' then
-        Options['Panels']['Color_AssignedTo_other'] = args.val
-
-
-
-    elseif args.id == 'Tracker_Enabled' then
-        Options['Tracker']['Enabled'] = args.val
-    elseif args.id == 'Tracker_Display_Mode' then
-        Options['Tracker']['Display_Mode'] = args.val
-    elseif args.id == 'Tracker_Display_Mode_OnlySquadLeader' then
-        Options['Tracker']['Display_Mode_OnlySquadLeader'] = args.val
-    elseif args.id == 'Tracker_Display_Headings' then
-        Options['Tracker']['Display_Headings'] = args.val
-
-
-
-    elseif args.id == 'Sounds_Mute' then
-        Options['Sounds']['Mute'] = args.val
-
-    elseif args.id == 'Sounds_OnIdentify' then
-        Options['Sounds']['OnIdentify'] = args.val
-        if bLoaded then System.PlaySound(args.val) end
-
-    elseif args.id == 'Sounds_OnIdentify_Rollable' then
-        Options['Sounds']['OnIdentify_Rollable'] = args.val
-        if bLoaded then System.PlaySound(args.val) end
-
-    elseif args.id == 'Sounds_OnAssignItem_ToMe' then
-        Options['Sounds']['OnAssignItem_ToMe'] = args.val
-        if bLoaded then System.PlaySound(args.val) end
-
-    elseif args.id == 'Sounds_OnAssignItem_ToOther' then
-        Options['Sounds']['OnAssignItem_ToOther'] = args.val
-        if bLoaded then System.PlaySound(args.val) end
-
-
-    elseif args.id == 'Debug_Enabled' then
-        Options['Debug']['Enabled'] = args.val
-        Component.SaveSetting('DebugMode', Options['Debug']['Enabled'])
-        Debug.EnableLogging(Options['Debug']['Enabled'])
-
-    elseif args.id == 'Debug_FakeOnSquadRoster' then
-        Options['Debug']['FakeOnSquadRoster'] = args.val
-        OnSquadRosterUpdate()
+    elseif args.id == '__DEFAULT' then
+        -- Todo: Fixme:
+
+    elseif args.id == '__DISPLAY' then
+        -- Todo: Fixme:
+
+    else
+
+        if args.id == 'Debug_Enabled' then
+            Component.SaveSetting('Debug_Enabled', args.val)
+        elseif args.id == 'Core_VersionMessage' then
+            Component.SaveSetting('Core_VersionMessage', args.val)
+        end
+
+        digOptions(Options, args, splitExplode('_', args.id))
+    end
+
+    SetOptionsAvailability()
+end
+
+
+function digOptions(table, args, refs, depth, key)
+    if depth == nil then
+        depth = 1 -- start at 1
+    else
+        depth = depth + 1
+    end
+
+    if type(table) == 'table' then
+        for tableKey, tableValue in pairs(table) do
+            if tableKey == refs[depth] then
+                if type(tableValue) ~= 'table' then
+                    table[tableKey] = args.val
+                    Debug.Log('OnOptionChange: '..args.id..' to '..tostring(args.val))
+                else 
+                    digOptions(tableValue, args, refs, depth, tableKey)
+                end
+                return
+            end
+        end
+    end
+end
+
+
+-- from: http://lua-users.org/wiki/SplitJoin
+function splitExplode(d,p)
+  local t, ll
+  t={}
+  ll=0
+  if(#p == 1) then return {p} end
+    while true do
+      l=string.find(p,d,ll,true) -- find the next d in the string
+      if l~=nil then -- if "not not" found then..
+        table.insert(t, string.sub(p,ll,l-1)) -- Save it in our array.
+        ll=l+1 -- save just after where we found it for searching next time.
+      else
+        table.insert(t, string.sub(p,ll)) -- Save what's left in our array.
+        break -- Break at end, as it should be, according to the lua manual.
+      end
+    end
+  return t
+end
+
+
+
+
+
+
+
+
+--[[
+    SetOptionsAvailability()
+    Supposed to hide/unhide shit in the Interface Options.
+]]--
+function SetOptionsAvailability()
+
+    -- If simple disable advanced options
+    for i, rootKey in pairs({'Detection', 'Distribution', 'Panels', 'Waypoints'}) do
+
+        for i, typeKey in pairs({'EquipmentItems', 'CraftingComponents'}) do
+
+
+            -- Disable mode selection if type not enabled
+            if Options[rootKey][typeKey]['Enabled'] == false then
+                InterfaceOptions.DisableOption(rootKey..'_'..typeKey..'_Mode', true)
+            end
+
+            for i, stageKey in pairs({'Simple', 'Stage1', 'Stage2', 'Stage3', 'Stage4'}) do
+                --Debug.Log(rootKey..'_'..typeKey)
+
+                -- Disable/Enable logic
+                -- Fixme: bluuuuuurgh
+                local disable = false
+
+                -- If we are in simple mode, disable is true.
+                disable = (Options[rootKey][typeKey]['Mode'] == TriggerModeOptions.Simple)
+
+                -- But if the current stageKey is simple, then we invert the value. (So in Simple Mode, simple options are enabled and the rest disabled)
+                if stageKey == 'Simple' then disable = not disable end
+
+                -- Buuut, if this kind of type isn't enabled, then everything should be disabled!
+                if Options[rootKey][typeKey]['Enabled'] == false then disable = true end
+
+
+                for optionKey, optionValue in pairs(Options[rootKey][typeKey][stageKey]) do
+                    InterfaceOptions.DisableOption(rootKey..'_'..typeKey..'_'..stageKey..'_'..optionKey, disable)
+                end
+
+  
+            end
+
+        end
 
     end
 
-    -- Updates
-    UpdateOptionVisibility()
-    UpdateTracker()
-end
+
 
 --[[
-    UpdateOptionVisibility()
-    Supposed to hide/unhide shit in the Interface Options.
-]]--
-function UpdateOptionVisibility()
     -- Disable all
     InterfaceOptions.DisableOption('Group_Loot_Rolls', true)
     InterfaceOptions.DisableOption('RollMin', true)
@@ -595,8 +1031,13 @@ function UpdateOptionVisibility()
         InterfaceOptions.DisableOption('Communication_Assign', false)
         InterfaceOptions.DisableOption('Communication_Assign_Format', true) -- Locked option because whislt it is used for sending, the receiving end is a hardcoded match
     end
+]]--
+
 
 end
+
+
+
 
 
 --[[
@@ -605,928 +1046,225 @@ end
 
 ]]--
 function SetupInterfaceOptions()
-    -- Callback and save version
-    InterfaceOptions.NotifyOnLoaded(true) -- Notify us on loaded so that we don't play sounds when user reloads
+    -- Notifications
+    InterfaceOptions.NotifyOnLoaded(true) -- Notify us when all options have been loaded (we don't play sounds before that)
+    --InterfaceOptions.NotifyOnDefaults(true) -- Notify us when user resets the options
+    --InterfaceOptions.NotifyOnDisplay(true) -- Notify us when the user opens the interface options
+
+    -- Callback
     InterfaceOptions.SetCallbackFunc(function(id, val) OnOptionChange({id=id,val=val}) end, 'xSquadLootManager') -- Callback for when user changes settings
+
+    -- Save version
     InterfaceOptions.SaveVersion(ciSaveVersion) -- Settings save-version, increment if behavior changes
 
-    -- First page Settings
+    -- Build the interface options
+    BuildInterfaceOptions()
+end
+
+
+--[[
+    BuildInterfaceOptions()
+    Separate everything
+]]--
+function BuildInterfaceOptions()
+
+    BuildInterfaceOptions_Front()
+    BuildInterfaceOptions_Detection()
+    BuildInterfaceOptions_Distribution()
+    BuildInterfaceOptions_Markers()
+    BuildInterfaceOptions_Messages()
+    BuildInterfaceOptions_Tracker()
+    BuildInterfaceOptions_Sounds()
+
+end
+
+
+function BuildInterfaceOptions_Front()
+
+    -- Core
     InterfaceOptions.StartGroup({
-        id='Group_Front',
-        label='Xsear\'s Squad Loot Manager'
+        id    = 'Group_Core',
+        label = 'Xsear\'s Squad Loot Manager',
     })
         
-        InterfaceOptions.AddCheckBox({id='Enabled',
-            label=Lokii.GetString('Enabled_Label'),
-            tooltip=Lokii.GetString('Enabled_ToolTip'),
-            default=true
+        InterfaceOptions.AddCheckBox({
+            id      = 'Core_Enabled',
+            label   = Lokii.GetString('Core_Enabled_Label'),
+            tooltip = Lokii.GetString('Core_Enabled_ToolTip'),
+            default = Options['Core']['Enabled'],
         })
 
-        InterfaceOptions.AddCheckBox({id='VersionMessage',
-            label=Lokii.GetString('VersionMessage_Label'),
-            tooltip=Lokii.GetString('VersionMessage_ToolTip'),
-            default=true
-        })
-
-        InterfaceOptions.AddCheckBox({id='AlwaysSquadLeader',
-            label=Lokii.GetString('AlwaysSquadLeader_Label'),
-            tooltip=Lokii.GetString('AlwaysSquadLeader_ToolTip'),
-            default=false
+        InterfaceOptions.AddCheckBox({
+            id      = 'Core_VersionMessage',
+            label   = Lokii.GetString('Core_VersionMessage_Label'),
+            tooltip = Lokii.GetString('Core_VersionMessage_ToolTip'),
+            default = Options['Core']['VersionMessage'],
         })
 
     InterfaceOptions.StopGroup()
 
-
-    -- Debug Settings
+    -- Features
     InterfaceOptions.StartGroup({
-        id = 'Debug_Enabled',
+        id    = 'Group_Features',
+        label = 'Features',
+    })
+        
+        InterfaceOptions.AddCheckBox({
+            id      = 'Detection_Enabled',
+            label   = Lokii.GetString('Detection_Enabled_Label'),
+            tooltip = Lokii.GetString('Detection_Enabled_ToolTip'),
+            default = Options['Detection']['Enabled'],
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Distribution_Enabled',
+            label   = Lokii.GetString('Distribution_Enabled_Label'),
+            tooltip = Lokii.GetString('Distribution_Enabled_ToolTip'),
+            default = Options['Distribution']['Enabled'],
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Messages_Enabled',
+            label   = Lokii.GetString('Messages_Enabled_Label'),
+            tooltip = Lokii.GetString('Messages_Enabled_ToolTip'),
+            default = Options['Messages']['Enabled'],
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Panels_Enabled',
+            label   = Lokii.GetString('Panels_Enabled_Label'),
+            tooltip = Lokii.GetString('Panels_Enabled_ToolTip'),
+            default = Options['Panels']['Enabled'],
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Waypoints_Enabled',
+            label   = Lokii.GetString('Waypoints_Enabled_Label'),
+            tooltip = Lokii.GetString('Waypoints_Enabled_ToolTip'),
+            default = Options['Waypoints']['Enabled'],
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Tracker_Enabled',
+            label   = Lokii.GetString('Tracker_Enabled_Label'),
+            tooltip = Lokii.GetString('Tracker_Enabled_ToolTip'),
+            default = Options['Tracker']['Enabled'],
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Sounds_Enabled',
+            label   = Lokii.GetString('Sounds_Enabled_Label'),
+            tooltip = Lokii.GetString('Sounds_Enabled_ToolTip'),
+            default = Options['Sounds']['Enabled'],
+        })
+
+    InterfaceOptions.StopGroup()
+
+    -- Debug
+    InterfaceOptions.StartGroup({
+        id       = 'Debug_Enabled',
         checkbox = true,
-        default = Options['Debug']['Enabled'],
-        label = Lokii.GetString('Debug_Enabled_Label'),
-        tooltip = Lokii.GetString('Debug_Enabled_ToolTip')
+        default  = Options['Debug']['Enabled'],
+        label    = Lokii.GetString('Debug_Enabled_Label'),
+        tooltip  = Lokii.GetString('Debug_Enabled_ToolTip'),
     })
 
         InterfaceOptions.AddCheckBox({
-            id = 'Debug_FakeOnSquadRoster',
+            id      = 'Debug_FakeOnSquadRoster',
             default = Options['Debug']['FakeOnSquadRoster'],
-            label = Lokii.GetString('Debug_FakeOnSquadRoster_Label'),
+            label   = Lokii.GetString('Debug_FakeOnSquadRoster_Label'),
             tooltip = Lokii.GetString('Debug_FakeOnSquadRoster_ToolTip'),
         })
 
     InterfaceOptions.StopGroup()
+end
 
+function BuildInterfaceOptions_Detection()
+    UIHELPER_DetectDistributeMarkX('Detection', 'EquipmentItems')
+    UIHELPER_DetectDistributeMarkX('Detection', 'CraftingComponents')
+end
 
-    -- Detection Settings
-    InterfaceOptions.StartGroup({
-        id='Group_Detection_General',
-        label=Lokii.GetString('Group_Detection_General_Label'),
-        tooltip=Lokii.GetString('Group_Detection_General_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Detection')}
-    })
-        InterfaceOptions.AddCheckBox({
-            id = 'IdentifyAllLoot',
-            default = true,
-            label = Lokii.GetString('IdentifyAllLoot_Label'),
-            tooltip = Lokii.GetString('IdentifyAllLoot_ToolTip'),
-            subtab = {Lokii.GetString('Subtab_Detection')}
-        })
+function BuildInterfaceOptions_Distribution()
+    UIHELPER_DetectDistributeMarkX('Distribution', 'EquipmentItems')
+    UIHELPER_DetectDistributeMarkX('Distribution', 'CraftingComponents')
 
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Detection')}})
-
-
-    -- Manager General Settings
-    InterfaceOptions.StartGroup({
-        id='Group_Loot_General',
-        label=Lokii.GetString('Group_Loot_General_Label'),
-        tooltip=Lokii.GetString('Group_Loot_General_ToolTip'),
-        subtab={Lokii.GetString('Subtab_LootingRules')}
+    InterfaceOptions.AddCheckBox({
+        id      = 'Distribution_AlwaysSquadLeader',
+        default = Options['Distribution']['AlwaysSquadleader'],
+        label   = Lokii.GetString('Distribution_AlwaysSquadLeader_Label'),
+        tooltip = Lokii.GetString('Distribution_AlwaysSquadLeader_ToolTip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Distribution')
+        },
     })
 
-        InterfaceOptions.AddChoiceMenu({
-            id='LootMode',
-            default='dice',
-            label=Lokii.GetString('LootMode_Label'),
-            tooltip=Lokii.GetString('LootMode_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootMode',
-                val='random',
-                label=Lokii.GetString('LootMode_Random_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootMode',
-                val='dice',
-                label=Lokii.GetString('LootMode_Dice_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootMode',
-                val='round-robin',
-                label=Lokii.GetString('LootMode_RoundRobin_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootMode',
-                val='need-before-greed',
-                label=Lokii.GetString('LootMode_NeedBeforeGreed_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-        InterfaceOptions.AddChoiceMenu({
-            id='LootWeighting',
-            default='disabled',
-            label=Lokii.GetString('LootWeighting_Label'),
-            tooltip=Lokii.GetString('LootWeighting_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootWeighting',
-                val='disabled',
-                label=Lokii.GetString('LootWeighting_Disabled_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootWeighting',
-                val='archetype',
-                label=Lokii.GetString('LootWeighting_Archetype_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-
-            --[[
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootWeighting',
-                val='frame',
-                label=Lokii.GetString('LootWeighting_Frame_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-            --]]
-
-            --[[
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootWeighting',
-                val='preference',
-                label='NYI-Preference',
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-            --]]
-
-        InterfaceOptions.AddChoiceMenu({
-            id='LootThreshold',
-            default='any',
-            label=Lokii.GetString('LootThreshold_Label'),
-            tooltip=Lokii.GetString('LootThreshold_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootThreshold',
-                val='any',
-                label=Lokii.GetString('LootThreshold_Any_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootThreshold',
-                val='green',
-                label=Lokii.GetString('LootThreshold_Green_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootThreshold',
-                val='blue',
-                label=Lokii.GetString('LootThreshold_Blue_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootThreshold',
-                val='purple',
-                label=Lokii.GetString('LootThreshold_Purple_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-            InterfaceOptions.AddChoiceEntry({
-                menuId='LootThreshold',
-                val='orange',
-                label=Lokii.GetString('LootThreshold_Orange_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-
-        InterfaceOptions.AddCheckBox({
-            id='AutoDistribute',
-            default=true,
-            label=Lokii.GetString('AutoDistribute_Label'),
-            tooltip=Lokii.GetString('AutoDistribute_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_LootingRules')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='Group_Loot_Rolls',
-        label=Lokii.GetString('Group_Loot_Rolls_Label'),
-        tooltip=Lokii.GetString('Group_Loot_Rolls_ToolTip'),
-        subtab={Lokii.GetString('Subtab_LootingRules')}
+    InterfaceOptions.AddCheckBox({
+        id      = 'Distribution_AutoDistribute',
+        default = Options['Distribution']['AutoDistribute'],
+        label   = Lokii.GetString('Distribution_AutoDistribute_Label'),
+        tooltip = Lokii.GetString('Distribution_AutoDistribute_ToolTip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Distribution')
+        },
     })
 
-        InterfaceOptions.AddTextInput({
-            id='RollMin',
-            numeric=true,
-            default=Options['Manager']['RollMin'],
-            label=Lokii.GetString('RollMin_Label'),
-            tooltip=Lokii.GetString('RollMin_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
+    -- Rolls
+    UIHELPER_TextInput('Distribution_RollMin', true, Options['Distribution']['RollMin'], Lokii.GetString('Subtab_Distribution'))
+    UIHELPER_TextInput('Distribution_RollMax', true, Options['Distribution']['RollMax'], Lokii.GetString('Subtab_Distribution'))
+    UIHELPER_TextInput('Distribution_RollTimeout', true, Options['Distribution']['RollTimeout'], Lokii.GetString('Subtab_Distribution'))
 
-        InterfaceOptions.AddTextInput({
-            id='RollMax',
-            numeric=true,
-            default=Options['Manager']['RollMax'],
-            label=Lokii.GetString('RollMax_Label'),
-            tooltip=Lokii.GetString('RollMax_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
+    UIHELPER_DropdownFromTable('Distribution_RollTypeDefault', Lokii.GetString('Subtab_Distribution'), RollType, Options['Distribution']['RollTypeDefault'], 'RollType')
 
-        InterfaceOptions.AddTextInput({
-            id='RollTimeout',
-            numeric=true,
-            default=Options['Manager']['RollTimeout'],
-            label=Lokii.GetString('RollTimeout_Label'),
-            tooltip=Lokii.GetString('RollTimeout_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
 
-        InterfaceOptions.AddChoiceMenu({
-            id='RollTypeDefault',
-            default='pass',
-            label=Lokii.GetString('RollTypeDefault_Label'),
-            tooltip=Lokii.GetString('RollTypeDefault_ToolTip'),
-            subtab={Lokii.GetString('Subtab_LootingRules')}
-        })
+end
 
-            InterfaceOptions.AddChoiceEntry({
-                menuId='RollTypeDefault',
-                val='pass',
-                label=Lokii.GetString('RollTypeDefault_Pass_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
+function BuildInterfaceOptions_Markers()
+    UIHELPER_DetectDistributeMarkX('Panels', 'EquipmentItems')
+    UIHELPER_DetectDistributeMarkX('Panels', 'CraftingComponents')
 
-            InterfaceOptions.AddChoiceEntry({
-                menuId='RollTypeDefault',
-                val='greed',
-                label=Lokii.GetString('RollTypeDefault_Greed_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-            -- For now we don't allow users to select need as the default roll type since it would cause issues
-            --[[
-            InterfaceOptions.AddChoiceEntry({
-                menuId='RollTypeDefault',
-                val='need',
-                label=Lokii.GetString('RollTypeDefault_Need_Label'),
-                subtab={Lokii.GetString('Subtab_LootingRules')}
-            })
-            ]]--
+    UIHELPER_CheckBox('Panels_Display_AssignedTo', Options['Panels']['Display']['AssignedTo'], Lokii.GetString('Subtab_Panels'))
+    UIHELPER_CheckBox('Panels_Display_AssignedToHideNil', Options['Panels']['Display']['AssignedToHideNil'], Lokii.GetString(Lokii.GetString('Subtab_Panels')))
 
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_LootingRules')}})
-    
-    -- Messages Generic Settings    
-    InterfaceOptions.StartGroup({
-        id      = 'Group_Messages_Generic',
-        label   = Lokii.GetString('Group_Messages_Generic_Label'),
-        subtab  = {Lokii.GetString('Subtab_Messages')}
-    })
-        
-        InterfaceOptions.AddTextInput({
-            id='Generic_Prefix',
-            label=Lokii.GetString('Generic_Prefix_Label'),
-            tooltip=Lokii.GetString('Generic_Prefix_ToolTip'),
-            default=Options['Messages']['Generic_Prefix'],
-            subtab={Lokii.GetString('Subtab_Messages')}
-        })
+    UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', Lokii.GetString('Subtab_Panels'), ColorModes, Options['Panels']['ColorMode']['HeaderBar'], 'ColorModes')
+    UIHELPER_ColorPicker('Panels_ColorMode_HeaderBarCustomValue', Options['Panels']['ColorMode']['HeaderBarCustomValue'], Lokii.GetString('Subtab_Panels'))
 
-        InterfaceOptions.AddCheckBox({id='NoSquadMessages',
-            label=Lokii.GetString('NoSquadMessages_Label'),
-            tooltip=Lokii.GetString('NoSquadMessages_ToolTip'),
-            default=Options['NoSquadMessages'],
-            subtab={Lokii.GetString('Subtab_Messages')}
-        })
+    UIHELPER_DropdownFromTable('Panels_ColorMode_ItemName', Lokii.GetString('Subtab_Panels'), ColorModes, Options['Panels']['ColorMode']['ItemName'], 'ColorModes')
+    UIHELPER_ColorPicker('Panels_ColorMode_ItemNameCustomValue', Options['Panels']['ColorMode']['ItemNameCustomValue'], Lokii.GetString('Subtab_Panels'))
 
-        InterfaceOptions.AddCheckBox({id='NoSystemMessages',
-            label=Lokii.GetString('NoSystemMessages_Label'),
-            tooltip=Lokii.GetString('NoSystemMessages_ToolTip'),
-            default=Options['NoSystemMessages'],
-            subtab={Lokii.GetString('Subtab_Messages')}
-        })
+    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Nil', Options['Panels']['Color']['AssignedTo']['Nil'], Lokii.GetString('Subtab_Panels'))
+    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Free', Options['Panels']['Color']['AssignedTo']['Free'], Lokii.GetString('Subtab_Panels'))
+    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Player', Options['Panels']['Color']['AssignedTo']['Player'], Lokii.GetString('Subtab_Panels'))
+    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Other', Options['Panels']['Color']['AssignedTo']['Other'], Lokii.GetString('Subtab_Panels'))
 
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages')}})
 
+    UIHELPER_DetectDistributeMarkX('Waypoints', 'EquipmentItems')
+    UIHELPER_DetectDistributeMarkX('Waypoints', 'CraftingComponents')
 
-    InterfaceOptions.StartGroup({
-        id='OnIdentify_Enabled',
-        default=Options['Messages']['OnIdentify_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnIdentify_Enabled_Label'),
-        tooltip=Lokii.GetString('OnIdentify_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-    })
+    UIHELPER_CheckBox('Waypoints_ShowOnHud', Options['Waypoints']['ShowOnHud'], Lokii.GetString('Subtab_Waypoints'))
+    UIHELPER_CheckBox('Waypoints_ShowOnWorldMap', Options['Waypoints']['ShowOnWorldMap'], Lokii.GetString('Subtab_Waypoints'))
+    UIHELPER_CheckBox('Waypoints_ShowOnRadar', Options['Waypoints']['ShowOnRadar'], Lokii.GetString('Subtab_Waypoints'))
+    UIHELPER_DropdownFromTable('Waypoints_RadarEdgeMode', Lokii.GetString('Subtab_Waypoints'), RadarEdgeModes, Options['Waypoints']['RadarEdgeMode'], 'RadarEdgeModes')
+    UIHELPER_CheckBox('Waypoints_TrailAssigned', Options['Waypoints']['TrailAssigned'], Lokii.GetString('Subtab_Waypoints'))
+    UIHELPER_CheckBox('Waypoints_PingAssigned', Options['Waypoints']['PingAssigned'], Lokii.GetString('Subtab_Waypoints'))
+end
 
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnIdentify',
-            default=Options['Messages']['MessageSquad_OnIdentify'],
-            label=Lokii.GetString('MessageSquad_OnIdentify_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnIdentify_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
 
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnIdentify',
-            default=Options['Messages']['MessageFormatSquad_OnIdentify'],
-            label=Lokii.GetString('MessageFormatSquad_OnIdentify_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnIdentify_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
+function BuildInterfaceOptions_Messages()
 
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnIdentify',
-            default=Options['Messages']['MessageSystem_OnIdentify'],
-            label=Lokii.GetString('MessageSystem_OnIdentify_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnIdentify_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
+    UIHELPER_CheckBox('Messages_Channels_Squad', Options['Messages']['Channels']['Squad'], Lokii.GetString('Subtab_Messages'))
+    UIHELPER_CheckBox('Messages_Channels_System', Options['Messages']['Channels']['System'], Lokii.GetString('Subtab_Messages'))
+    UIHELPER_CheckBox('Messages_Channels_Notifications', Options['Messages']['Channels']['Notifications'], Lokii.GetString('Subtab_Messages'))
 
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnIdentify',
-            default=Options['Messages']['MessageFormatSystem_OnIdentify'],
-            label=Lokii.GetString('MessageFormatSystem_OnIdentify_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnIdentify_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
+    UIHELPER_TextInput('Messages_Prefix', false, Options['Messages']['Prefix'], Lokii.GetString('Subtab_Messages'))
 
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
-
-
-
-    InterfaceOptions.StartGroup({
-        id='OnLootReceived_Enabled',
-        default=Options['Messages']['OnLootReceived_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnLootReceived_Enabled_Label'),
-        tooltip=Lokii.GetString('OnLootReceived_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnLootReceived',
-            default=Options['Messages']['MessageSquad_OnLootReceived'],
-            label=Lokii.GetString('MessageSquad_OnLootReceived_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnLootReceived_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnLootReceived',
-            default=Options['Messages']['MessageFormatSquad_OnLootReceived'],
-            label=Lokii.GetString('MessageFormatSquad_OnLootReceived_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnLootReceived_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnLootReceived',
-            default=Options['Messages']['MessageSystem_OnLootReceived'],
-            label=Lokii.GetString('MessageSystem_OnLootReceived_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnLootReceived_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnLootReceived',
-            default=Options['Messages']['MessageFormatSystem_OnLootReceived'],
-            label=Lokii.GetString('MessageFormatSystem_OnLootReceived_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnLootReceived_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnLootStolen_Enabled',
-        default=Options['Messages']['OnLootStolen_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnLootStolen_Enabled_Label'),
-        tooltip=Lokii.GetString('OnLootStolen_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnLootStolen',
-            default=Options['Messages']['MessageSquad_OnLootStolen'],
-            label=Lokii.GetString('MessageSquad_OnLootStolen_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnLootStolen_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnLootStolen',
-            default=Options['Messages']['MessageFormatSquad_OnLootStolen'],
-            label=Lokii.GetString('MessageFormatSquad_OnLootStolen_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnLootStolen_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnLootStolen',
-            default=Options['Messages']['MessageSystem_OnLootStolen'],
-            label=Lokii.GetString('MessageSystem_OnLootStolen_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnLootStolen_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnLootStolen',
-            default=Options['Messages']['MessageFormatSystem_OnLootStolen'],
-            label=Lokii.GetString('MessageFormatSystem_OnLootStolen_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnLootStolen_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnLootSnatched_Enabled',
-        default=Options['Messages']['OnLootSnatched_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnLootSnatched_Enabled_Label'),
-        tooltip=Lokii.GetString('OnLootSnatched_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnLootSnatched',
-            default=Options['Messages']['MessageSquad_OnLootSnatched'],
-            label=Lokii.GetString('MessageSquad_OnLootSnatched_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnLootSnatched_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnLootSnatched',
-            default=Options['Messages']['MessageFormatSquad_OnLootSnatched'],
-            label=Lokii.GetString('MessageFormatSquad_OnLootSnatched_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnLootSnatched_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnLootSnatched',
-            default=Options['Messages']['MessageSystem_OnLootSnatched'],
-            label=Lokii.GetString('MessageSystem_OnLootSnatched_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnLootSnatched_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnLootSnatched',
-            default=Options['Messages']['MessageFormatSystem_OnLootSnatched'],
-            label=Lokii.GetString('MessageFormatSystem_OnLootSnatched_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnLootSnatched_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
-
-    InterfaceOptions.StartGroup({
-        id='OnLootClaimed_Enabled',
-        default=Options['Messages']['OnLootClaimed_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnLootClaimed_Enabled_Label'),
-        tooltip=Lokii.GetString('OnLootClaimed_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnLootClaimed',
-            default=Options['Messages']['MessageSquad_OnLootClaimed'],
-            label=Lokii.GetString('MessageSquad_OnLootClaimed_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnLootClaimed_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnLootClaimed',
-            default=Options['Messages']['MessageFormatSquad_OnLootClaimed'],
-            label=Lokii.GetString('MessageFormatSquad_OnLootClaimed_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnLootClaimed_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnLootClaimed',
-            default=Options['Messages']['MessageSystem_OnLootClaimed'],
-            label=Lokii.GetString('MessageSystem_OnLootClaimed_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnLootClaimed_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnLootClaimed',
-            default=Options['Messages']['MessageFormatSystem_OnLootClaimed'],
-            label=Lokii.GetString('MessageFormatSystem_OnLootClaimed_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnLootClaimed_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnLootDespawn_Enabled',
-        default=Options['Messages']['OnLootDespawn_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnLootDespawn_Enabled_Label'),
-        tooltip=Lokii.GetString('OnLootDespawn_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnLootDespawn',
-            default=Options['Messages']['MessageSquad_OnLootDespawn'],
-            label=Lokii.GetString('MessageSquad_OnLootDespawn_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnLootDespawn_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnLootDespawn',
-            default=Options['Messages']['MessageFormatSquad_OnLootDespawn'],
-            label=Lokii.GetString('MessageFormatSquad_OnLootDespawn_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnLootDespawn_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnLootDespawn',
-            default=Options['Messages']['MessageSystem_OnLootDespawn'],
-            label=Lokii.GetString('MessageSystem_OnLootDespawn_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnLootDespawn_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnLootDespawn',
-            default=Options['Messages']['MessageFormatSystem_OnLootDespawn'],
-            label=Lokii.GetString('MessageFormatSystem_OnLootDespawn_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnLootDespawn_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Detection')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnDistributeItem_Enabled',
-        default=Options['Messages']['OnDistributeItem_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnDistributeItem_Enabled_Label'),
-        tooltip=Lokii.GetString('OnDistributeItem_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnDistributeItem',
-            default=Options['Messages']['MessageSquad_OnDistributeItem'],
-            label=Lokii.GetString('MessageSquad_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnDistributeItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnDistributeItem',
-            label=Lokii.GetString('MessageFormatSquad_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnDistributeItem_ToolTip'),
-            default=Options['Messages']['MessageFormatSquad_OnDistributeItem'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({id='MessageSystem_OnDistributeItem',
-            default=Options['Messages']['MessageSystem_OnDistributeItem'],
-            label=Lokii.GetString('MessageSystem_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnDistributeItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({id='MessageFormatSystem_OnDistributeItem',
-            default=Options['Messages']['MessageFormatSystem_OnDistributeItem'],
-            label=Lokii.GetString('MessageFormatSystem_OnDistributeItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnDistributeItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-    InterfaceOptions.StartGroup({
-        id='OnAcceptingRolls_Enabled',
-        default=Options['Messages']['OnAcceptingRolls_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnAcceptingRolls_Enabled_Label'),
-        tooltip=Lokii.GetString('OnAcceptingRolls_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnAcceptingRolls',
-            default=Options['Messages']['MessageSquad_OnAcceptingRolls'],
-            label=Lokii.GetString('MessageSquad_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnAcceptingRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnAcceptingRolls',
-            label=Lokii.GetString('MessageFormatSquad_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnAcceptingRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSquad_OnAcceptingRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnAcceptingRolls',
-            default=Options['Messages']['MessageSystem_OnRolls'],
-            label=Lokii.GetString('MessageSystem_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnAcceptingRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnAcceptingRolls',
-            label=Lokii.GetString('MessageFormatSystem_OnAcceptingRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnAcceptingRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSystem_OnAcceptingRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnRolls_Enabled',
-        default=Options['Messages']['OnRolls_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnRolls_Enabled_Label'),
-        tooltip=Lokii.GetString('OnRolls_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnRolls',
-            default=Options['Messages']['MessageSquad_OnRolls'],
-            label=Lokii.GetString('MessageSquad_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnRolls',
-            label=Lokii.GetString('MessageFormatSquad_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSquad_OnRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnRolls',
-            default=Options['Messages']['MessageSystem_OnRolls'],
-            label=Lokii.GetString('MessageSystem_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnRolls_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnRolls',
-            label=Lokii.GetString('MessageFormatSystem_OnRolls_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnRolls_ToolTip'),
-            default=Options['Messages']['MessageFormatSystem_OnRolls'],
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnAssignItem_Enabled',
-        default=Options['Messages']['OnAssignItem_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnAssignItem_Enabled_Label'),
-        tooltip=Lokii.GetString('OnAssignItem_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnAssignItem',
-            default=Options['Messages']['MessageSquad_OnAssignItem'],
-            label=Lokii.GetString('MessageSquad_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnAssignItem',
-            default=Options['Messages']['MessageFormatSquad_OnAssignItem'],
-            label=Lokii.GetString('MessageFormatSquad_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnAssignItem',
-            default=Options['Messages']['MessageSystem_OnAssignItem'],
-            label=Lokii.GetString('MessageSystem_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnAssignItem',
-            default=Options['Messages']['MessageFormatSystem_OnAssignItem'],
-            label=Lokii.GetString('MessageFormatSystem_OnAssignItem_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnAssignItem_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-
-    InterfaceOptions.StartGroup({
-        id='OnRollAccept_Enabled',
-        default=Options['Messages']['OnRollAccept_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnRollAccept_Enabled_Label'),
-        tooltip=Lokii.GetString('OnRollAccept_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnRollAccept',
-            default=Options['Messages']['MessageSquad_OnRollAccept'],
-            label=Lokii.GetString('MessageSquad_OnRollAccept_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnRollAccept_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnRollAccept',
-            default=Options['Messages']['MessageFormatSquad_OnRollAccept'],
-            label=Lokii.GetString('MessageFormatSquad_OnRollAccept_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnRollAccept_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnRollAccept',
-            default=Options['Messages']['MessageSystem_OnRollAccept'],
-            label=Lokii.GetString('MessageSystem_OnRollAccept_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnRollAccept_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnRollAccept',
-            default=Options['Messages']['MessageFormatSystem_OnRollAccept'],
-            label=Lokii.GetString('MessageFormatSystem_OnRollAccept_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnRollAccept_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnRollBusy_Enabled',
-        default=Options['Messages']['OnRollBusy_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnRollBusy_Enabled_Label'),
-        tooltip=Lokii.GetString('OnRollBusy_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnRollBusy',
-            default=Options['Messages']['MessageSquad_OnRollBusy'],
-            label=Lokii.GetString('MessageSquad_OnRollBusy_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnRollBusy_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnRollBusy',
-            default=Options['Messages']['MessageFormatSquad_OnRollBusy'],
-            label=Lokii.GetString('MessageFormatSquad_OnRollBusy_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnRollBusy_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnRollBusy',
-            default=Options['Messages']['MessageSystem_OnRollBusy'],
-            label=Lokii.GetString('MessageSystem_OnRollBusy_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnRollBusy_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnRollBusy',
-            default=Options['Messages']['MessageFormatSystem_OnRollBusy'],
-            label=Lokii.GetString('MessageFormatSystem_OnRollBusy_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnRollBusy_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnRollChange_Enabled',
-        default=Options['Messages']['OnRollChange_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnRollChange_Enabled_Label'),
-        tooltip=Lokii.GetString('OnRollChange_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnRollChange',
-            default=Options['Messages']['MessageSquad_OnRollChange'],
-            label=Lokii.GetString('MessageSquad_OnRollChange_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnRollChange_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnRollChange',
-            default=Options['Messages']['MessageFormatSquad_OnRollChange'],
-            label=Lokii.GetString('MessageFormatSquad_OnRollChange_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnRollChange_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnRollChange',
-            default=Options['Messages']['MessageSystem_OnRollChange'],
-            label=Lokii.GetString('MessageSystem_OnRollChange_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnRollChange_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnRollChange',
-            default=Options['Messages']['MessageFormatSystem_OnRollChange'],
-            label=Lokii.GetString('MessageFormatSystem_OnRollChange_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnRollChange_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='OnRollNobody_Enabled',
-        default=Options['Messages']['OnRollNobody_Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('OnRollNobody_Enabled_Label'),
-        tooltip=Lokii.GetString('OnRollNobody_Enabled_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSquad_OnRollNobody',
-            default=Options['Messages']['MessageSquad_OnRollNobody'],
-            label=Lokii.GetString('MessageSquad_OnRollNobody_Label'),
-            tooltip=Lokii.GetString('MessageSquad_OnRollNobody_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSquad_OnRollNobody',
-            default=Options['Messages']['MessageFormatSquad_OnRollNobody'],
-            label=Lokii.GetString('MessageFormatSquad_OnRollNobody_Label'),
-            tooltip=Lokii.GetString('MessageFormatSquad_OnRollNobody_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='MessageSystem_OnRollNobody',
-            default=Options['Messages']['MessageSystem_OnRollNobody'],
-            label=Lokii.GetString('MessageSystem_OnRollNobody_Label'),
-            tooltip=Lokii.GetString('MessageSystem_OnRollNobody_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id='MessageFormatSystem_OnRollNobody',
-            default=Options['Messages']['MessageFormatSystem_OnRollNobody'],
-            label=Lokii.GetString('MessageFormatSystem_OnRollNobody_Label'),
-            tooltip=Lokii.GetString('MessageFormatSystem_OnRollNobody_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Distribution')}})
+    for tableKey, tableValue in pairs(Options['Messages']['Events']) do
+        for eventKey, eventValue in pairs(Options['Messages']['Events'][tableKey]) do
+            UIHELPER_MessageEventOptions('Messages', tableKey..'_'..eventKey, Options['Messages']['Events'][tableKey][eventKey], {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_'..tableKey)})
+        end
+    end
 
     -- Messages Communication Settings
+    -- yolo pasteday
     InterfaceOptions.StartGroup({
         id='Group_Com',
         label=Lokii.GetString('Group_Com_Label'),
@@ -1535,363 +1273,217 @@ function SetupInterfaceOptions()
     })
 
         InterfaceOptions.AddCheckBox({
-            id='Communication_Custom',
-            default=Options['Messages']['Communication_Custom'],
-            label=Lokii.GetString('Communication_Custom_Label'),
-            tooltip=Lokii.GetString('Communication_Custom_ToolTip'),
+            id='Messages_Communication_Custom',
+            default=Options['Messages']['Communication']['Custom'],
+            label=Lokii.GetString('Messages_Communication_Custom_Label'),
+            tooltip=Lokii.GetString('Messages_Communication_Custom_ToolTip'),
             subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
         InterfaceOptions.AddTextInput({
-            id='Communication_Prefix',
-            default=Options['Messages']['Communication_Prefix'],
-            label=Lokii.GetString('Communication_Prefix_Label'),
-            tooltip=Lokii.GetString('Communication_Prefix_ToolTip'),
+            id='Messages_Communication_Prefix',
+            default=Options['Messages']['Communication']['Prefix'],
+            label=Lokii.GetString('Messages_Communication_Prefix_Label'),
+            tooltip=Lokii.GetString('Messages_Communication_Prefix_ToolTip'),
             subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
         InterfaceOptions.AddCheckBox({
-            id='Communication_Assign',
-            default=Options['Messages']['Communication_Assign'],
-            label=Lokii.GetString('Communication_Assign_Label'),
-            tooltip=Lokii.GetString('Communication_Assign_ToolTip'),
+            id='Messages_Communication_Assign_Enabled',
+            default=Options['Messages']['Communication']['Assign']['Enabled'],
+            label=Lokii.GetString('Messages_Communication_Assign_Enabled_Label'),
+            tooltip=Lokii.GetString('Messages_Communication_Assign_Enabled_ToolTip'),
             subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
         InterfaceOptions.AddTextInput({
-            id='Communication_Assign_Format',
-            default=Options['Messages']['Communication_Assign_Format'],
-            label=Lokii.GetString('Communication_Assign_Format_Label'),
-            tooltip=Lokii.GetString('Communication_Assign_Format_ToolTip'),
+            id='Messages_Communication_Assign_Format',
+            default=Options['Messages']['Communication']['Assign']['Format'],
+            label=Lokii.GetString('Messages_Communication_Assign_Format_Label'),
+            tooltip=Lokii.GetString('Messages_Communication_Assign_Format_ToolTip'),
             subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
     InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}})
 
+end
+
+function BuildInterfaceOptions_Tracker()
+    UIHELPER_DropdownFromTable('Tracker_Visibility', Lokii.GetString('Subtab_Tracker'), TrackerVisibilityOptions, Options['Tracker']['Visibility'], 'TrackerVisibility')
+end
+
+function BuildInterfaceOptions_Sounds()
+
+    UIHELPER_CheckBox('Sounds_Mute', Options['Sounds']['Mute'], Lokii.GetString('Subtab_Sounds'))
+
+    UIHELPER_SoundOptionsMenu('Sounds_OnIdentify', Lokii.GetString('Sounds_OnIdentify_Label'), Options['Sounds']['OnIdentify'], Lokii.GetString('Subtab_Sounds'))
+
+    UIHELPER_SoundOptionsMenu('Sounds_OnIdentifyRollable', Lokii.GetString('Sounds_OnIdentifyRollable_Label'), Options['Sounds']['OnIdentifyRollable'], Lokii.GetString('Subtab_Sounds'))
+
+    UIHELPER_SoundOptionsMenu('Sounds_OnAssignItemToMe', Lokii.GetString('Sounds_OnAssignItemToMe_Label'), Options['Sounds']['OnAssignItemToMe'], Lokii.GetString('Subtab_Sounds'))
+
+    UIHELPER_SoundOptionsMenu('Sounds_OnAssignItemToOther', Lokii.GetString('Sounds_OnAssignItemToOther_Label'), Options['Sounds']['OnAssignItemToOther'], Lokii.GetString('Subtab_Sounds'))
+
+end
+
+
+
+function UIHELPER_DetectDistributeMarkX(rootKey, x)
+
+    -- Checkbox Group X
+    --[[
+    -- Maybe one day we'll have nested groups...
+    InterfaceOptions.StartGroup({
+        id       = rootKey..'_'..x..'_Enabled',
+        checkbox = true,
+        default  = Options[rootKey][x]['Enabled'],
+        label    = Lokii.GetString(rootKey..'_'..x..'_Enabled_Label'),
+        tooltip  = Lokii.GetString(rootKey..'_'..x..'_Enabled_ToolTip'),
+        subtab   = {
+            Lokii.GetString('Subtab_'..rootKey)
+        },
+    })
+    ]]--
+        UIHELPER_CheckBox(rootKey..'_'..x..'_Enabled', Options[rootKey][x]['Enabled'], Lokii.GetString('Subtab_'..rootKey))
+
+        -- Mode dropdown
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', Lokii.GetString('Subtab_'..rootKey), TriggerModeOptions, Options[rootKey][x]['Mode'], 'Mode')
+
+        -- Simple mode options
+            UIHELPER_StageX(rootKey, x, 'Simple', 'Subtab_'..rootKey)
+
+        -- Advanced mode options
+            UIHELPER_StageX(rootKey, x, 'Stage1', 'Subtab_'..rootKey)
+            UIHELPER_StageX(rootKey, x, 'Stage2', 'Subtab_'..rootKey)
+            UIHELPER_StageX(rootKey, x, 'Stage3', 'Subtab_'..rootKey)
+            UIHELPER_StageX(rootKey, x, 'Stage4', 'Subtab_'..rootKey)
+
+    --[[
+    InterfaceOptions.StopGroup({
+        subtab = {
+            Lokii.GetString('Subtab_'..rootKey)
+        },
+    })
+    ]]--
+end
+
+function UIHELPER_StageX(rootKey, x, stage, subtab)
+    --[[
+    -- Enable checkbox, not used by Simple
+    if stage ~= 'Simple' then
+        InterfaceOptions.AddCheckBox({
+            id      = rootKey..'_'..x..'_'..stage..'_Enabled',
+            default = Options[rootKey][x][stage]['Enabled'],
+            label    = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_Label'),
+            tooltip  = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_ToolTip'),
+            subtab  = {
+                Lokii.GetString(subtab)
+            },
+        })
+    end
+    --]]
+    local checkbox = (stage ~= 'Simple')
 
     InterfaceOptions.StartGroup({
-        id='Group_Panels',
-        default=Options['Panels']['Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('Group_Panels_Label'),
-        tooltip=Lokii.GetString('Group_Panels_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Markers')}
+        id       = rootKey..'_'..x..'_'..stage..'_Enabled',
+        checkbox = checkbox,
+        default  = Options[rootKey][x]['Enabled'],
+        label    = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_Label'),
+        tooltip  = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_ToolTip'),
+        subtab   = {
+            Lokii.GetString(subtab)
+        },
     })
 
-        InterfaceOptions.AddChoiceMenu({
-            id='Panels_Mode',
-            default=Options['Panels']['Mode'],
-            label=Lokii.GetString('Panels_Mode_Label'),
-            tooltip=Lokii.GetString('Panels_Mode_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Panels_Mode',
-                    val='standard',
-                    label=Lokii.GetString('Panels_Mode_Standard_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
+        -- Distribution extras
+        if rootKey == 'Distribution' then
+            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_LootMode', Lokii.GetString('Subtab_'..rootKey), DistributionMode, Options[rootKey][x][stage]['LootMode'], 'LootMode')
+            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_Weighting', Lokii.GetString('Subtab_'..rootKey), WeightingOptions, Options[rootKey][x][stage]['Weighting'], 'Weighting')
+        end
 
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Panels_Mode',
-                    val='small',
-                    label=Lokii.GetString('Panels_Mode_Small_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
+        -- Tier and Quality threshold dropdowns
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', Lokii.GetString('Subtab_'..rootKey), TierOptions, Options[rootKey][x][stage]['TierThreshold'], 'TierThreshold')
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', Lokii.GetString('Subtab_'..rootKey), QualityOptions, Options[rootKey][x][stage]['QualityThreshold'], 'QualityThreshold')
 
-        InterfaceOptions.AddChoiceMenu({
-            id='Panels_HeaderBar_ColorMode',
-            default=Options['Panels']['HeaderBar_ColorMode'],
-            label=Lokii.GetString('Panels_HeaderBar_ColorMode_Label'),
-            tooltip=Lokii.GetString('Panels_HeaderBar_ColorMode_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
+        -- Custom Quality input
+        InterfaceOptions.AddTextInput({
+            id      = rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue',
+            numeric = true,
+            label   = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue_Label'),
+            tooltip = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue_ToolTip'),
+            default = Options[rootKey][x][stage]['QualityThresholdCustomValue'],
+            subtab  = {
+                    Lokii.GetString(subtab)
+            },
         })
 
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Panels_HeaderBar_ColorMode', 
-                    val='item-quality', 
-                    label=Lokii.GetString('Panels_HeaderBar_ColorMode_Quality_Label'), 
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
+    InterfaceOptions.StopGroup({
+        subtab = {
+            Lokii.GetString(subtab)
+        },
+    })
+end
 
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Panels_HeaderBar_ColorMode',
-                    val='custom',
-                    label=Lokii.GetString('Panels_HeaderBar_ColorMode_Custom_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
-
-        InterfaceOptions.AddColorPicker({
-            id='Panels_Color_HeaderBar_ColorMode_Custom',
-            label=Lokii.GetString('Panels_Color_HeaderBar_ColorMode_Custom_Label'), 
-            default=Options['Panels']['Color_HeaderBar_ColorMode_Custom'], 
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddChoiceMenu({
-            id = 'Panels_ItemName_ColorMode',
-            default = Options['Panels']['Color_ItemName_ColorMode'],
-            label = Lokii.GetString('Panels_ItemName_ColorMode_Label'),
-            tooltip = Lokii.GetString('Panels_ItemName_ColorMode_ToolTip'),
-            subtab = {Lokii.GetString('Subtab_Markers')}
-        })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Panels_ItemName_ColorMode',
-                    val='item-quality',
-                    label=Lokii.GetString('Panels_ItemName_ColorMode_Quality_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Panels_ItemName_ColorMode',
-                    val='custom',
-                    label=Lokii.GetString('Panels_ItemName_ColorMode_Custom_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
-
-        InterfaceOptions.AddColorPicker({
-            id='Panels_Color_ItemName_ColorMode_Custom',
-            label=Lokii.GetString('Panels_Color_ItemName_ColorMode_Custom_Label'),
-            default=Options['Panels']['Color_ItemName_ColorMode_Custom'],
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Panels_Display_AssignedTo',
-            default=Options['Panels']['Display_AssignedTo'],
-            label=Lokii.GetString('Panels_Display_AssignedTo_Label'),
-            tooltip=Lokii.GetString('Panels_Display_AssignedTo_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Panels_Display_AssignedTo_Hide_nil',
-            default=Options['Panels']['Display_AssignedTo_Hide_nil'],
-            label=Lokii.GetString('Panels_Display_AssignedTo_Hide_nil_Label'),
-            tooltip=Lokii.GetString('Panels_Display_AssignedTo_Hide_nil_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddColorPicker({
-            id='Panels_Color_AssignedTo_nil',
-            label=Lokii.GetString('Color_AssignedTo_nil_Label'),
-            default=Options['Panels']['Color_AssignedTo_nil'],
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddColorPicker({
-            id='Panels_Color_AssignedTo_free',
-            label=Lokii.GetString('Color_AssignedTo_free_Label'),
-            default=Options['Panels']['Color_AssignedTo_free'],
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddColorPicker({
-            id='Panels_Color_AssignedTo_player',
-            label=Lokii.GetString('Color_AssignedTo_player_Label'),
-            default=Options['Panels']['Color_AssignedTo_player'],
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddColorPicker({
-            id='Panels_Color_AssignedTo_other',
-            label=Lokii.GetString('Color_AssignedTo_other_Label'),
-            default=Options['Panels']['Color_AssignedTo_other'],
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Markers')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='Group_Waypoints',
-        default=Options['Waypoints']['Enabled'],
-        checkbox=true,
-        label=Lokii.GetString('Group_Waypoints_Label'),
-        tooltip=Lokii.GetString('Group_Waypoints_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Markers')}
+function UIHELPER_DropdownFromTable(key, subtab, table, tableDefault, optionKey)
+    InterfaceOptions.AddChoiceMenu({
+        id      = key,
+        default = tableDefault,
+        label   = Lokii.GetString(key..'_Label'),
+        tooltip = Lokii.GetString(key..'_ToolTip'),
+        subtab  = subtab,
     })
 
-        InterfaceOptions.AddCheckBox({
-            id='Waypoints_ShowOnHud',
-            default=Options['Waypoints']['ShowOnHud'],
-            label=Lokii.GetString('Waypoints_ShowOnHud_Label'),
-            tooltip=Lokii.GetString('Waypoints_ShowOnHud_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
+        for tableKey, tableValue in pairs(table) do
+            InterfaceOptions.AddChoiceEntry({
+                menuId  = key,
+                val     = tableValue,
+                label   = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'),
+                tooltip = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_ToolTip'),
+                subtab  = subtab,
+            })
+            --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'))
+            --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_ToolTip'))
+        end
+end
 
-        InterfaceOptions.AddCheckBox({
-            id='Waypoints_ShowOnWorldMap',
-            default=Options['Waypoints']['ShowOnWorldMap'],
-            label=Lokii.GetString('Waypoints_ShowOnWorldMap_Label'),
-            tooltip=Lokii.GetString('Waypoints_ShowOnWorldMap_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Waypoints_ShowOnRadar',
-            default=Options['Waypoints']['ShowOnRadar'],
-            label=Lokii.GetString('Waypoints_ShowOnRadar_Label'),
-            tooltip=Lokii.GetString('Waypoints_ShowOnRadar_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddChoiceMenu({
-            id = 'Waypoints_RadarEdgeMode',
-            default = Options['Waypoints']['RadarEdgeMode'],
-            label = Lokii.GetString('Waypoints_RadarEdgeMode_Label'),
-            tooltip = Lokii.GetString('Waypoints_RadarEdgeMode_ToolTip'),
-            subtab = {Lokii.GetString('Subtab_Markers')}
-        })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Waypoints_RadarEdgeMode',
-                    val=MapMarker.EDGE_NONE,
-                    label=Lokii.GetString('Waypoints_RadarEdgeMode_none_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Waypoints_RadarEdgeMode',
-                    val=MapMarker.EDGE_ARROW,
-                    label=Lokii.GetString('Waypoints_RadarEdgeMode_arrow_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Waypoints_RadarEdgeMode',
-                    val=MapMarker.EDGE_ICON,
-                    label=Lokii.GetString('Waypoints_RadarEdgeMode_icon_Label'),
-                    subtab={Lokii.GetString('Subtab_Markers')}
-                })
-
-        InterfaceOptions.AddCheckBox({
-            id='Waypoints_TrailAssigned',
-            default=Options['Waypoints']['TrailAssigned'],
-            label=Lokii.GetString('Waypoints_TrailAssigned_Label'),
-            tooltip=Lokii.GetString('Waypoints_TrailAssigned_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Waypoints_PingAssigned',
-            default=Options['Waypoints']['PingAssigned'],
-            label=Lokii.GetString('Waypoints_PingAssigned_Label'),
-            tooltip=Lokii.GetString('Waypoints_PingAssigned_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Markers')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Markers')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='Group_Tracker',
-        label=Lokii.GetString('Group_Tracker_Label'),
-        subtab={Lokii.GetString('Subtab_Tracker')}
+function UIHELPER_TextInput(id, numeric, default, subtab)
+    InterfaceOptions.AddTextInput({
+        id      = id,
+        numeric = numeric,
+        label   = Lokii.GetString(id..'_Label'),
+        tooltip = Lokii.GetString(id..'_ToolTip'),
+        default = default,
+        subtab  = subtab,
     })
+end
 
-        InterfaceOptions.AddMovableFrame({
-            frame = TRACKER,
-            label = "xSLM Tracker",
-            scalable = true
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Tracker_Enabled',
-            default=Options['Tracker']['Enabled'],
-            label=Lokii.GetString('Tracker_Enabled_Label'),
-            tooltip=Lokii.GetString('Tracker_Enabled_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Tracker')}
-        })
-
-        InterfaceOptions.AddChoiceMenu({
-            id = 'Tracker_Visibility',
-            default = Options['Tracker']['Visibility'],
-            label = Lokii.GetString('Tracker_Visibility_Label'),
-            tooltip = Lokii.GetString('Tracker_Visibility_ToolTip'),
-            subtab = {Lokii.GetString('Subtab_Tracker')}
-        })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Tracker_Visibility',
-                    val='always',
-                    label=Lokii.GetString('Tracker_Visibility_always_Label'),
-                    subtab={Lokii.GetString('Subtab_Tracker')}
-                })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Tracker_Visibility',
-                    val='hud',
-                    label=Lokii.GetString('Tracker_Visibility_hud_Label'),
-                    subtab={Lokii.GetString('Subtab_Tracker')}
-                })
-
-                InterfaceOptions.AddChoiceEntry({
-                    menuId='Tracker_Visibility',
-                    val='mousemode',
-                    label=Lokii.GetString('Tracker_Visibility_mousemode_Label'),
-                    subtab={Lokii.GetString('Subtab_Tracker')}
-                })
-
-        InterfaceOptions.AddCheckBox({
-            id='Tracker_Display_Mode',
-            default=Options['Tracker']['Display_Mode'],
-            label=Lokii.GetString('Tracker_Display_Mode_Label'),
-            tooltip=Lokii.GetString('Tracker_Display_Mode_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Tracker')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Tracker_Display_Mode_OnlySquadLeader',
-            default=Options['Tracker']['Display_Mode_OnlySquadLeader'],
-            label=Lokii.GetString('Tracker_Display_Mode_OnlySquadLeader_Label'),
-            tooltip=Lokii.GetString('Tracker_Display_Mode_OnlySquadLeader_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Tracker')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id='Tracker_Display_Headings',
-            default=Options['Tracker']['Display_Headings'],
-            label=Lokii.GetString('Tracker_Display_Headings_Label'),
-            tooltip=Lokii.GetString('Tracker_Display_Headings_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Tracker')}
-        })
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Tracker')}})
-
-
-    InterfaceOptions.StartGroup({
-        id='Group_Sounds',
-        label=Lokii.GetString('Group_Sounds_Label'),
-        subtab={Lokii.GetString('Subtab_Sounds')}
+function UIHELPER_CheckBox(id, default, subtab)
+    InterfaceOptions.AddCheckBox({
+        id      = id,
+        default = default,
+        label   = Lokii.GetString(id..'_Label'),
+        tooltip = Lokii.GetString(id..'_ToolTip'),
+        subtab  = subtab,
     })
+end
 
-        InterfaceOptions.AddCheckBox({
-            id='Sounds_Mute',
-            default=Options['Sounds']['Mute'],
-            label=Lokii.GetString('Sounds_Mute_Label'),
-            tooltip=Lokii.GetString('Sounds_Mute_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Sounds')}
-        })
 
-        UISoundOptionsMenu('Sounds_OnIdentify', Lokii.GetString('Sounds_OnIdentify_Label'), Options['Sounds']['OnIdentify'], Lokii.GetString('Subtab_Sounds'))
-
-        --UISoundOptionsMenu('Sounds_OnIdentify_Rollable', Lokii.GetString('Sounds_OnIdentify_Rollable_Label'), Options['Sounds']['OnIdentify_Rollable'], Lokii.GetString('Subtab_Sounds'))
-
-        UISoundOptionsMenu('Sounds_OnAssignItem_ToMe', Lokii.GetString('Sounds_OnAssignItem_ToMe_Label'), Options['Sounds']['OnAssignItem_ToMe'], Lokii.GetString('Subtab_Sounds'))
-
-        UISoundOptionsMenu('Sounds_OnAssignItem_ToOther', Lokii.GetString('Sounds_OnAssignItem_ToOther_Label'), Options['Sounds']['OnAssignItem_ToOther'], Lokii.GetString('Subtab_Sounds'))
-
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Sounds')}})
+function UIHELPER_ColorPicker(id, default, subtab)
+    InterfaceOptions.AddColorPicker({
+        id      = id,
+        default = default,
+        label   = Lokii.GetString(id..'_Label'),
+        tooltip = Lokii.GetString(id..'_ToolTip'),
+        subtab  = subtab,
+    })
 
 end
 
 --[[
-    UISoundOptionsMenu(uid, label, default, subtab)
+    UIHELPER_SoundOptionsMenu(uid, label, default, subtab)
     Helper function for creating sound options
 ]]--
-function UISoundOptionsMenu(uid, label, default, subtab)
+function UIHELPER_SoundOptionsMenu(uid, label, default, subtab)
     InterfaceOptions.AddChoiceMenu({
             id=uid,
             label=label,
@@ -1908,3 +1500,36 @@ function UISoundOptionsMenu(uid, label, default, subtab)
         end
 end
 
+
+function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
+    Debug.Log('Subtab:')
+    Debug.Table(subtab)
+    -- Checkbox Group
+    InterfaceOptions.StartGroup({
+        id       = rootKey..'_Events_'..eventKey..'_Enabled',
+        checkbox = true,
+        default  = defaults['Enabled'],
+        label    = Lokii.GetString(rootKey..'_Events_'..eventKey..'_Enabled_Label'),
+        tooltip  = Lokii.GetString(rootKey..'_Events_'..eventKey..'_Enabled_ToolTip'),
+        subtab   = subtab,
+    })
+
+        -- Squad
+        UIHELPER_CheckBox(rootKey..'_Events_'..eventKey..'_Channels_Squad_Enabled', defaults['Channels']['Squad']['Enabled'], subtab)
+        UIHELPER_TextInput(rootKey..'_Events_'..eventKey..'_Channels_Squad_Format', false, defaults['Channels']['Squad']['Format'], subtab)
+ 
+
+        -- System
+        UIHELPER_CheckBox(rootKey..'_Events_'..eventKey..'_Channels_System_Enabled', defaults['Channels']['System']['Enabled'], subtab)
+        UIHELPER_TextInput(rootKey..'_Events_'..eventKey..'_Channels_System_Format', false, defaults['Channels']['System']['Format'], subtab)
+
+        -- Notifications
+        UIHELPER_CheckBox(rootKey..'_Events_'..eventKey..'_Channels_Notifications_Enabled', defaults['Channels']['Notifications']['Enabled'], subtab)
+        UIHELPER_TextInput(rootKey..'_Events_'..eventKey..'_Channels_Notifications_Format', false, defaults['Channels']['Notifications']['Format'], subtab)
+
+    InterfaceOptions.StopGroup({
+            subtab = subtab,
+        })
+
+
+end
