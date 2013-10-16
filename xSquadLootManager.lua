@@ -12,6 +12,7 @@ require 'lib/lib_Slash' -- Slash commands
 require 'lib/lib_Vector' -- Vector coordinates
 require 'lib/lib_Button' -- Buttons used by Tracker
 require 'lib/lib_ToolTip' -- ToolTip used by Tracker
+require 'lib/lib_ChatLib' -- Used to send some chat messages
 
 -- Custom
 require './lib/Lokii' -- Localization
@@ -87,10 +88,9 @@ function OnComponentLoad()
     -- Best make sure the tracker is set up
     UpdateTracker()
 
-   
     -- Print version message
     if Component.GetSetting('Core_VersionMessage') then
-        SendSystemMessage('Xsear\'s Squad Loot Manager v'..csVersion..' Loaded')
+        SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion..' Loaded')
     end
 end
 
@@ -211,8 +211,8 @@ end
     Used to detect loot
 ]]--
 function OnEntityAvailable(args)
-    -- Exit if addon is disabled
-    if not Options['Core']['Enabled'] then return end
+    -- Requires that Core and Detection is enabled
+    if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
     -- Filter away any entities that are not loot
     if args.type == 'loot' then
@@ -233,7 +233,7 @@ function OnEntityAvailable(args)
         end
 
         -- Determine if it is a lootable entity
-        if IsLootableTarget(targetInfo) and IsLootableItem(itemInfo) then
+        if IsLootableTarget(targetInfo) and IsTrackableItemType(itemInfo) then
 
             -- Determine if it is something we want to track
             if (IsPastThreshold(targetInfo.quality) or Options['IdentifyAllLoot']) and not IsIdentified(args.entityId) then
@@ -248,6 +248,7 @@ end
     Callback function for when player receives chat messages
     Identifies messages
     Todo: Move logic into separate functions
+    Fixme: holy shit this function is a clusterfuck
 ]]--
 function OnChatMessage(args)
     if not Options['Core']['Enabled'] then return end
@@ -256,11 +257,11 @@ function OnChatMessage(args)
 
         -- Filter for only addon communication messages
         -- We only listen to messages from the squad leader, and only if we're not the squad leader ourselves (that has to be some fake squad leader fooshu!)
-        if IsSquadLeader(args.author) and not bIsSquadLeader and FindFirstKeyInText(args.text, Options['Messages']['Communication_Prefix']) ~= nil then
+        if IsSquadLeader(args.author) and not bIsSquadLeader and FindFirstKeyInText(args.text, Options['Messages']['Communication']['Prefix']) ~= nil then
             Debug.Log('Squad Communication Message')
             Debug.Log(args.text)
             -- Strip away prefix
-            local message = FilterFirstKeyFromText(args.text, Options['Messages']['Communication_Prefix'])
+            local message = FilterFirstKeyFromText(args.text, Options['Messages']['Communication']['Prefix'])
 
             -- Hardcoded for Assign message
             -- Todo: Should just grab first part to determine command before grabbing rest
@@ -356,10 +357,12 @@ end
     
 ]]--
 function OnLootCollected(args)
-    -- Exit if addon is disabled
-    if not Options['Core']['Enabled'] then return end
+    -- Requires Core and Detection enabled
+    if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
-    if not args.itemTypeId then Debug.Warn('OnLootCollected args.itemTypeId is nil') return end
+    -- Requires args.itemTypeId, otherwise we can't get item info
+    -- Fixme: Is this check needed? Is this error needed? Does it trigger on Powerups for example?
+    if not args.itemTypeId then Debug.Error('OnLootCollected args.itemTypeId is nil') return end
 
     -- Get item info
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId)
@@ -371,7 +374,7 @@ function OnLootCollected(args)
     end
 
     -- Is it loot that we care about?
-    if IsLootableItem(itemInfo) then
+    if IsTrackableItemType(itemInfo) then
 
         -- Debug Log
         if Options['Debug']['LogLootableCollection'] then
@@ -425,7 +428,7 @@ function OnLootCollected(args)
         end
 
         -- No identified loot or this item wasn't identified
-        if (IsPastThreshold(args.quality) or Options['IdentifyAllLoot']) then
+        if (IsPastThreshold(args.quality)) then
             OnLootClaimed({lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
         end
     end
@@ -446,10 +449,10 @@ function IsLootableTarget(targetInfo)
 end
 
 --[[
-    IsLootableItem(itemInfo)
+    IsTrackableItemType(itemInfo)
     Whether or not an item (post pickup) was a lootable target (ish)
 ]]--
-function IsLootableItem(itemInfo)
+function IsTrackableItemType(itemInfo)
     -- Verify that the looted item is of a type that we care about
     if  itemInfo.type == 'frame_module' or
         itemInfo.type == 'ability_module' or
@@ -1565,90 +1568,112 @@ end
 
 
 --[[
-    SendMessage
-    Sends message to the squad
+    SendChatMessage(channel, message, [alert])
+    For normal chat messages.
 ]]--
-function SendMessage(message, alert, communication)
+function SendChatMessage(channel, message, alert)
+    -- Requires that Core and Messages are Enabled
+    if not (Options['Core']['Enabled'] and Options['Messages']['Enabled']) then return end
+
+    -- Requires that you are the squad leader
+    if not bIsSquadLeader then return end
+
+    -- Handle optional arguments
     alert = alert or false
-    communication = communication or false
-
-    -- Exit if disabled
-    if Options['NoSquadMessages'] then return end
-
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Setup alert prefix
-    local alertPrefix = ''
-    if alert then alertPrefix = '!' end
 
     -- Setup prefix
     local prefix = ''
-    if communication then
-        prefix = Options['Messages']['Communication_Prefix']
-    else
-        prefix = Options['Messages']['Generic_Prefix']
+    if alert then prefix = '!' end
+    prefix = prefix..Options['Messages']['Prefix']
+
+    -- Function to handle the actual sending of messages
+    local function SendMessageToChat(channel, message)
+        channel = string.lower(channel)
+        if channel == 'system' then
+            ChatLib.SystemMessage({text=message})
+        elseif channel == 'notification' or channel == 'notifications' then
+            ChatLib.Notification({text=message})
+        else
+            Chat.SendChannelText(channel, message)
+        end
     end
 
-    -- Handle splitting long messages into multiple
-    if string.len(message) > ciSquadMessageLengthLimit then
-        local messages = explode('\n', message)
+    -- Calculate message content length limit
+    local messageContentLengthLimit = ciSquadMessageLengthLimit - string.len(Options['Messages']['Prefix'])
 
+    -- If the message is to long to send in one go, attempt to split lines into multiple messages
+    if string.len(message) > messageContentLengthLimit then
+        -- Explode the message on each new line
+        local messages = explode('\n', message)
         local currentMessage = ''
 
-        local messageContentLengthLimit = ciSquadMessageLengthLimit - string.len(alertPrefix) - string.len(prefix)
-
         -- For each line in the message
-        for num, message in ipairs(messages) do
+        for num, line in ipairs(messages) do
+            Debug.Log(tostring(num)..' : Length: '..string.len(message)..'/'..tostring(messageContentLengthLimit)..' : Line: '..line)
+            Debug.Log('Message: '..currentMessage)
 
-            Debug.Log(num..' : Length: '..string.len(message)..' : Message: '..message)
+            -- Warn if line is too long
+            if string.len(line) > messageContentLengthLimit then 
+                Debug.Warn('Unable to properly accommodate for message length, too many characters on line '..tostring(num))
+            end
 
             -- On the very first iteration, just add message
             if currentMessage == '' then
-
-                currentMessage = message
+                currentMessage = line
 
             -- On subsequent iterations, we're gonna do some shit
             else
-
                 -- If adding the next line exceeds the character limit
-                if string.len(currentMessage..'\n'..message) > messageContentLengthLimit then
-
+                if string.len(currentMessage..'\n'..line) > messageContentLengthLimit then
                     -- Send the current line and start a new message for the next line
-                    SendMessage(currentMessage, alert, communication)
-                    currentMessage = message
+                    SendMessageToChat(channel, prefix..currentMessage)
+                    currentMessage = line
 
                 -- Otherwise
                 else
                     -- Add the next line to the current line
-                    currentMessage = currentMessage..'\n'..message
+                    currentMessage = currentMessage..'\n'..line
                 end
-
-
             end
-
         end
         -- Make sure we send the last message
-        if currentMessage ~= '' then SendMessage(currentMessage, alert, communication) end
+        if currentMessage ~= '' then SendMessageToChat(channel, prefix..currentMessage) end
 
+    -- Otherwise, send message normally
     else
-        -- Send message normally
-        Debug.Log('Sending Squad Message: '..alertPrefix..prefix..message)
-        Debug.Log('Message Length: '..string.len(alertPrefix..prefix..message))
-        Chat.SendChannelText('squad', alertPrefix..prefix..message)
+        Debug.Log('Sending Chat Message: '..prefix..message)
+        Debug.Log('Message Length: '..string.len(prefix..message))
+        SendMessageToChat(channel, prefix..message)
     end
 end
 
 --[[
-    SendSystemMessage
-    Sends message to the system
-]]--
-function SendSystemMessage(message)
-    -- Exit if disabled
-    if not Options['Core']['Enabled'] or not Options['Messages']['Channels']['System'] then return end
+    CommunicationEvent(type, eventArgs)
+    For addon-to-addon communication events.
+--]]
+function CommunicationEvent(type, eventArgs)
+    -- Requires that Core and Messages are Enabled
+    if not (Options['Core']['Enabled'] and Options['Messages']['Enabled']) then return end
 
-    -- Send system message
-    Component.GenerateEvent('MY_SYSTEM_MESSAGE', {text=message})
+    -- Requires that you are the squad leader
+    if not bIsSquadLeader then return end
+
+    -- Requires that args.type is supplied
+    if args.type == nil then 
+        Debug.Error('CommunicationEvent called without a type supplied')
+        return
+    end
+
+    -- Warn if custom communication settings are enabled
+    if Options['Communication']['Custom'] then
+        Debug.Warn('Custom Communication Settings are enabled')
+    end
+
+    -- Requires that this communication message is enabled
+    if not Options['Messages']['Communication'][type]['Enabled'] then return end
+
+    -- Send message
+    Chat.SendChannelText('squad', Options['Messages']['Communication']['Prefix']..RunMessageFilters(Options['Messages']['Communication'][type]['Format'], eventArgs))
 end
 
 --[[
@@ -1765,260 +1790,6 @@ function FixItemNameTag(name, quality)
     return string.gsub(name, '%^Q', tostring(quality))
 end
 
---[[
-    OnAcceptingRolls(args)
-    args.
-    args.item
-]]--
-function OnAcceptingRolls(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    if Options['Messages']['MessageSquad_OnAcceptingRolls'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnAcceptingRolls'], args))
-    end
-    if Options['Messages']['MessageSystem_OnRolls'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnAcceptingRolls'], args))
-    end
-end
-
---[[
-    OnLootReceived(args)
-    args.lootedTo
-    args.item
-]]--
-function OnLootReceived(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    if Options['Messages']['MessageSquad_OnLootReceived'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootReceived'], args))
-    end
-    if Options['Messages']['MessageSystem_OnLootReceived'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnLootReceived'], args))
-    end
-end
-
---[[
-    OnLootStolen(args)
-    args.lootedTo
-    args.item
-]]--
-function OnLootStolen(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    if Options['Messages']['MessageSquad_OnLootStolen'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootStolen'], args))
-    end
-    if Options['Messages']['MessageSystem_OnLootStolen'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnLootStolen'], args))
-    end
-end
-
---[[
-    OnLootSnatched(args)
-    args.lootedTo
-    args.item
-]]--
-function OnLootSnatched(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    if Options['Messages']['MessageSquad_OnLootSnatched'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootSnatched'], args))
-    end
-    if Options['Messages']['MessageSystem_OnLootSnatched'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnLootSnatched'], args))
-    end
-end
-
---[[
-    OnLootClaimed(args)
-    args.lootedTo
-    args.item (only name)
-]]--
-function OnLootClaimed(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    if Options['Messages']['MessageSquad_OnLootClaimed'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootClaimed'], args))
-    end
-    if Options['Messages']['MessageSystem_OnLootClaimed'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnLootClaimed'], args))
-    end
-end
-
---[[
-    OnDistributeItem(args)
-    args.lootedTo
-    args.item
-]]--
-function OnDistributeItem(args)
-
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Message Squad
-    if Options['Messages']['MessageSquad_OnDistributeItem'] then
-        local message = RunMessageFilters(Options['Messages']['MessageFormatSquad_OnDistributeItem'], args)
-
-        if args.rolls and Options['Messages']['MessageSquad_OnRolls'] then
-            message = message..'\n'..RollsFormater(Options['Messages']['MessageFormatSquad_OnRolls'], args.rolls, args.item)
-        end
-
-        SendMessage(message)
-    end
-
-    -- Message System
-    if Options['Messages']['MessageSystem_OnDistributeItem'] then
-        local message = RunMessageFilters(Options['Messages']['MessageFormatSystem_OnDistributeItem'], args)
-
-        if args.rolls and Options['Messages']['MessageSystem_OnRolls'] then
-            message = message..'\n'..RollsFormater(Options['Messages']['MessageFormatSystem_OnRolls'], args.rolls, args.item)
-        end
-
-        SendSystemMessage(message)
-    end
-end
-
---[[
-    OnAssignItem(args)
-    args.assignedTo
-    args.playerName
-    args.item
-]]--
-function OnAssignItem(args)
-    -- Exit if addon is disabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Update tracker
-    UpdateTracker()
-
-    -- Update panel
-    UpdatePanel(args.item)
-
-    -- Play Sound
-    if not Options['Sounds']['Mute'] then
-
-        -- If assigned to me
-        if Options['Sounds']['OnAssignItem_ToMe'] and namecompare(args.assignedTo, Player.GetInfo()) then
-            System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
-
-        -- If not assigned to me
-        elseif Options['Sounds']['OnAssignItem_ToMe'] then
-            System.PlaySound(Options['Sounds']['OnAssignItem_ToOther'])
-        end
-    end
-
-    -- Do stuff with the waypoint
-    if Options['Waypoints']['Enabled'] and namecompare(args.assignedTo, Player.GetInfo()) then
-        if Options['Waypoints']['TrailAssigned'] then
-            args.item.waypoint:ShowTrail(true)
-        end
-        if Options['Waypoints']['PingAssigned'] then
-            args.item.waypoint:Ping()
-        end
-    end
-
-
-    -- Exit if we're not the Squad Leader
-    if not bIsSquadLeader then return end
-
-    -- Communicate Assign Item
-    if Options['Messages']['Communication_Assign'] then
-        SendMessage(RunMessageFilters(Options['Messages']['Communication_Assign_Format'], args), false, true)
-    end
-
-    -- Messages
-    if Options['Messages']['MessageSquad_OnAssignItem'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnAssignItem'], args), true)
-    end
-    if Options['Messages']['MessageSystem_OnAssignItem'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnAssignItem'], args))
-    end
-end
-
---[[
-    OnRollChange(args)
-]]--
-function OnRollChange(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    if Options['Messages']['MessageSquad_OnRollChange'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnRollChange'], args))
-    end
-    if Options['Messages']['MessageSystem_OnRollChange'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnRollChange'], args))
-    end
-end
-
---[[
-    OnRollBusy(args)
-]]--
-function OnRollBusy(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    if Options['Messages']['MessageSquad_OnRollBusy'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnRollBusy'], args))
-    end
-    if Options['Messages']['MessageSystem_OnRollBusy'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnRollBusy'], args))
-    end
-end
-
---[[
-    OnRollNobody(args)
-]]--
-function OnRollNobody(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    if Options['Messages']['MessageSquad_OnRollNobody'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnRollNobody'], args))
-    end
-    if Options['Messages']['MessageSystem_OnRollNobody'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnRollNobody'], args))
-    end
-end
-
---[[
-    OnRollAccept(args)
-]]--
-function OnRollAccept(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    if Options['Messages']['MessageSquad_OnRollAccept'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnRollAccept'], args))
-    end
-    if Options['Messages']['MessageSystem_OnRollAccept'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnRollAccept'], args))
-    end
-end
-
---[[
-    OnLootDespawn(args)
-]]--
-function OnLootDespawn(args)
-    -- Exit if we're not the Squad Leader or addon is disabled
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    if Options['Messages']['MessageSquad_OnLootDespawn'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnLootDespawn'], args))
-    end
-    if Options['Messages']['MessageSystem_OnLootDespawn'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnLootDespawn'], args))
-    end
-end
 
 --[[
     OnIdentify(args)
@@ -2027,7 +1798,7 @@ end
     We use this to start automatic item distribution
 ]]--
 function OnIdentify(args)
-    -- Exit if addon is disabled
+    -- Require Core enabled
     if not Options['Core']['Enabled'] then return end
 
     -- Update the tracker
@@ -2037,33 +1808,208 @@ function OnIdentify(args)
     UpdatePanel(args.item)
 
     -- Play Sound
+    -- Todo: SoundEvent
     if not Options['Sounds']['Mute'] and Options['Sounds']['OnIdentify'] then
         System.PlaySound(Options['Sounds']['OnIdentify'])
     end
 
-    -- Exit if we're not the Squad Leader
-    if not bIsSquadLeader then return end
-
     -- Messages
     MessageEvent('Detection', 'OnIdentify', args)
 
-    -- If auto distribute is enabled, distribute the item
-    if Options['Distribution']['AutoDistribute'] then
-        DistributeItem()
+    -- Squad Leader only stuff
+    if bIsSquadLeader then
+        -- If auto distribute is enabled, distribute the item
+        if Options['Distribution']['AutoDistribute'] then
+            DistributeItem()
+        end
     end
-
 end
 
+--[[
+    OnLootDespawn(args)
+]]--
+function OnLootDespawn(args)
+    -- Require Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Update the tracker
+    UpdateTracker() -- Fixme: Is this call needed
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootDespawn', args)
+end
 
 --[[
-    MessageEvent(eventClass, eventName, eventArgs)
+    OnLootReceived(args)
+]]--
+function OnLootReceived(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootReceived', args)
+end
+
+--[[
+    OnLootStolen(args)
+]]--
+function OnLootStolen(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootStolen', args)
+end
+
+--[[
+    OnLootSnatched(args)
+]]--
+function OnLootSnatched(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootSnatched', args)
+end
+
+--[[
+    OnLootClaimed(args)
+]]--
+function OnLootClaimed(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootClaimed', args)
+end
+
+--[[
+    OnDistributeItem(args)
+]]--
+function OnDistributeItem(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnAssignItem', args)
+end
+
+--[[
+    OnAssignItem(args)
+    args.assignedTo
+    args.item
+]]--
+function OnAssignItem(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Update tracker
+    UpdateTracker()
+
+    -- Update panel
+    UpdatePanel(args.item)
+
+    -- Play Sound
+    if not (Options['Sounds']['Enabled'] and Options['Sounds']['Mute']) then
+        -- If assigned to me
+        if namecompare(args.assignedTo, Player.GetInfo()) then
+            System.PlaySound(Options['Sounds']['OnAssignItemToMe'])
+
+        -- Else
+        else
+            System.PlaySound(Options['Sounds']['OnAssignItemToOther'])
+        end
+    end
+
+    -- Fiddle with the waypoint
+    if Options['Waypoints']['Enabled'] and namecompare(args.assignedTo, Player.GetInfo()) then
+        if Options['Waypoints']['TrailAssigned'] then
+            args.item.waypoint:ShowTrail(true)
+        end
+        if Options['Waypoints']['PingAssigned'] then
+            args.item.waypoint:Ping()
+        end
+    end
+
+    -- Communicate Assign Item
+    CommunicationEvent('Assign', args)
+
+    -- Messages
+    MessageEvent('Distribution', 'OnAssignItem', args)
+end
+
+--[[
+    OnAcceptingRolls(args)
+]]--
+function OnAcceptingRolls(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnAcceptingRolls', args)
+end
+
+--[[
+    OnRollAccept(args)
+]]--
+function OnRollAccept(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollAccept', args)
+end
+
+--[[
+    OnRollChange(args)
+]]--
+function OnRollChange(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollChange', args)
+end
+
+--[[
+    OnRollBusy(args)
+]]--
+function OnRollBusy(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollBusy', args)
+end
+
+--[[
+    OnRollNobody(args)
+]]--
+function OnRollNobody(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollNobody', args)
+end
+
+--[[
+    MessageEvent(eventClass, eventName, eventArgs, [canSend])
     Generic function used to handle the process of sending messages in response to events, based on specific options.
+    Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.
 --]]
-function MessageEvent(eventClass, eventName, eventArgs)
-    if Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
+function MessageEvent(eventClass, eventName, eventArgs, canSend)
+    canSend = canSend or bIsSquadLeader
+    if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
             if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                SendMessage(channelKey, RunMessageFilters(Options['Messages']['Events']['eventClass']['eventName']['Channels']['channelKey']['Format'], eventArgs))                
+                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels']['channelKey']['Format']
+
+                if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] then
+                    message = message..'\n'..RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Format'], eventArgs.rolls, eventArgs.item)
+                end
+
+                SendChatMessage(channelKey, message, eventArgs))                
             end
         end
     end
