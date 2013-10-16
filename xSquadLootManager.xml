@@ -11,16 +11,31 @@
         url="http://forums.firefallthegame.com/community/threads/addon-xsears-squad-loot-manager.1914241/"
         uiVersion="1000"
     />
+
     <Events>
-        <Event name="ON_COMPONENT_LOAD"        bind="OnComponentLoad"/>
+        <!-- Firefall -->
+        <Event name="ON_COMPONENT_LOAD"            bind="OnComponentLoad"     />
+        <Event name="MY_HUD_SHOW"                  bind="OnHudShow"           />
+        <Event name="ON_INPUT_MODE_CHANGED"        bind="OnInputModeChanged"  />
+        <Event name="ON_UI_ENTITY_AVAILABLE"       bind="OnEntityAvailable"   />
+        <Event name="ON_SQUAD_ROSTER_UPDATE"       bind="OnSquadRosterUpdate" />
+        <Event name="ON_LOOT_COLLECTED"            bind="OnLootCollected"     />
+        <Event name="ON_CHAT_MESSAGE"              bind="OnChatMessage"       />
 
-        <Event name="MY_HUD_SHOW"              bind="OnHudShow"/>
-        <Event name="ON_INPUT_MODE_CHANGED"    bind="OnInputModeChanged"/>
-
-        <Event name="ON_UI_ENTITY_AVAILABLE"   bind="OnEntityAvailable"/>
-        <Event name="ON_SQUAD_ROSTER_UPDATE"   bind="OnSquadRosterUpdate"/>
-        <Event name="ON_LOOT_COLLECTED"        bind="OnLootCollected"/>
-        <Event name="ON_CHAT_MESSAGE"          bind="OnChatMessage"/>
+        <!-- Custom -->
+        <Event name="XSLM_ON_IDENTIFY"             bind="OnIdentify"          />
+        <Event name="XSLM_ON_LOOT_DESPAWN"         bind="OnLootDespawn"       />
+        <Event name="XSLM_ON_LOOT_RECEIVED"        bind="OnLootReceived"      />
+        <Event name="XSLM_ON_LOOT_STOLEN"          bind="OnLootStolen"        />
+        <Event name="XSLM_ON_LOOT_SNATCHED"        bind="OnLootSnatched"      />
+        <Event name="XSLM_ON_LOOT_CLAIMED"         bind="OnLootClaimed"       />
+        <Event name="XSLM_ON_DISTRIBUTE_ITEM"      bind="OnDistributeItem"    />
+        <Event name="XSLM_ON_ASSIGN_ITEM"          bind="OnAssignItem"        />
+        <Event name="XSLM_ON_ACCEPTING_ROLLS"      bind="OnAcceptingRolls"    />
+        <Event name="XSLM_ON_ROLL_ACCEPT"          bind="OnRollAccept"        />
+        <Event name="XSLM_ON_ROLL_CHANGE"          bind="OnRollChange"        />
+        <Event name="XSLM_ON_ROLL_BUSY"            bind="OnRollBusy"          />
+        <Event name="XSLM_ON_ROLL_NOBODY"          bind="OnRollNobody"        />
     </Events>
 
     <Textures>
@@ -30,6 +45,7 @@
             <Region name="ArrowMarker2" top="310" left="78" right="125" bottom="343" />
             <Region name="Dragon" top="360" left="26" right="486" bottom="440" />
         </Texture>
+
         <Texture name="TrackerIcons" src="./trackericons.dds" premultiplied="false">
             <Region name="Need" top="0" left="0" right="25" bottom="25" />
             <Region name="Greed" top="30" left="0" right="25" bottom="55" />
@@ -39,7 +55,6 @@
             <Region name="Info" top="30" left="30" right="55" bottom="55" />
             <Region name="Compare" top="60" left="30" right="55" bottom="85" />
         </Texture>
-
 
         <Texture name="ItemPlates" src="components/MainUI/HUD/Loot/itemplates.png" premultiplied="false" >
             <Region name="epic_64" top="0" bottom="64" left="392" right="456" />
@@ -55,7 +70,6 @@
             <Region name="uncommon_64" top="98" bottom="162" left="98" right="162" />
             <Region name="uncommon_96" top="0" bottom="96" left="294" right="390" />
         </Texture>
-
     </Textures>
     
     <Styles>
@@ -77,7 +91,6 @@
             shadow:0;
         </StyleSheet>
 
-
         <StyleSheet name="LootPanel_Text_Large">  
             font:Demi_17;
             halign:center;
@@ -86,6 +99,7 @@
             scaleX:2;
             scaleY:2;
         </StyleSheet>
+
         <StyleSheet name="LootPanel_Text_Timer">
             font:Demi_17;
             halign:center;
@@ -94,6 +108,7 @@
             scaleX:2;
             scaleY:2;
         </StyleSheet>
+
         <StyleSheet name="LootPanel_Text_Small">  
             font:UbuntuMedium_12;
             halign:left
@@ -101,7 +116,6 @@
             scaleX:2;
             scaleY:2;
         </StyleSheet>
-
     </Styles>
     
     <BluePrints>
@@ -113,9 +127,7 @@
             <Text name="statValue" dimensions="top:0; left:50%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
         </BluePrint>
 
-
         <BluePrint name="Tracker_List_Entry" instantiable="true">
-
 
             <!-- Plate -->
             <FocusBox name="plate" dimensions="width:100%-35; height:100%; left:32; top:2;">
@@ -152,8 +164,6 @@
             <!-- Item name on the right -->
             <Text name="itemName" dimensions="left:30+29%; width:20%; height:100%; top:2;" class="Tracker_Text"/>
         </BluePrint>
-
-
     </BluePrints>
 
     <Frames>
@@ -161,7 +171,6 @@
         <PanelFrame name="Tracker" permanent="true" visible="true" dimensions="left:0; center-y:74%; width:400; height:150">
             <Children>
                 <!--<StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>-->
-
                 
                     <!-- List -->
                     <ListLayout name="List" dimensions="width:100%; height:98%; top:2%; center-x:50%;" style="vertical:true; vpadding:9; clip-children:true;">
@@ -180,10 +189,7 @@
                     <StillArt dimensions="left:0; right:100%; height:1; top:100" style="texture:colors; region:white; alpha:0.6"/>
                     <Text name="desc" dimensions="top:45; bottom:100%; width:100%" style="font:Demi_10; leading-mult:1.5; alpha:0.6; halign:left; valign:center; wrap:true;"/>
                 </ListLayout>
-
             </Children>
         </PanelFrame>
-
     </Frames>
-
 </Component>
