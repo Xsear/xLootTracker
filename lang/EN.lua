@@ -61,6 +61,13 @@ Generic_Messages_Events_X_Event_Channels_System_Format_ToolTip            = Gene
 
 
 LANG = {
+
+	UI_Tracker_AssignedTo_nil														= "Not yet assigned",
+	UI_Tracker_AssignedTo_false 													= "Free for all",
+	UI_Tracker_AssignedTo_true 														= "Free for all",
+	UI_Messages_System_NoRollableForDistribute										= 'No Rollable Loot to distribute',
+	UI_Messages_System_NoIdentifiedForDistribute									= 'No Identified Loot to distribute',
+
 	Group_Com_Label																	=	"Communication",
 	Group_Com_ToolTip																=	"Inter-addon communication options",
 

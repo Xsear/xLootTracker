@@ -1306,10 +1306,10 @@ function ListUnAssigned()
                 SendSystemMessage(num..' '..item.name..tostring(item.quality))
             end
         else
-            SendSystemMessage('No Rollable Loot to distribute')
+            SendSystemMessage(Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
         end
     else
-        SendSystemMessage('No Identified Loot to distribute')
+        SendSystemMessage(Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
     end
 end
 
@@ -1376,7 +1376,7 @@ function UpdateTracker()
     if Options['Tracker']['Enabled'] then
 
         local cTrackerEntrySize = 30 -- Fixme: Wat
-        local cTrackerButtonSize = 25
+        local cTrackerButtonSize = 25 -- Fixme: Explain
        
         -- Hide tooltip if is currently being displayed
         if bToolTipActive then
@@ -1460,9 +1460,9 @@ function UpdateTracker()
                 
                 -- Setup Assigned To text
                 if item.assignedTo == nil then
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText('Not yet assigned')
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_Tracker_AssignedTo_nil'))
                 elseif item.assignedTo == false or item.assignedTo == true then
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText('Free for all')
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_Tracker_AssignedTo_true'))
                 else
                     ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
                 end
