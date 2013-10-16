@@ -220,9 +220,6 @@ function OnEntityAvailable(args)
         local targetInfo = Game.GetTargetInfo(args.entityId)
         local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
 
-        -- Todo: Crystite from Daily Reward Crates is a known match for this.
-        if IsLootableTarget(targetInfo) and targetInfo.quality == nil then Debug.Warn('Detected lootable entity without quality. Dumping args and targetinfo: ') vardump(args) vardump(targetInfo) end
-
         -- Debug
         if Options['Debug']['LogLootableTargets'] and IsLootableTarget(targetInfo) then
             Debug.Log('Lootable Target Available')
@@ -235,8 +232,8 @@ function OnEntityAvailable(args)
         -- Determine if it is a lootable entity
         if IsLootableTarget(targetInfo) and IsTrackableItemType(itemInfo) then
 
-            -- Determine if it is something we want to track
-            if (IsPastThreshold(targetInfo.quality) or Options['IdentifyAllLoot']) and not IsIdentified(args.entityId) then
+            -- If we're not tracking it already, track it!
+            if not IsIdentified(args.entityId) then
                 Identify(args.entityId, targetInfo)
             end
         end
@@ -251,7 +248,26 @@ end
     Fixme: holy shit this function is a clusterfuck
 ]]--
 function OnChatMessage(args)
+    -- Requires Core enabled
     if not Options['Core']['Enabled'] then return end
+
+    --[[
+        FindFirstKeyInText(text, key)
+        Chat parsing helper function
+    ]]--
+    local function FindFirstKeyInText(text, key)
+        return string.find(text, key, 0, string.len(key))
+    end
+
+    --[[
+        FilterFirstKeyFromText(text, key)
+        Chat parsing helper function
+    ]]--
+    local function FilterFirstKeyFromText(text, key)
+        --FindFirstKeyInText(text, key),
+        return string.sub(text, string.len(key) + 1)
+    end
+
     -- Filter for only Squad messages
     if args.channel == 'squad' then
 
@@ -294,7 +310,7 @@ function OnChatMessage(args)
                     if namecompare(member.name, playerName) then
                         -- Because it matters yo
                         if IsAssigned(localItem.entityId) then
-                            SendSystemMessage('Squad Leader is reassigning '..FixItemNameTag(localItem.name, localItem.quality)..' from '..localItem.assignedTo..' to '..playerName)
+                            SendChatMessage('system', 'Squad Leader is reassigning '..FixItemNameTag(localItem.name, localItem.quality)..' from '..localItem.assignedTo..' to '..playerName)
                         end
 
                         -- Assign item
@@ -330,23 +346,6 @@ function OnChatMessage(args)
             end
         end
     end
-end
-
---[[
-    FindFirstKeyInText(text, key)
-    Chat parsing helper function
-]]--
-function FindFirstKeyInText(text, key)
-    return string.find(text, key, 0, string.len(key))
-end
-
---[[
-    FilterFirstKeyFromText(text, key)
-    Chat parsing helper function
-]]--
-function FilterFirstKeyFromText(text, key)
-    --FindFirstKeyInText(text, key),
-    return string.sub(text, string.len(key) + 1)
 end
 
 
@@ -404,19 +403,21 @@ function OnLootCollected(args)
             -- If we found the item, we will return from this function within this block after firing the appropriate event function.
             if loot ~= nil then
 
-                -- If we care about this item, send a message
-                if (IsPastThreshold(args.quality)) then
+                -- If we care about this item, trigger relevant event
+                if ItemPassesFilter(itemInfo, options['Detection']) then
+                    local eventArgs = {lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot}
+
                     -- If the item had not been assigned
                     if loot.assignedTo == nil then
-                        OnLootSnatched({lootedTo=args.lootedTo, item=loot})
+                        Component.GenerateEvent('XSLM_ON_LOOT_SNATCHED', eventArgs)
 
                     -- Else if the item was looted by the person it was assigned to
                     elseif namecompare(loot.assignedTo, args.lootedTo) then
-                        OnLootReceived({lootedTo=args.lootedTo, item=loot})
+                        Component.GenerateEvent('XSLM_ON_LOOT_RECEIVED', eventArgs)
 
                     -- Else it was a ninja
                     else
-                        OnLootStolen({lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot})
+                        Component.GenerateEvent('XSLM_ON_LOOT_STOLEN', eventArgs)
                     end
                 end
 
@@ -428,10 +429,88 @@ function OnLootCollected(args)
         end
 
         -- No identified loot or this item wasn't identified
-        if (IsPastThreshold(args.quality)) then
-            OnLootClaimed({lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
+        if ItemPassesFilter(itemInfo, options['Detection'] then
+            Component.GenerateEvent('XSLM_ON_LOOT_CLAIMED', {lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
         end
     end
+end
+
+
+--[[
+    ItemPassesFilter(itemInfo, moduleOptions)
+    Determines whether the provided itemInfo is sufficient to pass the provided moduleOptions.
+    Where moduleOptions is for example Options['Detection']
+]]--
+function ItemPassesFilter(itemInfo, moduleOptions)
+    -- Vars
+    local typeKey = nil
+    local stageKey = nil
+
+    -- Determine type
+    if itemInfo.type == 'crafting_component' then
+        typeKey = 'CraftingComponents'
+
+    elseif itemInfo.type == 'frame_module' or
+           itemInfo.type == 'ability_module' or
+           itemInfo.type == 'weapon' then
+        typeKey = 'EquipmentItems'
+    end
+
+    -- Verify that type passes filter
+    if moduleOptions[typeKey]['Enabled'] then
+        
+        -- Determine stage
+        if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
+            stageKey == 'Simple'
+        else -- TriggerModeOptions.Advanced
+            if        itemInfo.tier.level == 1 then stageKey == 'Stage1'
+            elseif    itemInfo.tier.level == 2 then stageKey == 'Stage2'
+            elseif    itemInfo.tier.level == 3 then stageKey == 'Stage3'
+            elseif    itemInfo.tier.level == 4 then stageKey == 'Stage4'   
+            end
+        end
+        if stageKey == nil then Debug.Error('ItemPassesFilter() does not recognize tier!', itemInfo.tier) end
+        
+        -- Verify that stage passes filter
+        -- WontFixMe: Bluuurgh --------------------------| wtf this coder can't plan for shit
+        if (stageKey == 'Simple' and itemInfo.tier.level >= tonumber(moduleOptions[typeKey]['Simple']['TierThreshold'])) 
+        or moduleOptions[typeKey][stageKey]['Enabled'] then
+
+            -- Determine quality threshold
+            local qualityThreshold
+            local option = moduleOptions[typeKey][stageKey]['QualityThreshold'] -- Just saving some characters~ :3
+
+            if option == QualityOptions.Any then
+                qualityThreshold = 0
+
+            elseif option == QualityOptions.Custom then
+                qualityThreshold = moduleOptions[typeKey][stageKey]['QualityThresholdCustomValue'] 
+
+            elseif option == QualityOptions.Common then
+                qualityThreshold = 1
+
+            elseif option == QualityOptions.Uncommon then
+                qualityThreshold = 401
+
+            elseif option == QualityOptions.Rare then
+                qualityThreshold = 701
+                
+            elseif option == QualityOptions.Epic then
+                qualityThreshold = 901
+
+            elseif option == QualityOptions.Legendary then
+                qualityThreshold = 1000
+            end
+
+            -- Verify that quality passes threshold
+            if tonumber(itemInfo.quality) >= qualityThreshold then
+
+                -- Passed all filters
+                return true
+            end
+        end
+    end
+    return false
 end
 
 
@@ -516,13 +595,13 @@ function Identify(entityId, targetInfo)
     -- Unify data
     local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
 
-    -- Create waypoint
-    if Options['Waypoints']['Enabled'] then
+    -- Optionally create waypoint
+    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(itemInfo, options['Waypoints'])) then
         loot.waypoint = CreateWaypoint(loot)
     end
 
-    -- Create panel
-    if Options['Panels']['Enabled'] then
+    -- Optionally create panel
+    if (Options['Panels']['Enabled'] and ItemPassesFilter(itemInfo, options['Panels'])) then
         loot.panel = CreatePanel(targetInfo, itemInfo)
     end
 
@@ -538,7 +617,7 @@ function Identify(entityId, targetInfo)
     Debug.Log('Identified: '..tostring(loot.entityId)..', '..loot.name)
     
     -- Fire event
-    OnIdentify({item=loot})
+    Component.GenerateEvent('XLSM_ON_IDENTIFY', {item=loot})
 end
 
 --[[
@@ -1524,49 +1603,6 @@ function UpdateTracker()
     end
 end
 
-
-
-function itemPrefixShortener(itemName)
-
-    -- Keys to prefix
-    -- Lua sorts these differently than inputed
-    local prefixes = {
-        ['Surplus'] = 'S.',
-        ['Recovered'] = 'R.',
-        ['Chosen'] = 'C.',
-        ['Accord'] = 'A.',
-        ['Accord Prototype'] = 'A.P.',
-        ['Accord Elite'] = 'A.E.',
-    }
-
-    --Debug.Table(prefixes)
-
-    for key, prefix in pairs(prefixes) do
-        --Debug.Log('Checking for '..key..' in '..itemName)
-        if string.find(itemName, key, 0, string.len(key)) then
-            --Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
-            itemName = prefix..string.sub(itemName, string.len(key) + 1)
-            break
-        end
-    end
-
-    return itemName
-end
-
-
-
---[[
-    RemoveAllChildren(PARENT)
-    UI Helper function, removes children of a frame node~
-]]--
-function RemoveAllChildren(PARENT)
-    for i = PARENT:GetChildCount(), 1, -1 do
-        Component.RemoveWidget(PARENT:GetChild(i))
-    end
-end
-
-
-
 --[[
     SendChatMessage(channel, message, [alert])
     For normal chat messages.
@@ -1674,6 +1710,28 @@ function CommunicationEvent(type, eventArgs)
 
     -- Send message
     Chat.SendChannelText('squad', Options['Messages']['Communication']['Prefix']..RunMessageFilters(Options['Messages']['Communication'][type]['Format'], eventArgs))
+end
+
+--[[
+    MessageEvent(eventClass, eventName, eventArgs, [canSend])
+    Generic function used to handle the process of sending messages in response to events, based on specific options.
+    Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.
+--]]
+function MessageEvent(eventClass, eventName, eventArgs, canSend)
+    canSend = canSend or bIsSquadLeader
+    if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
+        for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
+            if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
+                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels']['channelKey']['Format']
+
+                if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] then
+                    message = message..'\n'..RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Format'], eventArgs.rolls, eventArgs.item)
+                end
+
+                SendChatMessage(channelKey, message, eventArgs))                
+            end
+        end
+    end
 end
 
 --[[
@@ -1993,30 +2051,51 @@ function OnRollNobody(args)
     MessageEvent('Distribution', 'OnRollNobody', args)
 end
 
---[[
-    MessageEvent(eventClass, eventName, eventArgs, [canSend])
-    Generic function used to handle the process of sending messages in response to events, based on specific options.
-    Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.
---]]
-function MessageEvent(eventClass, eventName, eventArgs, canSend)
-    canSend = canSend or bIsSquadLeader
-    if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
-        for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
-            if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels']['channelKey']['Format']
 
-                if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] then
-                    message = message..'\n'..RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Format'], eventArgs.rolls, eventArgs.item)
-                end
 
-                SendChatMessage(channelKey, message, eventArgs))                
-            end
+
+-- Shitty stuff below
+
+function itemPrefixShortener(itemName)
+
+    -- Keys to prefix
+    -- Lua sorts these differently than inputed
+    local prefixes = {
+        ['Surplus'] = 'S.',
+        ['Recovered'] = 'R.',
+        ['Chosen'] = 'C.',
+        ['Accord'] = 'A.',
+        ['Accord Prototype'] = 'A.P.',
+        ['Accord Elite'] = 'A.E.',
+    }
+
+    --Debug.Table(prefixes)
+
+    for key, prefix in pairs(prefixes) do
+        --Debug.Log('Checking for '..key..' in '..itemName)
+        if string.find(itemName, key, 0, string.len(key)) then
+            --Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
+            itemName = prefix..string.sub(itemName, string.len(key) + 1)
+            break
         end
+    end
+
+    return itemName
+end
+
+
+
+--[[
+    RemoveAllChildren(PARENT)
+    UI Helper function, removes children of a frame node~
+]]--
+function RemoveAllChildren(PARENT)
+    for i = PARENT:GetChildCount(), 1, -1 do
+        Component.RemoveWidget(PARENT:GetChild(i))
     end
 end
 
 
--- Shitty stuff below
 
 --[[
     ToggleEnabled(cmd)

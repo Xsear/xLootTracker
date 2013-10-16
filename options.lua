@@ -91,28 +91,24 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -132,28 +128,24 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -194,7 +186,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -205,7 +196,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -216,7 +206,7 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -227,7 +217,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -254,7 +243,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -265,7 +253,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -276,7 +263,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -287,7 +273,6 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
 
-                ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -319,28 +304,28 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -360,28 +345,28 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -429,28 +414,28 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -470,28 +455,28 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-                ['TierThreshold'] = TierOptions.Any,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -846,6 +831,80 @@ Options = {
 
         ['Visibility'] = TrackerVisibilityOptions.MouseMode,
 
+        ['EquipmentItems'] = {
+
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['CraftingComponents'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
     },
 
     ['Sounds'] = {
@@ -1072,7 +1131,7 @@ end
 function BuildInterfaceOptions()
 
     BuildInterfaceOptions_Front()
-    BuildInterfaceOptions_Detection()
+
     BuildInterfaceOptions_Distribution()
     BuildInterfaceOptions_Markers()
     BuildInterfaceOptions_Messages()
@@ -1111,13 +1170,14 @@ function BuildInterfaceOptions_Front()
         id    = 'Group_Features',
         label = 'Features',
     })
-        
+        --[[
         InterfaceOptions.AddCheckBox({
             id      = 'Detection_Enabled',
             label   = Lokii.GetString('Detection_Enabled_Label'),
             tooltip = Lokii.GetString('Detection_Enabled_ToolTip'),
             default = Options['Detection']['Enabled'],
         })
+        --]]
 
         InterfaceOptions.AddCheckBox({
             id      = 'Distribution_Enabled',
@@ -1194,11 +1254,6 @@ function BuildInterfaceOptions_Front()
         })
 
     InterfaceOptions.StopGroup()
-end
-
-function BuildInterfaceOptions_Detection()
-    UIHELPER_DetectDistributeMarkX('Detection', 'EquipmentItems')
-    UIHELPER_DetectDistributeMarkX('Detection', 'CraftingComponents')
 end
 
 function BuildInterfaceOptions_Distribution()
@@ -1400,6 +1455,7 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
     end
     --]]
     local checkbox = (stage ~= 'Simple')
+    local tierdropdown = (stage == 'Simple')
 
     InterfaceOptions.StartGroup({
         id       = rootKey..'_'..x..'_'..stage..'_Enabled',
@@ -1419,7 +1475,9 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
         end
 
         -- Tier and Quality threshold dropdowns
+        if tierdropdown then
         UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', Lokii.GetString('Subtab_'..rootKey), TierOptions, Options[rootKey][x][stage]['TierThreshold'], 'TierThreshold')
+        end
         UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', Lokii.GetString('Subtab_'..rootKey), QualityOptions, Options[rootKey][x][stage]['QualityThreshold'], 'QualityThreshold')
 
         -- Custom Quality input
