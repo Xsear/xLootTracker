@@ -1492,9 +1492,9 @@ function UpdateTracker()
         --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
         --Debug.Log('bHUD == '..tostring(bHUD))
         --Debug.Log('bCursor == '..tostring(bCursor))
-        if  Options['Tracker']['Visibility'] == 'always' 
-        or (Options['Tracker']['Visibility'] == 'hud' and bHUD)
-        or (Options['Tracker']['Visibility'] == 'mousemode' and bCursor)
+        if  Options['Tracker']['Visibility'] == TrackerVisibilityOptions.Always 
+        or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.HUD and bHUD)
+        or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor)
         then
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
