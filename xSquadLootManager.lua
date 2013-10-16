@@ -404,7 +404,7 @@ function OnLootCollected(args)
             if loot ~= nil then
 
                 -- If we care about this item, trigger relevant event
-                if ItemPassesFilter(itemInfo, options['Detection']) then
+                if ItemPassesFilter(loot, options['Detection']) then
                     local eventArgs = {lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot}
 
                     -- If the item had not been assigned
@@ -429,7 +429,7 @@ function OnLootCollected(args)
         end
 
         -- No identified loot or this item wasn't identified
-        if ItemPassesFilter(itemInfo, options['Detection'] then
+        if ItemPassesFilter({quality=args.quality, itemInfo=itemInfo, name=itemInfo.name}, options['Detection']) then
             Component.GenerateEvent('XSLM_ON_LOOT_CLAIMED', {lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
         end
     end
@@ -437,45 +437,43 @@ end
 
 
 --[[
-    ItemPassesFilter(itemInfo, moduleOptions)
+    ItemPassesFilter(item, moduleOptions)
     Determines whether the provided itemInfo is sufficient to pass the provided moduleOptions.
     Where moduleOptions is for example Options['Detection']
 ]]--
-function ItemPassesFilter(itemInfo, moduleOptions)
+function ItemPassesFilter(item, moduleOptions)
     -- Vars
     local typeKey = nil
     local stageKey = nil
 
     -- Determine type
-    if itemInfo.type == 'crafting_component' then
+    if item.itemInfo.type == 'crafting_component' then
         typeKey = 'CraftingComponents'
 
-    elseif itemInfo.type == 'frame_module' or
-           itemInfo.type == 'ability_module' or
-           itemInfo.type == 'weapon' then
+    elseif item.itemInfo.type == 'frame_module' or
+           item.itemInfo.type == 'ability_module' or
+           item.itemInfo.type == 'weapon' then
         typeKey = 'EquipmentItems'
     end
 
     -- Verify that type passes filter
-    if moduleOptions[typeKey]['Enabled'] then
-        
+    if typeKey and moduleOptions[typeKey]['Enabled'] then
         -- Determine stage
         if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
-            stageKey == 'Simple'
+            stageKey = 'Simple'
         else -- TriggerModeOptions.Advanced
-            if        itemInfo.tier.level == 1 then stageKey == 'Stage1'
-            elseif    itemInfo.tier.level == 2 then stageKey == 'Stage2'
-            elseif    itemInfo.tier.level == 3 then stageKey == 'Stage3'
-            elseif    itemInfo.tier.level == 4 then stageKey == 'Stage4'   
+            if        item.itemInfo.tier.level == 1 then stageKey = 'Stage1'
+            elseif    item.itemInfo.tier.level == 2 then stageKey = 'Stage2'
+            elseif    item.itemInfo.tier.level == 3 then stageKey = 'Stage3'
+            elseif    item.itemInfo.tier.level == 4 then stageKey = 'Stage4'   
             end
         end
-        if stageKey == nil then Debug.Error('ItemPassesFilter() does not recognize tier!', itemInfo.tier) end
+        if stageKey == nil then Debug.Error('ItemPassesFilter() does not recognize tier!', item.itemInfo.tier) end
         
         -- Verify that stage passes filter
         -- WontFixMe: Bluuurgh --------------------------| wtf this coder can't plan for shit
-        if (stageKey == 'Simple' and itemInfo.tier.level >= tonumber(moduleOptions[typeKey]['Simple']['TierThreshold'])) 
+        if (stageKey == 'Simple' and item.itemInfo.tier.level >= tonumber(moduleOptions[typeKey]['Simple']['TierThreshold'])) 
         or moduleOptions[typeKey][stageKey]['Enabled'] then
-
             -- Determine quality threshold
             local qualityThreshold
             local option = moduleOptions[typeKey][stageKey]['QualityThreshold'] -- Just saving some characters~ :3
@@ -503,8 +501,8 @@ function ItemPassesFilter(itemInfo, moduleOptions)
             end
 
             -- Verify that quality passes threshold
-            if tonumber(itemInfo.quality) >= qualityThreshold then
-
+            Debug.Log(tostring(tonumber(item.quality))..' >= '..tostring(qualityThreshold))
+            if tonumber(item.quality) >= qualityThreshold then
                 -- Passed all filters
                 return true
             end
@@ -596,12 +594,14 @@ function Identify(entityId, targetInfo)
     local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
 
     -- Optionally create waypoint
-    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(itemInfo, options['Waypoints'])) then
+    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, options['Waypoints'])) then
         loot.waypoint = CreateWaypoint(loot)
     end
 
+    Debug.Log(tostring(ItemPassesFilter(loot, options['Panels'])))
+
     -- Optionally create panel
-    if (Options['Panels']['Enabled'] and ItemPassesFilter(itemInfo, options['Panels'])) then
+    if (Options['Panels']['Enabled'] and ItemPassesFilter(loot, options['Panels'])) then
         loot.panel = CreatePanel(targetInfo, itemInfo)
     end
 
@@ -806,6 +806,10 @@ end
     Updates the state of a loot panel
 ]]--
 function UpdatePanel(loot)
+
+    ItemPassesFilter(loot, Options['Panels'])
+
+    if loot.panel == nil then return end
 
     local RenderTarget = loot.panel.panel_rt
     local LOOT_PANEL_CONTENT = RenderTarget:GetChild('content')
@@ -1468,100 +1472,102 @@ function UpdateTracker()
         RemoveAllChildren(TRACKER:GetChild('List')) -- clear previous entries
         if not _table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
-                -- Create widget
-                local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
-                ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
+                if ItemPassesFilter(item, Options['Tracker']) then
 
-                ENTRY:GetChild('plate'):SetTag(tostring(item.itemTypeId))
-                
-                ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
-                    TRACKER_TOOLTIP:Show(true)
-                    ToolTip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
-                    bToolTipActive = true
+                    -- Create widget
+                    local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
+                    ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
 
-                end);
-                ENTRY:GetChild('plate'):BindEvent("OnMouseLeave", function(args)
-                    TRACKER_TOOLTIP:Show(false)
-                    ToolTip.Show(false)
-                    bToolTipActive = false
-                end);
-                
+                    ENTRY:GetChild('plate'):SetTag(tostring(item.itemTypeId))
+                    
+                    ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
+                        TRACKER_TOOLTIP:Show(true)
+                        ToolTip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
+                        bToolTipActive = true
 
-                ENTRY:GetChild('plate'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                ENTRY:GetChild('plate'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                ENTRY:GetChild('item'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                ENTRY:GetChild('item'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    end);
+                    ENTRY:GetChild('plate'):BindEvent("OnMouseLeave", function(args)
+                        TRACKER_TOOLTIP:Show(false)
+                        ToolTip.Show(false)
+                        bToolTipActive = false
+                    end);
+                    
 
-                -- Icon
-                ENTRY:GetChild('item'):GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
+                    ENTRY:GetChild('plate'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY:GetChild('plate'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY:GetChild('item'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY:GetChild('item'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
+
+                    -- Icon
+                    ENTRY:GetChild('item'):GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
 
 
 
-                -- Left
-                --[[
-                -- Setup Buttons
-                    -- Need
-                    BUTTON1 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                    -- Left
+                    --[[
+                    -- Setup Buttons
+                        -- Need
+                        BUTTON1 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                    BUTTON1_ICON = MultiArt.Create(BUTTON1:GetWidget())
-                    BUTTON1_ICON:SetTexture('TrackerIcons')
-                    BUTTON1_ICON:SetRegion('Need')
+                        BUTTON1_ICON = MultiArt.Create(BUTTON1:GetWidget())
+                        BUTTON1_ICON:SetTexture('TrackerIcons')
+                        BUTTON1_ICON:SetRegion('Need')
 
-                    BUTTON1:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                        BUTTON1:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
 
-                    BUTTON1:Bind(function() 
-                            System.PlaySound('Play_UI_Beep_06')
-                        end)
+                        BUTTON1:Bind(function() 
+                                System.PlaySound('Play_UI_Beep_06')
+                            end)
 
-                    -- Greed
-                    BUTTON2 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                        -- Greed
+                        BUTTON2 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                    BUTTON2_ICON = MultiArt.Create(BUTTON2:GetWidget())
-                    BUTTON2_ICON:SetTexture('TrackerIcons')
-                    BUTTON2_ICON:SetRegion('Greed')
+                        BUTTON2_ICON = MultiArt.Create(BUTTON2:GetWidget())
+                        BUTTON2_ICON:SetTexture('TrackerIcons')
+                        BUTTON2_ICON:SetRegion('Greed')
 
-                    BUTTON2:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-                    BUTTON2:Bind(function() 
-                            System.PlaySound('Play_UI_Beep_06')
-                        end)
+                        BUTTON2:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                        BUTTON2:Bind(function() 
+                                System.PlaySound('Play_UI_Beep_06')
+                            end)
 
-                    -- Pass
-                    BUTTON3 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                        -- Pass
+                        BUTTON3 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                    BUTTON3_ICON = MultiArt.Create(BUTTON3:GetWidget())
-                    BUTTON3_ICON:SetTexture('TrackerIcons')
-                    BUTTON3_ICON:SetRegion('Pass')
+                        BUTTON3_ICON = MultiArt.Create(BUTTON3:GetWidget())
+                        BUTTON3_ICON:SetTexture('TrackerIcons')
+                        BUTTON3_ICON:SetRegion('Pass')
 
-                    BUTTON3:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-                    BUTTON3:Bind(function() 
-                            System.PlaySound('Play_UI_Beep_06')
-                        end)
-                --]]
-                
-                -- Setup Assigned To text
-                if item.assignedTo == nil then
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
-                elseif item.assignedTo == false or item.assignedTo == true then
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
-                else
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
+                        BUTTON3:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                        BUTTON3:Bind(function() 
+                                System.PlaySound('Play_UI_Beep_06')
+                            end)
+                    --]]
+                    
+                    -- Setup Assigned To text
+                    if item.assignedTo == nil then
+                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
+                    elseif item.assignedTo == false or item.assignedTo == true then
+                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
+                    else
+                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
+                    end
+
+                -- Right
+                    -- Item Name text
+                    ENTRY:GetChild('itemName'):SetText(itemPrefixShortener(FixItemNameTag(item.name, item.quality)))
+
+                -- Determine what to display
+                    if item.assignedTo == nil then
+                        ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(true)
+                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(false)
+                    else
+                        ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(false)
+                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(true)
+                    end
+
+                    ENTRY:GetChild('itemName'):Show(true)
                 end
-
-            -- Right
-                -- Item Name text
-                ENTRY:GetChild('itemName'):SetText(itemPrefixShortener(FixItemNameTag(item.name, item.quality)))
-
-            -- Determine what to display
-                if item.assignedTo == nil then
-                    ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(true)
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(false)
-                else
-                    ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(false)
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(true)
-                end
-
-                ENTRY:GetChild('itemName'):Show(true)
-
             end
         else
             -- Clear?
@@ -1722,13 +1728,13 @@ function MessageEvent(eventClass, eventName, eventArgs, canSend)
     if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
             if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels']['channelKey']['Format']
+                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels']['channelKey']['Format'], eventArgs)
 
                 if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] then
                     message = message..'\n'..RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Format'], eventArgs.rolls, eventArgs.item)
                 end
 
-                SendChatMessage(channelKey, message, eventArgs))                
+                SendChatMessage(channelKey, message, eventArgs)              
             end
         end
     end
@@ -2143,7 +2149,7 @@ end
 ]]--
 function Test()
 
-    SendSystemMessage('Test')
+    SendChatMessage('system', 'Test')
 
 
 
@@ -2190,14 +2196,23 @@ function Test()
             local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
 
 
-            local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=CreatePanel(targetInfo, Game.GetItemInfoByType(targetInfo.itemTypeId)), waypoint=nil, timer=nil}
+            local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
+
+            if Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels']) then
+                loot.panel = CreatePanel(targetInfo, Game.GetItemInfoByType(targetInfo.itemTypeId))
+            end
 
             -- Create timer
-            loot.timer = GTimer.Create(function(time) loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end, '%02iq60p:%02iq1p', 1);
+            loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
             
             -- Setup despawn timer
             loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item=loot})
             loot.timer:StartTimer()
+
+           
+             
+           
+
 
             loot.waypoint = CreateWaypoint(loot)
 

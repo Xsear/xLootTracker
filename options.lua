@@ -1,4 +1,5 @@
 
+
 uiSounds = xSounds.GetSounds()
 
 TriggerModeOptions = {
@@ -76,81 +77,6 @@ Options = {
 
     ['Detection'] = {
         ['Enabled'] = true,
-
-        ['EquipmentItems'] = {
-
-            ['Enabled'] = true,
-
-            ['Mode'] = TriggerModeOptions.Simple,
-
-            ['Simple'] = {
-                ['TierThreshold'] = TierOptions.Any,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage1'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage2'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage3'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage4'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-        },
-
-        ['CraftingComponents'] = {
-        
-            ['Enabled'] = true,
-
-            ['Mode'] = TriggerModeOptions.Simple,
-
-            ['Simple'] = {
-                ['TierThreshold'] = TierOptions.Any,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage1'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage2'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage3'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-
-            ['Stage4'] = {
-                ['Enabled'] = false,
-                ['QualityThreshold'] = QualityOptions.Any,
-                ['QualityThresholdCustomValue'] = 500,
-            },
-        },
-
     },
 
     ['Distribution'] = {
@@ -174,7 +100,6 @@ Options = {
             ['Simple'] = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
@@ -182,41 +107,32 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -231,7 +147,6 @@ Options = {
             ['Simple'] = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
@@ -239,40 +154,32 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
                 ['Enabled'] = false,
-
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
-
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -1017,15 +924,13 @@ end
 function SetOptionsAvailability()
 
     -- If simple disable advanced options
-    for i, rootKey in pairs({'Detection', 'Distribution', 'Panels', 'Waypoints'}) do
+    for i, rootKey in pairs({'Tracker', 'Distribution', 'Panels', 'Waypoints'}) do
 
         for i, typeKey in pairs({'EquipmentItems', 'CraftingComponents'}) do
 
 
-            -- Disable mode selection if type not enabled
-            if Options[rootKey][typeKey]['Enabled'] == false then
-                InterfaceOptions.DisableOption(rootKey..'_'..typeKey..'_Mode', true)
-            end
+            -- Mode selection only available when type enabled
+            InterfaceOptions.EnableOption(rootKey..'_'..typeKey..'_Mode', Options[rootKey][typeKey]['Enabled'])
 
             for i, stageKey in pairs({'Simple', 'Stage1', 'Stage2', 'Stage3', 'Stage4'}) do
                 --Debug.Log(rootKey..'_'..typeKey)
@@ -1034,16 +939,19 @@ function SetOptionsAvailability()
                 -- Fixme: bluuuuuurgh
                 local disable = false
 
-                -- If we are in simple mode, disable is true.
-                disable = (Options[rootKey][typeKey]['Mode'] == TriggerModeOptions.Simple)
+                -- If type not enabled, disable everything
+                if Options[rootKey][typeKey]['Enabled'] == false then
+                    disable = true 
 
-                -- But if the current stageKey is simple, then we invert the value. (So in Simple Mode, simple options are enabled and the rest disabled)
-                if stageKey == 'Simple' then disable = not disable end
+                -- If type is enabled, disable stuff not relevant to current mode
+                else
+                    -- If in Simple mode, disable everything except for the Simple group.
+                    -- The opposite is done if not in Simple mode.
+                    disable = (Options[rootKey][typeKey]['Mode'] == TriggerModeOptions.Simple)
+                    if stageKey == 'Simple' then disable = not disable end
+                end
 
-                -- Buuut, if this kind of type isn't enabled, then everything should be disabled!
-                if Options[rootKey][typeKey]['Enabled'] == false then disable = true end
-
-
+                -- Do our job
                 for optionKey, optionValue in pairs(Options[rootKey][typeKey][stageKey]) do
                     InterfaceOptions.DisableOption(rootKey..'_'..typeKey..'_'..stageKey..'_'..optionKey, disable)
                 end
@@ -1055,50 +963,15 @@ function SetOptionsAvailability()
 
     end
 
+    -- Communication Messages are disabled if the Custom Communication Messages option is not enabled
+    InterfaceOptions.DisableOption('Messages_Communication_Prefix', not Options['Messages']['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Messages_Communication_Assign_Enabled', not Options['Messages']['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Messages_Communication_Assign_Format', true) -- Locked option because whislt it is used for sending, the receiving end is a hardcoded match
 
-
---[[
-    -- Disable all
-    InterfaceOptions.DisableOption('Group_Loot_Rolls', true)
-    InterfaceOptions.DisableOption('RollMin', true)
-    InterfaceOptions.DisableOption('RollMax', true)
-    InterfaceOptions.DisableOption('RollTimeout', true)
-
-    InterfaceOptions.DisableOption('Communication_Prefix', true)
-    InterfaceOptions.DisableOption('Communication_Assign', true)
-    InterfaceOptions.DisableOption('Communication_Assign_Format', true)
-
-    InterfaceOptions.DisableOption('Panels_Color_HeaderBar_ColorMode_Custom', true)
-    InterfaceOptions.DisableOption('Panels_Color_ItemName_ColorMode_Custom', true)
-
-
-    -- Enable specific
-    if Options['Manager']['LootMode'] == 'dice' or Options['Manager']['LootMode'] == 'need-before-greed' then
-        InterfaceOptions.DisableOption('Group_Loot_Rolls', false)
-        InterfaceOptions.DisableOption('RollMin', false)
-        InterfaceOptions.DisableOption('RollMax', false)
-        InterfaceOptions.DisableOption('RollTimeout', false)
-    end
-
-    if Options['Panels']['HeaderBar_ColorMode'] == 'custom' then
-        InterfaceOptions.DisableOption('Panels_Color_HeaderBar_ColorMode_Custom', false)
-    end
-
-    if Options['Panels']['ItemName_ColorMode'] == 'custom' then
-        InterfaceOptions.DisableOption('Panels_Color_ItemName_ColorMode_Custom', false)
-    end
-
-    if Options['Messages']['Communication_Custom'] then 
-        InterfaceOptions.DisableOption('Communication_Prefix', false)
-        InterfaceOptions.DisableOption('Communication_Assign', false)
-        InterfaceOptions.DisableOption('Communication_Assign_Format', true) -- Locked option because whislt it is used for sending, the receiving end is a hardcoded match
-    end
-]]--
-
-
+    -- Panels custom colormode is hidden when colormode is not set to cutom
+    InterfaceOptions.DisableOption('Panels_ColorMode_HeaderBarCustomValue', Options['Panels']['ColorMode']['HeaderBar'] ~= ColorModes.Custom)
+    InterfaceOptions.DisableOption('Panels_ColorMode_ItemNameCustomValue', Options['Panels']['ColorMode']['ItemName'] ~= ColorModes.Custom)
 end
-
-
 
 
 
@@ -1133,7 +1006,10 @@ function BuildInterfaceOptions()
     BuildInterfaceOptions_Front()
 
     BuildInterfaceOptions_Distribution()
-    BuildInterfaceOptions_Markers()
+    
+    BuildInterfaceOptions_Panels()
+    BuildInterfaceOptions_Waypoints()
+
     BuildInterfaceOptions_Messages()
     BuildInterfaceOptions_Tracker()
     BuildInterfaceOptions_Sounds()
@@ -1257,9 +1133,11 @@ function BuildInterfaceOptions_Front()
 end
 
 function BuildInterfaceOptions_Distribution()
+    -- Filters
     UIHELPER_DetectDistributeMarkX('Distribution', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Distribution', 'CraftingComponents')
 
+    -- Always Squad Leader
     InterfaceOptions.AddCheckBox({
         id      = 'Distribution_AlwaysSquadLeader',
         default = Options['Distribution']['AlwaysSquadleader'],
@@ -1270,6 +1148,7 @@ function BuildInterfaceOptions_Distribution()
         },
     })
 
+    -- Auto Distribute
     InterfaceOptions.AddCheckBox({
         id      = 'Distribution_AutoDistribute',
         default = Options['Distribution']['AutoDistribute'],
@@ -1281,113 +1160,266 @@ function BuildInterfaceOptions_Distribution()
     })
 
     -- Rolls
-    UIHELPER_TextInput('Distribution_RollMin', true, Options['Distribution']['RollMin'], Lokii.GetString('Subtab_Distribution'))
-    UIHELPER_TextInput('Distribution_RollMax', true, Options['Distribution']['RollMax'], Lokii.GetString('Subtab_Distribution'))
-    UIHELPER_TextInput('Distribution_RollTimeout', true, Options['Distribution']['RollTimeout'], Lokii.GetString('Subtab_Distribution'))
+    InterfaceOptions.AddTextInput({
+        id      = 'Distribution_RollMin',
+        numeric =  true,
+        default = Options['Distribution']['RollMin'],
+        label   = Lokii.GetString('Distribution_RollMin_Label'),
+        tooltip = Lokii.GetString('Distribution_RollMin_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Distribution')}
+    })
 
-    UIHELPER_DropdownFromTable('Distribution_RollTypeDefault', Lokii.GetString('Subtab_Distribution'), RollType, Options['Distribution']['RollTypeDefault'], 'RollType')
+    InterfaceOptions.AddTextInput({
+        id      = 'Distribution_RollMax',
+        numeric =  true,
+        default = Options['Distribution']['RollMax'],
+        label   = Lokii.GetString('Distribution_RollMax_Label'),
+        tooltip = Lokii.GetString('Distribution_RollMax_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Distribution')}
+    })
 
+    InterfaceOptions.AddTextInput({
+        id      = 'Distribution_RollTimeout',
+        numeric =  true,
+        default = Options['Distribution']['RollTimeout'],
+        label   = Lokii.GetString('Distribution_RollTimeout_Label'),
+        tooltip = Lokii.GetString('Distribution_RollTimeout_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Distribution')}
+    })
 
+    UIHELPER_DropdownFromTable('Distribution_RollTypeDefault', 'Distribution_RollTypeDefault', Options['Distribution']['RollTypeDefault'], RollType, 'RollType', Lokii.GetString('Subtab_Distribution'))
 end
 
-function BuildInterfaceOptions_Markers()
+function BuildInterfaceOptions_Panels()
+    -- Filters
     UIHELPER_DetectDistributeMarkX('Panels', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Panels', 'CraftingComponents')
 
-    UIHELPER_CheckBox('Panels_Display_AssignedTo', Options['Panels']['Display']['AssignedTo'], Lokii.GetString('Subtab_Panels'))
-    UIHELPER_CheckBox('Panels_Display_AssignedToHideNil', Options['Panels']['Display']['AssignedToHideNil'], Lokii.GetString(Lokii.GetString('Subtab_Panels')))
+    -- Display Assigned To
+    InterfaceOptions.AddCheckBox({
+        id      = 'Panels_Display_AssignedTo',
+        default = Options['Panels']['Display']['AssignedTo'],
+        label   = Lokii.GetString('Panels_Display_AssignedTo_Label'),
+        tooltip = Lokii.GetString('Panels_Display_AssignedTo_ToolTip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Panels')
+        },
+    })
 
-    UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', Lokii.GetString('Subtab_Panels'), ColorModes, Options['Panels']['ColorMode']['HeaderBar'], 'ColorModes')
-    UIHELPER_ColorPicker('Panels_ColorMode_HeaderBarCustomValue', Options['Panels']['ColorMode']['HeaderBarCustomValue'], Lokii.GetString('Subtab_Panels'))
+    -- Display Assigned To Hide Nil
+    InterfaceOptions.AddCheckBox({
+        id      = 'Panels_Display_AssignedToHideNil',
+        default = Options['Panels']['Display']['AssignedToHideNil'],
+        label   = Lokii.GetString('Panels_Display_AssignedToHideNil_Label'),
+        tooltip = Lokii.GetString('Panels_Display_AssignedToHideNil_ToolTip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Panels')
+        },
+    })
 
-    UIHELPER_DropdownFromTable('Panels_ColorMode_ItemName', Lokii.GetString('Subtab_Panels'), ColorModes, Options['Panels']['ColorMode']['ItemName'], 'ColorModes')
-    UIHELPER_ColorPicker('Panels_ColorMode_ItemNameCustomValue', Options['Panels']['ColorMode']['ItemNameCustomValue'], Lokii.GetString('Subtab_Panels'))
+    -- Color Mode Headerbar
+    UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', 'Panels_ColorMode_HeaderBar', Options['Panels']['ColorMode']['HeaderBar'], ColorModes, 'ColorModes', Lokii.GetString('Subtab_Panels'))
+    
+    -- Custom Color Headerbar
+    InterfaceOptions.AddColorPicker({
+        id      = 'Panels_ColorMode_HeaderBarCustomValue',
+        default = Options['Panels']['ColorMode']['HeaderBarCustomValue'],
+        label   = Lokii.GetString('Panels_ColorMode_HeaderBarCustomValue_Label'),
+        tooltip = Lokii.GetString('Panels_ColorMode_HeaderBarCustomValue_ToolTip'),
+        subtab  = Lokii.GetString('Subtab_Panels'),
+    })
 
-    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Nil', Options['Panels']['Color']['AssignedTo']['Nil'], Lokii.GetString('Subtab_Panels'))
-    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Free', Options['Panels']['Color']['AssignedTo']['Free'], Lokii.GetString('Subtab_Panels'))
-    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Player', Options['Panels']['Color']['AssignedTo']['Player'], Lokii.GetString('Subtab_Panels'))
-    UIHELPER_ColorPicker('Panels_Color_AssignedTo_Other', Options['Panels']['Color']['AssignedTo']['Other'], Lokii.GetString('Subtab_Panels'))
+    -- Color Mode ItemName
+    UIHELPER_DropdownFromTable('Panels_ColorMode_ItemName', 'Panels_ColorMode_ItemName', Options['Panels']['ColorMode']['ItemName'], ColorModes, 'ColorModes', Lokii.GetString('Subtab_Panels'))
+
+    -- Custom Color Item Name
+    InterfaceOptions.AddColorPicker({
+        id      = 'Panels_ColorMode_ItemNameCustomValue',
+        default = Options['Panels']['ColorMode']['ItemNameCustomValue'],
+        label   = Lokii.GetString('Panels_ColorMode_ItemNameCustomValue_Label'),
+        tooltip = Lokii.GetString('Panels_ColorMode_ItemNameCustomValue_ToolTip'),
+        subtab  = Lokii.GetString('Subtab_Panels'),
+    })
+
+    -- Custom Colors Assigned To 
+    InterfaceOptions.AddColorPicker({
+        id      = 'Panels_Color_AssignedTo_Nil',
+        default = Options['Panels']['Color']['AssignedTo']['Nil'],
+        label   = Lokii.GetString('Panels_Color_AssignedTo_Nil_Label'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Nil_ToolTip'),
+        subtab  = Lokii.GetString('Subtab_Panels'),
+    })
+
+    InterfaceOptions.AddColorPicker({
+        id      = 'Panels_Color_AssignedTo_Free',
+        default = Options['Panels']['Color']['AssignedTo']['Free'],
+        label   = Lokii.GetString('Panels_Color_AssignedTo_Free_Label'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Free_ToolTip'),
+        subtab  = Lokii.GetString('Subtab_Panels'),
+    })
+
+    InterfaceOptions.AddColorPicker({
+        id      = 'Panels_Color_AssignedTo_Player',
+        default = Options['Panels']['Color']['AssignedTo']['Player'],
+        label   = Lokii.GetString('Panels_Color_AssignedTo_Player_Label'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Player_ToolTip'),
+        subtab  = Lokii.GetString('Subtab_Panels'),
+    })
+
+    InterfaceOptions.AddColorPicker({
+        id      = 'Panels_Color_AssignedTo_Other',
+        default = Options['Panels']['Color']['AssignedTo']['Other'],
+        label   = Lokii.GetString('Panels_Color_AssignedTo_Other_Label'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Other_ToolTip'),
+        subtab  = Lokii.GetString('Subtab_Panels'),
+    })
+end
 
 
+function BuildInterfaceOptions_Waypoints()
     UIHELPER_DetectDistributeMarkX('Waypoints', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Waypoints', 'CraftingComponents')
 
-    UIHELPER_CheckBox('Waypoints_ShowOnHud', Options['Waypoints']['ShowOnHud'], Lokii.GetString('Subtab_Waypoints'))
-    UIHELPER_CheckBox('Waypoints_ShowOnWorldMap', Options['Waypoints']['ShowOnWorldMap'], Lokii.GetString('Subtab_Waypoints'))
-    UIHELPER_CheckBox('Waypoints_ShowOnRadar', Options['Waypoints']['ShowOnRadar'], Lokii.GetString('Subtab_Waypoints'))
-    UIHELPER_DropdownFromTable('Waypoints_RadarEdgeMode', Lokii.GetString('Subtab_Waypoints'), RadarEdgeModes, Options['Waypoints']['RadarEdgeMode'], 'RadarEdgeModes')
-    UIHELPER_CheckBox('Waypoints_TrailAssigned', Options['Waypoints']['TrailAssigned'], Lokii.GetString('Subtab_Waypoints'))
-    UIHELPER_CheckBox('Waypoints_PingAssigned', Options['Waypoints']['PingAssigned'], Lokii.GetString('Subtab_Waypoints'))
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_ShowOnHud',
+        default = Options['Waypoints']['ShowOnHud'],
+        label   = Lokii.GetString('Waypoints_ShowOnHud_Label'),
+        tooltip = Lokii.GetString('Waypoints_ShowOnHud_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Waypoints')}
+    })
+
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_ShowOnWorldMap',
+        default = Options['Waypoints']['ShowOnWorldMap'],
+        label   = Lokii.GetString('Waypoints_ShowOnWorldMap_Label'),
+        tooltip = Lokii.GetString('Waypoints_ShowOnWorldMap_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Waypoints')}
+    })
+
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_ShowOnRadar',
+        default = Options['Waypoints']['ShowOnRadar'],
+        label   = Lokii.GetString('Waypoints_ShowOnRadar_Label'),
+        tooltip = Lokii.GetString('Waypoints_ShowOnRadar_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Waypoints')}
+    })
+
+    UIHELPER_DropdownFromTable('Waypoints_RadarEdgeMode', 'Waypoints_RadarEdgeMode', Options['Waypoints']['RadarEdgeMode'], RadarEdgeModes, 'RadarEdgeModes', Lokii.GetString('Subtab_Waypoints'))
+
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_TrailAssigned',
+        default = Options['Waypoints']['TrailAssigned'],
+        label   = Lokii.GetString('Waypoints_TrailAssigned_Label'),
+        tooltip = Lokii.GetString('Waypoints_TrailAssigned_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Waypoints')}
+    })
+
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_PingAssigned',
+        default = Options['Waypoints']['PingAssigned'],
+        label   = Lokii.GetString('Waypoints_PingAssigned_Label'),
+        tooltip = Lokii.GetString('Waypoints_PingAssigned_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Waypoints')}
+    })
+
 end
 
 
 function BuildInterfaceOptions_Messages()
+    -- Prefix
+    InterfaceOptions.AddTextInput({
+        id      = 'Messages_Prefix',
+        default = Options['Messages']['Prefix'],
+        label   = Lokii.GetString('Messages_Prefix_Label'),
+        tooltip = Lokii.GetString('Messages_Prefix_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Messages')}
+    })
 
-    UIHELPER_CheckBox('Messages_Channels_Squad', Options['Messages']['Channels']['Squad'], Lokii.GetString('Subtab_Messages'))
-    UIHELPER_CheckBox('Messages_Channels_System', Options['Messages']['Channels']['System'], Lokii.GetString('Subtab_Messages'))
-    UIHELPER_CheckBox('Messages_Channels_Notifications', Options['Messages']['Channels']['Notifications'], Lokii.GetString('Subtab_Messages'))
+    -- Channels
+    InterfaceOptions.AddCheckBox({
+        id      = 'Messages_Channels_Squad',
+        default = Options['Messages']['Channels']['Squad'],
+        label   = Lokii.GetString('Messages_Channels_Squad_Label'),
+        tooltip = Lokii.GetString('Messages_Channels_Squad_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Messages')}
+    })
 
-    UIHELPER_TextInput('Messages_Prefix', false, Options['Messages']['Prefix'], Lokii.GetString('Subtab_Messages'))
+    InterfaceOptions.AddCheckBox({
+        id      = 'Messages_Channels_System',
+        default = Options['Messages']['Channels']['System'],
+        label   = Lokii.GetString('Messages_Channels_System_Label'),
+        tooltip = Lokii.GetString('Messages_Channels_System_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Messages')}
+    })
 
+    InterfaceOptions.AddCheckBox({
+        id      = 'Messages_Channels_Notifications',
+        default = Options['Messages']['Channels']['Notifications'],
+        label   = Lokii.GetString('Messages_Channels_Notifications_Label'),
+        tooltip = Lokii.GetString('Messages_Channels_Notifications_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Messages')}
+    })
+
+    -- Event settings
     for tableKey, tableValue in pairs(Options['Messages']['Events']) do
         for eventKey, eventValue in pairs(Options['Messages']['Events'][tableKey]) do
             UIHELPER_MessageEventOptions('Messages', tableKey..'_'..eventKey, Options['Messages']['Events'][tableKey][eventKey], {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_'..tableKey)})
         end
     end
 
-    -- Messages Communication Settings
-    -- yolo pasteday
+    -- Communication Settings
     InterfaceOptions.StartGroup({
-        id='Group_Com',
-        label=Lokii.GetString('Group_Com_Label'),
-        tooltip=Lokii.GetString('Group_Com_ToolTip'),
-        subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
+        id          = 'Group_Com',
+        label       = Lokii.GetString('Group_Com_Label'),
+        tooltip     = Lokii.GetString('Group_Com_ToolTip'),
+        subtab      = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
     })
 
         InterfaceOptions.AddCheckBox({
-            id='Messages_Communication_Custom',
-            default=Options['Messages']['Communication']['Custom'],
-            label=Lokii.GetString('Messages_Communication_Custom_Label'),
-            tooltip=Lokii.GetString('Messages_Communication_Custom_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
+            id      = 'Messages_Communication_Custom',
+            default = Options['Messages']['Communication']['Custom'],
+            label   = Lokii.GetString('Messages_Communication_Custom_Label'),
+            tooltip = Lokii.GetString('Messages_Communication_Custom_ToolTip'),
+            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
         InterfaceOptions.AddTextInput({
-            id='Messages_Communication_Prefix',
-            default=Options['Messages']['Communication']['Prefix'],
-            label=Lokii.GetString('Messages_Communication_Prefix_Label'),
-            tooltip=Lokii.GetString('Messages_Communication_Prefix_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
+            id      = 'Messages_Communication_Prefix',
+            default = Options['Messages']['Communication']['Prefix'],
+            label   = Lokii.GetString('Messages_Communication_Prefix_Label'),
+            tooltip = Lokii.GetString('Messages_Communication_Prefix_ToolTip'),
+            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
         InterfaceOptions.AddCheckBox({
-            id='Messages_Communication_Assign_Enabled',
-            default=Options['Messages']['Communication']['Assign']['Enabled'],
-            label=Lokii.GetString('Messages_Communication_Assign_Enabled_Label'),
-            tooltip=Lokii.GetString('Messages_Communication_Assign_Enabled_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
+            id      = 'Messages_Communication_Assign_Enabled',
+            default = Options['Messages']['Communication']['Assign']['Enabled'],
+            label   = Lokii.GetString('Messages_Communication_Assign_Enabled_Label'),
+            tooltip = Lokii.GetString('Messages_Communication_Assign_Enabled_ToolTip'),
+            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
         InterfaceOptions.AddTextInput({
-            id='Messages_Communication_Assign_Format',
-            default=Options['Messages']['Communication']['Assign']['Format'],
-            label=Lokii.GetString('Messages_Communication_Assign_Format_Label'),
-            tooltip=Lokii.GetString('Messages_Communication_Assign_Format_ToolTip'),
-            subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
+            id      = 'Messages_Communication_Assign_Format',
+            default = Options['Messages']['Communication']['Assign']['Format'],
+            label   = Lokii.GetString('Messages_Communication_Assign_Format_Label'),
+            tooltip = Lokii.GetString('Messages_Communication_Assign_Format_ToolTip'),
+            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
-    InterfaceOptions.StopGroup({subtab={Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}})
+    InterfaceOptions.StopGroup({
+        subtab      = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
+    })
 
 end
 
 function BuildInterfaceOptions_Tracker()
-    UIHELPER_DropdownFromTable('Tracker_Visibility', Lokii.GetString('Subtab_Tracker'), TrackerVisibilityOptions, Options['Tracker']['Visibility'], 'TrackerVisibility')
+    UIHELPER_DropdownFromTable('Tracker_Visibility', 'Tracker_Visibility', Options['Tracker']['Visibility'], TrackerVisibilityOptions, 'TrackerVisibility',  Lokii.GetString('Subtab_Tracker'))
+    UIHELPER_DetectDistributeMarkX('Tracker', 'EquipmentItems')
+    UIHELPER_DetectDistributeMarkX('Tracker', 'CraftingComponents')
 end
 
 function BuildInterfaceOptions_Sounds()
-
-    UIHELPER_CheckBox('Sounds_Mute', Options['Sounds']['Mute'], Lokii.GetString('Subtab_Sounds'))
-
     UIHELPER_SoundOptionsMenu('Sounds_OnIdentify', Lokii.GetString('Sounds_OnIdentify_Label'), Options['Sounds']['OnIdentify'], Lokii.GetString('Subtab_Sounds'))
 
     UIHELPER_SoundOptionsMenu('Sounds_OnIdentifyRollable', Lokii.GetString('Sounds_OnIdentifyRollable_Label'), Options['Sounds']['OnIdentifyRollable'], Lokii.GetString('Subtab_Sounds'))
@@ -1395,7 +1427,6 @@ function BuildInterfaceOptions_Sounds()
     UIHELPER_SoundOptionsMenu('Sounds_OnAssignItemToMe', Lokii.GetString('Sounds_OnAssignItemToMe_Label'), Options['Sounds']['OnAssignItemToMe'], Lokii.GetString('Subtab_Sounds'))
 
     UIHELPER_SoundOptionsMenu('Sounds_OnAssignItemToOther', Lokii.GetString('Sounds_OnAssignItemToOther_Label'), Options['Sounds']['OnAssignItemToOther'], Lokii.GetString('Subtab_Sounds'))
-
 end
 
 
@@ -1416,19 +1447,26 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
         },
     })
     ]]--
-        UIHELPER_CheckBox(rootKey..'_'..x..'_Enabled', Options[rootKey][x]['Enabled'], Lokii.GetString('Subtab_'..rootKey))
+        -- rootKey x Enabled
+        InterfaceOptions.AddCheckBox({
+            id      = rootKey..'_'..x..'_Enabled',
+            default = Options[rootKey][x]['Enabled'],
+            label   = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Label'),
+            tooltip = Lokii.GetString('Filter_Generic_'..x..'_Enabled_ToolTip'),
+            subtab  = {Lokii.GetString('Subtab_'..rootKey)}
+        })
 
         -- Mode dropdown
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', Lokii.GetString('Subtab_'..rootKey), TriggerModeOptions, Options[rootKey][x]['Mode'], 'Mode')
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[rootKey][x]['Mode'], TriggerModeOptions, 'Mode', Lokii.GetString('Subtab_'..rootKey))
 
         -- Simple mode options
-            UIHELPER_StageX(rootKey, x, 'Simple', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Simple', 'Subtab_'..rootKey)
 
         -- Advanced mode options
-            UIHELPER_StageX(rootKey, x, 'Stage1', 'Subtab_'..rootKey)
-            UIHELPER_StageX(rootKey, x, 'Stage2', 'Subtab_'..rootKey)
-            UIHELPER_StageX(rootKey, x, 'Stage3', 'Subtab_'..rootKey)
-            UIHELPER_StageX(rootKey, x, 'Stage4', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Stage1', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Stage2', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Stage3', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Stage4', 'Subtab_'..rootKey)
 
     --[[
     InterfaceOptions.StopGroup({
@@ -1440,29 +1478,17 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
 end
 
 function UIHELPER_StageX(rootKey, x, stage, subtab)
-    --[[
-    -- Enable checkbox, not used by Simple
-    if stage ~= 'Simple' then
-        InterfaceOptions.AddCheckBox({
-            id      = rootKey..'_'..x..'_'..stage..'_Enabled',
-            default = Options[rootKey][x][stage]['Enabled'],
-            label    = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_Label'),
-            tooltip  = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_ToolTip'),
-            subtab  = {
-                Lokii.GetString(subtab)
-            },
-        })
-    end
-    --]]
+    -- Vars
     local checkbox = (stage ~= 'Simple')
     local tierdropdown = (stage == 'Simple')
 
+    -- rootKey x stage Enabled group
     InterfaceOptions.StartGroup({
         id       = rootKey..'_'..x..'_'..stage..'_Enabled',
         checkbox = checkbox,
         default  = Options[rootKey][x]['Enabled'],
-        label    = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_Label'),
-        tooltip  = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_Enabled_ToolTip'),
+        label    = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_Label'),
+        tooltip  = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_ToolTip'),
         subtab   = {
             Lokii.GetString(subtab)
         },
@@ -1470,22 +1496,22 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
 
         -- Distribution extras
         if rootKey == 'Distribution' then
-            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_LootMode', Lokii.GetString('Subtab_'..rootKey), DistributionMode, Options[rootKey][x][stage]['LootMode'], 'LootMode')
-            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_Weighting', Lokii.GetString('Subtab_'..rootKey), WeightingOptions, Options[rootKey][x][stage]['Weighting'], 'Weighting')
+            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_LootMode', 'Filter_Generic_LootMode', Options[rootKey][x][stage]['LootMode'], DistributionMode, 'LootMode', Lokii.GetString(subtab))
+            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_Weighting', 'Filter_Generic_Weighting', Options[rootKey][x][stage]['Weighting'], WeightingOptions, 'Weighting', Lokii.GetString(subtab))
         end
 
         -- Tier and Quality threshold dropdowns
         if tierdropdown then
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', Lokii.GetString('Subtab_'..rootKey), TierOptions, Options[rootKey][x][stage]['TierThreshold'], 'TierThreshold')
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', 'Filter_Generic_TierThreshold', Options[rootKey][x][stage]['TierThreshold'], TierOptions, 'TierThreshold', Lokii.GetString(subtab))
         end
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', Lokii.GetString('Subtab_'..rootKey), QualityOptions, Options[rootKey][x][stage]['QualityThreshold'], 'QualityThreshold')
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', 'Filter_Generic_QualityThreshold', Options[rootKey][x][stage]['QualityThreshold'], QualityOptions, 'QualityThreshold', Lokii.GetString(subtab))
 
         -- Custom Quality input
         InterfaceOptions.AddTextInput({
             id      = rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue',
             numeric = true,
-            label   = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue_Label'),
-            tooltip = Lokii.GetString(rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue_ToolTip'),
+            label   = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Label'),
+            tooltip = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_ToolTip'),
             default = Options[rootKey][x][stage]['QualityThresholdCustomValue'],
             subtab  = {
                     Lokii.GetString(subtab)
@@ -1499,10 +1525,20 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
     })
 end
 
-function UIHELPER_DropdownFromTable(key, subtab, table, tableDefault, optionKey)
+--[[
+    UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
+    id        - The Option id for the Choice Menu
+    key       - Used to get label and tooltip for the Choice Menu via Lokii
+    default   - The default value
+    table     - The table of options
+    optionKey - Used to get label and tooltip for the Choice Entries via Lokii
+    subtab    - the subtab
+
+--]]
+function UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
     InterfaceOptions.AddChoiceMenu({
-        id      = key,
-        default = tableDefault,
+        id      = id,
+        default = default,
         label   = Lokii.GetString(key..'_Label'),
         tooltip = Lokii.GetString(key..'_ToolTip'),
         subtab  = subtab,
@@ -1510,7 +1546,7 @@ function UIHELPER_DropdownFromTable(key, subtab, table, tableDefault, optionKey)
 
         for tableKey, tableValue in pairs(table) do
             InterfaceOptions.AddChoiceEntry({
-                menuId  = key,
+                menuId  = id,
                 val     = tableValue,
                 label   = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'),
                 tooltip = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_ToolTip'),
@@ -1521,38 +1557,6 @@ function UIHELPER_DropdownFromTable(key, subtab, table, tableDefault, optionKey)
         end
 end
 
-function UIHELPER_TextInput(id, numeric, default, subtab)
-    InterfaceOptions.AddTextInput({
-        id      = id,
-        numeric = numeric,
-        label   = Lokii.GetString(id..'_Label'),
-        tooltip = Lokii.GetString(id..'_ToolTip'),
-        default = default,
-        subtab  = subtab,
-    })
-end
-
-function UIHELPER_CheckBox(id, default, subtab)
-    InterfaceOptions.AddCheckBox({
-        id      = id,
-        default = default,
-        label   = Lokii.GetString(id..'_Label'),
-        tooltip = Lokii.GetString(id..'_ToolTip'),
-        subtab  = subtab,
-    })
-end
-
-
-function UIHELPER_ColorPicker(id, default, subtab)
-    InterfaceOptions.AddColorPicker({
-        id      = id,
-        default = default,
-        label   = Lokii.GetString(id..'_Label'),
-        tooltip = Lokii.GetString(id..'_ToolTip'),
-        subtab  = subtab,
-    })
-
-end
 
 --[[
     UIHELPER_SoundOptionsMenu(uid, label, default, subtab)
@@ -1577,8 +1581,6 @@ end
 
 
 function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
-    Debug.Log('Subtab:')
-    Debug.Table(subtab)
     -- Checkbox Group
     InterfaceOptions.StartGroup({
         id       = rootKey..'_Events_'..eventKey..'_Enabled',
@@ -1590,17 +1592,55 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
     })
 
         -- Squad
-        UIHELPER_CheckBox(rootKey..'_Events_'..eventKey..'_Channels_Squad_Enabled', defaults['Channels']['Squad']['Enabled'], subtab)
-        UIHELPER_TextInput(rootKey..'_Events_'..eventKey..'_Channels_Squad_Format', false, defaults['Channels']['Squad']['Format'], subtab)
- 
+        InterfaceOptions.AddCheckBox({
+            id      = rootKey..'_Events_'..eventKey..'_Channels_Squad_Enabled',
+            default = defaults['Channels']['Squad']['Enabled'],
+            label   = Lokii.GetString('Messages_Generic_Channels_Squad_Enabled_Label'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Squad_Enabled_ToolTip'),
+            subtab  = subtab,
+        })
+
+        InterfaceOptions.AddTextInput({
+            id      = rootKey..'_Events_'..eventKey..'_Channels_Squad_Format',
+            default = defaults['Channels']['Squad']['Format'],
+            label   = Lokii.GetString('Messages_Generic_Channels_Squad_Format_Label'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Squad_Format_ToolTip'),
+            subtab  = subtab,
+        })
 
         -- System
-        UIHELPER_CheckBox(rootKey..'_Events_'..eventKey..'_Channels_System_Enabled', defaults['Channels']['System']['Enabled'], subtab)
-        UIHELPER_TextInput(rootKey..'_Events_'..eventKey..'_Channels_System_Format', false, defaults['Channels']['System']['Format'], subtab)
+        InterfaceOptions.AddCheckBox({
+            id      = rootKey..'_Events_'..eventKey..'_Channels_System_Enabled',
+            default = defaults['Channels']['System']['Enabled'],
+            label   = Lokii.GetString('Messages_Generic_Channels_System_Enabled_Label'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_System_Enabled_ToolTip'),
+            subtab  = subtab,
+        })
+
+        InterfaceOptions.AddTextInput({
+            id      = rootKey..'_Events_'..eventKey..'_Channels_System_Format',
+            default = defaults['Channels']['System']['Format'],
+            label   = Lokii.GetString('Messages_Generic_Channels_System_Format_Label'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_System_Format_ToolTip'),
+            subtab  = subtab,
+        })
 
         -- Notifications
-        UIHELPER_CheckBox(rootKey..'_Events_'..eventKey..'_Channels_Notifications_Enabled', defaults['Channels']['Notifications']['Enabled'], subtab)
-        UIHELPER_TextInput(rootKey..'_Events_'..eventKey..'_Channels_Notifications_Format', false, defaults['Channels']['Notifications']['Format'], subtab)
+        InterfaceOptions.AddCheckBox({
+            id      = rootKey..'_Events_'..eventKey..'_Channels_Notifications_Enabled',
+            default = defaults['Channels']['Notifications']['Enabled'],
+            label   = Lokii.GetString('Messages_Generic_Channels_Notifications_Enabled_Label'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Notifications_Enabled_ToolTip'),
+            subtab  = subtab,
+        })
+
+        InterfaceOptions.AddTextInput({
+            id      = rootKey..'_Events_'..eventKey..'_Channels_Notifications_Format',
+            default = defaults['Channels']['Notifications']['Format'],
+            label   = Lokii.GetString('Messages_Generic_Channels_Notifications_Format_Label'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Notifications_Format_ToolTip'),
+            subtab  = subtab,
+        })
 
     InterfaceOptions.StopGroup({
             subtab = subtab,
