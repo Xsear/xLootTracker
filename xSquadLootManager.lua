@@ -317,11 +317,11 @@ function OnChatMessage(args)
             local rollType = nil
             args.text = string.lower(args.text)
             if args.text == 'n' or string.find(string.lower(args.text), '^nee+d$') ~= nil then
-                rollType = 'need'
+                rollType = RollType.Need
             elseif args.text == 'g' or string.find(string.lower(args.text), '^gree+d$') ~= nil then
-                rollType = 'greed'
+                rollType = RollType.Greed
             elseif args.text == 'p' or args.text == 'pass' then
-                rollType = 'pass'
+                rollType = RollType.Pass
             end
 
             if rollType ~= nil then
@@ -747,7 +747,7 @@ function UpdatePanel(loot)
 
             -- Debug.Log(RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):GetTextDims()) -- To be used to detect when title wraps
             if loot.assignedTo == nil then
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Not yet assigned')
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Nil'].tint)
 
                 if Options['Panels']['Display']['AssignedToHideNil'] then
@@ -757,10 +757,10 @@ function UpdatePanel(loot)
                 end
 
             elseif loot.assignedTo == true or loot.assignedTo == false then
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Free for all')
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Free'].tint)
             else
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText('Assigned To: '..loot.assignedTo)
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_Prefix')..loot.assignedTo)
 
                 if namecompare(loot.assignedTo, Player.GetInfo()) then
                     LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Player'].tint)
@@ -789,7 +789,7 @@ function CreateWaypoint(loot)
 
     -- Text
     MARKER:SetTitle(FixItemNameTag(loot.name, loot.quality))
-    MARKER:SetSubtitle('Loot')
+    MARKER:SetSubtitle(Lokii.GetString('UI_Waypoints_Subtitle'))
 
     -- Color ?
     MARKER:SetThemeColor(LIB_ITEMS.GetItemColor(loot.itemInfo))
@@ -1036,7 +1036,7 @@ function DistributeItem()
                     end
                 end
 
-                if eligibleNames == '' then eligibleNames = 'No one' end
+                if eligibleNames == '' then eligibleNames = Lokii.GetString('UI_Messages_Distribution_NobodyEligible') end
 
                 -- Start roll timeout timer
                 mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=loot})
@@ -1046,10 +1046,10 @@ function DistributeItem()
 
             end
         else
-            Debug.Log('No Rollable Loot to distribute')
+            Debug.Log(Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
         end
     else
-        Debug.Log('No Identified Loot to distribute')
+        Debug.Log(Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
     end
 end
 
@@ -1111,8 +1111,8 @@ function RollDecision(args)
             -- If we've found the person who sent this message and he has not yet selected rollType
             if args.author == row.name and row.rollType == false then
                 -- If he wants to roll need but isn't allowed to, change his roll to greed (y bastard)
-                if args.rollType == 'need' and row.canNeed == false then
-                    args.rollType = 'greed'
+                if args.rollType == RollType.Need and row.canNeed == false then
+                    args.rollType = RollType.Greed
                     OnRollChange({rollType=args.rollType, playerName=args.author})
                 end
 
@@ -1151,8 +1151,6 @@ function RollFinish()
         mCurrentlyRolling.timer:KillAlarm('roll_timeout') -- Prevent timeout callback
         Debug.Log('RollFinish killing roll timeout alarm')
 
-
-
         -- Declare vars
         local winner = ''
         local highest = nil
@@ -1161,7 +1159,7 @@ function RollFinish()
         -- Figure out if someone has need rolled, and set any un-decided roll types to the default
         local someoneHasNeeded = false
         for num, row in ipairs(aCurrentlyRolling) do
-            if row.rollType == 'need' then
+            if row.rollType == RollType.Need then
                 someoneHasNeeded = true
             elseif row.rollType == false then
                 row.rollType = Options['Distribution']['RollTypeDefault']
@@ -1172,7 +1170,7 @@ function RollFinish()
         for num, row in ipairs(aCurrentlyRolling) do
             -- Inverted logic because Lua doesn't have continue
             -- Skip greed rolls if someone has needed, as well as any pass rolls
-            if not(someoneHasNeeded and row.rollType == 'greed') and not (row.rollType == 'pass' or row.rollType == false) then
+            if not(someoneHasNeeded and row.rollType == RollType.Greed) and not (row.rollType == RollType.Pass or row.rollType == false) then
 
                 -- Calc roll
                 roll = math.random(Options['Distribution']['RollMin'], Options['Distribution']['RollMax'])
@@ -1460,9 +1458,9 @@ function UpdateTracker()
                 
                 -- Setup Assigned To text
                 if item.assignedTo == nil then
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_Tracker_AssignedTo_nil'))
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
                 elseif item.assignedTo == false or item.assignedTo == true then
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_Tracker_AssignedTo_true'))
+                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
                 else
                     ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
                 end
@@ -2047,12 +2045,7 @@ function OnIdentify(args)
     if not bIsSquadLeader then return end
 
     -- Messages
-    if Options['Messages']['MessageSquad_OnIdentify'] then
-        SendMessage(RunMessageFilters(Options['Messages']['MessageFormatSquad_OnIdentify'], args))
-    end
-    if Options['Messages']['MessageSystem_OnIdentify'] then
-        SendSystemMessage(RunMessageFilters(Options['Messages']['MessageFormatSystem_OnIdentify'], args))
-    end
+    MessageEvent('Detection', 'OnIdentify', args)
 
     -- If auto distribute is enabled, distribute the item
     if Options['Distribution']['AutoDistribute'] then
@@ -2062,7 +2055,19 @@ function OnIdentify(args)
 end
 
 
-
+--[[
+    MessageEvent(eventClass, eventName, eventArgs)
+    Generic function used to handle the process of sending messages in response to events, based on specific options.
+--]]
+function MessageEvent(eventClass, eventName, eventArgs)
+    if Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
+        for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
+            if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
+                SendMessage(channelKey, RunMessageFilters(Options['Messages']['Events']['eventClass']['eventName']['Channels']['channelKey']['Format'], eventArgs))                
+            end
+        end
+    end
+end
 
 
 -- Shitty stuff below
@@ -2084,7 +2089,7 @@ function ToggleEnabled(cmd)
         newStatus = not Options['Core']['Enabled']
     end
 
-    OnOptionChange({'Enabled', newStatus})
+    OnOptionChange({'Core_Enabled', newStatus})
 end
 
 --[[

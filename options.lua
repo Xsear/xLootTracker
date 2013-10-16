@@ -40,6 +40,7 @@ DistributionMode = {
 }
 
 RollType = {
+    --None = false,
     Pass = 'pass',
     Greed = 'greed',
     Need = 'need',
