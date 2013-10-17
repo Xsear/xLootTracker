@@ -13,6 +13,7 @@ require 'lib/lib_Vector' -- Vector coordinates
 require 'lib/lib_Button' -- Buttons used by Tracker
 require 'lib/lib_ToolTip' -- ToolTip used by Tracker
 require 'lib/lib_ChatLib' -- Used to send some chat messages
+require 'lib/lib_table'
 
 -- Custom
 require './lib/Lokii' -- Localization
@@ -28,7 +29,7 @@ TRACKER = Component.GetFrame('Tracker')
 TRACKER_TOOLTIP = TRACKER:GetChild('Tooltip')
 
 -- Constants
-csVersion = '0.84'
+csVersion = '0.85'
 ciSaveVersion = 0.67
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
@@ -501,7 +502,7 @@ function ItemPassesFilter(item, moduleOptions)
             end
 
             -- Verify that quality passes threshold
-            Debug.Log(tostring(tonumber(item.quality))..' >= '..tostring(qualityThreshold))
+            --Debug.Log(tostring(tonumber(item.quality))..' >= '..tostring(qualityThreshold))
             if tonumber(item.quality) >= qualityThreshold then
                 -- Passed all filters
                 return true
