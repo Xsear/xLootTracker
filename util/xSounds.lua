@@ -18,7 +18,7 @@ end
 PRIVATE.uiSounds = { 
     {
         label='Sounds_Option_none',
-        val="false",
+        val=false,
     },
     {
         label='Sounds_Option_UI_ARESMIssions_Pickup_Generic01',

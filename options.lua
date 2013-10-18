@@ -820,7 +820,7 @@ Options = {
         ['Mute'] = false,
 
         ['OnIdentify'] = 'Play_UI_Beep_13',
-        ['OnIdentifyRollable'] = uiSounds[1],
+        ['OnIdentifyRollable'] = 'Play_UI_Beep_13',
         ['OnAssignItemToMe'] = 'Play_SFX_UI_Ding',
         ['OnAssignItemToOther'] = 'Play_SFX_UI_Ticker',
 

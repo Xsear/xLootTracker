@@ -146,21 +146,9 @@ LANG = {
 	Group_Com_ToolTip																=	"Inter-addon communication options",
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	
 	Messages_Enabled_Label															= "Enable Messages",
-	Messages_Enabled_ToolTip														= "fixme",
+	Messages_Enabled_ToolTip														= "The addon will send customizable Messages to the Chat when certain events occur, keeping you and your Squad members in the loop of what is going on with the item drops.",
 	Messages_Prefix_Label															= "Generic Prefix",
 	Messages_Prefix_ToolTip															= "Set the prefix for all public facing messages.",
 	Messages_Channels_Squad_Label													= "Send on Squad Channel",
@@ -377,15 +365,10 @@ LANG = {
 	Messages_Events_Detection_OnIdentify_Channels_System_Format_Label                   = Generic_Messages_Events_X_Event_Channels_System_Format_Label,                                      
 	Messages_Events_Detection_OnIdentify_Channels_System_Format_ToolTip                 = Generic_Messages_Events_X_Event_Channels_System_Format_ToolTip,  
 
-	Detection_Enabled_Label                                                             = "Enable Detection",                                                                                                                          
-	Detection_Enabled_ToolTip                                                           = ".",                                                                                                                      
-
-
-
 
 
 	Panels_Enabled_Label                                                                = "Enable Panels",
-	Panels_Enabled_ToolTip                                                              = ".",
+	Panels_Enabled_ToolTip                                                              = "The addon will attach Panels onto item drops, allowing you to inspect the item in detail when up close.",
 	
 
 	Panels_Display_AssignedTo_Label                                                     = "Display AssignedTo",                                                          
@@ -398,29 +381,29 @@ LANG = {
 	Panels_ColorMode_ItemName_Label                                                      = "Item Name Color",                                                                         
 	Panels_ColorMode_ItemName_ToolTip                                                    = "Set the color of the item name text on the panel header.",	 
 	Panels_ColorMode_ItemNameCustomValue_Label     										 = "Custom Item Name Color",
-	Panels_ColorMode_ItemNameCustomValue_ToolTip   										 = ".",
+	Panels_ColorMode_ItemNameCustomValue_ToolTip   										 = "Set the color of the item name text on the panel header for the Custom option.",
 	Panels_ColorMode_HeaderBar_Label                                                     = "Header Color",                                                                        
 	Panels_ColorMode_HeaderBar_ToolTip                                                   = "Set the color of the background of the panel header.",  
 	Panels_ColorMode_HeaderBarCustomValue_Label    										 = "Custom Header Color", 
-	Panels_ColorMode_HeaderBarCustomValue_ToolTip  										 = ".", 
+	Panels_ColorMode_HeaderBarCustomValue_ToolTip  										 = "Set the color of the background of the panel header for the Custom option.", 
 
 
 	Panels_Color_AssignedTo_Nil_Label                                             = "AssignedTo Color Not assigned",                                           
-	Panels_Color_AssignedTo_Nil_ToolTip                                           = ".",                                                                                      
+	Panels_Color_AssignedTo_Nil_ToolTip                                           = "Set the color of the Assigned To text when the item has not been assigned.",                                                                                      
 	Panels_Color_AssignedTo_Free_Label                                            = "AssignedTo Color Free for all",                  
-	Panels_Color_AssignedTo_Free_ToolTip                                          = ".",                                                                                    
+	Panels_Color_AssignedTo_Free_ToolTip                                          = "Set the color of the Assigned To text when the item has been declared free for all.",                                                                                    
 	Panels_Color_AssignedTo_Player_Label                                          = "AssignedTo Color For you",                                                                                    
-	Panels_Color_AssignedTo_Player_ToolTip                                        = ".",                                                                                
+	Panels_Color_AssignedTo_Player_ToolTip                                        = "Set the color of the Assigned To text when the item has been assigned to you.",                                                                                
 	Panels_Color_AssignedTo_Other_Label                                           = "AssignedTo Color For other",                                                                                      
-	Panels_Color_AssignedTo_Other_ToolTip                                         = ".",                                                                                  
+	Panels_Color_AssignedTo_Other_ToolTip                                         = "Set the color of the Assigned To text when the item has been assigned to someone else.",                                                                                  
 
 	Core_Enabled_Label                                                                  = "Enabled",
-	Core_Enabled_ToolTip                                                                = ".",
+	Core_Enabled_ToolTip                                                                = "The addon will be enabled. This option is mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. If you are suspecting compatability issues with other addons, it would be better to tempoarily remove the addon in order to verify whether or not it is part of the issue.",
 	Core_VersionMessage_Label                                                           = "Version Message",                                                    
-	Core_VersionMessage_ToolTip                                                         = ".",  
+	Core_VersionMessage_ToolTip                                                         = "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
 
 	Waypoints_Enabled_Label                                                             = "Enable Waypoints",                                                                                                                          
-	Waypoints_Enabled_ToolTip                                                           = "...",      
+	Waypoints_Enabled_ToolTip                                                           = "The addon will attach Waypoints to tracked items, helping you quickly locate drops over larger distances.",      
 
 	Waypoints_ShowOnHud_Label						=	"Show On Hud",
 	Waypoints_ShowOnHud_ToolTip						=	"Show Waypoints on the HUD",
@@ -440,7 +423,8 @@ LANG = {
 
 
 	Debug_Enabled_Label                                                                 = "Debug",
-	Debug_Enabled_ToolTip                                                               = "Toggle debug mode",
+	Debug_Enabled_ToolTip                                                               = "The addon will enter Debug mode, logging messages in the console that are helpful for the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
+
 	Debug_FakeOnSquadRoster_Label                                                       = "Fake Squad Roster",
 	Debug_FakeOnSquadRoster_ToolTip                                                     = "If not in a squad but override squad leader, put fake squad members in the roster",
 	Debug_LogLootableTargets_Label      												= "Log Loot Detected",
@@ -449,7 +433,7 @@ LANG = {
 	Debug_LogLootableCollection_ToolTip 												= "Extra debug messages, spammy.",
 
 	Sounds_Enabled_Label                                                                = "Enable Sounds",
-	Sounds_Enabled_ToolTip                                                              = ".",
+	Sounds_Enabled_ToolTip                                                              = "The addon will play sounds in order to notify you when certain events occur.",
 	
 	Sounds_Mute_Label								=	"Mute",
 	Sounds_Mute_ToolTip								=	"If checked, no sounds will play",
@@ -459,14 +443,14 @@ LANG = {
 	Sounds_OnAssignItemToOther_Label				=	"Item Assigned To Other",
 
 	Tracker_Enabled_Label							=   "Enable Tracker",
-	Tracker_Enabled_ToolTip							=   "Enables a HUDFrame that displays the currently tracked items.",
+	Tracker_Enabled_ToolTip							=   "The addon will display information about currently tracked item drops, allowing you to keep track of things at a glance, as well as to perform actions with ease, or inspect the items in more detail, when in mousemode.",
 
 	Tracker_Visibility_Label 						=   "Visibility",
 	Tracker_Visibility_ToolTip 						=   "When to display the tracker.\nAlways - I wanna be with you~\nHUD - Follow suit with rest of HUD\nMousemode - Only when in Mousemode",
 
 
 	Distribution_Enabled_Label                                                          = "Enable Distribution",                                                                                                                    
-	Distribution_Enabled_ToolTip                                                        = "Where is this I dont even",                                                                                                                
+	Distribution_Enabled_ToolTip                                                        = "When you are in a Squad as the Squad Leader, the addon will assist you with distributing the items you find between the members of your Squad. This feature heavily relies on the Messages feature, as otherwise the addon can not comunicate with your Squad.",                                                                                                                
                                                                                                              
 	Distribution_AutoDistribute_Label                                                   = "Auto distribute",                                                                                                      
 	Distribution_AutoDistribute_ToolTip                                                 = "If checked the addon will automatically distribute/roll items according to the current ruleset as soon as they are identified",  
@@ -476,7 +460,7 @@ LANG = {
 	Distribution_RollMax_Label                                                          = "Roll range maximum",
 	Distribution_RollMax_ToolTip                                                        = "Maximum roll value",   
 	Distribution_AlwaysSquadLeader_Label                                                = "Always Squad Leader",                                                                                                
-	Distribution_AlwaysSquadLeader_ToolTip                                              = ".",
+	Distribution_AlwaysSquadLeader_ToolTip                                              = "The addon will ignore what the game says about your status, as you are in fact the undeniable Squad Leader. This allows the addon to perform Distribution even if you are not the Squad Leader. Unfortunately, the addon cannot always convince other players of your greatness on its own.",
 	Distribution_RollTypeDefault_Label                                                  = "Default Roll Type",                                                                                                    
 	Distribution_RollTypeDefault_ToolTip                                                = "This roll type is selected for any users who do not declare a roll type before the timeout.",
 
