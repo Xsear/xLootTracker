@@ -443,7 +443,11 @@ LANG = {
 	Debug_Enabled_ToolTip                                                               = "Toggle debug mode",
 	Debug_FakeOnSquadRoster_Label                                                       = "Fake Squad Roster",
 	Debug_FakeOnSquadRoster_ToolTip                                                     = "If not in a squad but override squad leader, put fake squad members in the roster",
-	
+	Debug_LogLootableTargets_Label      												= "Log Loot Detected",
+	Debug_LogLootableTargets_ToolTip    												= "Extra debug messages, spammy.",
+	Debug_LogLootableCollection_Label   												= "Log Loot Collected",
+	Debug_LogLootableCollection_ToolTip 												= "Extra debug messages, spammy.",
+
 	Sounds_Enabled_Label                                                                = "Enable Sounds",
 	Sounds_Enabled_ToolTip                                                              = ".",
 	

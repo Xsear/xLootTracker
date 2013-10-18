@@ -33,7 +33,7 @@ csVersion = '0.85'
 ciSaveVersion = 0.67
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
-local ciSquadMessageLengthLimit = 256 -- Character limit of Squad chat messages. Used to split too long messages into multiple.
+local ciSquadMessageLengthLimit = 255 -- Character limit of Squad chat messages. Used to split too long messages into multiple. One character reserved for alerts.
 
 -- Variables
 local aSquadRoster = {} -- The latest squad roster
@@ -68,7 +68,7 @@ function OnComponentLoad()
     Lokii.SetBaseLang("en");
     Lokii.SetToLocale();
 
-     -- Setup Debug
+    -- Setup Debug
     Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
 
     -- Setup Interface Options
@@ -219,7 +219,7 @@ function OnEntityAvailable(args)
     if args.type == 'loot' then
         -- Get more info about the entity
         local targetInfo = Game.GetTargetInfo(args.entityId)
-        local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
+        local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
 
         -- Debug
         if Options['Debug']['LogLootableTargets'] and IsLootableTarget(targetInfo) then
@@ -365,7 +365,7 @@ function OnLootCollected(args)
     if not args.itemTypeId then Debug.Error('OnLootCollected args.itemTypeId is nil') return end
 
     -- Get item info
-    local itemInfo = Game.GetItemInfoByType(args.itemTypeId)
+    local itemInfo = Game.GetItemInfoByType(args.itemTypeId, Game.GetItemAttributeModifiers(args.itemTypeId, args.quality))
 
     if itemInfo.type == 'crafting_component' then
         Debug.Log('OnLootCollected - Crafting Component')
@@ -389,15 +389,14 @@ function OnLootCollected(args)
         -- Okay, do we have any identified loot?
         if not _table.empty(aIdentifiedLoot) then
 
-            -- Todo: Determine or at least guess which entity it was that the looter interacted with in order to collect this item.
-            -- Todo: Maybe I can exclude potential duplicates by checking if identified entities are still around
-
-            -- For now we will just grab the first identified item that this item could be
+            -- Grab the first identified item that this item could be, checking that the entity is no longer available
             local loot = nil
             for num, item in ipairs(aIdentifiedLoot) do 
                 if item.itemTypeId == args.itemTypeId and item.quality == args.quality then
-                    loot = item
-                    break
+                    if not Game.IsTargetAvailable(item.entityId) then
+                        loot = item
+                        break
+                    end
                 end
             end
 
@@ -405,21 +404,19 @@ function OnLootCollected(args)
             if loot ~= nil then
 
                 -- If we care about this item, trigger relevant event
-                if ItemPassesFilter(loot, options['Detection']) then
-                    local eventArgs = {lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot}
+                local eventArgs = {lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot}
 
-                    -- If the item had not been assigned
-                    if loot.assignedTo == nil then
-                        Component.GenerateEvent('XSLM_ON_LOOT_SNATCHED', eventArgs)
+                -- If the item had not been assigned
+                if loot.assignedTo == nil then
+                    Component.GenerateEvent('XSLM_ON_LOOT_SNATCHED', eventArgs)
 
-                    -- Else if the item was looted by the person it was assigned to
-                    elseif namecompare(loot.assignedTo, args.lootedTo) then
-                        Component.GenerateEvent('XSLM_ON_LOOT_RECEIVED', eventArgs)
+                -- Else if the item was looted by the person it was assigned to
+                elseif namecompare(loot.assignedTo, args.lootedTo) then
+                    Component.GenerateEvent('XSLM_ON_LOOT_RECEIVED', eventArgs)
 
-                    -- Else it was a ninja
-                    else
-                        Component.GenerateEvent('XSLM_ON_LOOT_STOLEN', eventArgs)
-                    end
+                -- Else it was a ninja
+                else
+                    Component.GenerateEvent('XSLM_ON_LOOT_STOLEN', eventArgs)
                 end
 
                 -- End the function, we're done here.
@@ -429,10 +426,8 @@ function OnLootCollected(args)
             end
         end
 
-        -- No identified loot or this item wasn't identified
-        if ItemPassesFilter({quality=args.quality, itemInfo=itemInfo, name=itemInfo.name}, options['Detection']) then
-            Component.GenerateEvent('XSLM_ON_LOOT_CLAIMED', {lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
-        end
+        -- This item wasn't being tracked.
+        Component.GenerateEvent('XSLM_ON_LOOT_CLAIMED', {lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
     end
 end
 
@@ -458,7 +453,7 @@ function ItemPassesFilter(item, moduleOptions)
     end
 
     -- Verify that type passes filter
-    if typeKey and moduleOptions[typeKey]['Enabled'] then
+    if typeKey ~= nil and moduleOptions[typeKey]['Enabled'] then
         -- Determine stage
         if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
             stageKey = 'Simple'
@@ -527,15 +522,20 @@ function IsLootableTarget(targetInfo)
 end
 
 --[[
-    IsTrackableItemType(itemInfo)
+    IsTrackableItemType([itemInfo(table)|itemType])
     Whether or not an item (post pickup) was a lootable target (ish)
 ]]--
-function IsTrackableItemType(itemInfo)
+function IsTrackableItemType(info)
+    -- Handle arguments
+    local itemType
+    if type(info) == 'table' then itemType = info.type
+    else itemType = tostring(info) end
+
     -- Verify that the looted item is of a type that we care about
-    if  itemInfo.type == 'frame_module' or
-        itemInfo.type == 'ability_module' or
-        itemInfo.type == 'weapon' or
-        itemInfo.type == 'crafting_component' then
+    if  itemType == 'frame_module' or
+        itemType == 'ability_module' or
+        itemType == 'weapon' or
+        itemType == 'crafting_component' then
         return true
     end
 
@@ -584,7 +584,7 @@ end
 function Identify(entityId, targetInfo)
     -- Get data if we don't have it
     targetInfo = targetInfo or Game.GetTargetInfo(entityId)
-    itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
+    local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
     Debug.Log('Identifying '..tostring(entityId)..','..targetInfo.name)
     Debug.Log('targetInfo: ')
     Debug.Table(targetInfo)
@@ -595,14 +595,14 @@ function Identify(entityId, targetInfo)
     local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
 
     -- Optionally create waypoint
-    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, options['Waypoints'])) then
+    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
         loot.waypoint = CreateWaypoint(loot)
     end
 
-    Debug.Log(tostring(ItemPassesFilter(loot, options['Panels'])))
+    Debug.Log(tostring(ItemPassesFilter(loot, Options['Panels'])))
 
     -- Optionally create panel
-    if (Options['Panels']['Enabled'] and ItemPassesFilter(loot, options['Panels'])) then
+    if (Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels'])) then
         loot.panel = CreatePanel(targetInfo, itemInfo)
     end
 
@@ -674,21 +674,19 @@ function CreatePanel(targetInfo, itemInfo)
     if itemInfo.craftingTypeId then
         local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(itemInfo.craftingTypeId))
         if itemFrame == nil then
-            Debug.Warn('Frame is nil for craftingTypeId: '..tostring(itemInfo.craftingTypeId))
-            vardump(itemInfo)
-            itemFrame = 'Assault' -- Fixme: properly solve this
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
+        else
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
+
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
+                ToolTip.Show(args.widget:GetTag())
+            end);
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
+                ToolTip.Show(false)
+            end);
         end
-        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
-        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
-
-        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
-        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
-            ToolTip.Show(args.widget:GetTag())
-        end);
-        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
-            ToolTip.Show(false)
-        end);
-
     else
         LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
     end
@@ -696,80 +694,16 @@ function CreatePanel(targetInfo, itemInfo)
     -- Timer text
     LOOT_PANEL_ICONBAR:GetChild('timer'):SetText('00:00')
 
-
-
-    -- Stat list (attributes data first)
-    local rowHeight = 38 -- Fixme: magic number
-    local row = 0
-    local ENTRY = nil
-    if itemInfo.attributes ~= nil and not _table.empty(itemInfo.attributes) then
-        for num, attribute in ipairs(itemInfo.attributes) do
-            row = rowHeight * num
-            ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
-            ENTRY:SetDims("top:".. row .."; left0; width:100%; height:32;");
-            ENTRY:GetChild('statName'):SetText(tostring(attribute.display_name))
-
-            if attribute.format == nil or attribute.format == '' then
-                ENTRY:GetChild('statValue'):SetText(tostring(attribute.value))
-            else
-                ENTRY:GetChild('statValue'):SetText(string.format(attribute.format, attribute.value))
-            end
-        end
+    -- Stat list
+    for num, stat in ipairs(xItemFormatting.getStats(itemInfo)) do
+        ENTRY = Component.CreateWidget('LootPanel_Stat', LOOT_PANEL_CONTENT:GetChild('ItemStats'))
+        ENTRY:SetDims('top:0; left:0; width:100%; height:32;');
+        ENTRY:GetChild('statName'):SetText(tostring(stat.displayName))
+        ENTRY:GetChild('statValue'):SetText(tostring(stat.value))
     end
-
-    -- Shitty solution to display interesting stats that are not attributes
-    if itemInfo.stats ~= nil and not _table.empty(itemInfo.stats) then
-
-        if itemInfo.stats['damagePerSecond'] then
-            row = row + rowHeight 
-            ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
-            ENTRY:SetDims("top:".. row .."; left0; width:100%; height:32;");
-            ENTRY:GetChild('statName'):SetText('Damage Per Second')
-            ENTRY:GetChild('statValue'):SetText(tostring(round(itemInfo.stats['damagePerSecond'], 2)))
-        end
+    LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(true)
 
 
-        if itemInfo.stats['spread'] then
-            row = row + rowHeight 
-            ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
-            ENTRY:SetDims("top:".. row .."; left0; width:100%; height:32;");
-            ENTRY:GetChild('statName'):SetText('Spread')
-            ENTRY:GetChild('statValue'):SetText(tostring(round(itemInfo.stats['spread'], 2)))
-        end
-
-        if itemInfo.stats['maxAmmo'] then
-            row = row + rowHeight 
-            ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
-            ENTRY:SetDims("top:".. row .."; left0; width:100%; height:32;");
-            ENTRY:GetChild('statName'):SetText('Max Ammo')
-            ENTRY:GetChild('statValue'):SetText(tostring(itemInfo.stats['maxAmmo']))
-        end
-
-        if itemInfo.stats['reloadTime'] then
-            row = row + rowHeight 
-            ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
-            ENTRY:SetDims("top:".. row .."; left0; width:100%; height:32;");
-            ENTRY:GetChild('statName'):SetText('Reload Time')
-            ENTRY:GetChild('statValue'):SetText(tostring(round(itemInfo.stats['reloadTime'], 2)))
-        end
-
-        if itemInfo.stats['roundsPerMinute'] then
-            row = row + rowHeight 
-            ENTRY = Component.CreateWidget("LootPanel_Stat", RenderTarget:GetChild('content'):GetChild('ItemStats'))
-            ENTRY:SetDims("top:".. row .."; left0; width:100%; height:32;");
-            ENTRY:GetChild('statName'):SetText('Rounds Per Minute')
-            ENTRY:GetChild('statValue'):SetText(tostring(round(itemInfo.stats['roundsPerMinute'], 2)))
-        end
-    
-    end
-
-    -- Shitty way to hide stats if none shown
-    if (itemInfo.attributes == nil or _table.empty(itemInfo.attributes)) and (itemInfo.stats == nil or _table.empty(itemInfo.stats)) then
-        RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(false)
-    else
-        RenderTarget:GetChild('content'):GetChild('ItemStats'):Show(true)
-    end
- 
 --[[
 
     BUTTON1 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
@@ -798,6 +732,8 @@ function CreatePanel(targetInfo, itemInfo)
     -- We spent all this time building, best make sure it shows
     LOOT_PANEL_CONTENT:Show(true)
 
+
+--xItemFormatting.PrintLines( xItemFormatting.getStatLines(itemInfo), TRACKER_TOOLTIP_YIELDS)
 
     return panel
 end
@@ -1376,7 +1312,7 @@ end
 ]]--
 function ListUnAssigned()
     if not _table.empty(aIdentifiedLoot) then
-        vardump(aIdentifiedLoot)
+        Debug.Table(aIdentifiedLoot)
         local unAssignedLoot = {}
 
         for num, item in ipairs(aIdentifiedLoot) do 
@@ -1398,9 +1334,10 @@ function ListUnAssigned()
     end
 end
 
-function UpdateTrackerTooltip(itemTypeId)
+function UpdateTrackerTooltip(entityId)
     -- Get info
-    local itemInfo = Game.GetItemInfoByType(itemTypeId)
+    local item = GetIdentifiedItem(tonumber(entityId))
+    if item == nil then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
 
     -- Refs
     local TRACKER_TOOLTIP_HEADER = TRACKER_TOOLTIP:GetChild("header")
@@ -1413,25 +1350,102 @@ function UpdateTrackerTooltip(itemTypeId)
 
 
     -- Icon
-    if itemInfo.web_icon then
-        TRACKER_TOOLTIP_ICON:SetUrl(itemInfo.web_icon)
+    if item.itemInfo.web_icon then
+        TRACKER_TOOLTIP_ICON:SetUrl(item.itemInfo.web_icon)
         TRACKER_TOOLTIP_ICON:Show(true)
     else
         TRACKER_TOOLTIP_ICON:Show(false)
     end
     
     -- Name
-    TRACKER_TOOLTIP_NAME:SetText(FixItemNameTag(itemInfo.name, itemInfo.quality))
-    TRACKER_TOOLTIP_NAME:SetTextColor(itemInfo.rarity)
+    TRACKER_TOOLTIP_NAME:SetText(FixItemNameTag(item.itemInfo.name, item.itemInfo.quality))
+    TRACKER_TOOLTIP_NAME:SetTextColor(item.itemInfo.rarity)
 
-    -- Stats
-    xItemFormatting.PrintLines( xItemFormatting.getStatLines(itemInfo), TRACKER_TOOLTIP_YIELDS)
+    -- Fixme: This should be "if itemtype == equipment items" or something.
+    -- Equipment Items
+    if item.itemInfo.type ~= 'crafting_component' then
 
-    -- Requirements
-    xItemFormatting.PrintLines( xItemFormatting.getRequirementLines(itemInfo), TRACKER_TOOLTIP_REQS)
+        -- Stats
+        xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TRACKER_TOOLTIP_YIELDS)
 
-    -- Description
-    TRACKER_TOOLTIP_DESC:SetText(itemInfo.description)
+        -- Requirements
+        xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TRACKER_TOOLTIP_REQS)
+
+        -- Description
+        TRACKER_TOOLTIP_DESC:SetText(item.itemInfo.description)
+
+    -- Crafting Components
+    else
+        -- Stats
+        xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TRACKER_TOOLTIP_YIELDS)
+
+        -- Requirements
+        xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TRACKER_TOOLTIP_REQS)
+
+        -- Description
+        -- Fixme: Stop the hardsauce~
+        local interestingCraftingComponents = {
+
+            ['Fire Gland'] = {
+                itemTypeId  = '85235',
+                description = 'Can be used to craft Burning Cryo Grenade\nAdds a Frost Burner to Cryo Grenade, which increases Cryo Grenade damage. Applies a DoT that burns he target ontop of slowing them.\nFire Gland quality modifies damage.\n'..'Can be used to craft Dragonborn Plasma Cannon.\nReplaces Scattershot Alt Fire with \"Dragon\'s Breath\", shooting a burst of fire forward in a cone.\nFire Gland quality modifies Dragon\'s Breath range.',
+            },
+            ['Drone Module'] = {
+                itemTypeId  = '10014',
+                description = 'Can be used to craft Advanced Decoy.\nAdds AI behavior to Decoy which allows Decoy to move and shoot before it explodes.\nDrone Module quality modifies AI damage.\n'..'Can be used to craft Shielded Crater.\nAdds Blast Shield to Crater. Blast Shield spawns centered on the impact site of Crater.\nDrone Module quality modifies Blast Shield health.'
+            },
+            ['Culex Wings'] = {
+                itemTypeId  = '10024',
+                description = 'Can be used to craft Soaring Afterburner.\nAdds Quick-Deploying Gliding Gear to Afterburner. Glider wings sprout from the Assault at the end of Afterburner.\nWings quality modifies Quick-Deploying Gliding Gear duration.',
+            },
+            ['Poison Gland'] = {
+                itemTypeId  = '10012',
+                description = 'Can be used to craft Noxious Needler.\nReplaces alt fire with Plague Blaster, which increases the amount of damage enemies take when hit by the alt fire. This effect also spreads to nearby targets.\nPoison Gland quality modifies the % of increased damage taken.',
+            },
+            ['Ink Sack'] = {
+                itemTypeId  = '85626',
+                description = 'Can be used to craft Toxic Poison Trail.\nAdds Blinding Fumes to Poison Trail, decreasing enemies\' accuracy while in Poison Trail.\nInk Sac quality modifies the enemy accuracy reduction.',
+            },
+            ['Space Manipulator'] = {
+                itemTypeId  = '85627',
+                description = 'Can be used to craft Attracting Repulsor Blast.\nAdds a Magnetic Attractor to Repulsor Blast, drawing enemies in to the Dreadnaught before Repulsor Blast is fired.\nSpace Manipulator quality modifies pull-in range.\n'..'Can be used to craft Ghostly Triage.\nAdds a Phase Unit to Triage, which allows the player to be able to pass through enemies/allies causing damage to enemies and healing allies.\nSpace Manipulator quality modifies duration.',
+            },
+            ['Brontodon Ivory'] = {
+                itemTypeId = '10010',
+                description = 'Can be used to craft Barrier HMG.\nAdds an Upgraded Forward Shield to the HMG alt fire, creating an improved shield. Full body shield.\nBrontodon Ivory quality modifies shield health.',
+            },
+            ['Shell Fragment'] = {
+                itemTypeId = '82500',
+                description = 'Can be used to craft Spiny Heavy Armor.\nAdds a Damage Reflector which harms enemies that hit the Dreadnaught while Heavy Armor is active.\nShell Fragment quality modifies the percentage of damage returned.',
+            },
+            ['Brinewyrm Goo'] = {
+                itemTypeId = '10011',
+                description = 'Can be used to craft Burrowing Sticky Grenade Launcher.\nAdds Burrowing Explosives to Sticky Grenade Launcher which applies a Damage over Time effect to the area that they were detonated on.\nBrinewyrm Goo quality modifies the damage of the Damage over Time.',
+            },
+            ['Hypercapacitor'] = {
+                itemTypeId = '10015',
+                description = 'Can be used to craft HKM Supply Station.\nAdds High Capacity Arcfold Tech to the Supply Station, replacing health pickups with HKM powerups.\nHypercapacitor quality modifies amount of HKM charge given.',
+            },
+            ['Explosive Device'] = {
+                itemTypeId = '10016',
+                description = 'Can be used to craft Rocket Turret.\nAdds Rocket Turrets to Heavy Turret. Rockets fire ontop of the normal firing projectile.\nExplosive Device quality modifies rocket damage.',
+            },
+            ['Cornea'] = {
+                itemTypeId = '10009',
+                description = 'Can be used to craft Sharpeyed R36.\nAdds tech to increase the magnification when zooming with the R36.\nCornea quality modifies magnification.',
+            },
+        }
+
+        for key, value in pairs(interestingCraftingComponents) do
+            if value.itemTypeId == item.itemInfo.itemTypeId then
+                TRACKER_TOOLTIP_DESC:SetText(value.description)
+                break
+            end
+        end
+
+
+    end
+
 
     -- Fix text size
     local function AutosizeText(TEXT)
@@ -1445,7 +1459,7 @@ function UpdateTrackerTooltip(itemTypeId)
     -- Return ToolTip
     local tip_args = {height=0}
     tip_args.height = TRACKER_TOOLTIP:GetLength()
-    tip_args.frame_color = itemInfo.rarity
+    tip_args.frame_color = item.itemInfo.rarity
     
     return TRACKER_TOOLTIP, tip_args
 end
@@ -1479,7 +1493,7 @@ function UpdateTracker()
                     local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
                     ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
 
-                    ENTRY:GetChild('plate'):SetTag(tostring(item.itemTypeId))
+                    ENTRY:GetChild('plate'):SetTag(tostring(item.entityId))
                     
                     ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
                         TRACKER_TOOLTIP:Show(true)
@@ -1618,26 +1632,26 @@ function SendChatMessage(channel, message, alert)
     -- Requires that Core and Messages are Enabled
     if not (Options['Core']['Enabled'] and Options['Messages']['Enabled']) then return end
 
-    -- Requires that you are the squad leader
-    if not bIsSquadLeader then return end
+    -- Requires that you are the squad leader in order to send messages on squad channel
+    if channel == 'squad' and not bIsSquadLeader then return end
 
     -- Handle optional arguments
     alert = alert or false
 
-    -- Setup prefix
-    local prefix = ''
-    if alert then prefix = '!' end
-    prefix = prefix..Options['Messages']['Prefix']
+    -- Setup prefixe
+    local prefix = Options['Messages']['Prefix']
 
     -- Function to handle the actual sending of messages
-    local function SendMessageToChat(channel, message)
+    local function SendMessageToChat(channel, message, alert)
         channel = string.lower(channel)
+        local alertprefix = ''
+        if alert then alertprefix = '!' end
         if channel == 'system' then
             ChatLib.SystemMessage({text=message})
         elseif channel == 'notification' or channel == 'notifications' then
             ChatLib.Notification({text=message})
         else
-            Chat.SendChannelText(channel, message)
+            Chat.SendChannelText(channel, alertprefix..message)
         end
     end
 
@@ -1669,7 +1683,7 @@ function SendChatMessage(channel, message, alert)
                 -- If adding the next line exceeds the character limit
                 if string.len(currentMessage..'\n'..line) > messageContentLengthLimit then
                     -- Send the current line and start a new message for the next line
-                    SendMessageToChat(channel, prefix..currentMessage)
+                    SendMessageToChat(channel, prefix..currentMessage, alert)
                     currentMessage = line
 
                 -- Otherwise
@@ -1680,13 +1694,13 @@ function SendChatMessage(channel, message, alert)
             end
         end
         -- Make sure we send the last message
-        if currentMessage ~= '' then SendMessageToChat(channel, prefix..currentMessage) end
+        if currentMessage ~= '' then SendMessageToChat(channel, prefix..currentMessage, alert) end
 
     -- Otherwise, send message normally
     else
         Debug.Log('Sending Chat Message: '..prefix..message)
         Debug.Log('Message Length: '..string.len(prefix..message))
-        SendMessageToChat(channel, prefix..message)
+        SendMessageToChat(channel, prefix..message, alert)
     end
 end
 
@@ -1729,7 +1743,7 @@ function MessageEvent(eventClass, eventName, eventArgs, canSend)
     if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
             if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels']['channelKey']['Format'], eventArgs)
+                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
 
                 if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] then
                     message = message..'\n'..RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Format'], eventArgs.rolls, eventArgs.item)
@@ -2149,17 +2163,12 @@ end
     Testing function please ignore
 ]]--
 function Test()
-
     SendChatMessage('system', 'Test')
-
-
 
     Debug.Log('test')
     Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
     Debug.Log('Options[\'Enabled\']: '..tostring(Options['Core']['Enabled']))
     Debug.Log('Options[\'AlwaysSquadLeader\']: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
-
---Game.GetItemAttributeModifiers(itemTypeId,quality)
 
 
     -- Entity id is set to player because we have no real options here
@@ -2170,37 +2179,56 @@ function Test()
 
     -- Target info must be faked because we have no real entity
     local targetInfoData = {
-        {name='Accord Prototype SIN Beacon I^Q', lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85050, quality=894},
-        {name='Accord Prototype Sticky Grenade Launcher II^Q', lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85017, quality=879},
-        {name='Accord Prototype Assault Plating I^Q', lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85099, quality=712},
-    }
+        -- Equipment Items
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85050, quality=500},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85017, quality=500},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85099, quality=500},
 
-    -- Create 3 pannelz
-    for num, targetInfo in ipairs(targetInfoData) do
+        -- Crossbows ftw
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=79061, quality=401},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83241, quality=501},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83575, quality=601},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84443, quality=701},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84985, quality=901},
 
-
+        -- Crafting Components
         
 
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10009, quality=1},
+        --[[
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10010, quality=101},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10011, quality=201},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10012, quality=301},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10014, quality=401},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10015, quality=501},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10016, quality=601},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10024, quality=701},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=82500, quality=801},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85235, quality=901},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85626, quality=1001},
+        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101},
+        --]]
+    }
+
+
+    -- Create some pannelz
+    --for num, targetInfo in ipairs(targetInfoData) do
+    for num = 1,3 do
+        targetInfo = targetInfoData[math.random(#targetInfoData)]
         -- hax the location
-        if num == 1 then
-            entityId = 1
-        elseif num == 2 then
-            targetInfo.lootPos.x = targetInfo.lootPos.x - 2
-            entityId = 2
-        elseif num == 3 then
-            targetInfo.lootPos.x = targetInfo.lootPos.x + 2
-            entityId = 3
-        end
+        entityId = num
+        targetInfo.lootPos.x = targetInfo.lootPos.x - 2*num
 
         if not IsIdentified(entityId) then
 
-            local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
+            local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
 
+            local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=itemInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
 
-            local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
+            targetInfo.name = itemInfo.name
 
             if Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels']) then
-                loot.panel = CreatePanel(targetInfo, Game.GetItemInfoByType(targetInfo.itemTypeId))
+                loot.panel = CreatePanel(targetInfo, itemInfo)
             end
 
             -- Create timer
@@ -2209,10 +2237,6 @@ function Test()
             -- Setup despawn timer
             loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item=loot})
             loot.timer:StartTimer()
-
-           
-             
-           
 
 
             loot.waypoint = CreateWaypoint(loot)

@@ -421,10 +421,10 @@ function xItemFormatting.getStatLines(itemInfo)
     return stats_lines
 end
 
-
 function xItemFormatting.getRequirementLines(itemInfo)
 
     local has_constraints = false;
+    local stats_lines = {}; -- Hmm, did I copy something wrong, why is this needed here 
     local requirements_lines = {};
     if( itemInfo.constraints ) then
         for k,v in pairs(itemInfo.constraints) do
@@ -458,4 +458,40 @@ function xItemFormatting.getRequirementLines(itemInfo)
     end
     
     return requirements_lines
+end
+
+
+
+-- horribad custom function :D
+function xItemFormatting.getStats(itemInfo)
+    local stats_lines = {};
+    
+    if (itemInfo.stats) then
+        for name,v in pairs(itemInfo.stats) do
+            if( not c_IgnoreStats[name] ) then
+                table.insert(stats_lines, {displayName = xItemFormatting.GetStatDisplayName(name), value = unicode.format("%.2f", v)});
+            end
+        end
+    end
+    
+    if (itemInfo.attributes) then
+        for k,att in pairs(itemInfo.attributes) do
+
+                local value_display;
+                if( att.format and att.format ~= "" ) then
+                    if (unicode.find(att.format, " %% ")) then
+                        warn("Bad format "..tostring(att.format));
+                        value_display = tostring(att.value);
+                    else
+                        value_display = unicode.format(att.format, att.value);
+                    end
+                else
+                    value_display = unicode.format( "%.2f", att.value)
+                end
+
+            table.insert(stats_lines, {displayName = att.display_name, value = value_display});
+        end
+    end
+
+    return stats_lines
 end

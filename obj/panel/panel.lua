@@ -48,13 +48,10 @@ PANEL =
 								</Group>
 
 
-								<Group name="ItemStats" dimensions="center-x:50%; top:40%; width:100%; height:40%;" style="clip-children:true;">
-									<!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#0000FF; alpha:0.5;"/>-->
-
-									<!--<StillArt dimensions="top:0; left:10%; width:40%; height:100%;" style="texture:colors; region:white; tint:#FF0000; alpha:0.5;"/>-->
-									<!--<StillArt dimensions="top:0; left:50%; width:40%; height:100%;" style="texture:colors; region:white; tint:#00FFFF; alpha:0.5;"/>-->
-								</Group>
-
+								<!-- Stats and Attributes -->
+			                    <ListLayout name="ItemStats" dimensions="center-x:50%; top:42%; width:100%; height:40%;" style="vertical:true; vpadding:9; clip-children:false;">
+			                        
+			                    </ListLayout>
 
 								<!--<Stillart name="Dragon" dimensions="left:0; center-y:50%; width:100%; height:400;" style="texture:PanelTex; region:Dragon; tint:FF4F00;"/>-->
 

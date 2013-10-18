@@ -880,7 +880,7 @@ function digOptions(table, args, refs, depth, key)
             if tableKey == refs[depth] then
                 if type(tableValue) ~= 'table' then
                     table[tableKey] = args.val
-                    Debug.Log('OnOptionChange: '..args.id..' to '..tostring(args.val))
+                    --Debug.Log('OnOptionChange: '..args.id..' to '..tostring(args.val))
                 else 
                     digOptions(tableValue, args, refs, depth, tableKey)
                 end
@@ -1453,20 +1453,20 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
             default = Options[rootKey][x]['Enabled'],
             label   = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Label'),
             tooltip = Lokii.GetString('Filter_Generic_'..x..'_Enabled_ToolTip'),
-            subtab  = {Lokii.GetString('Subtab_'..rootKey)}
+            subtab  = {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')}
         })
 
         -- Mode dropdown
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[rootKey][x]['Mode'], TriggerModeOptions, 'Mode', Lokii.GetString('Subtab_'..rootKey))
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[rootKey][x]['Mode'], TriggerModeOptions, 'Mode', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
 
         -- Simple mode options
-        UIHELPER_StageX(rootKey, x, 'Simple', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Simple', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
 
         -- Advanced mode options
-        UIHELPER_StageX(rootKey, x, 'Stage1', 'Subtab_'..rootKey)
-        UIHELPER_StageX(rootKey, x, 'Stage2', 'Subtab_'..rootKey)
-        UIHELPER_StageX(rootKey, x, 'Stage3', 'Subtab_'..rootKey)
-        UIHELPER_StageX(rootKey, x, 'Stage4', 'Subtab_'..rootKey)
+        UIHELPER_StageX(rootKey, x, 'Stage1', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage2', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage3', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage4', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
 
     --[[
     InterfaceOptions.StopGroup({
@@ -1489,22 +1489,20 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
         default  = Options[rootKey][x]['Enabled'],
         label    = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_Label'),
         tooltip  = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_ToolTip'),
-        subtab   = {
-            Lokii.GetString(subtab)
-        },
+        subtab   = subtab
     })
 
         -- Distribution extras
         if rootKey == 'Distribution' then
-            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_LootMode', 'Filter_Generic_LootMode', Options[rootKey][x][stage]['LootMode'], DistributionMode, 'LootMode', Lokii.GetString(subtab))
-            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_Weighting', 'Filter_Generic_Weighting', Options[rootKey][x][stage]['Weighting'], WeightingOptions, 'Weighting', Lokii.GetString(subtab))
+            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_LootMode', 'Filter_Generic_LootMode', Options[rootKey][x][stage]['LootMode'], DistributionMode, 'LootMode', subtab)
+            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_Weighting', 'Filter_Generic_Weighting', Options[rootKey][x][stage]['Weighting'], WeightingOptions, 'Weighting', subtab)
         end
 
         -- Tier and Quality threshold dropdowns
         if tierdropdown then
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', 'Filter_Generic_TierThreshold', Options[rootKey][x][stage]['TierThreshold'], TierOptions, 'TierThreshold', Lokii.GetString(subtab))
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', 'Filter_Generic_TierThreshold', Options[rootKey][x][stage]['TierThreshold'], TierOptions, 'TierThreshold', subtab)
         end
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', 'Filter_Generic_QualityThreshold', Options[rootKey][x][stage]['QualityThreshold'], QualityOptions, 'QualityThreshold', Lokii.GetString(subtab))
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', 'Filter_Generic_QualityThreshold', Options[rootKey][x][stage]['QualityThreshold'], QualityOptions, 'QualityThreshold', subtab)
 
         -- Custom Quality input
         InterfaceOptions.AddTextInput({
@@ -1513,15 +1511,11 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
             label   = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Label'),
             tooltip = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_ToolTip'),
             default = Options[rootKey][x][stage]['QualityThresholdCustomValue'],
-            subtab  = {
-                    Lokii.GetString(subtab)
-            },
+            subtab  = subtab
         })
 
     InterfaceOptions.StopGroup({
-        subtab = {
-            Lokii.GetString(subtab)
-        },
+        subtab = subtab
     })
 end
 
