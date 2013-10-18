@@ -9,7 +9,7 @@ TriggerModeOptions = {
 
 TierOptions = {
     Any = 'any',
-    Tier1 = '1',
+--    Tier1 = '1',
     Tier2 = '2',
     Tier3 = '3',
     Tier4 = '4',
@@ -17,27 +17,27 @@ TierOptions = {
 
 QualityOptions = {
     Any = 'any',
-    Common = 'common',
+--    Common = 'common',
     Uncommon = 'uncommon',
     Rare = 'rare',
     Epic = 'epic',
-    Legendary = 'legendary',
+--    Legendary = 'legendary',
     Custom = 'custom',
 }
 
 WeightingOptions = {
     None = 'none',
     Archetype = 'archetype',
-    Battleframe = 'battleframe',
+--    Battleframe = 'battleframe',
 }
 
 DistributionMode = {
     Random = 'random',
     Dice = 'dice',
     RoundRobin = 'round-robin',
-    YayNay = 'yaynay',
+--    YayNay = 'yaynay',
     NeedBeforeGreed = 'need-before-greed',
-    LootMaster = 'lootmaster',
+--    LootMaster = 'lootmaster',
 }
 
 RollType = {
