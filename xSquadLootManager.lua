@@ -29,8 +29,8 @@ TRACKER = Component.GetFrame('Tracker')
 TRACKER_TOOLTIP = TRACKER:GetChild('Tooltip')
 
 -- Constants
-csVersion = '0.86'
-ciSaveVersion = 0.67
+csVersion = '0.87b'
+ciSaveVersion = 0.80
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
 local ciSquadMessageLengthLimit = 255 -- Character limit of Squad chat messages. Used to split too long messages into multiple. One character reserved for alerts.
@@ -881,11 +881,9 @@ function CreateWaypoint(loot)
 
 
     -- Visibility
-
     MARKER:ShowOnHud(Options['Waypoints']['ShowOnHud'])
     --MARKER:SetHudPriority(Options['Waypoints']['HudPriority'])
     MARKER:ShowOnWorldMap(Options['Waypoints']['ShowOnWorldMap'])
-    
     MARKER:ShowOnRadar(Options['Waypoints']['ShowOnRadar']) 
     MARKER:SetRadarEdgeMode(Options['Waypoints']['RadarEdgeMode'])
 
