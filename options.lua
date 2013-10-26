@@ -47,12 +47,6 @@ RollType = {
     Need = 'need',
 }
 
-TrackerVisibilityOptions = {
-    Always = 'always',
-    HUD = 'hud',
-    MouseMode = 'mousemode',
-}
-
 LootPanelModes = {
     Standard = 'standard',
     Small = 'small',
@@ -67,6 +61,30 @@ RadarEdgeModes = {
     None = MapMarker.EDGE_NONE,
     Arrow = MapMarker.EDGE_ARROW,
     Icon = MapMarker.EDGE_ICON,
+}
+
+TrackerVisibilityOptions = {
+    Always = 'always',
+    HUD = 'hud',
+    MouseMode = 'mousemode',
+}
+
+TrackerTooltipModes = {
+    ItemStyle = 'item',
+    ProgressionStyle = 'progression',
+}
+
+TrackerPlateModeOptions = {
+    Decorated = 'decorated',
+    Simple = 'simple',
+    None = 'none',
+}
+
+TrackerIconModeOptions = {
+    Decorated = 'decorated',
+    Simple = 'simple',
+    --IconOnly = 'icon-only',
+    None = 'none',
 }
 
 Options = {
@@ -301,7 +319,7 @@ Options = {
         },
 
         ['ColorMode'] = {
-            ['HeaderBar'] = ColorModes.MatchQuality,
+            ['HeaderBar'] = ColorModes.MatchItem,
             ['HeaderBarCustomValue'] = {alpha=1, tint='00000'},
             ['ItemName'] = ColorModes.Custom,
             ['ItemNameCustomValue'] = {alpha=1, tint='FFFFFF'},
@@ -737,6 +755,13 @@ Options = {
         ['Enabled'] = true,
 
         ['Visibility'] = TrackerVisibilityOptions.MouseMode,
+        ['Tooltip'] = {
+            ['Enabled'] = true,
+            ['Mode'] = TrackerTooltipModes.ProgressionStyle,
+        },
+
+        ['PlateMode'] = TrackerPlateModeOptions.Decorated,
+        ['IconMode'] = TrackerIconModeOptions.Decorated,
 
         ['EquipmentItems'] = {
 
@@ -831,6 +856,7 @@ Options = {
         ['FakeOnSquadRoster'] = false,
         ['LogLootableTargets'] = false, 
         ['LogLootableCollection'] = false,
+        ['LogOptionChange'] = false,
     },
 }
 
@@ -842,8 +868,10 @@ Options = {
     Callback function for Interface Options, when the user has changed an option
 ]]--
 function OnOptionChange(args)
+    -- Explode Id
+    local explodedId = splitExplode('_', args.id)
 
-    -- InterfaceOptions Specials
+    -- InterfaceOptions Special Values
     if args.id == "__LOADED" then
         bLoaded = true
 
@@ -853,21 +881,57 @@ function OnOptionChange(args)
     elseif args.id == '__DISPLAY' then
         -- Todo: Fixme:
 
+    -- Addon Options
     else
-
-        if args.id == 'Debug_Enabled' then
-            Component.SaveSetting('Debug_Enabled', args.val)
-        elseif args.id == 'Core_VersionMessage' then
-            Component.SaveSetting('Core_VersionMessage', args.val)
-        end
-
-        digOptions(Options, args, splitExplode('_', args.id))
+        -- Find and update the setting within the Options table
+        digOptions(Options, args, explodedId)
     end
 
+    -- Log Changes
+    if Options['Debug']['Enabled'] and Options['Debug']['LogOptionChange'] then
+        Debug.Log('OnOptionChange: '..args.id..' to '..tostring(args.val))
+    end
+
+    -- Store neccessary settings 
+    if args.id == 'Debug_Enabled' then
+        Component.SaveSetting('Debug_Enabled', args.val)
+    elseif args.id == 'Core_VersionMessage' then
+        Component.SaveSetting('Core_VersionMessage', args.val)
+    end
+
+    -- Perform extra actions
+    if args.id == 'Debug_FakeOnSquadRoster' or args.id == 'Distribution_AlwaysSquadLeader' then
+        OnSquadRosterUpdate()
+    end
+
+    -- Perform extra actions when loaded
+    if bLoaded then
+        -- For Tracker options, update the tracker
+        if explodedId[1] == 'Tracker' then
+            UpdateTracker()
+        -- For Panels options, update the panels
+        elseif explodedId[1] == 'Panels' then
+            for i, item in ipairs(aIdentifiedLoot) do
+                UpdatePanel(item)
+            end
+        -- For Sound option changes, play the sound
+        elseif explodedId[1] == 'Sounds' then
+            -- Note: This could behave poorly if other sound options are added
+            if type(args.val) == 'string' then
+                System.PlaySound(args.val)
+            end
+        end
+    end
+
+    -- Update Options Visibility
     SetOptionsAvailability()
 end
 
-
+--[[
+    digOptions(table, args, refs, depth, key)
+    Tempoary function name
+    Finds and updates a key within an table
+--]]
 function digOptions(table, args, refs, depth, key)
     if depth == nil then
         depth = 1 -- start at 1
@@ -877,10 +941,18 @@ function digOptions(table, args, refs, depth, key)
 
     if type(table) == 'table' then
         for tableKey, tableValue in pairs(table) do
+            -- If there's a key in this table that matches the option id at the current depth, we're on the right track
             if tableKey == refs[depth] then
+                -- If the value of this key we found is not a table, then we're at the end of the digging. This should be the option we were looking for.
                 if type(tableValue) ~= 'table' then
                     table[tableKey] = args.val
-                    --Debug.Log('OnOptionChange: '..args.id..' to '..tostring(args.val))
+
+                -- If the value of the option we are updating is a table - and the option id we are working with ends at this depth, that's all right too.
+                elseif type(args.val) == 'table' and #refs == depth then
+                    Debug.Log('Option with Id: '..args.id..' has its value updated as a table.')
+                    table[tableKey] = args.val
+
+                -- Otherwise, we still have some more digging to do.
                 else 
                     digOptions(tableValue, args, refs, depth, tableKey)
                 end
@@ -909,11 +981,6 @@ function splitExplode(d,p)
     end
   return t
 end
-
-
-
-
-
 
 
 
@@ -991,6 +1058,13 @@ function SetupInterfaceOptions()
 
     -- Save version
     InterfaceOptions.SaveVersion(ciSaveVersion) -- Settings save-version, increment if behavior changes
+
+    -- Frames
+    InterfaceOptions.AddMovableFrame({
+        frame = TRACKER,
+        label = "xSLM Tracker",
+        scalable = true
+    })
 
     -- Build the interface options
     BuildInterfaceOptions()
@@ -1127,6 +1201,13 @@ function BuildInterfaceOptions_Front()
             default = Options['Debug']['LogLootableCollection'],
             label   = Lokii.GetString('Debug_LogLootableCollection_Label'),
             tooltip = Lokii.GetString('Debug_LogLootableCollection_ToolTip'),
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_LogOptionChange',
+            default = Options['Debug']['LogOptionChange'],
+            label   = Lokii.GetString('Debug_LogOptionChange_Label'),
+            tooltip = Lokii.GetString('Debug_LogOptionChange_ToolTip'),
         })
 
     InterfaceOptions.StopGroup()
@@ -1414,7 +1495,26 @@ function BuildInterfaceOptions_Messages()
 end
 
 function BuildInterfaceOptions_Tracker()
+    -- Visibility
     UIHELPER_DropdownFromTable('Tracker_Visibility', 'Tracker_Visibility', Options['Tracker']['Visibility'], TrackerVisibilityOptions, 'TrackerVisibility',  Lokii.GetString('Subtab_Tracker'))
+
+    -- Tooltips
+    InterfaceOptions.AddCheckBox({
+        id      = 'Tracker_Tooltip_Enabled',
+        default = Options['Tracker']['Tooltip']['Enabled'],
+        label   = Lokii.GetString('Tracker_Tooltip_Enabled_Label'),
+        tooltip = Lokii.GetString('Tracker_Tooltip_Enabled_ToolTip'),
+        subtab  = {Lokii.GetString('Subtab_Tracker')}
+    })
+    UIHELPER_DropdownFromTable('Tracker_Tooltip_Mode', 'Tracker_Tooltip_Mode', Options['Tracker']['Tooltip']['Mode'], TrackerTooltipModes, 'TrackerTooltipModes',  Lokii.GetString('Subtab_Tracker'))
+
+    -- PlateMode
+    UIHELPER_DropdownFromTable('Tracker_PlateMode', 'Tracker_PlateMode', Options['Tracker']['PlateMode'], TrackerPlateModeOptions, 'TrackerPlateModeOptions',  Lokii.GetString('Subtab_Tracker'))
+
+    -- IconMode
+    UIHELPER_DropdownFromTable('Tracker_IconMode', 'Tracker_IconMode', Options['Tracker']['IconMode'], TrackerIconModeOptions, 'TrackerIconModeOptions',  Lokii.GetString('Subtab_Tracker'))
+
+    -- Filters
     UIHELPER_DetectDistributeMarkX('Tracker', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Tracker', 'CraftingComponents')
 end

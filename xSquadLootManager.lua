@@ -36,15 +36,14 @@ local ciLootDespawn = 20 -- Seconds into the future that the callback that check
 local ciSquadMessageLengthLimit = 255 -- Character limit of Squad chat messages. Used to split too long messages into multiple. One character reserved for alerts.
 
 -- Variables
-local aSquadRoster = {} -- The latest squad roster
-local aIdentifiedLoot = {} -- Currently tracked items
+aSquadRoster = {} -- The latest squad roster
+aIdentifiedLoot = {} -- Currently tracked items
 
-local bLoaded = false -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
-local bInSquad = false -- Whether we are currently in a squad or not
-local bIsSquadLeader = false -- Whether we are currently the squad leader or not
-
-local bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudShow
-local bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
+bLoaded = false -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
+bInSquad = false -- Whether we are currently in a squad or not
+bIsSquadLeader = false -- Whether we are currently the squad leader or not
+bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudShow
+bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
 
 local bToolTipActive = false -- Whether addon is currently utilizing the ToolTip. Updated manually within the addon when ToolTip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling ToolTip.Show(false) could interfere with other addons, so I use this addon to keep track of when I've called it. As long as no other addon/ui element randomly calls ToolTip.Show (without mine being unfocused) it should serve its purpose.
 
@@ -173,6 +172,8 @@ function OnSquadRosterUpdate()
         end
     end
 
+    Debug.Log('OnSquadRosterUpdate','| bInSquad: '..tostring(bInSquad), '| bIsSquadLeader: '..tostring(bIsSquadLeader), '| aSquadRoster: '..tostring(aSquadRoster))
+
     -- Update tracker
     UpdateTracker()
 
@@ -184,17 +185,19 @@ end
 ]]--
 function OnSlash(args)
     if args.text == '' or args.text == 'help' or args.text == '?' then
-        SendSystemMessage('Xsear\'s Squad Loot Manager v'..csVersion)
-        SendSystemMessage('Command list')
-        SendSystemMessage('/slm [help|?]: Version message and command list')
-        SendSystemMessage('/slm <enable|disable|toggle> : Turn addon on or off')
-        SendSystemMessage('/slm <distribute|roll> : Distribute first rollable item')
-        SendSystemMessage('/slm list : List rollable items')
-        SendSystemMessage('/slm clear : Clears list of identified items')
+        SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion)
+        SendChatMessage('system', 'Command list')
+        SendChatMessage('system', '/slm [help|?]: Version message and command list')
+        SendChatMessage('system', '/slm <enable|disable|toggle> : Turn addon on or off')
+        SendChatMessage('system', '/slm <distribute|roll> : Distribute first rollable item')
+        SendChatMessage('system', '/slm list : List rollable items')
+        SendChatMessage('system', '/slm clear : Clears list of identified items')
     elseif args.text == 'test' then
         Test()
     elseif args.text == 'ut' then
         UpdateTracker()
+    elseif args.text == 'us' then
+        OnSquadRosterUpdate()
     elseif args.text == 'clear' then
         ClearIdentified()
     elseif args.text == 'enable' or args.text == 'disable' or args.text == 'toggle' then
@@ -367,12 +370,6 @@ function OnLootCollected(args)
     -- Get item info
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId, Game.GetItemAttributeModifiers(args.itemTypeId, args.quality))
 
-    if itemInfo.type == 'crafting_component' then
-        Debug.Log('OnLootCollected - Crafting Component')
-        Debug.Log('iteminfo')
-        Debug.Table(itemInfo)
-    end
-
     -- Is it loot that we care about?
     if IsTrackableItemType(itemInfo) then
 
@@ -393,10 +390,12 @@ function OnLootCollected(args)
             local loot = nil
             for num, item in ipairs(aIdentifiedLoot) do 
                 if item.itemTypeId == args.itemTypeId and item.quality == args.quality then
-                    if not Game.IsTargetAvailable(item.entityId) then
-                        loot = item
-                        break
+                    if Game.IsTargetAvailable(item.entityId) then
+                        Debug.Log('Found looted item but target is still available ')
+                        Debug.Table(Game.GetTargetInfo(item.entityId))
                     end
+                    loot = item
+                    break
                 end
             end
 
@@ -404,19 +403,23 @@ function OnLootCollected(args)
             if loot ~= nil then
 
                 -- If we care about this item, trigger relevant event
-                local eventArgs = {lootedTo=args.lootedTo, assignedTo=loot.assignedTo, item=loot}
+                local eventArgs = {
+                    lootedTo   = args.lootedTo,
+                    assignedTo = loot.assignedTo,
+                    item       = loot
+                }
 
                 -- If the item had not been assigned
                 if loot.assignedTo == nil then
-                    Component.GenerateEvent('XSLM_ON_LOOT_SNATCHED', eventArgs)
+                    OnLootSnatched(eventArgs)
 
                 -- Else if the item was looted by the person it was assigned to
                 elseif namecompare(loot.assignedTo, args.lootedTo) then
-                    Component.GenerateEvent('XSLM_ON_LOOT_RECEIVED', eventArgs)
+                    OnLootReceived(eventArgs)
 
                 -- Else it was a ninja
                 else
-                    Component.GenerateEvent('XSLM_ON_LOOT_STOLEN', eventArgs)
+                    OnLootStolen(eventArgs)
                 end
 
                 -- End the function, we're done here.
@@ -427,7 +430,13 @@ function OnLootCollected(args)
         end
 
         -- This item wasn't being tracked.
-        Component.GenerateEvent('XSLM_ON_LOOT_CLAIMED', {lootedTo=args.lootedTo, item={name=itemInfo.name, quality=args.quality}})
+        OnLootClaimed({
+            lootedTo = args.lootedTo,
+            item     = {
+                name    = itemInfo.name,
+                quality = args.quality
+            }
+        })
     end
 end
 
@@ -505,6 +514,43 @@ function ItemPassesFilter(item, moduleOptions)
         end
     end
     return false
+end
+
+--[[
+    GetItemOptionsKeys(item, moduleOptions) 
+    Returns type and stage key for an item
+    shiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiit
+]]--
+function GetItemOptionsKeys(item, moduleOptions) 
+    -- Vars
+    local typeKey = nil
+    local stageKey = nil
+
+    -- Determine type
+    if item.itemInfo.type == 'crafting_component' then
+        typeKey = 'CraftingComponents'
+
+    elseif item.itemInfo.type == 'frame_module' or
+           item.itemInfo.type == 'ability_module' or
+           item.itemInfo.type == 'weapon' then
+        typeKey = 'EquipmentItems'
+    end
+    if typeKey == nil then Debug.Error('GetItemOptionsKeys() does not recognize type! (Why are you passing incorrect items)', item.itemInfo.type) end
+
+    -- Determine stage
+    if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
+        stageKey = 'Simple'
+    else -- TriggerModeOptions.Advanced
+        if        item.itemInfo.tier.level == 1 then stageKey = 'Stage1'
+        elseif    item.itemInfo.tier.level == 2 then stageKey = 'Stage2'
+        elseif    item.itemInfo.tier.level == 3 then stageKey = 'Stage3'
+        elseif    item.itemInfo.tier.level == 4 then stageKey = 'Stage4'   
+        end
+    end
+    if stageKey == nil then Debug.Error('GetItemOptionsKeys() does not recognize tier!', item.itemInfo.tier) end
+    
+    -- Return
+    return typeKey, stageKey
 end
 
 
@@ -618,7 +664,7 @@ function Identify(entityId, targetInfo)
     Debug.Log('Identified: '..tostring(loot.entityId)..', '..loot.name)
     
     -- Fire event
-    Component.GenerateEvent('XLSM_ON_IDENTIFY', {item=loot})
+    OnIdentify({item=loot})
 end
 
 --[[
@@ -642,27 +688,34 @@ function CreatePanel(targetInfo, itemInfo)
     -- Header
     LOOT_PANEL_HEADER:GetChild('itemName'):SetText(FixItemNameTag(targetInfo.name, targetInfo.quality))
 
+    -- Header Colours
     local qualityColor, headerBarColor, itemNameColor
+
+    -- Get appropriate colour for item
     if targetInfo.quality then
         qualityColor = LIB_ITEMS.GetResourceQualityColor(targetInfo.quality)
     else
         qualityColor = LIB_ITEMS.GetItemColor(itemInfo)
     end
 
-    if Options['Panels']['ColorMode']['HeaderBar'] == ColorModes.MatchQuality then
+    -- Determine which colour to use for the bar
+    if Options['Panels']['ColorMode']['HeaderBar'] == ColorModes.MatchItem then
         headerBarColor = qualityColor
     else -- ColorMode.Custom
         headerBarColor = Options['Panels']['ColorMode']['HeaderBarCustomValue'].tint
     end
 
-    if Options['Panels']['ColorMode']['ItemName'] == ColorModes.MatchQuality then
+    -- Determine which colour to use for the item name
+    if Options['Panels']['ColorMode']['ItemName'] == ColorModes.MatchItem then
         itemNameColor = qualityColor
     else -- ColorMode.Custom
         itemNameColor = Options['Panels']['ColorMode']['ItemNameCustomValue'].tint
     end
 
-    LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
+    Debug.Log('qualityColor', qualityColor, 'headerBarColor', headerBarColor, 'itemNameColor', itemNameColor)
 
+    -- Set the colours
+    LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
     LOOT_PANEL_HEADER:GetChild('itemName'):SetTextColor(itemNameColor)
 
 
@@ -744,13 +797,16 @@ end
 ]]--
 function UpdatePanel(loot)
 
-    ItemPassesFilter(loot, Options['Panels'])
-
     if loot.panel == nil then return end
 
     local RenderTarget = loot.panel.panel_rt
     local LOOT_PANEL_CONTENT = RenderTarget:GetChild('content')
     local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
+
+    if not ItemPassesFilter(loot, Options['Panels']) then 
+        RenderTarget:Show(false)
+    end
+
 
     -- Overall mode
     if Options['Panels']['Mode'] == LootPanelModes.Small then
@@ -767,17 +823,12 @@ function UpdatePanel(loot)
 
         -- Asigned To text
         if Options['Panels']['Display']['AssignedTo'] then
+            Debug.Log('Item that Panel is displaying is assigned to '..tostring(loot.assignedTo))
 
             -- Debug.Log(RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):GetTextDims()) -- To be used to detect when title wraps
             if loot.assignedTo == nil then
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Nil'].tint)
-
-                if Options['Panels']['Display']['AssignedToHideNil'] then
-                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(false)
-                else
-                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(true)
-                end
 
             elseif loot.assignedTo == true or loot.assignedTo == false then
                 LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
@@ -792,6 +843,13 @@ function UpdatePanel(loot)
                 end
 
             end
+
+            if Options['Panels']['Display']['AssignedToHideNil'] and loot.assignedTo == nil then
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(false)
+            else
+                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(true)
+            end
+
         end
 
     end
@@ -840,9 +898,10 @@ end
     Whether or not an entity has been found and identified before
 ]]--
 function IsIdentified(entityId)
-    if aIdentifiedLoot ~= nil and not _table.empty(aIdentifiedLoot) then
+    local stringType = (type(entityId) == 'string')
+    if not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
-            if item.entityId == entityId then
+            if (stringType and tostring(item.entityId) == entityId) or (item.entityId == entityId) then
                 return true
             end
         end
@@ -855,9 +914,11 @@ end
     Takes the entityId of an already Identify:ed item, returning the item data.    
 ]]--
 function GetIdentifiedItem(entityId)
-    if aIdentifiedLoot ~= nil then
+    Debug.Log('GetIdentifiedItem called with entityId: '..tostring(entityId))
+    local stringType = (type(entityId) == 'string')
+    if not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
-            if item.entityId == entityId then 
+            if (stringType and tostring(item.entityId) == entityId) or (item.entityId == entityId) then 
                 return item
             end
         end
@@ -873,9 +934,10 @@ end
     Whether or not given entityId is an Identified Item that has been assigned to a player
 ]]--
 function IsAssigned(entityId)
-    if aIdentifiedLoot ~= nil then
+    local stringType = (type(entityId) == 'string')
+    if not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
-            if item.entityId == entityId and item.assignedTo ~= nil then
+            if (stringType and tostring(item.entityId) == entityId) or (item.entityId == entityId) and item.assignedTo ~= nil then
                 return true
             end
         end
@@ -941,7 +1003,7 @@ function DistributeItem()
         local loot = nil
 
         for num, item in ipairs(aIdentifiedLoot) do 
-            if not IsAssigned(item.entityId) and IsPastThreshold(item.quality) then 
+            if not IsAssigned(item.entityId) and ItemPassesFilter(item, Options['Distribution']) then 
                 loot = item
                 break
             end
@@ -949,17 +1011,27 @@ function DistributeItem()
 
         if loot ~= nil then
 
+            -- Determine which rules to use
+            local typeKey, stageKey = GetItemOptionsKeys(loot, Options['Distribution']) 
+
+            -- Ruleset
+            -- Note: Btw we can assume we will do distribution for this item because we've already done ItemPassesFilter before getting here
+            -- Fixme: inotherwords were doin it wroong
+            local distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
+
+            -- Weighting
             local weightedRoster = GetEntitled(loot)
 
+
             -- Random looting mode
-            if Options['Distribution']['LootMode'] == 'random' then
+            if distributionMode == DistributionMode.Random then
                 local winner = weightedRoster[math.random(#weightedRoster)].name
 
                 OnDistributeItem({item=loot})
                 AssignItem(loot.entityId, winner)
 
             -- dice looting mode
-            elseif Options['Distribution']['LootMode'] == 'dice' then
+            elseif distributionMode == DistributionMode.Dice then
                 local highest = nil
                 local winner = ''
                 local rolls = {}
@@ -985,7 +1057,7 @@ function DistributeItem()
                 AssignItem(loot.entityId, winner)
 
             -- round-robin looting mode
-            elseif Options['Distribution']['LootMode'] == 'round-robin' then
+            elseif distributionMode == DistributionMode.RoundRobin then
                 
                 Debug.Log('Round Robin')
                 Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex))
@@ -1015,7 +1087,7 @@ function DistributeItem()
                 -- Distribute
                 OnDistributeItem({item=loot})
                 AssignItem(loot.entityId, winner)
-            elseif Options['Distribution']['LootMode'] == 'need-before-greed' then
+            elseif distributionMode == DistributionMode.NeedBeforeGreed then
 
                 -- Check that we're not busy rolling something else
                 if mCurrentlyRolling then
@@ -1083,7 +1155,7 @@ end
 ]]--
 function RollTimeout(args)
     if mCurrentlyRolling then
-        SendSystemMessage('RollTimeout for '..mCurrentlyRolling.name)
+        SendChatMessage('system', 'RollTimeout for ['..FixItemNameTag(mCurrentlyRolling.name, mCurrentlyRolling.quality)..']')
         RollFinish()
     end
 end
@@ -1095,7 +1167,7 @@ end
 ]]--
 function RollCancel(args)
     if mCurrentlyRolling then
-        SendSystemMessage('RollCancel for '..mCurrentlyRolling.name)
+        SendChatMessage('system', 'RollCancel for ['..FixItemNameTag(mCurrentlyRolling.name, mCurrentlyRolling.quality)..']')
         RollCleanup()
     end
 end
@@ -1136,12 +1208,12 @@ function RollDecision(args)
                 -- If he wants to roll need but isn't allowed to, change his roll to greed (y bastard)
                 if args.rollType == RollType.Need and row.canNeed == false then
                     args.rollType = RollType.Greed
-                    OnRollChange({rollType=args.rollType, playerName=args.author})
+                    OnRollChange({item=mCurrentlyRolling, rollType=args.rollType, playerName=args.author})
                 end
 
                 -- Set the roll type and acknowledge
                 row.rollType = args.rollType
-                OnRollAccept({rollType=args.rollType, playerName=args.author})
+                OnRollAccept({item=mCurrentlyRolling, rollType=args.rollType, playerName=args.author})
             end
 
             -- If the rollType is not yet set, this is a person who has yet to roll
@@ -1156,6 +1228,8 @@ function RollDecision(args)
             end
 
         end
+
+        Debug.Log('RollDecision','NeedRemaining: '..tostring(needRemaining), 'totalRemaining: '..tostring(totalRemaining))
 
         -- If this was the last call needed, do rolls
         if totalRemaining == 0 or needRemaining == 0 then
@@ -1213,9 +1287,12 @@ function RollFinish()
             
         end
 
+        -- If there were no rolls, assign free for all and send event
         if next(rolls) == nil then
-            OnRollNobody({item=mCurrentlyRolling})
             mCurrentlyRolling.assignedTo = true -- Fixme: wtf
+            OnRollNobody({item=mCurrentlyRolling})
+
+        -- Otherwise, send distribute event and assign to the winner
         else
             OnDistributeItem({item=mCurrentlyRolling, rolls=rolls})
             AssignItem(mCurrentlyRolling.entityId, winner)
@@ -1236,15 +1313,32 @@ function RollFinish()
 end
 
 --[[
-    AssignItem(loot, winner)
+    AssignItem(loot|entityId, winner)
     Assigns an item to a player.
+    The first param can be either a table with an entityId property, or an entityId. If neither a table nor a string, tostring() will be applied.
 ]]--
-function AssignItem(entityId, winner)
-    if aIdentifiedLoot ~= nil then
+function AssignItem(ref, winner)
+    
+    local entityId = ''
+    if type(ref) == 'table' then
+        entityId = tostring(ref.entityId)
+    
+    elseif type(ref) == 'string' then
+        entityId = ref
+
+    else
+        entityId = tostring(ref)
+    end
+
+    if not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
-            if item.entityId == entityId then
+            if tostring(item.entityId) == entityId then
                 item.assignedTo = winner
-                OnAssignItem({item=item, assignedTo=winner, playerName=winner})
+                OnAssignItem({
+                    item = item,
+                    assignedTo = winner,
+                    playerName = winner,
+                })
                 return
             end
         end
@@ -1261,7 +1355,7 @@ function LootDespawn(args)
     -- Check that it really despawned
     if Game.IsTargetAvailable(args.item.entityId) then
         if Options['Debug']['Enabled'] then
-            SendSystemMessage(args.item.name..' has not despawned yet, reseting despawn timer')
+            SendChatMessage('system', args.item.name..' has not despawned yet, reseting despawn timer')
         end
         args.item.timer:SetAlarm('despawn', args.item.timer:GetTime() + ciLootDespawn, LootDespawn, {item=args.item})
         return
@@ -1283,7 +1377,9 @@ end
     Returns a list of people able to roll for loot under the current loot weighing settings
 ]]--
 function GetEntitled(loot)
-    if Options['Distribution']['LootWeighting'] ~= 'disabled' then 
+    -- fixme: uguu
+    -- Options['Distribution']['LootWeighting'] ~= 'disabled'
+    if true then 
         local entitledRoster = {}
         local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(loot.craftingTypeId))
 
@@ -1324,20 +1420,21 @@ function ListUnAssigned()
 
         if unAssignedLoot ~= nil then
             for num, item in ipairs(unAssignedLoot) do
-                SendSystemMessage(num..' '..item.name..tostring(item.quality))
+                SendChatMessage('system', num..' '..item.name..tostring(item.quality))
             end
         else
-            SendSystemMessage(Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
+            SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
         end
     else
-        SendSystemMessage(Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
+        SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
     end
 end
 
 function UpdateTrackerTooltip(entityId)
     -- Get info
-    local item = GetIdentifiedItem(tonumber(entityId))
-    if item == nil then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
+    Debug.Log('UpdateTrackerTooltip called with entityId'..tostring(entityId), 'Calling GetIdentifiedItem with '..tostring(entityId))
+    local item = GetIdentifiedItem(entityId)
+    if item == nil or item == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
 
     -- Refs
     local TRACKER_TOOLTIP_HEADER = TRACKER_TOOLTIP:GetChild("header")
@@ -1358,8 +1455,9 @@ function UpdateTrackerTooltip(entityId)
     end
     
     -- Name
-    TRACKER_TOOLTIP_NAME:SetText(FixItemNameTag(item.itemInfo.name, item.itemInfo.quality))
-    TRACKER_TOOLTIP_NAME:SetTextColor(item.itemInfo.rarity)
+    TRACKER_TOOLTIP_NAME:SetText(FixItemNameTag(item.itemInfo.name, item.quality))
+    TRACKER_TOOLTIP_NAME:SetTextColor(LIB_ITEMS.GetResourceQualityColor(item.quality))
+
 
     -- Fixme: This should be "if itemtype == equipment items" or something.
     -- Equipment Items
@@ -1459,7 +1557,7 @@ function UpdateTrackerTooltip(entityId)
     -- Return ToolTip
     local tip_args = {height=0}
     tip_args.height = TRACKER_TOOLTIP:GetLength()
-    tip_args.frame_color = item.itemInfo.rarity
+    tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
     
     return TRACKER_TOOLTIP, tip_args
 end
@@ -1490,33 +1588,37 @@ function UpdateTracker()
                 if ItemPassesFilter(item, Options['Tracker']) then
 
                     -- Create widget
-                    local ENTRY = Component.CreateWidget("Tracker_List_Entry", TRACKER:GetChild('List'))
+                    local ENTRY = Component.CreateWidget('Tracker_List_Entry', TRACKER:GetChild('List'))
                     ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
 
+                    -- Set the plate tag
                     ENTRY:GetChild('plate'):SetTag(tostring(item.entityId))
                     
-                    ENTRY:GetChild('plate'):BindEvent("OnMouseEnter", function(args)
-                        TRACKER_TOOLTIP:Show(true)
-                        ToolTip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
-                        bToolTipActive = true
+                    -- Tooltip
+                    if Options['Tracker']['Tooltip']['Enabled'] then
+                        ENTRY:GetChild('plate'):BindEvent('OnMouseEnter', function(args)
+                            TRACKER_TOOLTIP:Show(true)
+                            ToolTip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
+                            bToolTipActive = true
+                        end)
+                        ENTRY:GetChild('plate'):BindEvent('OnMouseLeave', function(args)
+                            TRACKER_TOOLTIP:Show(false)
+                            ToolTip.Show(false)
+                            bToolTipActive = false
+                        end)
+                    end
+                        
+                    -- Colours
+                    ENTRY:GetChild('plate'):GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY:GetChild('plate'):GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY:GetChild('item'):GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY:GetChild('item'):GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
 
-                    end);
-                    ENTRY:GetChild('plate'):BindEvent("OnMouseLeave", function(args)
-                        TRACKER_TOOLTIP:Show(false)
-                        ToolTip.Show(false)
-                        bToolTipActive = false
-                    end);
-                    
+                    -- Item Backplate
+                    ENTRY:GetChild('item'):GetChild('backplate'):SetRegion(tostring(item.itemInfo.rarity)..'_64')
 
-                    ENTRY:GetChild('plate'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY:GetChild('plate'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY:GetChild('item'):GetChild('outer'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY:GetChild('item'):GetChild('shade'):SetParam("tint", LIB_ITEMS.GetResourceQualityColor(item.quality))
-
-                    -- Icon
+                    -- Item Icon
                     ENTRY:GetChild('item'):GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
-
-
 
                     -- Left
                     --[[
@@ -1573,6 +1675,8 @@ function UpdateTracker()
                     ENTRY:GetChild('itemName'):SetText(itemPrefixShortener(FixItemNameTag(item.name, item.quality)))
 
                 -- Determine what to display
+                -- State Dependant Stuff
+                    -- Left Side
                     if item.assignedTo == nil then
                         ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(true)
                         ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(false)
@@ -1581,7 +1685,63 @@ function UpdateTracker()
                         ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(true)
                     end
 
+                    -- Right Side
                     ENTRY:GetChild('itemName'):Show(true)
+
+
+                -- Options Dependant Stuff
+                    if Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.Decorated then
+                        ENTRY:GetChild('plate'):GetChild('bg'):Show(true)
+                        ENTRY:GetChild('plate'):GetChild('outer'):Show(true)
+                        ENTRY:GetChild('plate'):GetChild('shade'):Show(true)
+
+                    elseif Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.Simple then
+                        ENTRY:GetChild('plate'):GetChild('bg'):Show(true)
+                        ENTRY:GetChild('plate'):GetChild('outer'):Show(false)
+                        ENTRY:GetChild('plate'):GetChild('shade'):Show(false)
+                    
+                    elseif Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.None then
+                        ENTRY:GetChild('plate'):GetChild('bg'):Show(false)
+                        ENTRY:GetChild('plate'):GetChild('outer'):Show(false)
+                        ENTRY:GetChild('plate'):GetChild('shade'):Show(false)
+                    end
+
+                    if Options['Tracker']['IconMode'] == TrackerIconModeOptions.Decorated then
+                        
+                        ENTRY:GetChild('item'):GetChild('bg'):Show(true)
+                        ENTRY:GetChild('item'):GetChild('backplate'):Show(true)
+                        ENTRY:GetChild('item'):GetChild('outer'):Show(true)
+                        ENTRY:GetChild('item'):GetChild('shade'):Show(true)
+                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(true)
+
+
+                    elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.Simple then
+                        
+                        ENTRY:GetChild('item'):GetChild('bg'):Show(true)
+                        ENTRY:GetChild('item'):GetChild('backplate'):Show(true)
+                        ENTRY:GetChild('item'):GetChild('outer'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('shade'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(true)
+                    
+                    elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.IconOnly then                   
+
+                        ENTRY:GetChild('item'):GetChild('bg'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('backplate'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('outer'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('shade'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(true)
+
+                    elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.None then
+
+                        ENTRY:GetChild('item'):GetChild('bg'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('backplate'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('outer'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('shade'):Show(false)
+                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(false)
+                        
+                        --ENTRY:GetChild('plate'):SetDims('left:0')
+                    end
+
                 end
             end
         else
@@ -1644,6 +1804,7 @@ function SendChatMessage(channel, message, alert)
     -- Function to handle the actual sending of messages
     local function SendMessageToChat(channel, message, alert)
         channel = string.lower(channel)
+        --if channel == 'squad' then channel = 'army' end
         local alertprefix = ''
         if alert then alertprefix = '!' end
         if channel == 'system' then
@@ -1716,13 +1877,13 @@ function CommunicationEvent(type, eventArgs)
     if not bIsSquadLeader then return end
 
     -- Requires that args.type is supplied
-    if args.type == nil then 
+    if type == nil then 
         Debug.Error('CommunicationEvent called without a type supplied')
         return
     end
 
     -- Warn if custom communication settings are enabled
-    if Options['Communication']['Custom'] then
+    if Options['Messages']['Communication']['Custom'] then
         Debug.Warn('Custom Communication Settings are enabled')
     end
 
@@ -1742,14 +1903,27 @@ function MessageEvent(eventClass, eventName, eventArgs, canSend)
     canSend = canSend or bIsSquadLeader
     if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
+            -- Var
+            local message = ''
+
+            -- Add event message
             if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                local message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
+                message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
+            end
 
-                if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] then
-                    message = message..'\n'..RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Format'], eventArgs.rolls, eventArgs.item)
+            -- If we have rolls data, and OnRolls message is enabled, add
+            if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] and Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Enabled'] then
+                local rollsMessage = RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Format'], eventArgs.rolls, eventArgs.item)
+                if message == '' then
+                    message = rollsMessage
+                else
+                    message = message..'\n'..rollsMessage
                 end
+            end
 
-                SendChatMessage(channelKey, message, eventArgs)              
+            -- Send message if we have one
+            if message ~= '' then
+                SendChatMessage(channelKey, message, eventArgs)
             end
         end
     end
@@ -1807,7 +1981,7 @@ function RunMessageFilters(message, args)
     local output = message
 
     -- Loot mode
-    output = string.gsub(output, '%%m', Options['Distribution']['LootMode'])
+    --output = string.gsub(output, '%%m', Options['Distribution']['LootMode'])
 
     -- Item name with quality
     output = string.gsub(output, '%%iq', itemNameQuality)
@@ -1873,10 +2047,11 @@ end
 --[[
     OnIdentify(args)
     Callback for when a new item is identified.
-    args.loot - the newly identified item
+    args.item - the newly identified item
     We use this to start automatic item distribution
 ]]--
 function OnIdentify(args)
+    Debug.Table(args)
     -- Require Core enabled
     if not Options['Core']['Enabled'] then return end
 
@@ -1888,7 +2063,7 @@ function OnIdentify(args)
 
     -- Play Sound
     -- Todo: SoundEvent
-    if not Options['Sounds']['Mute'] and Options['Sounds']['OnIdentify'] then
+    if Options['Sounds']['Enabled'] and Options['Sounds']['OnIdentify'] then
         System.PlaySound(Options['Sounds']['OnIdentify'])
     end
 
@@ -1970,7 +2145,7 @@ function OnDistributeItem(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnAssignItem', args)
+    MessageEvent('Distribution', 'OnDistributeItem', args)
 end
 
 --[[
@@ -1989,7 +2164,7 @@ function OnAssignItem(args)
     UpdatePanel(args.item)
 
     -- Play Sound
-    if not (Options['Sounds']['Enabled'] and Options['Sounds']['Mute']) then
+    if Options['Sounds']['Enabled'] then
         -- If assigned to me
         if namecompare(args.assignedTo, Player.GetInfo()) then
             System.PlaySound(Options['Sounds']['OnAssignItemToMe'])
@@ -2126,7 +2301,7 @@ end
     Any other value sets Enabled to true
 ]]--
 function ToggleEnabled(cmd)
-
+    SendChatMessage('system', 'Toggle')
     local newStatus = true
 
     if cmd == 'disable' then
@@ -2143,7 +2318,7 @@ end
     Clears the aIdentifiedLoot list.
 ]]--
 function ClearIdentified()
-
+    SendChatMessage('system', 'Clear')
     RollCancel()
 
     -- YOLO
@@ -2163,12 +2338,14 @@ end
     Testing function please ignore
 ]]--
 function Test()
+
     SendChatMessage('system', 'Test')
 
-    Debug.Log('test')
+    Debug.Log('Test')
+    Debug.Log('Core_Enabled: '..tostring(Options['Core']['Enabled']))
     Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
-    Debug.Log('Options[\'Enabled\']: '..tostring(Options['Core']['Enabled']))
-    Debug.Log('Options[\'AlwaysSquadLeader\']: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
+    Debug.Log('bInSquad: '..tostring(bInSquad))
+    Debug.Log('Distribution_AlwaysSquadLeader: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
 
 
     -- Entity id is set to player because we have no real options here
@@ -2195,7 +2372,7 @@ function Test()
         
 
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10009, quality=1},
-        --[[
+        -- --[[
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10010, quality=101},
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10011, quality=201},
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10012, quality=301},
@@ -2207,17 +2384,20 @@ function Test()
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85235, quality=901},
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85626, quality=1001},
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101},
-        --]]
+        -- --]]
     }
 
 
     -- Create some pannelz
     --for num, targetInfo in ipairs(targetInfoData) do
-    for num = 1,3 do
+    for num = 1,1 do
         targetInfo = targetInfoData[math.random(#targetInfoData)]
         -- hax the location
         entityId = num
-        targetInfo.lootPos.x = targetInfo.lootPos.x - 2*num
+        local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
+
+        Debug.Log('Position modifier for num '..tostring(num)..': '..tostring(posMod))
+        targetInfo.lootPos.x = targetInfo.lootPos.x - posMod
 
         if not IsIdentified(entityId) then
 
@@ -2244,7 +2424,6 @@ function Test()
 
             table.insert(aIdentifiedLoot, loot)
             OnIdentify({item=loot})
-
         end
 
     end

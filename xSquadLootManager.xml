@@ -131,22 +131,22 @@
 
             <!-- Plate -->
             <FocusBox name="plate" dimensions="width:100%-35; height:100%; left:32; top:2;">
-                <StillArt name="bg" dimensions="width:99%; height:99%;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
+                <StillArt name="bg" dimensions="width:100%-2.2; height:99%-2;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
                 <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
                 <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
             </FocusBox>
 
             <!-- Item icon -->
             <FocusBox name="item" dimensions="width:35; height:35; left:0; top:0;">
-                <StillArt name="bg" dimensions="width:0; height:0;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
+                <StillArt name="bg" dimensions="width:96%; height:96%;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
                 <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common_64"/>
                 <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
-                <Border name="shade" dimensions="width:0;height:0" class="ButtonFade"/>
+                <Border name="shade" dimensions="width:0;height:0;" class="ButtonFade"/>
                 <WebImage name="itemIcon" dimensions="width:35; height:35; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
             </FocusBox>
 
             <!-- Bar on the left -->
-            <Group name="leftBar" dimensions="left:35+2%; width:25%; height:100%; top:2;">
+            <Group name="leftBar" dimensions="left:11%; width:25%; height:100%; top:2;">
 
                  <!-- Bar Backplate -->
                 <!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#00FF00; alpha:0.6;"/>-->
@@ -157,18 +157,20 @@
                 </ListLayout>
 
                 <!-- Alternate Text -->
-                <Text name="assignedTo" dimensions="width:100%; height:100%;" style="halign:center;" class="Tracker_Text"/>
+                <Text name="assignedTo" dimensions="width:100%; height:100%;" class="Tracker_Text"/>
 
             </Group>
 
             <!-- Item name on the right -->
-            <Text name="itemName" dimensions="left:30+29%; width:20%; height:100%; top:2;" class="Tracker_Text"/>
+            <Text name="itemName" dimensions="left:59%; width:20%; height:100%; top:2;" class="Tracker_Text"/>
         </BluePrint>
     </BluePrints>
 
     <Frames>
-        <!-- Tracker -->
-        <PanelFrame name="Tracker" permanent="true" visible="true" dimensions="left:0; center-y:74%; width:400; height:150">
+        <!-- Tracker 
+            width:400; 
+        -->
+        <PanelFrame name="Tracker" dimensions="left:0; right:50%-450; height:150; center-y:74%;" permanent="true" visible="true" depth="10">
             <Children>
                 <!--<StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>-->
                 

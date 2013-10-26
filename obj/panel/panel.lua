@@ -17,9 +17,9 @@ PANEL =
 		Widget		= [[<Group dimensions="dock:fill;" style="alpha:1.0">
 							<!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#FFFFFF; alpha:0.5;"/>-->
 
-							<Group name="content" dimensions="top:20%;width:98%;height:80%;" style="clip-children:true;">
-
+							<Group name="content" dimensions="top:20%-6;width:98%;height:80%;" style="clip-children:true;">
 								<!--<StillArt name="contentBackground" dimensions="dock:fill" style="texture:colors; region:white; tint:#00000; alpha:0.8;"/>-->
+								<Border dimensions="center-x:50%; center-y:50%; width:100%+6; height:100%+6" class="SmallBorders" style="alpha:.75; tint:#ffffff"/>
 								<Border name="contentBackground" dimensions="dock:fill" class="PanelBackDrop" style="tint:#00000;" />
 
 								
@@ -31,6 +31,8 @@ PANEL =
             						<Text name="itemAssignedTo" dimensions="top:70; left:0; width:100%; height:32;" style="relative:bottom" class="LootPanel_Text_Large" />
 
 								</Group>
+
+
 
 								<Group name="IconBar" dimensions="left:0; top:20%; width:100%; height:30%;" style="clip-children:true;">
 

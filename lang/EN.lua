@@ -130,14 +130,14 @@ LANG = {
 	Messages_Generic_Channels_Squad_Enabled_ToolTip        					= Generic_Messages_Events_X_Event_Channels_Squad_Enabled_ToolTip,
 	Messages_Generic_Channels_Squad_Format_Label           					= Generic_Messages_Events_X_Event_Channels_Squad_Format_Label,
 	Messages_Generic_Channels_Squad_Format_ToolTip         					= Generic_Messages_Events_X_Event_Channels_Squad_Format_ToolTip,
-	Messages_Generic_Channels_System_Enabled_Label         					= Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_Label,
-	Messages_Generic_Channels_System_Enabled_ToolTip       					= Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_ToolTip,
-	Messages_Generic_Channels_System_Format_Label          					= Generic_Messages_Events_X_Event_Channels_Notifications_Format_Label,
-	Messages_Generic_Channels_System_Format_ToolTip        					= Generic_Messages_Events_X_Event_Channels_Notifications_Format_ToolTip,
-	Messages_Generic_Channels_Notifications_Enabled_Label  					= Generic_Messages_Events_X_Event_Channels_System_Enabled_Label,
-	Messages_Generic_Channels_Notifications_Enabled_ToolTip					= Generic_Messages_Events_X_Event_Channels_System_Enabled_ToolTip,
-	Messages_Generic_Channels_Notifications_Format_Label   					= Generic_Messages_Events_X_Event_Channels_System_Format_Label,
-	Messages_Generic_Channels_Notifications_Format_ToolTip 					= Generic_Messages_Events_X_Event_Channels_System_Format_ToolTip,
+	Messages_Generic_Channels_System_Enabled_Label         					= Generic_Messages_Events_X_Event_Channels_System_Enabled_Label,
+	Messages_Generic_Channels_System_Enabled_ToolTip       					= Generic_Messages_Events_X_Event_Channels_System_Enabled_ToolTip,
+	Messages_Generic_Channels_System_Format_Label          					= Generic_Messages_Events_X_Event_Channels_System_Format_Label,
+	Messages_Generic_Channels_System_Format_ToolTip        					= Generic_Messages_Events_X_Event_Channels_System_Format_ToolTip,
+	Messages_Generic_Channels_Notifications_Enabled_Label  					= Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_Label,
+	Messages_Generic_Channels_Notifications_Enabled_ToolTip					= Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_ToolTip,
+	Messages_Generic_Channels_Notifications_Format_Label   					= Generic_Messages_Events_X_Event_Channels_Notifications_Format_Label,
+	Messages_Generic_Channels_Notifications_Format_ToolTip 					= Generic_Messages_Events_X_Event_Channels_Notifications_Format_ToolTip,
 
 
 
@@ -428,9 +428,11 @@ LANG = {
 	Debug_FakeOnSquadRoster_Label                                                       = "Fake Squad Roster",
 	Debug_FakeOnSquadRoster_ToolTip                                                     = "If not in a squad but override squad leader, put fake squad members in the roster",
 	Debug_LogLootableTargets_Label      												= "Log Loot Detected",
-	Debug_LogLootableTargets_ToolTip    												= "Extra debug messages, spammy.",
+	Debug_LogLootableTargets_ToolTip    												= "Extra debug messages, spammy.\nLogs info on detected items, helpful when errors are occuring during item detection.",
 	Debug_LogLootableCollection_Label   												= "Log Loot Collected",
-	Debug_LogLootableCollection_ToolTip 												= "Extra debug messages, spammy.",
+	Debug_LogLootableCollection_ToolTip 												= "Extra debug messages, spammy.\nLogs info on looted items, helpful when errors are occuring during item removal.",
+	Debug_LogOptionChange_Label  														= "Log Option Changes",
+	Debug_LogOptionChange_ToolTip														= "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
 
 	Sounds_Enabled_Label                                                                = "Enable Sounds",
 	Sounds_Enabled_ToolTip                                                              = "The addon will play sounds in order to notify you when certain events occur.",
@@ -447,6 +449,16 @@ LANG = {
 
 	Tracker_Visibility_Label 						=   "Visibility",
 	Tracker_Visibility_ToolTip 						=   "When to display the tracker.\nAlways - I wanna be with you~\nHUD - Follow suit with rest of HUD\nMousemode - Only when in Mousemode",
+
+
+	Tracker_Tooltip_Enabled_Label   		=  "Enable Tooltips",
+	Tracker_Tooltip_Enabled_ToolTip 		=  "When hovering over an entry in the Tracker list, a tooltip representation of the item will be displayed on the cursor.",
+	Tracker_Tooltip_Mode_Label      		=  "Tooltip Style",
+	Tracker_Tooltip_Mode_ToolTip    		=  "Tooltips in Firefall look different everywhere. This option will hopefully let you choose between the most common ones.",
+	Tracker_PlateMode_Label         		=  "Plate Style",
+	Tracker_PlateMode_ToolTip       		=  "Affects the plates of entries in the Tracker.",
+	Tracker_IconMode_Label          		=  "Icon Style ",
+	Tracker_IconMode_ToolTip        		=  "Affects the item icon of entries in the Tracker. ",
 
 
 	Distribution_Enabled_Label                                                          = "Enable Distribution",                                                                                                                    
@@ -466,6 +478,7 @@ LANG = {
 
 	Distribution_RollTimeout_Label                                                      = "Roll timeout",
 	Distribution_RollTimeout_ToolTip                                                    = "Time limit in seconds for people to declare their roll type in Need before Greed.",
+
 
 
 
@@ -538,6 +551,29 @@ LANG = {
 	RadarEdgeModes_Choice_Arrow_ToolTip 				=	"Arrow",
 	RadarEdgeModes_Choice_Icon_Label 				=	"Icon",
 	RadarEdgeModes_Choice_Icon_ToolTip 				=	"Icon",
+
+
+	TrackerTooltipModes_Choice_ProgressionStyle_Label  		=	"Progression Style",
+	TrackerTooltipModes_Choice_ProgressionStyle_ToolTip		=	"Progression Style",
+	TrackerTooltipModes_Choice_ItemStyle_Label  		=	"Items Style",
+	TrackerTooltipModes_Choice_ItemStyle_ToolTip		=	"Items Style",
+
+	TrackerPlateModeOptions_Choice_None_Label  		=	"None",
+	TrackerPlateModeOptions_Choice_None_ToolTip		=	"None",
+	TrackerPlateModeOptions_Choice_Decorated_Label  		=	"Decorated",
+	TrackerPlateModeOptions_Choice_Decorated_ToolTip		=	"Decorated",
+	TrackerPlateModeOptions_Choice_Simple_Label  		=	"Simple",
+	TrackerPlateModeOptions_Choice_Simple_ToolTip		=	"Simple",
+
+	TrackerIconModeOptions_Choice_None_Label  		=	"None",
+	TrackerIconModeOptions_Choice_None_ToolTip		=	"None",
+	TrackerIconModeOptions_Choice_Decorated_Label  		=	"Decorated",
+	TrackerIconModeOptions_Choice_Decorated_ToolTip		=	"Decorated",
+	TrackerIconModeOptions_Choice_Simple_Label  		=	"Simple",
+	TrackerIconModeOptions_Choice_Simple_ToolTip		=	"Simple",
+	TrackerIconModeOptions_Choice_IconOnly_Label  		=	"IconOnly",
+	TrackerIconModeOptions_Choice_IconOnly_ToolTip		=	"IconOnly",
+
 
 	-- Subtabs
 	Subtab_Distribution 						    =   "Distribution",
