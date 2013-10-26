@@ -21,21 +21,6 @@
         <Event name="ON_SQUAD_ROSTER_UPDATE"       bind="OnSquadRosterUpdate" />
         <Event name="ON_LOOT_COLLECTED"            bind="OnLootCollected"     />
         <Event name="ON_CHAT_MESSAGE"              bind="OnChatMessage"       />
-
-        <!-- Custom -->
-        <Event name="XSLM_ON_IDENTIFY"             bind="OnIdentify"          />
-        <Event name="XSLM_ON_LOOT_DESPAWN"         bind="OnLootDespawn"       />
-        <Event name="XSLM_ON_LOOT_RECEIVED"        bind="OnLootReceived"      />
-        <Event name="XSLM_ON_LOOT_STOLEN"          bind="OnLootStolen"        />
-        <Event name="XSLM_ON_LOOT_SNATCHED"        bind="OnLootSnatched"      />
-        <Event name="XSLM_ON_LOOT_CLAIMED"         bind="OnLootClaimed"       />
-        <Event name="XSLM_ON_DISTRIBUTE_ITEM"      bind="OnDistributeItem"    />
-        <Event name="XSLM_ON_ASSIGN_ITEM"          bind="OnAssignItem"        />
-        <Event name="XSLM_ON_ACCEPTING_ROLLS"      bind="OnAcceptingRolls"    />
-        <Event name="XSLM_ON_ROLL_ACCEPT"          bind="OnRollAccept"        />
-        <Event name="XSLM_ON_ROLL_CHANGE"          bind="OnRollChange"        />
-        <Event name="XSLM_ON_ROLL_BUSY"            bind="OnRollBusy"          />
-        <Event name="XSLM_ON_ROLL_NOBODY"          bind="OnRollNobody"        />
     </Events>
 
     <Textures>
