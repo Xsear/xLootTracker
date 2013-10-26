@@ -70,7 +70,7 @@ TrackerVisibilityOptions = {
 }
 
 TrackerTooltipModes = {
-    ItemStyle = 'item',
+    --ItemStyle = 'item',
     ProgressionStyle = 'progression',
 }
 
