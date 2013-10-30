@@ -172,7 +172,7 @@ function OnSquadRosterUpdate()
         end
     end
 
-    Debug.Log('OnSquadRosterUpdate','| bInSquad: '..tostring(bInSquad), '| bIsSquadLeader: '..tostring(bIsSquadLeader), '| aSquadRoster: '..tostring(aSquadRoster))
+    --Debug.Log('OnSquadRosterUpdate','| bInSquad: '..tostring(bInSquad), '| bIsSquadLeader: '..tostring(bIsSquadLeader), '| aSquadRoster: '..tostring(aSquadRoster))
 
     -- Update tracker
     UpdateTracker()
@@ -354,12 +354,24 @@ end
 
 
 --[[
+    OnLootPickup(args)
+    This event is called when other players loot things.
+    Currently just redirecting to OnLootCollected should be fine.
+    
+]]--
+function OnLootPickup(args)
+    OnLootCollected(args)
+end
+
+--[[
     OnLootCollected(args)
     Callback for when someone loots something.
     Used to detect ninja lootaz!
     
 ]]--
 function OnLootCollected(args)
+    Debug.Table(args)
+
     -- Requires Core and Detection enabled
     if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 

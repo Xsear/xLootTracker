@@ -20,6 +20,7 @@
         <Event name="ON_UI_ENTITY_AVAILABLE"       bind="OnEntityAvailable"   />
         <Event name="ON_SQUAD_ROSTER_UPDATE"       bind="OnSquadRosterUpdate" />
         <Event name="ON_LOOT_COLLECTED"            bind="OnLootCollected"     />
+        <Event name="ON_LOOT_PICKUP"               bind="OnLootPickup"        />
         <Event name="ON_CHAT_MESSAGE"              bind="OnChatMessage"       />
     </Events>
 
