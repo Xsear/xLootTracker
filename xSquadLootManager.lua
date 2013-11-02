@@ -360,6 +360,13 @@ end
     
 ]]--
 function OnLootPickup(args)
+    -- Don't send if the item was looted by and to the local player - preventing double messages.
+    if namecompare(args.lootedTo, Player.GetInfo()) and namecompare(args.lootedBy, Player.GetInfo()) then 
+        Debug.Log('Skipping OnLootPickup event because conditions ensure OnLootCollected.')
+        return 
+    end
+
+    -- Redirect to OnLootCollected
     OnLootCollected(args)
 end
 
