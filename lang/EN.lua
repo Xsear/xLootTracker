@@ -456,9 +456,9 @@ LANG = {
     Tracker_Tooltip_Mode_Label              =  "Tooltip Style",
     Tracker_Tooltip_Mode_ToolTip            =  "Tooltips in Firefall look different everywhere. This option will hopefully let you choose between the most common ones.",
     Tracker_PlateMode_Label                 =  "Plate Style",
-    Tracker_PlateMode_ToolTip               =  "Affects the plates of entries in the Tracker.",
+    Tracker_PlateMode_ToolTip               =  "Changes the look of the plate of entries in the Tracker.",
     Tracker_IconMode_Label                  =  "Icon Style ",
-    Tracker_IconMode_ToolTip                =  "Affects the item icon of entries in the Tracker. ",
+    Tracker_IconMode_ToolTip                =  "Changes the look of the item icon of entries in the Tracker. ",
 
 
     Distribution_Enabled_Label                                                          =    "Enable Distribution",

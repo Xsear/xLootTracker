@@ -29,7 +29,7 @@ TRACKER = Component.GetFrame('Tracker')
 TRACKER_TOOLTIP = TRACKER:GetChild('Tooltip')
 
 -- Constants
-csVersion = '0.87b'
+csVersion = '0.88'
 ciSaveVersion = 0.80
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
@@ -1074,6 +1074,7 @@ function DistributeItem()
                 AssignItem(loot.entityId, winner)
 
             -- round-robin looting mode
+            -- Todo: Support for Weighting?
             elseif distributionMode == DistributionMode.RoundRobin then
                 
                 Debug.Log('Round Robin')
@@ -1392,28 +1393,36 @@ end
 --[[
     GetEntitled(loot)
     Returns a list of people able to roll for loot under the current loot weighing settings
+    Todo: Make this function less terrible
 ]]--
 function GetEntitled(loot)
-    -- fixme: uguu
-    -- Options['Distribution']['LootWeighting'] ~= 'disabled'
-    if true then 
+
+    -- Get Options type and stage keys for this item
+    local typeKey, stageKey = GetItemOptionsKeys(loot, Options['Distribution']) 
+
+    -- Build entitled roster if weighting options are enabled
+    if Options['Distribution'][typeKey][stageKey]['Weighting'] ~= WeightingOptions.None then 
+
         local entitledRoster = {}
+
+        -- Get item archetype and frame
         local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(loot.craftingTypeId))
 
-        --if Options['Distribution']['LootWeighting'] == 'frame' then
-        --end
-        --if Options['Distribution']['LootWeighting'] == 'archetype' or #entitledRoster == 0 then
+        -- Add entitled under Archetype setting
+        if Options['Distribution'][typeKey][stageKey]['Weighting'] == WeightingOptions.Archetype or #entitledRoster == 0 then
             for num, member in ipairs(aSquadRoster.members) do
                 if member.battleframe == itemArchetype then
                     table.insert(entitledRoster, member)
                 end
             end
-        --end
+        end
 
+        -- Return entitled roster if it has at least one entry
         if #entitledRoster > 0 then
             return entitledRoster
         end
     end
+    -- Return an unmodified roster if weighting options are disabled or if we had no entires in the entitled roster
     return aSquadRoster.members
 end
 

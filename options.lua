@@ -125,30 +125,30 @@ Options = {
 
             ['Stage1'] = {
                 ['Enabled'] = false,
-                ['LootMode'] = DistributionMode.NeedBeforeGreed,
-                ['Weighting'] = WeightingOptions.Archetype,
+                ['LootMode'] = DistributionMode.RoundRobin,
+                ['Weighting'] = WeightingOptions.None,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage2'] = {
                 ['Enabled'] = false,
-                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['LootMode'] = DistributionMode.RoundRobin,
                 ['Weighting'] = WeightingOptions.Archetype,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage3'] = {
-                ['Enabled'] = false,
-                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Enabled'] = true,
+                ['LootMode'] = DistributionMode.Dice,
                 ['Weighting'] = WeightingOptions.Archetype,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
 
             ['Stage4'] = {
-                ['Enabled'] = false,
+                ['Enabled'] = true,
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.Archetype,
                 ['QualityThreshold'] = QualityOptions.Any,
@@ -164,7 +164,7 @@ Options = {
 
             ['Simple'] = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
-                ['Weighting'] = WeightingOptions.Archetype,
+                ['Weighting'] = WeightingOptions.None,
                 ['TierThreshold'] = TierOptions.Any,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
@@ -173,7 +173,7 @@ Options = {
             ['Stage1'] = {
                 ['Enabled'] = false,
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
-                ['Weighting'] = WeightingOptions.Archetype,
+                ['Weighting'] = WeightingOptions.None,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -181,7 +181,7 @@ Options = {
             ['Stage2'] = {
                 ['Enabled'] = false,
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
-                ['Weighting'] = WeightingOptions.Archetype,
+                ['Weighting'] = WeightingOptions.None,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -189,7 +189,7 @@ Options = {
             ['Stage3'] = {
                 ['Enabled'] = false,
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
-                ['Weighting'] = WeightingOptions.Archetype,
+                ['Weighting'] = WeightingOptions.None,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -197,7 +197,7 @@ Options = {
             ['Stage4'] = {
                 ['Enabled'] = false,
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
-                ['Weighting'] = WeightingOptions.Archetype,
+                ['Weighting'] = WeightingOptions.None,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -428,7 +428,7 @@ Options = {
 
                     ['Channels'] = {
                         ['Squad'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = 'Detected a new loot drop: [%iq]',
                         },
 
@@ -438,7 +438,7 @@ Options = {
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = true,
+                            ['Enabled'] = false,
                             ['Format'] = 'Detected a new loot drop: [%iq]',
                         },
                     },
@@ -541,7 +541,7 @@ Options = {
 
                     ['Channels'] = {
                         ['Squad'] = {
-                            ['Enabled'] = true,
+                            ['Enabled'] = false,
                             ['Format'] = '[%iq] has despawned.',
                         },
 
@@ -551,7 +551,7 @@ Options = {
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = '[%iq] has despawned.',
                         },
                     },
@@ -571,12 +571,12 @@ Options = {
                         },
 
                         ['System'] = {
-                            ['Enabled'] = true,
+                            ['Enabled'] = false,
                             ['Format'] = 'Distributing [%iq] by %m',
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = 'Distributing [%iq] by %m',
                         },
                     },
@@ -659,12 +659,12 @@ Options = {
                         },
 
                         ['System'] = {
-                            ['Enabled'] = true,
+                            ['Enabled'] = false,
                             ['Format'] = 'Correcting roll of %n, attempted need but not eligible',
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = 'Correcting roll of %n, attempted need but not eligible',
                         },
                     },
@@ -681,12 +681,12 @@ Options = {
                         },
 
                         ['System'] = {
-                            ['Enabled'] = true,
+                            ['Enabled'] = false,
                             ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
                         },
                     },
@@ -721,17 +721,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = 'Nobody rolled! D:',
+                            ['Format'] = 'Nobody rolled!',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Nobody rolled! D:',
+                            ['Format'] = 'Nobody rolled!',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Nobody rolled! D:',
+                            ['Format'] = 'Nobody rolled!',
                         },
                     },
 
