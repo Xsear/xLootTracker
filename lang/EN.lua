@@ -53,7 +53,7 @@ LootMode_ToolTip                                =    "Loot will be distributed a
 -- ----------
 
 
-Generic_MessageFormat = "Specify the format of the message. The following replacement variables exist, please note that they're not always available.\n%m : Current ruleset/mode\n%i : The item name. If ^Q is encountered, it is removed.\n%q : The item quality\n%iq : The item name. If ^Q is encountered, it is replaced with the item quality.\n%n : The player name\n%r : The roll value\n%l : Playername, person who looted the item\n%a : Playername, person who the item is assigned to\n%e : Comma separated line of players able to need roll"
+Generic_MessageFormat = "Specify the format of the message. The following replacement variables exist, please note that they're not always available.\n%m : Current ruleset/mode\n%i : The item name. If ^Q is encountered, it is removed.\n%q : The item quality\n%iq : The item name. If ^Q is encountered, it is replaced with the item quality.\n%n : The player name\n%r : The roll value\n%l : Playername, person who looted the item\n%a : Playername, person who the item is assigned to\n%e : Comma separated line of players able to need roll\n%cId : Crafting Type Id\n%fF : Frame the item is for"
 
 Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Label              =    "Send Squad Message"
 Generic_Messages_Events_X_Event_Channels_Squad_Enabled_ToolTip            =    "Send message to Squad on this event"
