@@ -100,9 +100,18 @@ end
     Used to determine if the tracker should be displayed or not.
 ]]--
 function OnHudShow(args)
-    --Debug.Log('OnHudShow')
-    local hide = args.loading_screen or args.logout_bonus or args.freecamera
+    local hide = args.loading_screen or args.logout_bonus or args.freecamera or args.sinvironment
     bHUD = not hide
+    UpdateTracker()
+end
+
+--[[
+    OnHudShow(args)
+    Callback for MY_HUD_HIDE_REQUEST
+    Used to determine if the tracker should be displayed or not.
+]]--
+function OnHideHudRequest(args)
+    bHUD = not args.hide
     UpdateTracker()
 end
 
@@ -1781,7 +1790,7 @@ function UpdateTracker()
         --Debug.Log('bCursor == '..tostring(bCursor))
         if  Options['Tracker']['Visibility'] == TrackerVisibilityOptions.Always 
         or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.HUD and bHUD)
-        or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor)
+        or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor and bHUD)
         then
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
