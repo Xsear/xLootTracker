@@ -29,7 +29,7 @@ TRACKER = Component.GetFrame('Tracker')
 TRACKER_TOOLTIP = TRACKER:GetChild('Tooltip')
 
 -- Constants
-csVersion = '0.88'
+csVersion = '0.89'
 ciSaveVersion = 0.80
 
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
