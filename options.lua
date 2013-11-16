@@ -1102,14 +1102,14 @@ function BuildInterfaceOptions_Front()
         InterfaceOptions.AddCheckBox({
             id      = 'Core_Enabled',
             label   = Lokii.GetString('Core_Enabled_Label'),
-            tooltip = Lokii.GetString('Core_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Core_Enabled_Tooltip'),
             default = Options['Core']['Enabled'],
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Core_VersionMessage',
             label   = Lokii.GetString('Core_VersionMessage_Label'),
-            tooltip = Lokii.GetString('Core_VersionMessage_ToolTip'),
+            tooltip = Lokii.GetString('Core_VersionMessage_Tooltip'),
             default = Options['Core']['VersionMessage'],
         })
 
@@ -1124,7 +1124,7 @@ function BuildInterfaceOptions_Front()
         InterfaceOptions.AddCheckBox({
             id      = 'Detection_Enabled',
             label   = Lokii.GetString('Detection_Enabled_Label'),
-            tooltip = Lokii.GetString('Detection_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Detection_Enabled_Tooltip'),
             default = Options['Detection']['Enabled'],
         })
         --]]
@@ -1132,42 +1132,42 @@ function BuildInterfaceOptions_Front()
         InterfaceOptions.AddCheckBox({
             id      = 'Distribution_Enabled',
             label   = Lokii.GetString('Distribution_Enabled_Label'),
-            tooltip = Lokii.GetString('Distribution_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Distribution_Enabled_Tooltip'),
             default = Options['Distribution']['Enabled'],
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Messages_Enabled',
             label   = Lokii.GetString('Messages_Enabled_Label'),
-            tooltip = Lokii.GetString('Messages_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Enabled_Tooltip'),
             default = Options['Messages']['Enabled'],
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Panels_Enabled',
             label   = Lokii.GetString('Panels_Enabled_Label'),
-            tooltip = Lokii.GetString('Panels_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Panels_Enabled_Tooltip'),
             default = Options['Panels']['Enabled'],
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Waypoints_Enabled',
             label   = Lokii.GetString('Waypoints_Enabled_Label'),
-            tooltip = Lokii.GetString('Waypoints_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Waypoints_Enabled_Tooltip'),
             default = Options['Waypoints']['Enabled'],
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Tracker_Enabled',
             label   = Lokii.GetString('Tracker_Enabled_Label'),
-            tooltip = Lokii.GetString('Tracker_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Tracker_Enabled_Tooltip'),
             default = Options['Tracker']['Enabled'],
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Sounds_Enabled',
             label   = Lokii.GetString('Sounds_Enabled_Label'),
-            tooltip = Lokii.GetString('Sounds_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Sounds_Enabled_Tooltip'),
             default = Options['Sounds']['Enabled'],
         })
 
@@ -1179,35 +1179,35 @@ function BuildInterfaceOptions_Front()
         checkbox = true,
         default  = Options['Debug']['Enabled'],
         label    = Lokii.GetString('Debug_Enabled_Label'),
-        tooltip  = Lokii.GetString('Debug_Enabled_ToolTip'),
+        tooltip  = Lokii.GetString('Debug_Enabled_Tooltip'),
     })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Debug_FakeOnSquadRoster',
             default = Options['Debug']['FakeOnSquadRoster'],
             label   = Lokii.GetString('Debug_FakeOnSquadRoster_Label'),
-            tooltip = Lokii.GetString('Debug_FakeOnSquadRoster_ToolTip'),
+            tooltip = Lokii.GetString('Debug_FakeOnSquadRoster_Tooltip'),
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Debug_LogLootableTargets',
             default = Options['Debug']['LogLootableTargets'],
             label   = Lokii.GetString('Debug_LogLootableTargets_Label'),
-            tooltip = Lokii.GetString('Debug_LogLootableTargets_ToolTip'),
+            tooltip = Lokii.GetString('Debug_LogLootableTargets_Tooltip'),
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Debug_LogLootableCollection',
             default = Options['Debug']['LogLootableCollection'],
             label   = Lokii.GetString('Debug_LogLootableCollection_Label'),
-            tooltip = Lokii.GetString('Debug_LogLootableCollection_ToolTip'),
+            tooltip = Lokii.GetString('Debug_LogLootableCollection_Tooltip'),
         })
 
         InterfaceOptions.AddCheckBox({
             id      = 'Debug_LogOptionChange',
             default = Options['Debug']['LogOptionChange'],
             label   = Lokii.GetString('Debug_LogOptionChange_Label'),
-            tooltip = Lokii.GetString('Debug_LogOptionChange_ToolTip'),
+            tooltip = Lokii.GetString('Debug_LogOptionChange_Tooltip'),
         })
 
     InterfaceOptions.StopGroup()
@@ -1223,7 +1223,7 @@ function BuildInterfaceOptions_Distribution()
         id      = 'Distribution_AlwaysSquadLeader',
         default = Options['Distribution']['AlwaysSquadleader'],
         label   = Lokii.GetString('Distribution_AlwaysSquadLeader_Label'),
-        tooltip = Lokii.GetString('Distribution_AlwaysSquadLeader_ToolTip'),
+        tooltip = Lokii.GetString('Distribution_AlwaysSquadLeader_Tooltip'),
         subtab  = {
             Lokii.GetString('Subtab_Distribution')
         },
@@ -1234,7 +1234,7 @@ function BuildInterfaceOptions_Distribution()
         id      = 'Distribution_AutoDistribute',
         default = Options['Distribution']['AutoDistribute'],
         label   = Lokii.GetString('Distribution_AutoDistribute_Label'),
-        tooltip = Lokii.GetString('Distribution_AutoDistribute_ToolTip'),
+        tooltip = Lokii.GetString('Distribution_AutoDistribute_Tooltip'),
         subtab  = {
             Lokii.GetString('Subtab_Distribution')
         },
@@ -1246,7 +1246,7 @@ function BuildInterfaceOptions_Distribution()
         numeric =  true,
         default = Options['Distribution']['RollMin'],
         label   = Lokii.GetString('Distribution_RollMin_Label'),
-        tooltip = Lokii.GetString('Distribution_RollMin_ToolTip'),
+        tooltip = Lokii.GetString('Distribution_RollMin_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Distribution')}
     })
 
@@ -1255,7 +1255,7 @@ function BuildInterfaceOptions_Distribution()
         numeric =  true,
         default = Options['Distribution']['RollMax'],
         label   = Lokii.GetString('Distribution_RollMax_Label'),
-        tooltip = Lokii.GetString('Distribution_RollMax_ToolTip'),
+        tooltip = Lokii.GetString('Distribution_RollMax_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Distribution')}
     })
 
@@ -1264,7 +1264,7 @@ function BuildInterfaceOptions_Distribution()
         numeric =  true,
         default = Options['Distribution']['RollTimeout'],
         label   = Lokii.GetString('Distribution_RollTimeout_Label'),
-        tooltip = Lokii.GetString('Distribution_RollTimeout_ToolTip'),
+        tooltip = Lokii.GetString('Distribution_RollTimeout_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Distribution')}
     })
 
@@ -1281,7 +1281,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_Display_AssignedTo',
         default = Options['Panels']['Display']['AssignedTo'],
         label   = Lokii.GetString('Panels_Display_AssignedTo_Label'),
-        tooltip = Lokii.GetString('Panels_Display_AssignedTo_ToolTip'),
+        tooltip = Lokii.GetString('Panels_Display_AssignedTo_Tooltip'),
         subtab  = {
             Lokii.GetString('Subtab_Panels')
         },
@@ -1292,7 +1292,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_Display_AssignedToHideNil',
         default = Options['Panels']['Display']['AssignedToHideNil'],
         label   = Lokii.GetString('Panels_Display_AssignedToHideNil_Label'),
-        tooltip = Lokii.GetString('Panels_Display_AssignedToHideNil_ToolTip'),
+        tooltip = Lokii.GetString('Panels_Display_AssignedToHideNil_Tooltip'),
         subtab  = {
             Lokii.GetString('Subtab_Panels')
         },
@@ -1306,7 +1306,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_ColorMode_HeaderBarCustomValue',
         default = Options['Panels']['ColorMode']['HeaderBarCustomValue'],
         label   = Lokii.GetString('Panels_ColorMode_HeaderBarCustomValue_Label'),
-        tooltip = Lokii.GetString('Panels_ColorMode_HeaderBarCustomValue_ToolTip'),
+        tooltip = Lokii.GetString('Panels_ColorMode_HeaderBarCustomValue_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
 
@@ -1318,7 +1318,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_ColorMode_ItemNameCustomValue',
         default = Options['Panels']['ColorMode']['ItemNameCustomValue'],
         label   = Lokii.GetString('Panels_ColorMode_ItemNameCustomValue_Label'),
-        tooltip = Lokii.GetString('Panels_ColorMode_ItemNameCustomValue_ToolTip'),
+        tooltip = Lokii.GetString('Panels_ColorMode_ItemNameCustomValue_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
 
@@ -1327,7 +1327,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_Color_AssignedTo_Nil',
         default = Options['Panels']['Color']['AssignedTo']['Nil'],
         label   = Lokii.GetString('Panels_Color_AssignedTo_Nil_Label'),
-        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Nil_ToolTip'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Nil_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
 
@@ -1335,7 +1335,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_Color_AssignedTo_Free',
         default = Options['Panels']['Color']['AssignedTo']['Free'],
         label   = Lokii.GetString('Panels_Color_AssignedTo_Free_Label'),
-        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Free_ToolTip'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Free_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
 
@@ -1343,7 +1343,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_Color_AssignedTo_Player',
         default = Options['Panels']['Color']['AssignedTo']['Player'],
         label   = Lokii.GetString('Panels_Color_AssignedTo_Player_Label'),
-        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Player_ToolTip'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Player_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
 
@@ -1351,7 +1351,7 @@ function BuildInterfaceOptions_Panels()
         id      = 'Panels_Color_AssignedTo_Other',
         default = Options['Panels']['Color']['AssignedTo']['Other'],
         label   = Lokii.GetString('Panels_Color_AssignedTo_Other_Label'),
-        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Other_ToolTip'),
+        tooltip = Lokii.GetString('Panels_Color_AssignedTo_Other_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
 end
@@ -1365,7 +1365,7 @@ function BuildInterfaceOptions_Waypoints()
         id      = 'Waypoints_ShowOnHud',
         default = Options['Waypoints']['ShowOnHud'],
         label   = Lokii.GetString('Waypoints_ShowOnHud_Label'),
-        tooltip = Lokii.GetString('Waypoints_ShowOnHud_ToolTip'),
+        tooltip = Lokii.GetString('Waypoints_ShowOnHud_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Waypoints')}
     })
 
@@ -1373,7 +1373,7 @@ function BuildInterfaceOptions_Waypoints()
         id      = 'Waypoints_ShowOnWorldMap',
         default = Options['Waypoints']['ShowOnWorldMap'],
         label   = Lokii.GetString('Waypoints_ShowOnWorldMap_Label'),
-        tooltip = Lokii.GetString('Waypoints_ShowOnWorldMap_ToolTip'),
+        tooltip = Lokii.GetString('Waypoints_ShowOnWorldMap_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Waypoints')}
     })
 
@@ -1381,7 +1381,7 @@ function BuildInterfaceOptions_Waypoints()
         id      = 'Waypoints_ShowOnRadar',
         default = Options['Waypoints']['ShowOnRadar'],
         label   = Lokii.GetString('Waypoints_ShowOnRadar_Label'),
-        tooltip = Lokii.GetString('Waypoints_ShowOnRadar_ToolTip'),
+        tooltip = Lokii.GetString('Waypoints_ShowOnRadar_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Waypoints')}
     })
 
@@ -1391,7 +1391,7 @@ function BuildInterfaceOptions_Waypoints()
         id      = 'Waypoints_TrailAssigned',
         default = Options['Waypoints']['TrailAssigned'],
         label   = Lokii.GetString('Waypoints_TrailAssigned_Label'),
-        tooltip = Lokii.GetString('Waypoints_TrailAssigned_ToolTip'),
+        tooltip = Lokii.GetString('Waypoints_TrailAssigned_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Waypoints')}
     })
 
@@ -1399,7 +1399,7 @@ function BuildInterfaceOptions_Waypoints()
         id      = 'Waypoints_PingAssigned',
         default = Options['Waypoints']['PingAssigned'],
         label   = Lokii.GetString('Waypoints_PingAssigned_Label'),
-        tooltip = Lokii.GetString('Waypoints_PingAssigned_ToolTip'),
+        tooltip = Lokii.GetString('Waypoints_PingAssigned_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Waypoints')}
     })
 
@@ -1412,7 +1412,7 @@ function BuildInterfaceOptions_Messages()
         id      = 'Messages_Prefix',
         default = Options['Messages']['Prefix'],
         label   = Lokii.GetString('Messages_Prefix_Label'),
-        tooltip = Lokii.GetString('Messages_Prefix_ToolTip'),
+        tooltip = Lokii.GetString('Messages_Prefix_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Messages')}
     })
 
@@ -1421,7 +1421,7 @@ function BuildInterfaceOptions_Messages()
         id      = 'Messages_Channels_Squad',
         default = Options['Messages']['Channels']['Squad'],
         label   = Lokii.GetString('Messages_Channels_Squad_Label'),
-        tooltip = Lokii.GetString('Messages_Channels_Squad_ToolTip'),
+        tooltip = Lokii.GetString('Messages_Channels_Squad_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Messages')}
     })
 
@@ -1429,7 +1429,7 @@ function BuildInterfaceOptions_Messages()
         id      = 'Messages_Channels_System',
         default = Options['Messages']['Channels']['System'],
         label   = Lokii.GetString('Messages_Channels_System_Label'),
-        tooltip = Lokii.GetString('Messages_Channels_System_ToolTip'),
+        tooltip = Lokii.GetString('Messages_Channels_System_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Messages')}
     })
 
@@ -1437,7 +1437,7 @@ function BuildInterfaceOptions_Messages()
         id      = 'Messages_Channels_Notifications',
         default = Options['Messages']['Channels']['Notifications'],
         label   = Lokii.GetString('Messages_Channels_Notifications_Label'),
-        tooltip = Lokii.GetString('Messages_Channels_Notifications_ToolTip'),
+        tooltip = Lokii.GetString('Messages_Channels_Notifications_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Messages')}
     })
 
@@ -1452,7 +1452,7 @@ function BuildInterfaceOptions_Messages()
     InterfaceOptions.StartGroup({
         id          = 'Group_Com',
         label       = Lokii.GetString('Group_Com_Label'),
-        tooltip     = Lokii.GetString('Group_Com_ToolTip'),
+        tooltip     = Lokii.GetString('Group_Com_Tooltip'),
         subtab      = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
     })
 
@@ -1460,7 +1460,7 @@ function BuildInterfaceOptions_Messages()
             id      = 'Messages_Communication_Custom',
             default = Options['Messages']['Communication']['Custom'],
             label   = Lokii.GetString('Messages_Communication_Custom_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Custom_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Communication_Custom_Tooltip'),
             subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
@@ -1468,7 +1468,7 @@ function BuildInterfaceOptions_Messages()
             id      = 'Messages_Communication_Prefix',
             default = Options['Messages']['Communication']['Prefix'],
             label   = Lokii.GetString('Messages_Communication_Prefix_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Prefix_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Communication_Prefix_Tooltip'),
             subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
@@ -1476,7 +1476,7 @@ function BuildInterfaceOptions_Messages()
             id      = 'Messages_Communication_Assign_Enabled',
             default = Options['Messages']['Communication']['Assign']['Enabled'],
             label   = Lokii.GetString('Messages_Communication_Assign_Enabled_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Assign_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Communication_Assign_Enabled_Tooltip'),
             subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
@@ -1484,7 +1484,7 @@ function BuildInterfaceOptions_Messages()
             id      = 'Messages_Communication_Assign_Format',
             default = Options['Messages']['Communication']['Assign']['Format'],
             label   = Lokii.GetString('Messages_Communication_Assign_Format_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Assign_Format_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Communication_Assign_Format_Tooltip'),
             subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
         })
 
@@ -1503,7 +1503,7 @@ function BuildInterfaceOptions_Tracker()
         id      = 'Tracker_Tooltip_Enabled',
         default = Options['Tracker']['Tooltip']['Enabled'],
         label   = Lokii.GetString('Tracker_Tooltip_Enabled_Label'),
-        tooltip = Lokii.GetString('Tracker_Tooltip_Enabled_ToolTip'),
+        tooltip = Lokii.GetString('Tracker_Tooltip_Enabled_Tooltip'),
         subtab  = {Lokii.GetString('Subtab_Tracker')}
     })
     UIHELPER_DropdownFromTable('Tracker_Tooltip_Mode', 'Tracker_Tooltip_Mode', Options['Tracker']['Tooltip']['Mode'], TrackerTooltipModes, 'TrackerTooltipModes',  Lokii.GetString('Subtab_Tracker'))
@@ -1541,7 +1541,7 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
         checkbox = true,
         default  = Options[rootKey][x]['Enabled'],
         label    = Lokii.GetString(rootKey..'_'..x..'_Enabled_Label'),
-        tooltip  = Lokii.GetString(rootKey..'_'..x..'_Enabled_ToolTip'),
+        tooltip  = Lokii.GetString(rootKey..'_'..x..'_Enabled_Tooltip'),
         subtab   = {
             Lokii.GetString('Subtab_'..rootKey)
         },
@@ -1552,7 +1552,7 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
             id      = rootKey..'_'..x..'_Enabled',
             default = Options[rootKey][x]['Enabled'],
             label   = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Label'),
-            tooltip = Lokii.GetString('Filter_Generic_'..x..'_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Tooltip'),
             subtab  = {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')}
         })
 
@@ -1588,7 +1588,7 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
         checkbox = checkbox,
         default  = Options[rootKey][x]['Enabled'],
         label    = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_Label'),
-        tooltip  = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_ToolTip'),
+        tooltip  = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_Tooltip'),
         subtab   = subtab
     })
 
@@ -1609,7 +1609,7 @@ function UIHELPER_StageX(rootKey, x, stage, subtab)
             id      = rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue',
             numeric = true,
             label   = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Label'),
-            tooltip = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_ToolTip'),
+            tooltip = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Tooltip'),
             default = Options[rootKey][x][stage]['QualityThresholdCustomValue'],
             subtab  = subtab
         })
@@ -1634,7 +1634,7 @@ function UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
         id      = id,
         default = default,
         label   = Lokii.GetString(key..'_Label'),
-        tooltip = Lokii.GetString(key..'_ToolTip'),
+        tooltip = Lokii.GetString(key..'_Tooltip'),
         subtab  = subtab,
     })
 
@@ -1643,11 +1643,11 @@ function UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
                 menuId  = id,
                 val     = tableValue,
                 label   = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'),
-                tooltip = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_ToolTip'),
+                tooltip = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Tooltip'),
                 subtab  = subtab,
             })
             --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'))
-            --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_ToolTip'))
+            --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Tooltip'))
         end
 end
 
@@ -1681,7 +1681,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
         checkbox = true,
         default  = defaults['Enabled'],
         label    = Lokii.GetString(rootKey..'_Events_'..eventKey..'_Enabled_Label'),
-        tooltip  = Lokii.GetString(rootKey..'_Events_'..eventKey..'_Enabled_ToolTip'),
+        tooltip  = Lokii.GetString(rootKey..'_Events_'..eventKey..'_Enabled_Tooltip'),
         subtab   = subtab,
     })
 
@@ -1690,7 +1690,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             id      = rootKey..'_Events_'..eventKey..'_Channels_Squad_Enabled',
             default = defaults['Channels']['Squad']['Enabled'],
             label   = Lokii.GetString('Messages_Generic_Channels_Squad_Enabled_Label'),
-            tooltip = Lokii.GetString('Messages_Generic_Channels_Squad_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Squad_Enabled_Tooltip'),
             subtab  = subtab,
         })
 
@@ -1698,7 +1698,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             id      = rootKey..'_Events_'..eventKey..'_Channels_Squad_Format',
             default = defaults['Channels']['Squad']['Format'],
             label   = Lokii.GetString('Messages_Generic_Channels_Squad_Format_Label'),
-            tooltip = Lokii.GetString('Messages_Generic_Channels_Squad_Format_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Squad_Format_Tooltip'),
             subtab  = subtab,
         })
 
@@ -1707,7 +1707,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             id      = rootKey..'_Events_'..eventKey..'_Channels_System_Enabled',
             default = defaults['Channels']['System']['Enabled'],
             label   = Lokii.GetString('Messages_Generic_Channels_System_Enabled_Label'),
-            tooltip = Lokii.GetString('Messages_Generic_Channels_System_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_System_Enabled_Tooltip'),
             subtab  = subtab,
         })
 
@@ -1715,7 +1715,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             id      = rootKey..'_Events_'..eventKey..'_Channels_System_Format',
             default = defaults['Channels']['System']['Format'],
             label   = Lokii.GetString('Messages_Generic_Channels_System_Format_Label'),
-            tooltip = Lokii.GetString('Messages_Generic_Channels_System_Format_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_System_Format_Tooltip'),
             subtab  = subtab,
         })
 
@@ -1724,7 +1724,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             id      = rootKey..'_Events_'..eventKey..'_Channels_Notifications_Enabled',
             default = defaults['Channels']['Notifications']['Enabled'],
             label   = Lokii.GetString('Messages_Generic_Channels_Notifications_Enabled_Label'),
-            tooltip = Lokii.GetString('Messages_Generic_Channels_Notifications_Enabled_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Notifications_Enabled_Tooltip'),
             subtab  = subtab,
         })
 
@@ -1732,7 +1732,7 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             id      = rootKey..'_Events_'..eventKey..'_Channels_Notifications_Format',
             default = defaults['Channels']['Notifications']['Format'],
             label   = Lokii.GetString('Messages_Generic_Channels_Notifications_Format_Label'),
-            tooltip = Lokii.GetString('Messages_Generic_Channels_Notifications_Format_ToolTip'),
+            tooltip = Lokii.GetString('Messages_Generic_Channels_Notifications_Format_Tooltip'),
             subtab  = subtab,
         })
 

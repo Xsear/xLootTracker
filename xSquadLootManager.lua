@@ -11,7 +11,7 @@ require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
 require 'lib/lib_Slash' -- Slash commands
 require 'lib/lib_Vector' -- Vector coordinates
 require 'lib/lib_Button' -- Buttons used by Tracker
-require 'lib/lib_ToolTip' -- ToolTip used by Tracker
+require 'lib/lib_Tooltip' -- Tooltip used by Tracker
 require 'lib/lib_ChatLib' -- Used to send some chat messages
 require 'lib/lib_table'
 
@@ -45,7 +45,7 @@ bIsSquadLeader = false -- Whether we are currently the squad leader or not
 bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudShow
 bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
 
-local bToolTipActive = false -- Whether addon is currently utilizing the ToolTip. Updated manually within the addon when ToolTip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling ToolTip.Show(false) could interfere with other addons, so I use this addon to keep track of when I've called it. As long as no other addon/ui element randomly calls ToolTip.Show (without mine being unfocused) it should serve its purpose.
+local bTooltipActive = false -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this addon to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused) it should serve its purpose.
 
 local mCurrentlyRolling = false -- false if not rolling, table otherwise, all the wtfs you want
 local aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadroster with additional fields like rolltype, rollvalue etc. Merge this with mCurrentlyRolling sometime for awesomeness
@@ -762,10 +762,10 @@ function CreatePanel(targetInfo, itemInfo)
 
             LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
             LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
-                ToolTip.Show(args.widget:GetTag())
+                Tooltip.Show(args.widget:GetTag())
             end);
             LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
-                ToolTip.Show(false)
+                Tooltip.Show(false)
             end);
         end
     else
@@ -1589,7 +1589,7 @@ function UpdateTrackerTooltip(entityId)
     AutosizeText(TRACKER_TOOLTIP_REQS)
     AutosizeText(TRACKER_TOOLTIP_DESC)
 
-    -- Return ToolTip
+    -- Return Tooltip
     local tip_args = {height=0}
     tip_args.height = TRACKER_TOOLTIP:GetLength()
     tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
@@ -1611,8 +1611,8 @@ function UpdateTracker()
         local cTrackerButtonSize = 25 -- Fixme: Explain
        
         -- Hide tooltip if is currently being displayed
-        if bToolTipActive then
-            ToolTip.Show(false)
+        if bTooltipActive then
+            Tooltip.Show(false)
             TRACKER_TOOLTIP:Show(false) -- No need to display tooltip info now.
         end
 
@@ -1633,13 +1633,13 @@ function UpdateTracker()
                     if Options['Tracker']['Tooltip']['Enabled'] then
                         ENTRY:GetChild('plate'):BindEvent('OnMouseEnter', function(args)
                             TRACKER_TOOLTIP:Show(true)
-                            ToolTip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
-                            bToolTipActive = true
+                            Tooltip.Show(UpdateTrackerTooltip(args.widget:GetTag()))
+                            bTooltipActive = true
                         end)
                         ENTRY:GetChild('plate'):BindEvent('OnMouseLeave', function(args)
                             TRACKER_TOOLTIP:Show(false)
-                            ToolTip.Show(false)
-                            bToolTipActive = false
+                            Tooltip.Show(false)
+                            bTooltipActive = false
                         end)
                     end
                         
@@ -1802,8 +1802,8 @@ function UpdateTracker()
 
             -- Ensure no tooltip is displayed
             TRACKER_TOOLTIP:Show(false)
-            ToolTip.Show(false)
-            bToolTipActive = false
+            Tooltip.Show(false)
+            bTooltipActive = false
         end
 
     -- Tracker not enabled, so do nothing but make sure it's hidden.
@@ -1814,8 +1814,8 @@ function UpdateTracker()
 
         -- Ensure no tooltip is displayed
         TRACKER_TOOLTIP:Show(false)
-        ToolTip.Show(false)
-        bToolTipActive = false
+        Tooltip.Show(false)
+        bTooltipActive = false
     end
 end
 
