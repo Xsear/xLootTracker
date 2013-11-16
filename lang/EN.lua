@@ -85,6 +85,9 @@ LANG = {
 
     -- Everything below is used by the Interface Options.
 
+    Options_MoveableFrame_Tracker_Label                                             =     "xSLM Loot Tracker",
+
+
     Filter_Generic_LootMode_Label                                                   =    LootMode_Label,
     Filter_Generic_LootMode_Tooltip                                                 =    LootMode_Tooltip,
     Filter_Generic_Weighting_Label                                                  =    LootWeighting_Label,

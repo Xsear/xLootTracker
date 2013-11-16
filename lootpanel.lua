@@ -1,4 +1,4 @@
-PANEL = 
+LOOTPANEL = 
 {
 	{	Name 		= "pos",
 		Id			= "Anchor",
