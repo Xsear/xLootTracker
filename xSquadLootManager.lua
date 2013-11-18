@@ -49,6 +49,11 @@ local aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of 
 
 local iRoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
 
+-- Data
+require './data/CraftingComponents'
+require './data/FrameWebIcons'
+require './data/ItemNamePrefixes'
+
 -- Addon
 require './types'   -- Types
 require './options' -- Options
@@ -1933,21 +1938,7 @@ end
 -- Shitty stuff below
 
 function itemPrefixShortener(itemName)
-
-    -- Keys to prefix
-    -- Lua sorts these differently than inputed
-    local prefixes = {
-        ['Surplus'] = 'S.',
-        ['Recovered'] = 'R.',
-        ['Chosen'] = 'C.',
-        ['Accord'] = 'A.',
-        ['Accord Prototype'] = 'A.P.',
-        ['Accord Elite'] = 'A.E.',
-    }
-
-    --Debug.Table(prefixes)
-
-    for key, prefix in pairs(prefixes) do
+    for key, prefix in pairs(data_ItemNamePrefixes) do
         --Debug.Log('Checking for '..key..' in '..itemName)
         if string.find(itemName, key, 0, string.len(key)) then
             --Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
@@ -1955,7 +1946,6 @@ function itemPrefixShortener(itemName)
             break
         end
     end
-
     return itemName
 end
 
@@ -2113,29 +2103,9 @@ end
 
 
 -- Todo: Comment (what can I say, does exactly what it looks like), figure out what to do if we don't know the frame or potential universal frame icon or something
+-- Todo: Move elsewhere?
 function GetFrameWebIconByName(frameName)
-
-    local data = {
-        ['Assault'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/AccordAssault.png",
-        ['Firecat'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Firecat.png",
-        ['Tigerclaw'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Tigerclaw.png",
-        ['Dreadnaught'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/AccordDread.png",
-        ['Rhino'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Rhino.png",
-        ['Mammoth'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Mammoth.png",
-        ['Arsenal'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Arsenal.png",
-        ['Engineer'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/AccordEngineer.png",
-        ['Electron'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Electron.png",
-        ['Bastion'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Bastion.png",
-        ['Biotech'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/AccordBiotech.png",
-        ['Recluse'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Recluse.png",
-        ['Dragonfly'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Dragonfly.png",
-        ['Recon'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/AccordRecon.png",
-        ['Raptor'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Raptor.png",
-        ['Nighthawk'] = "https://ingame-v01-ew1.firefallthegame.com/assets/items/64/Nighthawk.png",
-    }
-
-    return data[frameName]
-
+    return data_FrameWebIcons[frameName]
 end 
 
 
