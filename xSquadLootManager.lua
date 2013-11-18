@@ -1,28 +1,28 @@
--- Requires
--- Standard
-require 'math' -- In order to generate random numbers
-require 'string' -- Because why not
+-- Libs
+    -- Standard
+    require 'math' -- In order to generate random numbers
+    require 'string' -- Because why not
 
--- Firefall
-require 'lib/lib_Debug' -- Debug library, used for logging
-require 'lib/lib_InterfaceOptions' -- Interface Options
-require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item tooltips
-require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
-require 'lib/lib_Slash' -- Slash commands
-require 'lib/lib_Vector' -- Vector coordinates
-require 'lib/lib_Button' -- Buttons used by Tracker
-require 'lib/lib_Tooltip' -- Tooltip used by Tracker
-require 'lib/lib_ChatLib' -- Used to send some chat messages
-require 'lib/lib_table'
+    -- Firefall
+    require 'lib/lib_Debug' -- Debug library, used for logging
+    require 'lib/lib_InterfaceOptions' -- Interface Options
+    require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item tooltips
+    require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
+    require 'lib/lib_Slash' -- Slash commands
+    require 'lib/lib_Vector' -- Vector coordinates
+    require 'lib/lib_Button' -- Buttons used by Tracker
+    require 'lib/lib_Tooltip' -- Tooltip used by Tracker
+    require 'lib/lib_ChatLib' -- Used to send some chat messages
+    require 'lib/lib_table'
 
--- Custom
-require './lib/Lokii' -- Localization
-require './lib/lib_GTimer' -- Timer for rolltimeout
-require './lib/lib_LKObjects' -- 3d markers
-require './lootpanel' -- 3d marker template
-require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
-require './util/xSounds' -- Database of sounds
-require './util/xItemFormatting' -- Awesome functions from lib_Items that weren't available for use. Used by tracker when generating tooltips.
+    -- Custom
+    require './lib/Lokii' -- Localization
+    require './lib/lib_GTimer' -- Timer for rolltimeout
+    require './lib/lib_LKObjects' -- 3d markers
+    require './lootpanel' -- 3d marker template
+    require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
+    require './util/xSounds' -- Database of sounds
+    require './util/xItemFormatting' -- Awesome functions from lib_Items that weren't available for use. Used by tracker when generating tooltips.
 
 
 
@@ -2018,6 +2018,64 @@ function Test()
     Debug.Log('Distribution_AlwaysSquadLeader: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
 
 
+
+
+
+    if true then return end
+
+
+--[[
+
+    local matches = 0
+    local noClasses = 0
+    local classes = 0
+
+    for num = 1, 90000 do
+
+        local itemInfo = Game.GetItemInfoByType(num)
+
+        if itemInfo then
+            
+            if not itemInfo.type then 
+                Debug.Log('wtf is this crap') Debug.Table(itemInfo)
+
+            elseif
+                -- Main filters: Must be a Battelframe Module and not flagged as hidden
+                (itemInfo.type == 'frame_module' or itemInfo.type == 'ability_module' or itemInfo.type == 'weapon')
+            and (not itemInfo.flags or not itemInfo.flags.hidden)
+            then
+
+                matches = matches + 1;
+
+                if not itemInfo.classes then
+
+                    -- Extra filters for things without classes that we don't care about
+
+                    if  itemInfo.craftingTypeId ~= "1" -- Unsure, probably not relevant to players
+                    and (itemInfo.weaponType ~= 'CTF-Ball') -- Not relevant to players
+                    and itemInfo.subTypeId ~= "61" -- Unsure, this was some throwable ability thing
+                    and itemInfo.name ~= "" -- Ignore things without a name
+                    then
+                        noClasses = noClasses + 1
+                        Debug.Log('Item '..tostring(num).. ' : '..tostring(itemInfo.name)..' | has no classes')
+                    end
+
+                else
+                    classes = classes + 1
+                end
+
+            end
+        end
+
+    end
+
+    Debug.Table({matches=matches, noClasses=noClasses, classes=classes})
+
+
+    if true then return end
+--]]
+
+
     -- Entity id is set to player because we have no real options here
     local entityId = Player.GetTargetId()
 
@@ -2056,7 +2114,6 @@ function Test()
         {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101},
         -- --]]
     }
-
 
     -- Create some pannelz
     --for num, targetInfo in ipairs(targetInfoData) do

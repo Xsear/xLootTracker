@@ -291,12 +291,6 @@ function Tracker.UpdateTooltip(entityId)
 
 
     end
-
-
-    -- Fix text size
-    local function AutosizeText(TEXT)
-        TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
-    end
     
     AutosizeText(TOOLTIP_PROG_YIELDS)
     AutosizeText(TOOLTIP_PROG_REQS)
@@ -308,4 +302,9 @@ function Tracker.UpdateTooltip(entityId)
     tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
     
     return TOOLTIP_PROG, tip_args
+end
+
+-- Fix text size
+local function AutosizeText(TEXT)
+    TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
 end
