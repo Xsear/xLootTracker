@@ -19,7 +19,7 @@ function SendChatMessage(channel, message, alert)
 
     -- Function to handle the actual sending of messages
     local function SendMessageToChat(channel, message, alert)
-        channel = string.lower(channel)
+        channel = unicode.lower(channel)
         --if channel == 'squad' then channel = 'army' end
         local alertprefix = ''
         if alert then alertprefix = '!' end
@@ -33,21 +33,21 @@ function SendChatMessage(channel, message, alert)
     end
 
     -- Calculate message content length limit
-    local messageContentLengthLimit = ciSquadMessageLengthLimit - string.len(Options['Messages']['Prefix'])
+    local messageContentLengthLimit = ciSquadMessageLengthLimit - unicode.len(Options['Messages']['Prefix'])
 
     -- If the message is to long to send in one go, attempt to split lines into multiple messages
-    if string.len(message) > messageContentLengthLimit then
+    if unicode.len(message) > messageContentLengthLimit then
         -- Explode the message on each new line
         local messages = explode('\n', message)
         local currentMessage = ''
 
         -- For each line in the message
         for num, line in ipairs(messages) do
-            Debug.Log(tostring(num)..' : Length: '..string.len(message)..'/'..tostring(messageContentLengthLimit)..' : Line: '..line)
+            Debug.Log(tostring(num)..' : Length: '..unicode.len(message)..'/'..tostring(messageContentLengthLimit)..' : Line: '..line)
             Debug.Log('Message: '..currentMessage)
 
             -- Warn if line is too long
-            if string.len(line) > messageContentLengthLimit then 
+            if unicode.len(line) > messageContentLengthLimit then 
                 Debug.Warn('Unable to properly accommodate for message length, too many characters on line '..tostring(num))
             end
 
@@ -58,7 +58,7 @@ function SendChatMessage(channel, message, alert)
             -- On subsequent iterations, we're gonna do some shit
             else
                 -- If adding the next line exceeds the character limit
-                if string.len(currentMessage..'\n'..line) > messageContentLengthLimit then
+                if unicode.len(currentMessage..'\n'..line) > messageContentLengthLimit then
                     -- Send the current line and start a new message for the next line
                     SendMessageToChat(channel, prefix..currentMessage, alert)
                     currentMessage = line
@@ -76,7 +76,7 @@ function SendChatMessage(channel, message, alert)
     -- Otherwise, send message normally
     else
         Debug.Log('Sending Chat Message: '..prefix..message)
-        Debug.Log('Message Length: '..string.len(prefix..message))
+        Debug.Log('Message Length: '..unicode.len(prefix..message))
         SendMessageToChat(channel, prefix..message, alert)
     end
 end
@@ -197,49 +197,49 @@ function RunMessageFilters(message, args)
     local output = message
 
     -- Loot mode
-    --output = string.gsub(output, '%%m', Options['Distribution']['LootMode'])
+    --output = unicode.gsub(output, '%%m', Options['Distribution']['LootMode'])
 
     -- Item name with quality
-    output = string.gsub(output, '%%iq', itemNameQuality)
+    output = unicode.gsub(output, '%%iq', itemNameQuality)
 
     -- Item name
-    output = string.gsub(output, '%%i', itemNameClean)
+    output = unicode.gsub(output, '%%i', itemNameClean)
 
     -- Item quality
-    output = string.gsub(output, '%%q', args.item.quality)
+    output = unicode.gsub(output, '%%q', args.item.quality)
 
     -- Item entityId
-    output = string.gsub(output, '%%eId', tostring(args.item.entityId))
+    output = unicode.gsub(output, '%%eId', tostring(args.item.entityId))
 
     -- Item itemTypeId
-    output = string.gsub(output, '%%tId', tostring(args.item.itemTypeId))
+    output = unicode.gsub(output, '%%tId', tostring(args.item.itemTypeId))
 
     -- Item craftingTypeId
-    output = string.gsub(output, '%%cId', tostring(args.item.craftingTypeId))
+    output = unicode.gsub(output, '%%cId', tostring(args.item.craftingTypeId))
 
     -- Item For Archetype
-    output = string.gsub(output, '%%fA', itemForArchetype)
+    output = unicode.gsub(output, '%%fA', itemForArchetype)
 
     -- Item For Frame
-    output = string.gsub(output, '%%fF', itemForFrame)
+    output = unicode.gsub(output, '%%fF', itemForFrame)
 
     -- Player name
-    output = string.gsub(output, '%%n', args.playerName)
+    output = unicode.gsub(output, '%%n', args.playerName)
 
     -- Roll
-    output = string.gsub(output, '%%r', args.roll) 
+    output = unicode.gsub(output, '%%r', args.roll) 
 
     -- Roll type
-    output = string.gsub(output, '%%t', args.rollType) 
+    output = unicode.gsub(output, '%%t', args.rollType) 
 
     -- Looted To
-    output = string.gsub(output, '%%l', args.lootedTo) 
+    output = unicode.gsub(output, '%%l', args.lootedTo) 
 
     -- Assigned To
-    output = string.gsub(output, '%%a', args.assignedTo)
+    output = unicode.gsub(output, '%%a', args.assignedTo)
 
     -- Eligible (super hardcoded)
-    output = string.gsub(output, '%%e', args.eligibleNames)
+    output = unicode.gsub(output, '%%e', args.eligibleNames)
 
    return output
 end

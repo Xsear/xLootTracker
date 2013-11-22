@@ -1,6 +1,6 @@
 -- Standard Libs
 require 'math' -- In order to generate random numbers
-require 'string' -- Because why not
+require 'unicode' -- Because why not
 
 -- Firefall Libs
 require 'lib/lib_Debug' -- Debug library, used for logging
@@ -276,7 +276,7 @@ function OnChatMessage(args)
         Chat parsing helper function
     ]]--
     local function FindFirstKeyInText(text, key)
-        return string.find(text, key, 0, string.len(key))
+        return unicode.find(text, key, 0, unicode.len(key))
     end
 
     --[[
@@ -285,7 +285,7 @@ function OnChatMessage(args)
     ]]--
     local function FilterFirstKeyFromText(text, key)
         --FindFirstKeyInText(text, key),
-        return string.sub(text, string.len(key) + 1)
+        return unicode.sub(text, unicode.len(key) + 1)
     end
 
     -- Filter for only Squad messages
@@ -301,7 +301,7 @@ function OnChatMessage(args)
 
             -- Hardcoded for Assign message
             -- Todo: Should just grab first part to determine command before grabbing rest
-            local _, _, command, itemTypeId, quality, playerName = string.find(message, '^(%a):(%d+):(%d+):(.*)$')
+            local _, _, command, itemTypeId, quality, playerName = unicode.find(message, '^(%a):(%d+):(%d+):(.*)$')
             
             -- Assign Command
             if command == 'A' then
@@ -352,10 +352,10 @@ function OnChatMessage(args)
         -- If we are looking for roll decisions
         if mCurrentlyRolling and bIsSquadLeader then
             local rollType = nil
-            args.text = string.lower(args.text)
-            if args.text == 'n' or string.find(string.lower(args.text), '^nee+d$') ~= nil then
+            args.text = unicode.lower(args.text)
+            if args.text == 'n' or unicode.find(unicode.lower(args.text), '^nee+d$') ~= nil then
                 rollType = RollType.Need
-            elseif args.text == 'g' or string.find(string.lower(args.text), '^gree+d$') ~= nil then
+            elseif args.text == 'g' or unicode.find(unicode.lower(args.text), '^gree+d$') ~= nil then
                 rollType = RollType.Greed
             elseif args.text == 'p' or args.text == 'pass' then
                 rollType = RollType.Pass
@@ -474,6 +474,212 @@ function OnLootCollected(args)
         })
     end
 end
+
+--[[
+    OnIdentify(args)
+    Callback for when a new item is identified.
+    args.item - the newly identified item
+    We use this to start automatic item distribution
+]]--
+function OnIdentify(args)
+    Debug.Table(args)
+    -- Require Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Update the tracker
+    Tracker.Update()
+
+    -- Update the panel
+    UpdatePanel(args.item)
+
+    -- Play Sound
+    -- Todo: SoundEvent
+    if Options['Sounds']['Enabled'] and Options['Sounds']['OnIdentify'] then
+        System.PlaySound(Options['Sounds']['OnIdentify'])
+    end
+
+    -- Messages
+    MessageEvent('Detection', 'OnIdentify', args)
+
+    -- Squad Leader only stuff
+    if bIsSquadLeader then
+        -- If auto distribute is enabled, distribute the item
+        if Options['Distribution']['AutoDistribute'] then
+            DistributeItem()
+        end
+    end
+end
+
+--[[
+    OnLootDespawn(args)
+]]--
+function OnLootDespawn(args)
+    -- Require Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Update the tracker
+    Tracker.Update() -- Fixme: Is this call needed
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootDespawn', args)
+end
+
+--[[
+    OnLootReceived(args)
+]]--
+function OnLootReceived(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootReceived', args)
+end
+
+--[[
+    OnLootStolen(args)
+]]--
+function OnLootStolen(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootStolen', args)
+end
+
+--[[
+    OnLootSnatched(args)
+]]--
+function OnLootSnatched(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootSnatched', args)
+end
+
+--[[
+    OnLootClaimed(args)
+]]--
+function OnLootClaimed(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Detection', 'OnLootClaimed', args)
+end
+
+--[[
+    OnDistributeItem(args)
+]]--
+function OnDistributeItem(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnDistributeItem', args)
+end
+
+--[[
+    OnAssignItem(args)
+    args.assignedTo
+    args.item
+]]--
+function OnAssignItem(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Update tracker
+    Tracker.Update()
+
+    -- Update panel
+    UpdatePanel(args.item)
+
+    -- Play Sound
+    if Options['Sounds']['Enabled'] then
+        -- If assigned to me
+        if namecompare(args.assignedTo, Player.GetInfo()) then
+            System.PlaySound(Options['Sounds']['OnAssignItemToMe'])
+
+        -- Else
+        else
+            System.PlaySound(Options['Sounds']['OnAssignItemToOther'])
+        end
+    end
+
+    -- Fiddle with the waypoint
+    if Options['Waypoints']['Enabled'] and namecompare(args.assignedTo, Player.GetInfo()) then
+        if Options['Waypoints']['TrailAssigned'] then
+            args.item.waypoint:ShowTrail(true)
+        end
+        if Options['Waypoints']['PingAssigned'] then
+            args.item.waypoint:Ping()
+        end
+    end
+
+    -- Communicate Assign Item
+    CommunicationEvent('Assign', args)
+
+    -- Messages
+    MessageEvent('Distribution', 'OnAssignItem', args)
+end
+
+--[[
+    OnAcceptingRolls(args)
+]]--
+function OnAcceptingRolls(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnAcceptingRolls', args)
+end
+
+--[[
+    OnRollAccept(args)
+]]--
+function OnRollAccept(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollAccept', args)
+end
+
+--[[
+    OnRollChange(args)
+]]--
+function OnRollChange(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollChange', args)
+end
+
+--[[
+    OnRollBusy(args)
+]]--
+function OnRollBusy(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollBusy', args)
+end
+
+--[[
+    OnRollNobody(args)
+]]--
+function OnRollNobody(args)
+    -- Requires Core enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnRollNobody', args)
+end
+
+
+
 
 
 --[[
@@ -828,231 +1034,21 @@ function FixItemNameTag(name, quality)
 
     if quality ~= ' ' then quality = ' '..quality end
 
-    return string.gsub(name, '%^Q', tostring(quality))
+    return unicode.gsub(name, '%^Q', tostring(quality))
 end
 
-
---[[
-    OnIdentify(args)
-    Callback for when a new item is identified.
-    args.item - the newly identified item
-    We use this to start automatic item distribution
-]]--
-function OnIdentify(args)
-    Debug.Table(args)
-    -- Require Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Update the tracker
-    Tracker.Update()
-
-    -- Update the panel
-    UpdatePanel(args.item)
-
-    -- Play Sound
-    -- Todo: SoundEvent
-    if Options['Sounds']['Enabled'] and Options['Sounds']['OnIdentify'] then
-        System.PlaySound(Options['Sounds']['OnIdentify'])
-    end
-
-    -- Messages
-    MessageEvent('Detection', 'OnIdentify', args)
-
-    -- Squad Leader only stuff
-    if bIsSquadLeader then
-        -- If auto distribute is enabled, distribute the item
-        if Options['Distribution']['AutoDistribute'] then
-            DistributeItem()
-        end
-    end
-end
-
---[[
-    OnLootDespawn(args)
-]]--
-function OnLootDespawn(args)
-    -- Require Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Update the tracker
-    Tracker.Update() -- Fixme: Is this call needed
-
-    -- Messages
-    MessageEvent('Detection', 'OnLootDespawn', args)
-end
-
---[[
-    OnLootReceived(args)
-]]--
-function OnLootReceived(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Detection', 'OnLootReceived', args)
-end
-
---[[
-    OnLootStolen(args)
-]]--
-function OnLootStolen(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Detection', 'OnLootStolen', args)
-end
-
---[[
-    OnLootSnatched(args)
-]]--
-function OnLootSnatched(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Detection', 'OnLootSnatched', args)
-end
-
---[[
-    OnLootClaimed(args)
-]]--
-function OnLootClaimed(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Detection', 'OnLootClaimed', args)
-end
-
---[[
-    OnDistributeItem(args)
-]]--
-function OnDistributeItem(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Distribution', 'OnDistributeItem', args)
-end
-
---[[
-    OnAssignItem(args)
-    args.assignedTo
-    args.item
-]]--
-function OnAssignItem(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Update tracker
-    Tracker.Update()
-
-    -- Update panel
-    UpdatePanel(args.item)
-
-    -- Play Sound
-    if Options['Sounds']['Enabled'] then
-        -- If assigned to me
-        if namecompare(args.assignedTo, Player.GetInfo()) then
-            System.PlaySound(Options['Sounds']['OnAssignItemToMe'])
-
-        -- Else
-        else
-            System.PlaySound(Options['Sounds']['OnAssignItemToOther'])
-        end
-    end
-
-    -- Fiddle with the waypoint
-    if Options['Waypoints']['Enabled'] and namecompare(args.assignedTo, Player.GetInfo()) then
-        if Options['Waypoints']['TrailAssigned'] then
-            args.item.waypoint:ShowTrail(true)
-        end
-        if Options['Waypoints']['PingAssigned'] then
-            args.item.waypoint:Ping()
-        end
-    end
-
-    -- Communicate Assign Item
-    CommunicationEvent('Assign', args)
-
-    -- Messages
-    MessageEvent('Distribution', 'OnAssignItem', args)
-end
-
---[[
-    OnAcceptingRolls(args)
-]]--
-function OnAcceptingRolls(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Distribution', 'OnAcceptingRolls', args)
-end
-
---[[
-    OnRollAccept(args)
-]]--
-function OnRollAccept(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Distribution', 'OnRollAccept', args)
-end
-
---[[
-    OnRollChange(args)
-]]--
-function OnRollChange(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Distribution', 'OnRollChange', args)
-end
-
---[[
-    OnRollBusy(args)
-]]--
-function OnRollBusy(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Distribution', 'OnRollBusy', args)
-end
-
---[[
-    OnRollNobody(args)
-]]--
-function OnRollNobody(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Messages
-    MessageEvent('Distribution', 'OnRollNobody', args)
-end
-
-
-
-
--- Shitty stuff below
 
 function itemPrefixShortener(itemName)
     for key, prefix in pairs(data_ItemNamePrefixes) do
         --Debug.Log('Checking for '..key..' in '..itemName)
-        if string.find(itemName, key, 0, string.len(key)) then
+        if unicode.find(itemName, key, 0, unicode.len(key)) then
             --Debug.Log('Found '..key..' in '..itemName..', replacing with '..prefix)
-            itemName = prefix..string.sub(itemName, string.len(key) + 1)
+            itemName = prefix..unicode.sub(itemName, unicode.len(key) + 1)
             break
         end
     end
     return itemName
 end
-
-
 
 --[[
     RemoveAllChildren(PARENT)
@@ -1104,6 +1100,14 @@ function ClearIdentified()
     
     Tracker.Update()
 end
+
+
+-- Todo: Comment (what can I say, does exactly what it looks like), figure out what to do if we don't know the frame or potential universal frame icon or something
+-- Todo: Move elsewhere?
+function GetFrameWebIconByName(frameName)
+    return data_FrameWebIcons[frameName]
+end 
+
 
 
 --[[
@@ -1262,14 +1266,6 @@ function Test()
 end
 
 
--- Todo: Comment (what can I say, does exactly what it looks like), figure out what to do if we don't know the frame or potential universal frame icon or something
--- Todo: Move elsewhere?
-function GetFrameWebIconByName(frameName)
-    return data_FrameWebIcons[frameName]
-end 
-
-
-
 
 
 
@@ -1334,10 +1330,10 @@ end
 function explode(div,str)
     if (div=='') then return false end
     local pos,arr = 0,{}
-    for st,sp in function() return string.find(str,div,pos,true) end do
-        table.insert(arr,string.sub(str,pos,st-1))
+    for st,sp in function() return unicode.find(str,div,pos,true) end do
+        table.insert(arr,unicode.sub(str,pos,st-1))
         pos = sp + 1
     end
-    table.insert(arr,string.sub(str,pos))
+    table.insert(arr,unicode.sub(str,pos))
     return arr
 end
