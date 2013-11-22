@@ -1,3 +1,6 @@
+local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
+
+
 --[[
     Identify(entityId, [targetInfo])
     Identifies entity, adding it to a list of items that have been seen
@@ -227,4 +230,30 @@ function UpdatePanel(loot)
 
         end
     end
+end
+
+--[[
+    LootDespawn(args)
+    Triggered by a timer alarm, checks if loot is still up and resets alarm in that case.
+    Otherwise, makes sure item is removed cleanly.
+]]--
+function LootDespawn(args)
+    -- Check that it really despawned
+    if Game.IsTargetAvailable(args.item.entityId) then
+        if Options['Debug']['Enabled'] then
+            SendChatMessage('system', args.item.name..' has not despawned yet, reseting despawn timer')
+        end
+        args.item.timer:SetAlarm('despawn', args.item.timer:GetTime() + ciLootDespawn, LootDespawn, {item=args.item})
+        return
+    else
+        OnLootDespawn({item=args.item})
+    end
+
+    -- If currently rolling for this item, cancel the roll
+    if mCurrentlyRolling and mCurrentlyRolling.entityId == args.item.entityId then
+        RollCancel()
+    end
+
+    -- Remove item
+    RemoveIdentifiedItem(args.item)
 end

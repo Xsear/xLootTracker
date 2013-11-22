@@ -1,36 +1,27 @@
--- Libs
-    -- Standard
-    require 'math' -- In order to generate random numbers
-    require 'string' -- Because why not
+-- Standard Libs
+require 'math' -- In order to generate random numbers
+require 'string' -- Because why not
 
-    -- Firefall
-    require 'lib/lib_Debug' -- Debug library, used for logging
-    require 'lib/lib_InterfaceOptions' -- Interface Options
-    require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item tooltips
-    require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
-    require 'lib/lib_Slash' -- Slash commands
-    require 'lib/lib_Vector' -- Vector coordinates
-    require 'lib/lib_Button' -- Buttons used by Tracker
-    require 'lib/lib_Tooltip' -- Tooltip used by Tracker
-    require 'lib/lib_ChatLib' -- Used to send some chat messages
-    require 'lib/lib_table'
+-- Firefall Libs
+require 'lib/lib_Debug' -- Debug library, used for logging
+require 'lib/lib_InterfaceOptions' -- Interface Options
+require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item tooltips
+require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
+require 'lib/lib_Slash' -- Slash commands
+require 'lib/lib_Vector' -- Vector coordinates
+require 'lib/lib_Button' -- Buttons used by Tracker
+require 'lib/lib_Tooltip' -- Tooltip used by Tracker
+require 'lib/lib_ChatLib' -- Used to send some chat messages
+require 'lib/lib_table'
 
-    -- Custom
-    require './lib/Lokii' -- Localization
-    require './lib/lib_GTimer' -- Timer for rolltimeout
-    require './lib/lib_LKObjects' -- 3d markers
-    require './lootpanel' -- 3d marker template
-    require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
-    require './util/xSounds' -- Database of sounds
-    require './util/xItemFormatting' -- Awesome functions from lib_Items that weren't available for use. Used by tracker when generating tooltips.
-
-
+-- Custom Libs
+require './lib/Lokii' -- Localization
+require './lib/lib_GTimer' -- Timer for rolltimeout
+require './lib/lib_LKObjects' -- 3d markers
 
 -- Constants
 csVersion = '0.89'
 ciSaveVersion = 0.80
-
-local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
 
 -- Variables
 aSquadRoster = {} -- The latest squad roster
@@ -43,23 +34,31 @@ bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudS
 bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
 bTooltipActive = false -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this addon to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused) it should serve its purpose.
 
-local mCurrentlyRolling = false -- false if not rolling, table otherwise, all the wtfs you want
-local aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadroster with additional fields like rolltype, rollvalue etc. Merge this with mCurrentlyRolling sometime for awesomeness
+mCurrentlyRolling = false -- false if not rolling, table otherwise, all the wtfs you want
+aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadroster with additional fields like rolltype, rollvalue etc. Merge this with mCurrentlyRolling sometime for awesomeness
 
-local iRoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
+iRoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
+
+-- Templates
+require './lootpanel' -- 3d marker template
+
+-- Util
+require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
+require './util/xSounds' -- Database of sounds
+require './util/xItemFormatting' -- Awesome functions from lib_Items that weren't available for use. Used by tracker when generating tooltips.
 
 -- Data
 require './data/CraftingComponents'
 require './data/FrameWebIcons'
 require './data/ItemNamePrefixes'
 
--- Addon
+-- Addon Core
 require './types'   -- Types
 require './options' -- Options
 
-require './detection'
-require './distribution'
-
+-- Addon Modules
+require './detection' -- Detection
+require './distribution' -- Distribution
 require './messages' -- Messages
 require './tracker' -- Tracker
 
@@ -789,33 +788,6 @@ function RemoveIdentifiedItem(loot)
 end
 
 --[[
-    LootDespawn(args)
-    Triggered by a timer alarm, checks if loot is still up and resets alarm in that case.
-    Otherwise, makes sure item is removed cleanly.
-]]--
-function LootDespawn(args)
-    -- Check that it really despawned
-    if Game.IsTargetAvailable(args.item.entityId) then
-        if Options['Debug']['Enabled'] then
-            SendChatMessage('system', args.item.name..' has not despawned yet, reseting despawn timer')
-        end
-        args.item.timer:SetAlarm('despawn', args.item.timer:GetTime() + ciLootDespawn, LootDespawn, {item=args.item})
-        return
-    else
-        OnLootDespawn({item=args.item})
-    end
-
-    -- If currently rolling for this item, cancel the roll
-    if mCurrentlyRolling and mCurrentlyRolling.entityId == args.item.entityId then
-        RollCancel()
-    end
-
-    -- Remove item
-    RemoveIdentifiedItem(args.item)
-end
-
-
---[[
     ListUnAssigned()
     Shitty function for chat command, lists identified items that can be rolled based on whether or not they've been assigned.
     This functionality should be replaced by the UI tracker but may come in handy for loot master mode.
@@ -1273,7 +1245,7 @@ function Test()
             loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
             
             -- Setup despawn timer
-            loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item=loot})
+            loot.timer:SetAlarm('despawn', 30, LootDespawn, {item=loot})
             loot.timer:StartTimer()
 
 
