@@ -87,7 +87,7 @@ function OnComponentLoad()
     OnSquadRosterUpdate()
 
     -- Setup Slash Commands
-    LIB_SLASH.BindCallback({slash_list='slm', description='/slm : Xsear\'s Squad Loot Manager', func=OnSlash})
+    LIB_SLASH.BindCallback({slash_list='xslm,slm', description='/slm : Xsear\'s Squad Loot Manager', func=OnSlash})
 
     -- Setup In game Objects
     LKObjects.SetMemoryWarning(20) -- should be about 5 panels
