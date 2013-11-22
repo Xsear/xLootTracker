@@ -811,7 +811,9 @@ function OnOptionChange(args)
     end
 
     -- Perform extra actions
-    if args.id == 'Debug_FakeOnSquadRoster' or args.id == 'Distribution_AlwaysSquadLeader' then
+    if args.id == 'Debug_Enabled' then
+        Debug.EnableLogging(args.val)
+    elseif args.id == 'Debug_FakeOnSquadRoster' or args.id == 'Distribution_AlwaysSquadLeader' then
         OnSquadRosterUpdate()
     end
 
