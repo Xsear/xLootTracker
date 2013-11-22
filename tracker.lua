@@ -305,6 +305,6 @@ function Tracker.UpdateTooltip(entityId)
 end
 
 -- Fix text size
-local function AutosizeText(TEXT)
+function AutosizeText(TEXT)
     TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
 end
