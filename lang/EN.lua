@@ -430,6 +430,8 @@ LANG = {
 
     Debug_FakeOnSquadRoster_Label                                                       =    "Fake Squad Roster",
     Debug_FakeOnSquadRoster_Tooltip                                                     =    "If not in a squad but override squad leader, put fake squad members in the roster",
+    Debug_SquadToArmy_Label                                                             =    "Squad To Army",
+    Debug_SquadToArmy_Tooltip                                                           =    "Redirect messages on Squad channel to Army",
     Debug_LogLootableTargets_Label                                                      =    "Log Loot Detected",
     Debug_LogLootableTargets_Tooltip                                                    =    "Extra debug messages, spammy.\nLogs info on detected items, helpful when errors are occuring during item detection.",
     Debug_LogLootableCollection_Label                                                   =    "Log Loot Collected",
