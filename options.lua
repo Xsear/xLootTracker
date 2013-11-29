@@ -822,7 +822,7 @@ function OnOptionChange(args)
     if bLoaded then
         -- For Tracker options, update the tracker
         if explodedId[1] == 'Tracker' then
-            UpdateTracker()
+            Tracker.UpdateTracker()
         -- For Panels options, update the panels
         elseif explodedId[1] == 'Panels' then
             for i, item in ipairs(aIdentifiedLoot) do
