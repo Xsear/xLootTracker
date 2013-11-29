@@ -1149,11 +1149,11 @@ function Test(args)
             {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85099, quality=500, filterType = {'eq'}},
 
             -- Crossbows ftw
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=79061, quality=401, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83241, quality=501, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83575, quality=601, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84443, quality=701, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84985, quality=901, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=79061, quality=401, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83241, quality=501, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83575, quality=601, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84443, quality=701, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84985, quality=901, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
 
             -- Crafting Components
             {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10009, quality=1, filterType = {'cc'}},
@@ -1170,11 +1170,32 @@ function Test(args)
             {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101, filterType = {'cc'}},
         }
 
-        -- Create some pannelz
-        --for num, targetInfo in ipairs(targetInfoData) do
+        -- Filter
+        if filterType then
+            for num, targetInfo in pairs(targetInfoData) do
+                for k, v in ipairs(targetInfo.filterType) do
+                    if v == filterType then targetInfo.match = true break end
+                end
+            end
 
+            local i=1
+            while i <= #targetInfoData do
+                if not targetInfoData[i].match then
+                    table.remove(targetInfoData, i)
+                else
+                    i = i + 1
+                end
+            end
+
+        end
+
+
+
+
+        -- Determine all
         if numberOfPanels == 'all' then numberOfPanels = #targetInfoData end
-
+       
+        -- Create
         for num = 1, tonumber(numberOfPanels) do
             -- Get random targetInfo unless exactly all were specified
             if numberOfPanels ~= #targetInfoData then
