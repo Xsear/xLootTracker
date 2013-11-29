@@ -208,8 +208,8 @@ function OnSlash(args)
         SendChatMessage('system', '/slm <distribute|roll> : Distribute first rollable item')
         SendChatMessage('system', '/slm list : List rollable items')
         SendChatMessage('system', '/slm clear : Clears list of identified items')
-    elseif args.text == 'test' then
-        Test()
+    elseif args[1] == 'test' then
+        Test({args[2], args[3]})
     elseif args.text == 'ut' then
         Tracker.Update()
     elseif args.text == 'us' then
@@ -1114,151 +1114,120 @@ end
     Test()
     Testing function please ignore
 ]]--
-function Test()
+function Test(args)
 
     SendChatMessage('system', 'Test')
 
     Debug.Log('Test')
+
     Debug.Log('Core_Enabled: '..tostring(Options['Core']['Enabled']))
-    Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
-    Debug.Log('bInSquad: '..tostring(bInSquad))
+    Debug.Log('Debug_SquadToArmy: '..tostring(Options['Debug']['SquadToArmy']))
+    Debug.Log('Debug_FakeSquadRoster: '..tostring(Options['Debug']['FakeOnSquadRoster']))
     Debug.Log('Distribution_AlwaysSquadLeader: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
 
+    Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
+    Debug.Log('bInSquad: '..tostring(bInSquad))
 
+    Debug.Log('args[1]: '..tostring(args[1]))
+    Debug.Log('args[2]: '..tostring(args[1]))
 
+    if true then
 
---[[
+        -- First parameter to test controls number of panels
+        local numberOfPanels = args[1] or 1
+        Debug.Log('numberOfPanels: '..tostring(numberOfPanels))
 
-    local matches = 0
-    local noClasses = 0
-    local classes = 0
+        -- Second parameter sets filters
+        local filterType = args[2] or nil
+        Debug.Log('filterType: '..tostring(filterType))
 
-    for num = 1, 90000 do
+        -- Target info must be faked because we have no real entity
+        local targetInfoData = {
+            -- Equipment Items
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85050, quality=500, filterType = {'eq'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85017, quality=500, filterType = {'eq'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85099, quality=500, filterType = {'eq'}},
 
-        local itemInfo = Game.GetItemInfoByType(num)
+            -- Crossbows ftw
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=79061, quality=401, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83241, quality=501, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83575, quality=601, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84443, quality=701, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84985, quality=901, filterType = 'cb', 'crossbow', 'weapons', 'eq'},
 
-        if itemInfo then
-            
-            if not itemInfo.type then 
-                Debug.Log('wtf is this crap') Debug.Table(itemInfo)
+            -- Crafting Components
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10009, quality=1, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10010, quality=101, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10011, quality=201, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10012, quality=301, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10014, quality=401, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10015, quality=501, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10016, quality=601, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10024, quality=701, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=82500, quality=801, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85235, quality=901, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85626, quality=1001, filterType = {'cc'}},
+            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101, filterType = {'cc'}},
+        }
 
-            elseif
-                -- Main filters: Must be a Battelframe Module and not flagged as hidden
-                (itemInfo.type == 'frame_module' or itemInfo.type == 'ability_module' or itemInfo.type == 'weapon')
-            and (not itemInfo.flags or not itemInfo.flags.hidden)
-            then
+        -- Create some pannelz
+        --for num, targetInfo in ipairs(targetInfoData) do
 
-                matches = matches + 1;
+        if numberOfPanels == 'all' then numberOfPanels = #targetInfoData end
 
-                if not itemInfo.classes then
+        for num = 1, tonumber(numberOfPanels) do
+            -- Get random targetInfo unless exactly all were specified
+            if numberOfPanels ~= #targetInfoData then
+                targetInfo = targetInfoData[math.random(#targetInfoData)]
+            -- Else numberOfPanels == #targetInfoData then get one of all kinds
+            else
+                targetInfo = targetInfoData[num]
+            end
 
-                    -- Extra filters for things without classes that we don't care about
+            -- Location
+            entityId = num
+            local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
 
-                    if  itemInfo.craftingTypeId ~= "1" -- Unsure, probably not relevant to players
-                    and (itemInfo.weaponType ~= 'CTF-Ball') -- Not relevant to players
-                    and itemInfo.subTypeId ~= "61" -- Unsure, this was some throwable ability thing
-                    and itemInfo.name ~= "" -- Ignore things without a name
-                    then
-                        noClasses = noClasses + 1
-                        Debug.Log('Item '..tostring(num).. ' : '..tostring(itemInfo.name)..' | has no classes')
-                    end
+            --Debug.Log('Position modifier for num '..tostring(num)..': '..tostring(posMod))
+            targetInfo.lootPos.x = targetInfo.lootPos.x - posMod
 
-                else
-                    classes = classes + 1
+            -- Fixme: Find a way to feed this better
+            -- Identify Hack
+            if not IsIdentified(entityId) then
+
+                local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
+
+                local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=itemInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
+
+                targetInfo.name = itemInfo.name
+
+                if Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels']) then
+                    loot.panel = CreatePanel(targetInfo, itemInfo)
                 end
 
-            end
-        end
-
-    end
-
-    Debug.Table({matches=matches, noClasses=noClasses, classes=classes})
-
-
-    if true then return end
---]]
+                -- Create timer
+                loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
+                
+                -- Setup despawn timer
+                loot.timer:SetAlarm('despawn', 30, LootDespawn, {item=loot})
+                loot.timer:StartTimer()
 
 
-    -- Entity id is set to player because we have no real options here
-    local entityId = Player.GetTargetId()
+                loot.waypoint = CreateWaypoint(loot)
 
 
-    --targetInfo = targetInfo or Game.GetTargetInfo(entityId)
-
-    -- Target info must be faked because we have no real entity
-    local targetInfoData = {
-        -- Equipment Items
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85050, quality=500},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85017, quality=500},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85099, quality=500},
-
-        -- Crossbows ftw
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=79061, quality=401},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83241, quality=501},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83575, quality=601},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84443, quality=701},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84985, quality=901},
-
-        -- Crafting Components
-        
-
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10009, quality=1},
-        -- --[[
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10010, quality=101},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10011, quality=201},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10012, quality=301},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10014, quality=401},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10015, quality=501},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10016, quality=601},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10024, quality=701},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=82500, quality=801},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85235, quality=901},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85626, quality=1001},
-        {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101},
-        -- --]]
-    }
-
-    -- Create some pannelz
-    --for num, targetInfo in ipairs(targetInfoData) do
-    for num = 1,1 do
-        targetInfo = targetInfoData[math.random(#targetInfoData)]
-        -- hax the location
-        entityId = num
-        local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
-
-        Debug.Log('Position modifier for num '..tostring(num)..': '..tostring(posMod))
-        targetInfo.lootPos.x = targetInfo.lootPos.x - posMod
-
-        if not IsIdentified(entityId) then
-
-            local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
-
-            local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=itemInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
-
-            targetInfo.name = itemInfo.name
-
-            if Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels']) then
-                loot.panel = CreatePanel(targetInfo, itemInfo)
+                table.insert(aIdentifiedLoot, loot)
+                OnIdentify({item=loot})
             end
 
-            -- Create timer
-            loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
-            
-            -- Setup despawn timer
-            loot.timer:SetAlarm('despawn', 30, LootDespawn, {item=loot})
-            loot.timer:StartTimer()
-
-
-            loot.waypoint = CreateWaypoint(loot)
-
-
-            table.insert(aIdentifiedLoot, loot)
-            OnIdentify({item=loot})
         end
 
+    else
+
+        -- Entity id is set to player because we have no real options here
+        --    local entityId = Player.GetTargetId()
+
     end
-
-
 end
 
 
