@@ -28,6 +28,7 @@ function Tracker.Update()
 
          -- Update List of tracked items
         RemoveAllChildren(FRAME:GetChild('List')) -- clear previous entries
+        local numberOfItemsInTracker = 0
         if not _table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
                 if ItemPassesFilter(item, Options['Tracker']) then
@@ -187,9 +188,11 @@ function Tracker.Update()
                         --ENTRY:GetChild('plate'):SetDims('left:0')
                     end
 
-                end
-            end
-        else
+                    -- Increment counter
+                    numberOfItemsInTracker = numberOfItemsInTracker + 1
+                end -- item passes filter
+            end -- for loop
+        else -- no identified items
             -- Clear?
         end
 
@@ -198,9 +201,11 @@ function Tracker.Update()
         --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
         --Debug.Log('bHUD == '..tostring(bHUD))
         --Debug.Log('bCursor == '..tostring(bCursor))
-        if  Options['Tracker']['Visibility'] == TrackerVisibilityOptions.Always 
-        or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.HUD and bHUD)
-        or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor and bHUD)
+        if numberOfItemsInTracker > 0 and (
+               (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.Always)
+            or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.HUD and bHUD)
+            or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor and bHUD)
+            )
         then
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
