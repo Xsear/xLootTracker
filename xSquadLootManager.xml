@@ -167,7 +167,7 @@
                     </ListLayout>
 
                     <!-- Tooltip -->
-                    <ListLayout name="Tooltip" dimensions="width:400; height:400; top:0; left:0" style="visible:false">
+                    <ListLayout name="TooltipProg" dimensions="width:400; height:400; top:0; left:0" style="visible:false">
                         <Group name="header" dimensions="left:0; top:0; width:100%; height:50">
                             <WebImage name="icon" dimensions="left:0; top:0; height:50; width:50;"/>
                             <Text name="name" dimensions="left:50; right:100%; height:100%" style="font:Demi_15; halign:left; valign:top; wrap:true;"/>

@@ -5,8 +5,9 @@ Tracker = {}
 
 -- Frames
 local FRAME = Component.GetFrame('Tracker')
-local TOOLTIP_PROG = FRAME:GetChild('Tooltip')
-
+local TOOLTIP_PROG = FRAME:GetChild('TooltipProg')
+local TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
+TOOLTIP_ITEM.GROUP:Show(false)
 
 function Tracker.GetFrame()
     return FRAME
@@ -24,6 +25,7 @@ function Tracker.Update()
         if bTooltipActive then
             Tooltip.Show(false)
             TOOLTIP_PROG:Show(false) -- No need to display tooltip info now.
+            TOOLTIP_ITEM.GROUP:Show(false)
         end
 
          -- Update List of tracked items
@@ -43,12 +45,18 @@ function Tracker.Update()
                     -- Tooltip
                     if Options['Tracker']['Tooltip']['Enabled'] then
                         ENTRY:GetChild('plate'):BindEvent('OnMouseEnter', function(args)
-                            TOOLTIP_PROG:Show(true)
+
+                            if Options['Tracker']['Tooltip']['Mode'] == TrackerTooltipModes.ProgressionStyle then
+                                TOOLTIP_PROG:Show(true)
+                            else
+                                TOOLTIP_ITEM.GROUP:Show(true)
+                            end
                             Tooltip.Show(Tracker.UpdateTooltip(args.widget:GetTag()))
                             bTooltipActive = true
                         end)
                         ENTRY:GetChild('plate'):BindEvent('OnMouseLeave', function(args)
                             TOOLTIP_PROG:Show(false)
+                            TOOLTIP_ITEM.GROUP:Show(false)
                             Tooltip.Show(false)
                             bTooltipActive = false
                         end)
@@ -217,6 +225,7 @@ function Tracker.Update()
 
             -- Ensure no tooltip is displayed
             TOOLTIP_PROG:Show(false)
+            TOOLTIP_ITEM.GROUP:Show(false)
             Tooltip.Show(false)
             bTooltipActive = false
         end
@@ -229,6 +238,7 @@ function Tracker.Update()
 
         -- Ensure no tooltip is displayed
         TOOLTIP_PROG:Show(false)
+        TOOLTIP_ITEM.GROUP:Show(false)
         Tooltip.Show(false)
         bTooltipActive = false
     end
@@ -242,74 +252,104 @@ function Tracker.UpdateTooltip(entityId)
     local item = GetIdentifiedItem(entityId)
     if item == nil or item == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
 
-    -- Refs
-    local TOOLTIP_PROG_HEADER = TOOLTIP_PROG:GetChild("header")
-    local TOOLTIP_PROG_ICON = TOOLTIP_PROG:GetChild("header.icon")
-    local TOOLTIP_PROG_NAME = TOOLTIP_PROG:GetChild("header.name")
-    local TOOLTIP_PROG_SUBNAME = TOOLTIP_PROG:GetChild("header.subname")
-    local TOOLTIP_PROG_YIELDS = TOOLTIP_PROG:GetChild("yields")
-    local TOOLTIP_PROG_REQS = TOOLTIP_PROG:GetChild("requirements")
-    local TOOLTIP_PROG_DESC= TOOLTIP_PROG:GetChild("desc")
+    -- Progression Style Tooltip
+    if Options['Tracker']['Tooltip']['Mode'] == TrackerTooltipModes.ProgressionStyle then
+        -- Refs
+        local TOOLTIP_PROG_HEADER = TOOLTIP_PROG:GetChild("header")
+        local TOOLTIP_PROG_ICON = TOOLTIP_PROG:GetChild("header.icon")
+        local TOOLTIP_PROG_NAME = TOOLTIP_PROG:GetChild("header.name")
+        local TOOLTIP_PROG_SUBNAME = TOOLTIP_PROG:GetChild("header.subname")
+        local TOOLTIP_PROG_YIELDS = TOOLTIP_PROG:GetChild("yields")
+        local TOOLTIP_PROG_REQS = TOOLTIP_PROG:GetChild("requirements")
+        local TOOLTIP_PROG_DESC = TOOLTIP_PROG:GetChild("desc")
 
-
-    -- Icon
-    if item.itemInfo.web_icon then
-        TOOLTIP_PROG_ICON:SetUrl(item.itemInfo.web_icon)
-        TOOLTIP_PROG_ICON:Show(true)
-    else
-        TOOLTIP_PROG_ICON:Show(false)
-    end
-    
-    -- Name
-    TOOLTIP_PROG_NAME:SetText(FixItemNameTag(item.itemInfo.name, item.quality))
-    TOOLTIP_PROG_NAME:SetTextColor(LIB_ITEMS.GetResourceQualityColor(item.quality))
-
-
-    -- Fixme: This should be "if itemtype == equipment items" or something.
-    -- Equipment Items
-    if item.itemInfo.type ~= 'crafting_component' then
-
-        -- Stats
-        xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TOOLTIP_PROG_YIELDS)
-
-        -- Requirements
-        xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TOOLTIP_PROG_REQS)
-
-        -- Description
-        TOOLTIP_PROG_DESC:SetText(item.itemInfo.description)
-
-    -- Crafting Components
-    else
-        -- Stats
-        xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TOOLTIP_PROG_YIELDS)
-
-        -- Requirements
-        xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TOOLTIP_PROG_REQS)
-
-        -- Description
-        for key, value in pairs(data_CraftingComponents) do
-            if value.itemTypeId == item.itemInfo.itemTypeId then
-                TOOLTIP_PROG_DESC:SetText(value.description)
-                break
-            end
+        -- Icon
+        if item.itemInfo.web_icon then
+            TOOLTIP_PROG_ICON:SetUrl(item.itemInfo.web_icon)
+            TOOLTIP_PROG_ICON:Show(true)
+        else
+            TOOLTIP_PROG_ICON:Show(false)
         end
+        
+        -- Name
+        TOOLTIP_PROG_NAME:SetText(FixItemNameTag(item.itemInfo.name, item.quality))
+        TOOLTIP_PROG_NAME:SetTextColor(LIB_ITEMS.GetResourceQualityColor(item.quality))
 
 
+        -- Fixme: This should be "if itemtype == equipment items" or something.
+        -- Equipment Items
+        if item.itemInfo.type ~= 'crafting_component' then
+
+            -- Stats
+            xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TOOLTIP_PROG_YIELDS)
+
+            -- Requirements
+            xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TOOLTIP_PROG_REQS)
+
+            -- Description
+            TOOLTIP_PROG_DESC:SetText(item.itemInfo.description)
+
+        -- Crafting Components
+        else
+            -- Stats
+            xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TOOLTIP_PROG_YIELDS)
+
+            -- Requirements
+            xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TOOLTIP_PROG_REQS)
+
+            -- Description
+            for key, value in pairs(data_CraftingComponents) do
+                if value.itemTypeId == item.itemInfo.itemTypeId then
+                    TOOLTIP_PROG_DESC:SetText(value.description)
+                    break
+                end
+            end
+
+
+        end
+        
+        AutosizeText(TOOLTIP_PROG_YIELDS)
+        AutosizeText(TOOLTIP_PROG_REQS)
+        AutosizeText(TOOLTIP_PROG_DESC)
+
+        -- Return Tooltip
+        local tip_args = {height=0}
+        tip_args.height = TOOLTIP_PROG:GetLength()
+        tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
+        
+        return TOOLTIP_PROG, tip_args
+
+    -- Item Style Tooltip
+    else
+        -- Setup Tooltip
+        TOOLTIP_ITEM:DisplayInfo(item.itemInfo)
+        TOOLTIP_ITEM.GROUP:SetDims("top:0; left:0; width:200; height:200")
+
+        -- Return Tooltip
+        local tip_args = TOOLTIP_ITEM:GetBounds()
+        tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
+
+        return TOOLTIP_ITEM.GROUP, tip_args
     end
-    
-    AutosizeText(TOOLTIP_PROG_YIELDS)
-    AutosizeText(TOOLTIP_PROG_REQS)
-    AutosizeText(TOOLTIP_PROG_DESC)
-
-    -- Return Tooltip
-    local tip_args = {height=0}
-    tip_args.height = TOOLTIP_PROG:GetLength()
-    tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
-    
-    return TOOLTIP_PROG, tip_args
 end
 
 -- Fix text size
 function AutosizeText(TEXT)
     TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
 end
+
+
+--[[
+
+TOOLTIP = LIB_ITEMS.CreateToolTip(PARENT)   -- creates a TOOLTIP widget on a PARENT widget/frame
+        TOOLTIP:Destroy();                          -- removes the TOOLTIP
+        {width, height} = TOOLTIP:GetBounds();      -- returns the pixel dimensions of the TOOLTIP
+        TOOLTIP:SetContext(context);                -- supply a context in which to display item info, to show qualifications
+                                                        context = {
+                                                            frameTypeId = battleframe type id
+                                                        }
+        TOOLTIP:DisplayInfo(itemInfo);              -- sets the tooltip's item info
+        TOOLTIP:CompareAgainst(itemInfo);           -- compares the tooltip's current item against another
+        TOOLTIP:DisplayTag(loc_tag_key);            -- displays a tag, localized by text key (e.g. "equipped", "new")
+
+--]]
