@@ -192,6 +192,8 @@ function RunMessageFilters(message, args)
     if args.item.craftingTypeId ~= 'NOT_SET' then
         itemForArchetype, itemForFrame = DWFrameIDX.ItemIdxString(args.item.craftingTypeId)
     end
+    if itemForArchetype == nil then itemForArchetype = '' end
+    if itemForFrame == nil then itemForFrame = '' end
 
     -- Start building the output
     local output = message
