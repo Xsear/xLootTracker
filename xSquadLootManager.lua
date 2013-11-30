@@ -23,7 +23,7 @@ require './lib/lib_LKObjects' -- 3d markers
 csVersion = '0.89'
 ciSaveVersion = 0.80
 
--- Variables
+-- Global Variables
 aSquadRoster = {} -- The latest squad roster
 aIdentifiedLoot = {} -- Currently tracked items
 

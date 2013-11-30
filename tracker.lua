@@ -337,19 +337,3 @@ end
 function AutosizeText(TEXT)
     TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
 end
-
-
---[[
-
-TOOLTIP = LIB_ITEMS.CreateToolTip(PARENT)   -- creates a TOOLTIP widget on a PARENT widget/frame
-        TOOLTIP:Destroy();                          -- removes the TOOLTIP
-        {width, height} = TOOLTIP:GetBounds();      -- returns the pixel dimensions of the TOOLTIP
-        TOOLTIP:SetContext(context);                -- supply a context in which to display item info, to show qualifications
-                                                        context = {
-                                                            frameTypeId = battleframe type id
-                                                        }
-        TOOLTIP:DisplayInfo(itemInfo);              -- sets the tooltip's item info
-        TOOLTIP:CompareAgainst(itemInfo);           -- compares the tooltip's current item against another
-        TOOLTIP:DisplayTag(loc_tag_key);            -- displays a tag, localized by text key (e.g. "equipped", "new")
-
---]]
