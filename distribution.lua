@@ -370,15 +370,48 @@ function GetEntitled(loot)
     if Options['Distribution'][typeKey][stageKey]['Weighting'] ~= WeightingOptions.None then 
 
         local entitledRoster = {}
+        local eligibleArchetypes = {}
+        local eligibleFrames = {}
 
-        -- Get item archetype and frame
-        local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(loot.craftingTypeId))
+        -- If itemInfo has classes, use those
+        if loot.itemInfo.classes then
+            for i, class in ipairs(loot.itemInfo.classes) do
+                eligibleArchetypes[#eligibleArchetypes + 1] = class
+            end
+        end
+
+        -- If it's an equipment item, check local data
+        if IsEquipmentItem(loot.itemInfo) and loot.craftingTypeId then
+            local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(loot.craftingTypeId))
+            if itemArchetype then
+                eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
+            end
+            if itemFrame then
+                eligibleFrames[#eligibleFrames + 1] = itemFrame
+            end 
+        end
+
+        -- If it's a crafting component, check local data
+        if IsCraftingComponent(loot.itemInfo) and loot.itemTypeId then
+            for k, v in pairs(data_CraftingComponents) do
+                if v.itemTypeId == tostring(loot.itemTypeId) and v.classes then
+                    for i, class in ipairs(v.classes) do
+                        eligibleArchetypes[#eligibleArchetypes + 1] = class
+                    end
+                end
+            end
+        end
+
+        Debug.Table({eligibleArchetypes=eligibleArchetypes, eligibleFrames=eligibleFrames})
 
         -- Add entitled under Archetype setting
-        if Options['Distribution'][typeKey][stageKey]['Weighting'] == WeightingOptions.Archetype or #entitledRoster == 0 then
+        if Options['Distribution'][typeKey][stageKey]['Weighting'] == WeightingOptions.Archetype then
             for num, member in ipairs(aSquadRoster.members) do
-                if member.battleframe == itemArchetype then
-                    table.insert(entitledRoster, member)
+                for i, archetype in ipairs(eligibleArchetypes) do
+                    if member.battleframe == archetype then
+                        table.insert(entitledRoster, member)
+                        break
+                    end
                 end
             end
         end
