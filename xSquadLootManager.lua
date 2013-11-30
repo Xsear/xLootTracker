@@ -820,14 +820,60 @@ function IsTrackableItemType(info)
     else itemType = tostring(info) end
 
     -- Verify that the looted item is of a type that we care about
-    if  itemType == 'frame_module' or
-        itemType == 'ability_module' or
-        itemType == 'weapon' or
-        itemType == 'crafting_component' then
+    if IsEquipmentItem(itemType) or IsCraftingComponent(itemType) then
         return true
     end
 
     return false
+end
+
+--[[
+    IsEquipmentItem([itemInfo(table)|itemType])
+    Whether or not an item type classifies it as an Equipment Item
+]]--
+function IsEquipmentItem(info)
+    -- Handle arguments
+    local itemType
+    if type(info) == 'table' then itemType = info.type
+    else itemType = tostring(info) end
+
+    local EquipmentItemTypes = {
+        'frame_module',
+        'ability_module',
+        'weapon',
+    }
+
+    for i, v in ipairs(EquipmentItemTypes) do
+        if itemType == v then
+            return true
+        end
+    end
+
+    return false
+end
+
+--[[
+    IsCraftingComponent([itemInfo(table)|itemType])
+    Whether or not an item type classifies it as a Crafting Component
+]]--
+function IsCraftingComponent(info)
+    -- Handle arguments
+    local itemType
+    if type(info) == 'table' then itemType = info.type
+    else itemType = tostring(info) end
+
+    local CraftingComponentTypes = {
+        'crafting_component',
+    }
+
+    for i, v in ipairs(CraftingComponentTypes) do
+        if itemType == v then
+            return true
+        end
+    end
+
+    return false
+
 end
 
 --[[
