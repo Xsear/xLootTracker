@@ -766,6 +766,7 @@ Options = {
         ['Enabled'] = false,
         ['FakeOnSquadRoster'] = false,
         ['SquadToArmy'] = false,
+        ['UndefinedFilterArguments'] = false,
         ['LogLootableTargets'] = false, 
         ['LogLootableCollection'] = false,
         ['LogOptionChange'] = false,
@@ -1108,6 +1109,13 @@ function BuildInterfaceOptions_Front()
             default = Options['Debug']['SquadToArmy'],
             label   = Lokii.GetString('Debug_SquadToArmy_Label'),
             tooltip = Lokii.GetString('Debug_SquadToArmy_Tooltip'),
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_UndefinedFilterArguments',
+            default = Options['Debug']['UndefinedFilterArguments'],
+            label   = Lokii.GetString('Debug_UndefinedFilterArguments_Label'),
+            tooltip = Lokii.GetString('Debug_UndefinedFilterArguments_Tooltip'),
         })
 
         InterfaceOptions.AddCheckBox({

@@ -167,19 +167,23 @@ end
     Pretty poorly implemented at the moment.
 ]]--
 function RunMessageFilters(message, args)
+
+    local undefinedValue = ''
+    if Options['Debug']['UndefinedFilterArguments'] then undefinedValue = 'NOT_SET' end
+
     -- Fix undefined arguments
     args.item                = args.item or {}
-    args.item.name           = args.item.name               or 'NOT_SET'
-    args.item.quality        = args.item.quality            or 'NOT_SET'
-    args.item.entityId       = args.item.entityId           or 'NOT_SET'
-    args.item.itemTypeId     = args.item.itemTypeId         or 'NOT_SET'
-    args.item.craftingTypeId = args.item.craftingTypeId     or 'NOT_SET'
-    args.playerName          = args.playerName              or 'NOT_SET'
-    args.roll                = args.roll                    or 'NOT_SET'
-    args.rollType            = args.rollType                or 'NOT_SET'
-    args.lootedTo            = args.lootedTo                or 'NOT_SET'
-    args.assignedTo          = args.assignedTo              or 'NOT_SET'
-    args.eligible            = args.eligibleNames           or 'NOT_SET'
+    args.item.name           = args.item.name               or undefinedValue
+    args.item.quality        = args.item.quality            or undefinedValue
+    args.item.entityId       = args.item.entityId           or undefinedValue
+    args.item.itemTypeId     = args.item.itemTypeId         or undefinedValue
+    args.item.craftingTypeId = args.item.craftingTypeId     or undefinedValue
+    args.playerName          = args.playerName              or undefinedValue
+    args.roll                = args.roll                    or undefinedValue
+    args.rollType            = args.rollType                or undefinedValue
+    args.lootedTo            = args.lootedTo                or undefinedValue
+    args.assignedTo          = args.assignedTo              or undefinedValue
+    args.eligible            = args.eligibleNames           or undefinedValue
 
     -- Create local mixes
     local itemNameQuality = FixItemNameTag(args.item.name, args.item.quality)
@@ -188,12 +192,16 @@ function RunMessageFilters(message, args)
     local itemNameClean = FixItemNameTag(args.item.name)
 
     -- Archetype/Frame replacements
-    local itemForArchetype, itemForFrame = 'NOT_SET'
-    if args.item.craftingTypeId ~= 'NOT_SET' then
-        itemForArchetype, itemForFrame = DWFrameIDX.ItemIdxString(args.item.craftingTypeId)
+    local itemForArchetype, itemForFrame = undefinedValue
+    if args.item.craftingTypeId ~= undefinedValue then
+        itemForArchetype, itemForFrame = xBattleframes.GetInfoByCraftingTypeId(args.item.craftingTypeId)
     end
-    if itemForArchetype == nil then itemForArchetype = '' end
-    if itemForFrame == nil then itemForFrame = '' end
+    if itemForArchetype == nil then
+        itemForArchetype = undefinedValue
+    else
+        itemForArchetype = xBattleframes.GetDisplayNameOfArchetype(itemForArchetype)
+    end
+    if itemForFrame == nil then itemForFrame = undefinedValue end
 
     -- Start building the output
     local output = message
