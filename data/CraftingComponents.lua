@@ -9,7 +9,7 @@ data_CraftingComponents = {
     },
     ['Drone Module'] = {
         itemTypeId  = '10014',
-        description = 'Can be used to craft Advanced Decoy.\nAdds AI behavior to Decoy which allows Decoy to move and shoot before it explodes.\nDrone Module quality modifies AI damage.\n'..'Can be used to craft Shielded Crater.\nAdds Blast Shield to Crater. Blast Shield spawns centered on the impact site of Crater.\nDrone Module quality modifies Blast Shield health.'
+        description = 'Can be used to craft Advanced Decoy.\nAdds AI behavior to Decoy which allows Decoy to move and shoot before it explodes.\nDrone Module quality modifies AI damage.\n'..'Can be used to craft Shielded Crater.\nAdds Blast Shield to Crater. Blast Shield spawns centered on the impact site of Crater.\nDrone Module quality modifies Blast Shield health.',
         classes = {
             xBattleframes.Class.Assault,
             xBattleframes.Class.Recon,
