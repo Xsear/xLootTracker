@@ -46,6 +46,7 @@ require './lootpanel' -- 3d marker template
 require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
 require './util/xSounds' -- Database of sounds
 require './util/xItemFormatting' -- Awesome functions from lib_Items that weren't available for use. Used by tracker when generating tooltips.
+require './util/xBattleframes' -- Battleframe stuff
 
 -- Data
 require './data/CraftingComponents'

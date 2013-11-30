@@ -1,7 +1,7 @@
 --[[
-    lib_xBattleframes.lua
+    xBattleframes.lua
 
-    A helper library for dealing with Battleframes.
+    A helper  for dealing with Battleframes.
 
     Reference
         Functions
@@ -22,7 +22,7 @@
     Changelog
 
         2013-10-12
-            Revamped from a util into a small library
+            Revamped
 
         2013-08-28
             Extended with Arsenal data on 2013-08-28
@@ -37,6 +37,14 @@ xBattleframes = {}
 DataCollection = {}
 xBattleframes.DataCollection = DataCollection
 xBattleframes.Version = "1.1"
+
+xBattleframes.Class = {
+    Assault = "berzerker",
+    Dreadnaught = "guardian",
+    Engineer = "bunker",
+    Biotech = "medic",
+    Recon = "recon",
+}
 
 function xBattleframes.GetInfoByCraftingTypeId(cid)
     local baseIdx
@@ -101,6 +109,53 @@ function DataCollection.IdentifyFrameCraftingTypeIds()
             end
         end
     end
+end
+
+function DataCollection.IdentifyItemsWithoutClasses()
+    local matches = 0
+    local noClasses = 0
+    local classes = 0
+
+    for num = 1, 200000 do
+
+        local itemInfo = Game.GetItemInfoByType(num)
+
+        if itemInfo then
+            
+            if not itemInfo.type then 
+                Debug.Log('wtf is this crap') Debug.Table(itemInfo)
+
+            elseif
+                -- Main filters: Must be a Battelframe Module and not flagged as hidden
+                (itemInfo.type == 'frame_module' or itemInfo.type == 'ability_module' or itemInfo.type == 'weapon')
+            and (not itemInfo.flags or not itemInfo.flags.hidden)
+            then
+
+                matches = matches + 1;
+
+                if not itemInfo.classes then
+
+                    -- Extra filters for things without classes that we don't care about
+
+                    if  itemInfo.craftingTypeId ~= "1" -- Unsure, probably not relevant to players
+                    and (itemInfo.weaponType ~= 'CTF-Ball') -- Not relevant to players
+                    and itemInfo.subTypeId ~= "61" -- Unsure, this was some throwable ability thing
+                    and itemInfo.name ~= "" -- Ignore things without a name
+                    then
+                        noClasses = noClasses + 1
+                        Debug.Log('Item '..tostring(num).. ' : '..tostring(itemInfo.name)..' | has no classes')
+                    end
+
+                else
+                    classes = classes + 1
+                end
+
+            end
+        end
+
+    end
+
+    Debug.Table({matches=matches, noClasses=noClasses, classes=classes})
 end
 
 
