@@ -46,6 +46,9 @@ xBattleframes.Class = {
     Recon = "recon",
 }
 
+
+local PRIVATE = {}
+
 function xBattleframes.GetInfoByCraftingTypeId(cid)
     local baseIdx
     local typeIdx
@@ -157,9 +160,6 @@ function DataCollection.IdentifyItemsWithoutClasses()
 
     Debug.Table({matches=matches, noClasses=noClasses, classes=classes})
 end
-
-
-local PRIVATE = {}
 
 PRIVATE.FrameCraftingTypeIdIndex = {                                 
     ["berzerker"] = {
