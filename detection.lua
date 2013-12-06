@@ -58,7 +58,7 @@ function CreatePanel(targetInfo, itemInfo)
 
 
     local RenderTarget = panel.panel_rt
-    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('content')
+    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
     local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
     local LOOT_PANEL_ICONBAR = LOOT_PANEL_CONTENT:GetChild('IconBar')
 
@@ -141,30 +141,27 @@ function CreatePanel(targetInfo, itemInfo)
     BUTTON1:SetText('Need')
     BUTTON1:Autosize('left')
     BUTTON1:Bind(function() 
-            System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
+            --System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
         end)
 
     BUTTON2 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
     BUTTON2:SetText('Greed')
     BUTTON2:Autosize('center')
     BUTTON2:Bind(function() 
-            System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
+            --System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
         end)
 
     BUTTON3 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
     BUTTON3:SetText('Pass')
     BUTTON3:Autosize('right')
     BUTTON3:Bind(function() 
-            System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
+            --System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
         end)
 
 --]]
 
     -- We spent all this time building, best make sure it shows
     LOOT_PANEL_CONTENT:Show(true)
-
-
---xItemFormatting.PrintLines( xItemFormatting.getStatLines(itemInfo), TRACKER_TOOLTIP_YIELDS)
 
     return panel
 end
@@ -178,7 +175,7 @@ function UpdatePanel(loot)
     if loot.panel == nil then return end
 
     local RenderTarget = loot.panel.panel_rt
-    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('content')
+    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
     local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
 
     if not ItemPassesFilter(loot, Options['Panels']) then 

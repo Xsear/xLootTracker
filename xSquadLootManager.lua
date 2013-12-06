@@ -1179,7 +1179,6 @@ function Test(args)
     Debug.Log('args[2]: '..tostring(args[1]))
 
     if true then
-
         -- First parameter to test controls number of panels
         local numberOfPanels = args[1] or 1
         Debug.Log('numberOfPanels: '..tostring(numberOfPanels))
@@ -1274,7 +1273,7 @@ function Test(args)
                 end
 
                 -- Create timer
-                loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
+                loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
                 
                 -- Setup despawn timer
                 loot.timer:SetAlarm('despawn', 30, LootDespawn, {item=loot})
