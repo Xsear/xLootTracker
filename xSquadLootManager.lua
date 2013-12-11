@@ -12,12 +12,12 @@ require 'lib/lib_Vector' -- Vector coordinates
 require 'lib/lib_Button' -- Buttons used by Tracker
 require 'lib/lib_Tooltip' -- Tooltip used by Tracker
 require 'lib/lib_ChatLib' -- Used to send some chat messages
-require 'lib/lib_table'
+require 'lib/lib_table' -- Common table functions
 
 -- Custom Libs
 require './lib/Lokii' -- Localization
 require './lib/lib_GTimer' -- Timer for rolltimeout
-require './lib/lib_LKObjects' -- 3d markers
+require './lib/lib_LKObjects' -- Trivialize objects
 
 -- Constants
 csVersion = '0.90'
