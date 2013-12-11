@@ -373,13 +373,6 @@ function GetEntitled(loot)
         local eligibleArchetypes = {}
         local eligibleFrames = {}
 
-        -- If itemInfo has classes, use those
-        if loot.itemInfo.classes then
-            for i, class in ipairs(loot.itemInfo.classes) do
-                eligibleArchetypes[#eligibleArchetypes + 1] = class
-            end
-        end
-
         -- If it's an equipment item, check local data
         if IsEquipmentItem(loot.itemInfo) and loot.craftingTypeId then
             local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(loot.craftingTypeId))
@@ -388,17 +381,20 @@ function GetEntitled(loot)
             end
             if itemFrame then
                 eligibleFrames[#eligibleFrames + 1] = itemFrame
-            end 
-        end
-
-        -- If it's a crafting component, check local data
-        if IsCraftingComponent(loot.itemInfo) and loot.itemTypeId then
+            end
+        -- Else If it's a crafting component, check local data
+        elseif IsCraftingComponent(loot.itemInfo) and loot.itemTypeId then
             for k, v in pairs(data_CraftingComponents) do
                 if v.itemTypeId == tostring(loot.itemTypeId) and v.classes then
                     for i, class in ipairs(v.classes) do
                         eligibleArchetypes[#eligibleArchetypes + 1] = class
                     end
                 end
+            end
+        -- Else If itemInfo has classes, use those
+        elseif loot.itemInfo.classes then
+            for i, class in ipairs(loot.itemInfo.classes) do
+                eligibleArchetypes[#eligibleArchetypes + 1] = class
             end
         end
 
