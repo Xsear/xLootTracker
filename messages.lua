@@ -191,6 +191,7 @@ function RunMessageFilters(message, args)
     -- Adjust item name
     local itemNameClean = FixItemNameTag(args.item.name)
 
+--[[
     -- Archetype/Frame replacements
     local itemForArchetype, itemForFrame = undefinedValue
     if args.item.craftingTypeId ~= undefinedValue then
@@ -202,6 +203,45 @@ function RunMessageFilters(message, args)
         itemForArchetype = xBattleframes.GetDisplayNameOfArchetype(itemForArchetype)
     end
     if itemForFrame == nil then itemForFrame = undefinedValue end
+--]]
+    
+    -- Archetype/Frame replacements
+    local itemForArchetype = undefinedValue
+    local itemForFrame = undefinedValue
+        local eligibleArchetypes = {}
+        local eligibleFrames = {}
+
+        -- If it's an equipment item, check local data
+        if IsEquipmentItem(args.item.itemInfo) and args.item.craftingTypeId then
+            local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(args.item.craftingTypeId))
+            if itemArchetype then
+                eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
+            end
+            if itemFrame then
+                eligibleFrames[#eligibleFrames + 1] = itemFrame
+            end
+        -- Else If it's a crafting component, check local data
+        elseif IsCraftingComponent(args.item.itemInfo) and args.item.itemTypeId then
+            for k, v in pairs(data_CraftingComponents) do
+                if v.itemTypeId == tostring(args.item.itemTypeId) and v.classes then
+                    for i, class in ipairs(v.classes) do
+                        eligibleArchetypes[#eligibleArchetypes + 1] = class
+                    end
+                end
+            end
+        -- Else If itemInfo has classes, use those
+        elseif args.item.itemInfo.classes then
+            for i, class in ipairs(args.item.itemInfo.classes) do
+                eligibleArchetypes[#eligibleArchetypes + 1] = class
+            end
+        end
+
+    if #eligibleArchetypes == 1 then
+        itemForArchetype = xBattleframes.GetDisplayNameOfArchetype(eligibleArchetypes[1])
+    end
+    if #eligibleFrames == 1 then
+        itemForFrame = eligibleFrames[1]
+    end
 
     -- Start building the output
     local output = message
