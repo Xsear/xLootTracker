@@ -164,7 +164,7 @@ function OnSquadRosterUpdate()
         -- Reset Round Robin if members changed
         if previousRosterMemberCount ~= #aSquadRoster.members then
             iRoundRobinIndex = 1
-            Debug.Log('OnSquadRosterUpdate restting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+            Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
         end
 
 
@@ -176,7 +176,7 @@ function OnSquadRosterUpdate()
             Debug.Log('OnSquadRosterUpdate faking a squad roster')
             aSquadRoster = {members={{name=Player.GetInfo(), battleframe='medic'}, {name='SquadRosterUpdateFake1', battleframe='berzerker'}, {name='SquadRosterUpdateFake2', battleframe='recon'}}}
             iRoundRobinIndex = 1
-            Debug.Log('OnSquadRosterUpdate restting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+            Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
         else
             bInSquad = false
         end
