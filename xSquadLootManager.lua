@@ -20,7 +20,7 @@ require './lib/lib_GTimer' -- Timer for rolltimeout
 require './lib/lib_LKObjects' -- 3d markers
 
 -- Constants
-csVersion = '0.89'
+csVersion = '0.90'
 ciSaveVersion = 0.80
 
 -- Global Variables
