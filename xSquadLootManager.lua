@@ -58,6 +58,7 @@ require './types'   -- Types
 require './options' -- Options
 
 -- Addon Modules
+require './markers' -- Markers (Panels / Waypoints)
 require './detection' -- Detection
 require './distribution' -- Distribution
 require './messages' -- Messages
@@ -910,40 +911,6 @@ function IsSquadLeader(localPlayer)
         return false
     end
 end
-
---[[
-    CreateWaypoint(loot)
-    Setsup and returns a waypoint marker reference for loot
-]]--
-function CreateWaypoint(loot)
-    Debug.Log('Creating a waypoint for '..loot.name)
-    MARKER = MapMarker.Create('xslm_'..tostring(loot.entityId)..'_waypoint')
-
-    -- Bind to loot entity
-    MARKER:BindToEntity(loot.entityId)
-
-    -- Text
-    MARKER:SetTitle(FixItemNameTag(loot.name, loot.quality))
-    MARKER:SetSubtitle(Lokii.GetString('UI_Waypoints_Subtitle'))
-
-    -- Color ?
-    MARKER:SetThemeColor(LIB_ITEMS.GetItemColor(loot.itemInfo))
-
-    -- Icon
-    local MULTIART = MARKER:GetIcon()
-    MULTIART:SetUrl(loot.itemInfo.web_icon)
-
-
-    -- Visibility
-    MARKER:ShowOnHud(Options['Waypoints']['ShowOnHud'])
-    --MARKER:SetHudPriority(Options['Waypoints']['HudPriority'])
-    MARKER:ShowOnWorldMap(Options['Waypoints']['ShowOnWorldMap'])
-    MARKER:ShowOnRadar(Options['Waypoints']['ShowOnRadar']) 
-    MARKER:SetRadarEdgeMode(Options['Waypoints']['RadarEdgeMode'])
-
-    return MARKER
-end
-
 
 --[[
     IsIdentified(entityId)
