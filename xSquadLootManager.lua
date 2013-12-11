@@ -39,8 +39,8 @@ aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadr
 
 iRoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
 
--- Templates
-require './lootpanel' -- 3d marker template
+-- LK Objects
+require './object/lootpanel' -- Loot Panel
 
 -- Util
 require './util/DWFrameIdx' -- Database to determine which frame/s that any ability module belongs to
