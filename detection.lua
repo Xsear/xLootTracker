@@ -31,7 +31,7 @@ function Identify(entityId, targetInfo)
     end
 
     -- Create timer
-    loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
+    loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1) -- TODO: Avoid code dependant on structure of panel as much as possible
         
     -- Setup despawn timer
     loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item=loot})
