@@ -72,8 +72,8 @@ require './tracker' -- Tracker
 ]]--
 function OnComponentLoad()
     -- Setup Lokii
-    Lokii.AddLang("en", "./lang/EN");
-    Lokii.SetBaseLang("en");
+    Lokii.AddLang('en', './lang/EN');
+    Lokii.SetBaseLang('en');
     Lokii.SetToLocale();
 
     -- Setup Debug
@@ -266,8 +266,8 @@ end
     OnChatMessage(args)
     Callback function for when player receives chat messages
     Identifies messages
-    Todo: Move logic into separate functions
     Fixme: holy shit this function is a clusterfuck
+    TODO: if (is communication message) then HandleCommunicationMessage(msg)
 ]]--
 function OnChatMessage(args)
     -- Requires Core enabled
@@ -1287,6 +1287,7 @@ function round(num, idp)
   return math.floor(num * mult + 0.5) / mult
 end
 
+-- TODO: Remove this function, it does a bad things
 function vardump(value, depth, key)
   local linePrefix = ""
   local spaces = ""
