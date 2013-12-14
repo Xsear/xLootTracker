@@ -243,7 +243,7 @@ function OnEntityAvailable(args)
         local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
 
         -- Debug
-        if Options['Debug']['LogLootableTargets'] and IsLootableTarget(targetInfo) then
+        if Options['Debug']['Enabled'] and Options['Debug']['LogLootableTargets'] and IsLootableTarget(targetInfo) then
             Debug.Log('Lootable Target Available')
             Debug.Log('targetInfo')
             Debug.Table(targetInfo)
@@ -411,7 +411,7 @@ function OnLootCollected(args)
     if IsTrackableItemType(itemInfo) then
 
         -- Debug Log
-        if Options['Debug']['LogLootableCollection'] then
+        if Options['Debug']['Enabled'] and Options['Debug']['LogLootableCollection'] then
             Debug.Log('OnLootCollected')
             Debug.Log('iteminfo')
             Debug.Table(itemInfo)

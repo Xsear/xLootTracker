@@ -20,7 +20,7 @@ function SendChatMessage(channel, message, alert)
     -- Function to handle the actual sending of messages
     local function SendMessageToChat(channel, message, alert)
         channel = unicode.lower(channel)
-        if Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
+        if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
         local alertprefix = ''
         if alert then alertprefix = '!' end
         if channel == 'system' then
@@ -169,7 +169,7 @@ end
 function RunMessageFilters(message, args)
 
     local undefinedValue = ''
-    if Options['Debug']['UndefinedFilterArguments'] then undefinedValue = 'NOT_SET' end
+    if Options['Debug']['Enabled'] and Options['Debug']['UndefinedFilterArguments'] then undefinedValue = 'NOT_SET' end
 
     -- Fix undefined arguments
     args.item                = args.item or {}
