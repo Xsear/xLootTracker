@@ -845,7 +845,7 @@ end
 --[[
     digOptions(table, args, refs, depth, key)
     Tempoary function name
-    Finds and updates a key within an table
+    Finds and updates a key within a table
 --]]
 function digOptions(table, args, refs, depth, key)
     if depth == nil then
