@@ -246,17 +246,15 @@ function RunMessageFilters(message, args)
     -- Start building the output
     local output = message
 
-    -- Loot mode
+    -- Loot mode Todo: Include what sort of mode the item was distributed in
     --output = unicode.gsub(output, '%%m', Options['Distribution']['LootMode'])
 
     -- Item name with quality
-    output = unicode.gsub(output, '%%iq', itemNameQuality)
+    output = unicode.gsub(output, '%%iq', ChatLib.CreateItemText(args.item.name, args.item.quality))
 
     -- Item name
-    output = unicode.gsub(output, '%%i', itemNameClean)
+    output = unicode.gsub(output, '%%i', ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil)) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
 
-    -- Item quality
-    output = unicode.gsub(output, '%%q', args.item.quality)
 
     -- Item entityId
     output = unicode.gsub(output, '%%eId', tostring(args.item.entityId))
@@ -274,7 +272,7 @@ function RunMessageFilters(message, args)
     output = unicode.gsub(output, '%%fF', itemForFrame)
 
     -- Player name
-    output = unicode.gsub(output, '%%n', args.playerName)
+    output = unicode.gsub(output, '%%n', ChatLib.EncodePlayerLink(args.playerName))
 
     -- Roll
     output = unicode.gsub(output, '%%r', args.roll) 
