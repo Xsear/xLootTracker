@@ -21,7 +21,7 @@ require './lib/lib_LKObjects' -- Trivialize objects
 
 -- Constants
 csVersion = '0.91 Janstone'
-ciSaveVersion = 0.80
+ciSaveVersion = 0.90
 
 -- Global Variables
 aSquadRoster = {} -- The latest squad roster
