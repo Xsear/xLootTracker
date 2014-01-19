@@ -340,17 +340,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = 'Detected a new loot drop: [%iq]',
+                            ['Format'] = 'Detected a new loot drop: %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Detected a new loot drop: [%iq]',
+                            ['Format'] = 'Detected a new loot drop: %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Detected a new loot drop: [%iq]',
+                            ['Format'] = 'Detected a new loot drop: %i',
                         },
                     },
 
@@ -362,17 +362,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '%l looted [%iq]',
+                            ['Format'] = '%l looted %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l looted [%iq]',
+                            ['Format'] = '%l looted %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l looted [%iq]',
+                            ['Format'] = '%l looted %i',
                         },
                     },
 
@@ -385,17 +385,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '%l stole %a\'s [%iq]',
+                            ['Format'] = '%l stole %a\'s %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l stole %a\'s [%iq]',
+                            ['Format'] = '%l stole %a\'s %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l stole %a\'s [%iq]',
+                            ['Format'] = '%l stole %a\'s %i',
                         },
                     },
 
@@ -408,17 +408,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '%l snatched [%iq]',
+                            ['Format'] = '%l snatched %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l snatched [%iq]',
+                            ['Format'] = '%l snatched %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l snatched [%iq]',
+                            ['Format'] = '%l snatched %i',
                         },
                     },
 
@@ -431,17 +431,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '%l claimed [%iq]',
+                            ['Format'] = '%l claimed %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l claimed [%iq]',
+                            ['Format'] = '%l claimed %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%l claimed [%iq]',
+                            ['Format'] = '%l claimed %i',
                         },
                     },
 
@@ -453,17 +453,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '[%iq] has despawned.',
+                            ['Format'] = '%i has despawned.',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '[%iq] has despawned.',
+                            ['Format'] = '%i has despawned.',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '[%iq] has despawned.',
+                            ['Format'] = '%i has despawned.',
                         },
                     },
 
@@ -478,17 +478,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Distributing [%iq] by %m',
+                            ['Format'] = 'Distributing %i by %m',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Distributing [%iq] by %m',
+                            ['Format'] = 'Distributing %i by %m',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = true,
-                            ['Format'] = 'Distributing [%iq] by %m',
+                            ['Format'] = 'Distributing %i by %m',
                         },
                     },
 
@@ -500,17 +500,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '%n won [%iq]',
+                            ['Format'] = '%n won %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%n won [%iq]',
+                            ['Format'] = '%n won %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%n won [%iq]',
+                            ['Format'] = '%n won %i',
                         },
                     },
 
@@ -522,17 +522,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = '%n rolls %r for [%iq]',
+                            ['Format'] = '%n rolls %r for %i',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = ' %n rolls %r for [%iq]',
+                            ['Format'] = ' %n rolls %r for %i',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = '%n rolls %r for [%iq]',
+                            ['Format'] = '%n rolls %r for %i',
                         },
                     },
 
@@ -544,17 +544,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
+                            ['Format'] = 'Declare need/greed/pass on %i\nEligible for need: %e',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
+                            ['Format'] = 'Declare need/greed/pass on %i\nEligible for need: %e',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Declare need/greed/pass on [%iq]\nEligible for need: %e',
+                            ['Format'] = 'Declare need/greed/pass on %i\nEligible for need: %e',
                         },
                     },
 
@@ -588,17 +588,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
+                            ['Format'] = 'Can\'t roll %i yet, we\'re busy rolling something else',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
+                            ['Format'] = 'Can\'t roll %i yet, we\'re busy rolling something else',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = true,
-                            ['Format'] = 'Can\'t roll [%iq] yet, we\'re busy rolling something else',
+                            ['Format'] = 'Can\'t roll %i yet, we\'re busy rolling something else',
                         },
                     },
 
@@ -823,7 +823,7 @@ function OnOptionChange(args)
     if bLoaded then
         -- For Tracker options, update the tracker
         if explodedId[1] == 'Tracker' then
-            Tracker.UpdateTracker()
+            Tracker.Update()
         -- For Panels options, update the panels
         elseif explodedId[1] == 'Panels' then
             for i, item in ipairs(aIdentifiedLoot) do

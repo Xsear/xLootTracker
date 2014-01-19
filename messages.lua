@@ -185,6 +185,10 @@ function RunMessageFilters(message, args)
     args.assignedTo          = args.assignedTo              or undefinedValue
     args.eligible            = args.eligibleNames           or undefinedValue
 
+
+    Debug.Log("Message filters")
+    Debug.Log("args.item.name: " .. args.item.name .. ', ' .. type(args.item.name));
+
     -- Create local mixes
     local itemNameQuality = FixItemNameTag(args.item.name, args.item.quality)
 
@@ -250,7 +254,7 @@ function RunMessageFilters(message, args)
     --output = unicode.gsub(output, '%%m', Options['Distribution']['LootMode'])
 
     -- Item name with quality
-    output = unicode.gsub(output, '%%iq', ChatLib.CreateItemText(args.item.name, args.item.quality))
+    output = unicode.gsub(output, '%%iq', ChatLib.CreateItemText({name = args.item.name}, args.item.quality))
 
     -- Item name
     output = unicode.gsub(output, '%%i', ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil)) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
@@ -281,10 +285,10 @@ function RunMessageFilters(message, args)
     output = unicode.gsub(output, '%%t', args.rollType) 
 
     -- Looted To
-    output = unicode.gsub(output, '%%l', args.lootedTo) 
+    output = unicode.gsub(output, '%%l', ChatLib.EncodePlayerLink(args.lootedTo)) 
 
     -- Assigned To
-    output = unicode.gsub(output, '%%a', args.assignedTo)
+    output = unicode.gsub(output, '%%a', ChatLib.EncodePlayerLink(args.assignedTo))
 
     -- Eligible (super hardcoded)
     output = unicode.gsub(output, '%%e', args.eligibleNames)
