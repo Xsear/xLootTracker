@@ -166,7 +166,7 @@ end
 ]]--
 function RollTimeout(args)
     if mCurrentlyRolling then
-        SendChatMessage('system', 'RollTimeout for ['..FixItemNameTag(mCurrentlyRolling.name, mCurrentlyRolling.quality)..']')
+        SendChatMessage('system', 'RollTimeout for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality))
         RollFinish()
     end
 end
@@ -178,7 +178,7 @@ end
 ]]--
 function RollCancel(args)
     if mCurrentlyRolling then
-        SendChatMessage('system', 'RollCancel for ['..FixItemNameTag(mCurrentlyRolling.name, mCurrentlyRolling.quality)..']')
+        SendChatMessage('system', 'RollCancel for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality))
         RollCleanup()
     end
 end
