@@ -1,163 +1,280 @@
---[[
-    DistributeItem
-    Main logic.
-]]--
-function DistributeItem()
-    -- Check that we are allowed to distribute loot
-    if not bIsSquadLeader or not Options['Core']['Enabled'] then return end
-
-    -- Check that we have any loot at all
-    if not _table.empty(aIdentifiedLoot) then
-
-        -- Get the first unrolled item from the list of identified loot
-        local loot = nil
-
-        for num, item in ipairs(aIdentifiedLoot) do 
-            if not IsAssigned(item.entityId) and ItemPassesFilter(item, Options['Distribution']) then 
-                loot = item
-                break
-            end
-        end
-
-        if loot ~= nil then
-
-            -- Determine which rules to use
-            local typeKey, stageKey = GetItemOptionsKeys(loot, Options['Distribution']) 
-
-            -- Ruleset
-            -- Note: Btw we can assume we will do distribution for this item because we've already done ItemPassesFilter before getting here
-            -- Fixme: inotherwords were doin it wroong
-            local distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
-
-            -- Weighting
-            local weightedRoster = GetEntitled(loot)
 
 
-            -- Random looting mode
-            if distributionMode == DistributionMode.Random then
-                local winner = weightedRoster[math.random(#weightedRoster)].name
 
-                OnDistributeItem({item=loot, distributionMode=distributionMode})
-                AssignItem(loot.entityId, winner)
+Distribution = {}
+local Private = {}
 
-            -- dice looting mode
-            elseif distributionMode == DistributionMode.Dice then
-                local highest = nil
-                local winner = ''
-                local rolls = {}
-                -- Roll for each member in order to determine winner
-                for num, member in ipairs(weightedRoster) do
 
-                    -- Calc roll
-                    roll = math.random(Options['Distribution']['RollMin'], Options['Distribution']['RollMax'])
 
-                    -- Determine if highest roll
-                    if highest == nil -- First roll automatically becomes the highest 
-                    or roll > highest -- Subsequent rolls must be larger than the highest in order to become the highest (Yeah!)
-                    then
-                        highest = roll
-                        winner = member.name -- Determine winner as we roll
-                    end
+function Distribution.DistributeItem(item, distributionMode, weightingMode)
+    -- We must have an item to distribute!
+    if not item then
+        Debug.Warn('DistributeItem was not called with an item.', tostring(args))
+        return
+    end
 
-                    -- Append to rolls table
-                    table.insert(rolls, {roll=roll, rolledBy=member.name})
-                end
+    -- If not specified, default distribution and weighting modes.
+    distributionMode = distributionMode or DistributionMode.Random
+    weightingMode = weightingMode or WeightingOptions.None
 
-                OnDistributeItem({item=loot, rolls=rolls, distributionMode=distributionMode})
-                AssignItem(loot.entityId, winner)
+    -- If we're doing a Need Before Greed roll, we won't get a winner now, so let's handle that first
+    if distributionMode == DistributionMode.NeedBeforeGreed then
 
-            -- round-robin looting mode
-            -- Todo: Support for Weighting?
-            elseif distributionMode == DistributionMode.RoundRobin then
-                
-                Debug.Log('Round Robin')
-                Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex))
-                Debug.Log('#aSquadRoster.members: '..tostring(#aSquadRoster.members))
-                local winner = ''
-                -- Determine winner
-                for num, member in ipairs(aSquadRoster.members) do
-                    if num == iRoundRobinIndex then
-                        winner = aSquadRoster.members[iRoundRobinIndex].name
-                        Debug.Log('Squad Member '..tostring(num)..', '..tostring(winner)..' is the winner.')
-                        break
-                    end
-                end
+        Private.NeedBeforeGreed(item, aSquadRoster, Distribution.GetEntitled(item, weightingMode))
 
-                -- Setup for next winner
-                Debug.Log('Setting up for next winner, should index be reset?')
-                if iRoundRobinIndex + 1 > #aSquadRoster.members then
-                    Debug.Log('true')
-                    iRoundRobinIndex = 1
-                    Debug.Log('Reseting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
-                else
-                    Debug.Log('false')
-                    iRoundRobinIndex = iRoundRobinIndex + 1
-                    Debug.Log('Increasing iRoundRobinIndex to '..tostring(iRoundRobinIndex))
-                end
-
-                -- Distribute
-                OnDistributeItem({item=loot, distributionMode=distributionMode})
-                AssignItem(loot.entityId, winner)
-            elseif distributionMode == DistributionMode.NeedBeforeGreed then
-
-                -- Check that we're not busy rolling something else
-                if mCurrentlyRolling then
-                    OnRollBusy({item=loot})
-                    return
-                end
-
-                -- Okay, lock us down while we roll
-                mCurrentlyRolling = loot
-
-                -- Use a list from the global scope to store data for this roll
-                aCurrentlyRolling = aSquadRoster.members
-
-                Debug.Log('Pre Setup: ')
-                Debug.Log('aCurrentlyRolling')
-                Debug.Table(aCurrentlyRolling)
-                Debug.Log('weightedRoster')
-                Debug.Table(weightedRoster)
-
-                -- Prep roll list
-                local eligibleNames = '' -- used for output later on, comma separated string of names eligible for need
-
-                for num, row in ipairs(aCurrentlyRolling) do
-                    -- Setup new fields
-                    row.hasRolled = false
-                    row.rollType = false
-                    row.rollValue = nil
-                    row.canNeed = false
-
-                    -- Determine if this person can need under current weighting settings
-                    for i, v in ipairs(weightedRoster) do
-                        if namecompare(row.name, v.name) then
-                            row.canNeed = true
-
-                            if eligibleNames ~= '' then
-                                eligibleNames = eligibleNames..', '..row.name
-                            else
-                                eligibleNames = row.name
-                            end
-                        end
-                    end
-                end
-
-                if eligibleNames == '' then eligibleNames = Lokii.GetString('UI_Messages_Distribution_NobodyEligible') end
-
-                -- Start roll timeout timer
-                mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=loot})
-
-                -- Announce that we're rolling
-                OnAcceptingRolls({item=loot, eligibleNames=eligibleNames, distributionMode=distributionMode})
-
-            end
-        else
-            Debug.Log(Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
-        end
+    -- For all other kinds of rolls, we'll determine the winner here and now!
     else
-        Debug.Log(Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
+
+        -- Vars
+        local members
+        local winner
+        local rolls
+
+        -- Weighting is not compatible with Round-robin
+        if distributionMode ~= DistributionMode.RoundRobin then
+            members = Distribution.GetEntitled(item, weightingMode)
+        else
+            members = aSquadRoster
+        end
+
+        -- If x, do x! \o/ Best code.
+        if distributionMode == DistributionMode.Random then
+            winner = Private.GetWinnerByRandom(members)
+        elseif distributionMode == DistributionMode.Dice then
+            winner, rolls = Private.GetWinnerByDice(members)
+        elseif distributionMode == DistributionMode.RoundRobin then
+            winner = Private.GetWinnerByRoundRobin()
+        end
+
+        -- Announce that we've distributed an item.
+        OnDistributeItem({item=item, distributionMode=distributionMode, weightingMode = weightingMode, rolls=rolls})
+
+        -- If we have a winner (I sure hope we do...), assign him the item! :D
+        if winner then
+            Distribution.AssignItem(item.entityId, winner, rolls)
+        end
     end
 end
+
+
+
+--[[
+    AssignItem(loot|entityId, winner)
+    Assigns an item to a player.
+    The first param can be either a table with an entityId property, or an entityId. If neither a table nor a string, tostring() will be applied.
+]]--
+function Distribution.AssignItem(ref, winner, rolls)
+    
+    local entityId = ''
+    if type(ref) == 'table' then
+        entityId = tostring(ref.entityId)
+    
+    elseif type(ref) == 'string' then
+        entityId = ref
+
+    else
+        entityId = tostring(ref)
+    end
+
+    if not _table.empty(aIdentifiedLoot) then
+        for num, item in ipairs(aIdentifiedLoot) do 
+            if tostring(item.entityId) == entityId then
+                item.assignedTo = winner
+                OnAssignItem({
+                    item = item,
+                    assignedTo = winner,
+                    playerName = winner,
+                })
+                return
+            end
+        end
+    end
+    Debug.Warn('AssignItem failed to assign item :( '..tostring(entityId)..' to '..winner)
+end
+
+--[[
+    GetEntitled(item, weightingMode)
+    Returns a list of people able to roll for this item in a certain weightingMode.
+]]--
+function Distribution.GetEntitled(item, weightingMode)
+
+    -- Get the data we need to be able to weigh
+    local entitledRoster = {}
+    local eligibleArchetypes = {}
+    local eligibleFrames = {}
+
+    -- If it's an equipment item, check local data
+    if IsEquipmentItem(item.itemInfo) and item.craftingTypeId then
+        local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(item.craftingTypeId))
+        if itemArchetype then
+            eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
+        end
+        if itemFrame then
+            eligibleFrames[#eligibleFrames + 1] = itemFrame
+        end
+    -- Else If it's a crafting component, check local data
+    elseif IsCraftingComponent(item.itemInfo) and item.itemTypeId then
+        for k, v in pairs(data_CraftingComponents) do
+            if v.itemTypeId == tostring(item.itemTypeId) and v.classes then
+                for i, class in ipairs(v.classes) do
+                    eligibleArchetypes[#eligibleArchetypes + 1] = class
+                end
+            end
+        end
+    -- Else If itemInfo has classes, use those
+    elseif item.itemInfo.classes then
+        for i, class in ipairs(item.itemInfo.classes) do
+            eligibleArchetypes[#eligibleArchetypes + 1] = class
+        end
+    end
+
+    Debug.Table({eligibleArchetypes=eligibleArchetypes, eligibleFrames=eligibleFrames})
+
+    -- Weigh by Archetype
+    if weightingMode == WeightingOptions.Archetype then
+        for num, member in ipairs(aSquadRoster.members) do
+            for i, archetype in ipairs(eligibleArchetypes) do
+                if member.battleframe == archetype then
+                    table.insert(entitledRoster, member)
+                    break
+                end
+            end
+        end
+    end
+
+    -- Return entitled roster if it has at least one entry
+    if #entitledRoster > 0 then
+        return entitledRoster
+    end
+
+    -- Return an unmodified roster if we had no entries in the entitled roster
+    return aSquadRoster.members
+end
+
+
+
+
+function Private.GetWinnerByRandom(members)
+    return members[math.random(#members)].name
+end
+
+function Private.GetWinnerByDice(members)
+
+    local highest = nil
+    local winner = ''
+    local rolls = {}
+
+    -- Roll for each member in order to determine winner
+    for num, member in ipairs(weightedRoster) do
+
+        -- Calc roll
+        roll = math.random(Options['Distribution']['RollMin'], Options['Distribution']['RollMax'])
+
+        -- Determine if highest roll
+        if highest == nil -- First roll automatically becomes the highest 
+        or roll > highest -- Subsequent rolls must be larger than the highest in order to become the highest (Yeah!)
+        then
+            highest = roll
+            winner = member.name -- Determine winner as we roll
+        end
+
+        -- Append to rolls table
+        table.insert(rolls, {roll=roll, rolledBy=member.name})
+    end
+
+    return winner, rolls
+
+end
+
+function Private.GetWinnerByRoundRobin(members)
+    Debug.Log('Round Robin')
+    Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex))
+    Debug.Log('#aSquadRoster.members: '..tostring(#aSquadRoster.members))
+
+    local winner = ''
+
+    -- Determine winner
+    for num, member in ipairs(aSquadRoster.members) do
+        if num == iRoundRobinIndex then
+            winner = aSquadRoster.members[iRoundRobinIndex].name
+            Debug.Log('Squad Member '..tostring(num)..', '..tostring(winner)..' is the winner.')
+            break
+        end
+    end
+
+    -- Setup for next winner
+    Debug.Log('Setting up for next winner, should index be reset?')
+    if iRoundRobinIndex + 1 > #aSquadRoster.members then
+        Debug.Log('true')
+        iRoundRobinIndex = 1
+        Debug.Log('Reseting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+    else
+        Debug.Log('false')
+        iRoundRobinIndex = iRoundRobinIndex + 1
+        Debug.Log('Increasing iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+    end
+
+    return winner
+end
+
+function Private.NeedBeforeGreed(item, members, eligible)
+    Debug.Log('Need Before Greed')
+    Debug.Table({item=item, members=members, eligible=eligible})
+
+    -- Check that we're not busy rolling something else
+    if mCurrentlyRolling then
+        OnRollBusy({
+                    item = item,
+                   })
+        return
+    end
+
+    -- Okay, lock us down while we roll
+    mCurrentlyRolling = item
+
+    -- Use a list from the global scope to store data for this roll
+    aCurrentlyRolling = members
+
+
+
+    -- Prep roll list
+    local eligibleNames = '' -- used for output later on, comma separated string of names eligible for need TODO: Move this to formatting function xD
+
+    for num, row in ipairs(aCurrentlyRolling) do
+        -- Setup new fields
+        row.hasRolled = false
+        row.rollType = false
+        row.rollValue = nil
+        row.canNeed = false
+
+        -- Determine if this person can need under current weighting settings
+        for i, v in ipairs(eligible) do
+            if namecompare(row.name, v.name) then
+                row.canNeed = true
+
+                if eligibleNames ~= '' then
+                    eligibleNames = eligibleNames..', '..row.name
+                else
+                    eligibleNames = row.name
+                end
+            end
+        end
+    end
+
+    if eligibleNames == '' then eligibleNames = Lokii.GetString('UI_Messages_Distribution_NobodyEligible') end
+
+    -- Start roll timeout timer
+    mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
+
+    -- Announce that we're rolling
+    OnAcceptingRolls({item=item, eligibleNames=eligibleNames, distributionMode=DistributionMode.NeedBeforeGreed})
+end
+
+
+
+
+
+
 
 --[[
     RollTimeout(args)
@@ -316,107 +433,46 @@ function RollFinish()
         RollCleanup()
 
         -- If auto distribute start next roll
-        if Options['Distribution']['AutoDistribute'] then DistributeItem() end
+        if Options['Distribution']['AutoDistribute'] then DistributeNextItem() end
 
     else
         Debug.Warn('RollFinish but not currently rolling')
     end
 end
 
+
+
+
+
+
+
+
 --[[
-    AssignItem(loot|entityId, winner)
-    Assigns an item to a player.
-    The first param can be either a table with an entityId property, or an entityId. If neither a table nor a string, tostring() will be applied.
+    Ugly function not really part of this class but nowhere better to put it
+    Attempts to distribute the next unrolled item, if there is any.
 ]]--
-function AssignItem(ref, winner)
-    
-    local entityId = ''
-    if type(ref) == 'table' then
-        entityId = tostring(ref.entityId)
-    
-    elseif type(ref) == 'string' then
-        entityId = ref
+function DistributeNextItem()
+    -- If we have loot to distribute and we're the leader
+    if not _table.empty(aIdentifiedLoot) and bIsSquadLeader then
 
-    else
-        entityId = tostring(ref)
-    end
-
-    if not _table.empty(aIdentifiedLoot) then
+        -- Get the first unrolled item from the list of identified loot
         for num, item in ipairs(aIdentifiedLoot) do 
-            if tostring(item.entityId) == entityId then
-                item.assignedTo = winner
-                OnAssignItem({
-                    item = item,
-                    assignedTo = winner,
-                    playerName = winner,
-                })
-                return
+
+            -- If the item is not assigned and passes our distribution filters
+            if not IsAssigned(item.entityId) and ItemPassesFilter(item, Options['Distribution']) then 
+                    
+                local typeKey, stageKey = GetItemOptionsKeys(item, Options['Distribution']) 
+                local distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
+                local weightingMode = Options['Distribution'][typeKey][stageKey]['Weighting']
+
+                Distribution.DistributeItem(item, distributionMode, weightingMode)
+                break
+
             end
+
         end
+
     end
-    Debug.Warn('AssignItem failed to assign item :( '..tostring(entityId)..' to '..winner)
+
 end
---[[
-    GetEntitled(loot)
-    Returns a list of people able to roll for loot under the current loot weighing settings
-    Todo: Make this function less terrible
-]]--
-function GetEntitled(loot)
 
-    -- Get Options type and stage keys for this item
-    local typeKey, stageKey = GetItemOptionsKeys(loot, Options['Distribution']) 
-
-    -- Build entitled roster if weighting options are enabled
-    if Options['Distribution'][typeKey][stageKey]['Weighting'] ~= WeightingOptions.None then 
-
-        local entitledRoster = {}
-        local eligibleArchetypes = {}
-        local eligibleFrames = {}
-
-        -- If it's an equipment item, check local data
-        if IsEquipmentItem(loot.itemInfo) and loot.craftingTypeId then
-            local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(loot.craftingTypeId))
-            if itemArchetype then
-                eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
-            end
-            if itemFrame then
-                eligibleFrames[#eligibleFrames + 1] = itemFrame
-            end
-        -- Else If it's a crafting component, check local data
-        elseif IsCraftingComponent(loot.itemInfo) and loot.itemTypeId then
-            for k, v in pairs(data_CraftingComponents) do
-                if v.itemTypeId == tostring(loot.itemTypeId) and v.classes then
-                    for i, class in ipairs(v.classes) do
-                        eligibleArchetypes[#eligibleArchetypes + 1] = class
-                    end
-                end
-            end
-        -- Else If itemInfo has classes, use those
-        elseif loot.itemInfo.classes then
-            for i, class in ipairs(loot.itemInfo.classes) do
-                eligibleArchetypes[#eligibleArchetypes + 1] = class
-            end
-        end
-
-        Debug.Table({eligibleArchetypes=eligibleArchetypes, eligibleFrames=eligibleFrames})
-
-        -- Add entitled under Archetype setting
-        if Options['Distribution'][typeKey][stageKey]['Weighting'] == WeightingOptions.Archetype then
-            for num, member in ipairs(aSquadRoster.members) do
-                for i, archetype in ipairs(eligibleArchetypes) do
-                    if member.battleframe == archetype then
-                        table.insert(entitledRoster, member)
-                        break
-                    end
-                end
-            end
-        end
-
-        -- Return entitled roster if it has at least one entry
-        if #entitledRoster > 0 then
-            return entitledRoster
-        end
-    end
-    -- Return an unmodified roster if weighting options are disabled or if we had no entires in the entitled roster
-    return aSquadRoster.members
-end

@@ -426,7 +426,14 @@ function OnIdentify(args)
     if bIsSquadLeader then
         -- If auto distribute is enabled, distribute the item
         if Options['Distribution']['AutoDistribute'] then
-            DistributeItem()
+
+            if not IsAssigned(args.item.entityId) and ItemPassesFilter(args.item, Options['Distribution']) then
+                local typeKey, stageKey = GetItemOptionsKeys(args.item, Options['Distribution']) 
+                local distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
+                local weightingMode = Options['Distribution'][typeKey][stageKey]['Weighting']
+
+                Distribution.DistributeItem(args.item, distributionMode, weightingMode)
+            end
         end
     end
 end
@@ -536,12 +543,6 @@ function OnAssignItem(args)
             args.item.waypoint:Ping()
         end
     end
-
-    -- Communicate Assign Item
-    CommunicationEvent('Assign', args)
-
-    -- Messages
-    MessageEvent('Distribution', 'OnAssignItem', args)
 end
 
 --[[
