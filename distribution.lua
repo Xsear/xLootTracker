@@ -37,7 +37,7 @@ function DistributeItem()
             if distributionMode == DistributionMode.Random then
                 local winner = weightedRoster[math.random(#weightedRoster)].name
 
-                OnDistributeItem({item=loot})
+                OnDistributeItem({item=loot, distributionMode=distributionMode})
                 AssignItem(loot.entityId, winner)
 
             -- dice looting mode
@@ -63,7 +63,7 @@ function DistributeItem()
                     table.insert(rolls, {roll=roll, rolledBy=member.name})
                 end
 
-                OnDistributeItem({item=loot, rolls=rolls})
+                OnDistributeItem({item=loot, rolls=rolls, distributionMode=distributionMode})
                 AssignItem(loot.entityId, winner)
 
             -- round-robin looting mode
@@ -96,7 +96,7 @@ function DistributeItem()
                 end
 
                 -- Distribute
-                OnDistributeItem({item=loot})
+                OnDistributeItem({item=loot, distributionMode=distributionMode})
                 AssignItem(loot.entityId, winner)
             elseif distributionMode == DistributionMode.NeedBeforeGreed then
 
@@ -148,7 +148,7 @@ function DistributeItem()
                 mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=loot})
 
                 -- Announce that we're rolling
-                OnAcceptingRolls({item=loot, eligibleNames=eligibleNames})
+                OnAcceptingRolls({item=loot, eligibleNames=eligibleNames, distributionMode=distributionMode})
 
             end
         else
@@ -305,7 +305,7 @@ function RollFinish()
 
         -- Otherwise, send distribute event and assign to the winner
         else
-            OnDistributeItem({item=mCurrentlyRolling, rolls=rolls})
+            OnDistributeItem({item=mCurrentlyRolling, rolls=rolls, distributionMode=DistributionMode.NeedBeforeGreed})
             AssignItem(mCurrentlyRolling.entityId, winner)
         end
 

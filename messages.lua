@@ -184,16 +184,8 @@ function RunMessageFilters(message, args)
     args.lootedTo            = args.lootedTo                or undefinedValue
     args.assignedTo          = args.assignedTo              or undefinedValue
     args.eligible            = args.eligibleNames           or undefinedValue
+    args.distributionMode    = args.distributionMode        or undefinedValue
 
-
-    Debug.Log("Message filters")
-    Debug.Log("args.item.name: " .. args.item.name .. ', ' .. type(args.item.name));
-
-    -- Create local mixes
-    local itemNameQuality = FixItemNameTag(args.item.name, args.item.quality)
-
-    -- Adjust item name
-    local itemNameClean = FixItemNameTag(args.item.name)
 
 --[[
     -- Archetype/Frame replacements
@@ -250,15 +242,14 @@ function RunMessageFilters(message, args)
     -- Start building the output
     local output = message
 
-    -- Loot mode Todo: Include what sort of mode the item was distributed in
-    --output = unicode.gsub(output, '%%m', Options['Distribution']['LootMode'])
+    -- What sort of mode the item was distributed in
+    output = unicode.gsub(output, '%%m', args.distributionMode)
 
-    -- Item name with quality
+    -- Item (Text)
     output = unicode.gsub(output, '%%iq', ChatLib.CreateItemText({name = args.item.name}, args.item.quality))
 
-    -- Item name
+    -- Item (Linked)
     output = unicode.gsub(output, '%%i', ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil)) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
-
 
     -- Item entityId
     output = unicode.gsub(output, '%%eId', tostring(args.item.entityId))
