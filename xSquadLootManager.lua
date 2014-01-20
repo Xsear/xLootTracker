@@ -265,91 +265,14 @@ end
 --[[
     OnChatMessage(args)
     Callback function for when player receives chat messages
-    Identifies messages
-    Fixme: holy shit this function is a clusterfuck
-    TODO: if (is communication message) then HandleCommunicationMessage(msg)
+    Used to handle Roll Decisions from non-SLM members.
 ]]--
 function OnChatMessage(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    --[[
-        FindFirstKeyInText(text, key)
-        Chat parsing helper function
-    ]]--
-    local function FindFirstKeyInText(text, key)
-        return unicode.find(text, key, 0, unicode.len(key))
-    end
-
-    --[[
-        FilterFirstKeyFromText(text, key)
-        Chat parsing helper function
-    ]]--
-    local function FilterFirstKeyFromText(text, key)
-        --FindFirstKeyInText(text, key),
-        return unicode.sub(text, unicode.len(key) + 1)
-    end
+    -- Requires Core and Distribution enabled
+    if not Options['Core']['Enabled'] or not Options['Distribution']['Enabled'] then return end
 
     -- Filter for only Squad messages
     if args.channel == 'squad' then
-
-        -- Filter for only addon communication messages
-        -- We only listen to messages from the squad leader, and only if we're not the squad leader ourselves (that has to be some fake squad leader fooshu!)
-        if IsSquadLeader(args.author) and not bIsSquadLeader and FindFirstKeyInText(args.text, Options['Messages']['Communication']['Prefix']) ~= nil then
-            Debug.Log('Squad Communication Message')
-            Debug.Log(args.text)
-            -- Strip away prefix
-            local message = FilterFirstKeyFromText(args.text, Options['Messages']['Communication']['Prefix'])
-
-            -- Hardcoded for Assign message
-            -- Todo: Should just grab first part to determine command before grabbing rest
-            local _, _, command, itemTypeId, quality, playerName = unicode.find(message, '^(%a):(%d+):(%d+):(.*)$')
-            
-            -- Assign Command
-            if command == 'A' then
-
-                -- Okay, so there is no unique property that I can share, so I have to with what I got
-                -- We have the itemTypeId and quality, two unique properties that are unlikely to be the exact same for two lootable entities in the world at once.
-                -- Check all identified entities, pick the first match.
-                -- Todo: If we don't find matching entity, attempt to identify
-                local localItem = nil
-                for num, item in ipairs(aIdentifiedLoot) do
-                    Debug.Log('Checking if it is '..item.name..' with typeid '..tostring(item.itemTypeId)..' and quality '..tostring(item.quality))
-                    if tostring(item.itemTypeId) == tostring(itemTypeId) and tostring(item.quality) == tostring(quality) then
-                        localItem = item
-                        Debug.Log('It is! Selected entityId: '..tostring(localItem.entityId))
-                        break
-                    end
-                end
-
-                -- If we don't know about this item we won't get info from it anyway, so just abort
-                if localItem.entityId == nil then Debug.Error('Unable to find locally identified item that Squad Leader wants to assign.\nItemTypeId: '..tostring(itemTypeId)..'\nQuality: '..tostring(quality)) return end
-
-                -- But if we do, loop dat shit
-                local wasAssigned = false
-                for num, member in ipairs(aSquadRoster.members) do
-
-                    if namecompare(member.name, playerName) then
-                        -- Because it matters yo
-                        if IsAssigned(localItem.entityId) then
-                            SendChatMessage('system', 'Squad Leader is reassigning '..FixItemNameTag(localItem.name, localItem.quality)..' from '..localItem.assignedTo..' to '..playerName)
-                        end
-
-                        -- Assign item
-                        AssignItem(localItem.entityId, playerName)
-                        wasAssigned = true
-                        break
-                    end
-                end
-
-                if not wasAssigned then Debug.Error('Attempted to heed assign command but couldn\'t find the squad member') end
-
-                -- Exit eitherway, if we got this far shit's legit and we don't care about anything else.
-                return
-            end
-
-        end
-
 
         -- If we are looking for roll decisions
         if mCurrentlyRolling and bIsSquadLeader then
@@ -370,12 +293,10 @@ function OnChatMessage(args)
     end
 end
 
-
 --[[
     OnLootPickup(args)
     This event is called when other players loot things.
     Currently just redirecting to OnLootCollected should be fine.
-    
 ]]--
 function OnLootPickup(args)
     -- Don't send if the item was looted by and to the local player - preventing double messages.
@@ -395,8 +316,6 @@ end
     
 ]]--
 function OnLootCollected(args)
-    Debug.Table(args)
-
     -- Requires Core and Detection enabled
     if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
