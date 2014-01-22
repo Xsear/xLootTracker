@@ -84,3 +84,8 @@ TrackerIconModeOptions = {
     --IconOnly = 'icon-only',
     None = 'none',
 }
+
+AssignedTo = {
+    Unassigned = -1,
+    FreeForAll = 1,
+}

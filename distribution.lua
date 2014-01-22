@@ -229,21 +229,27 @@ function Private.NeedBeforeGreed(item, members, eligible)
         return
     end
 
+    -- If there is already rolls data for this item, that's probably not good.
+    if item.rollData then
+        Debug.Warn('Need Before Greed roll on an item that already has rolls information. Dumping and forcing to nil.', item.rollData)
+        item.rollData = nil
+    end
+
     -- Okay, lock us down while we roll
     mCurrentlyRolling = item
 
-    -- Use a list from the global scope to store data for this roll
-    aCurrentlyRolling = members
+    -- Establish table
+    item.rollData = {}
 
-    -- Prep roll list
-    for num, row in ipairs(aCurrentlyRolling) do
+    -- Fill data
+    for num, row in ipairs(members) do
         -- Setup new fields
         row.hasRolled = false
         row.rollType = false
         row.rollValue = nil
         row.canNeed = false
 
-        -- Determine if this person can need under current weighting settings
+        -- Determine if this person is eligible for need rolls
         for i, v in ipairs(eligible) do
             if namecompare(row.name, v.name) then
                 row.canNeed = true
@@ -252,10 +258,10 @@ function Private.NeedBeforeGreed(item, members, eligible)
     end
 
     -- Start roll timeout timer
-    mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
+    item.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
 
     -- Announce that we're rolling
-    OnAcceptingRolls({item=item, members=aCurrentlyRolling, eligible=eligible, distributionMode=DistributionMode.NeedBeforeGreed})
+    OnAcceptingRolls({item=item, members=members, eligible=eligible, distributionMode=DistributionMode.NeedBeforeGreed})
 end
 
 
@@ -303,7 +309,6 @@ function RollCleanup()
         mCurrentlyRolling.timer:KillAlarm('roll_timeout')
         Debug.Log('RollCleanup killing roll timeout alarm')
         mCurrentlyRolling = false
-        aCurrentlyRolling = {}
     end
 end
 
@@ -316,6 +321,10 @@ end
     Calls RollFinish() If the roll declaration is the final one
     Calls OnRollChange if the rolltype is changed (because author was not eligible for the rollType)
     Calls OnRollAccept when the rolltype is saved to the list of rolls
+    
+    args.rollType
+    args.author 
+
 ]]--
 function RollDecision(args)
 
@@ -324,7 +333,7 @@ function RollDecision(args)
         local totalRemaining = 0
         local needRemaining = 0
         -- Go through all the people who can roll
-        for num, row in ipairs(aCurrentlyRolling) do
+        for num, row in ipairs(mCurrentlyRolling.rollData) do
             -- If we've found the person who sent this message and he has not yet selected rollType
             if args.author == row.name and row.rollType == false then
                 -- If he wants to roll need but isn't allowed to, change his roll to greed (y bastard)
@@ -377,7 +386,7 @@ function RollFinish()
 
         -- Figure out if someone has need rolled, and set any un-decided roll types to the default
         local someoneHasNeeded = false
-        for num, row in ipairs(aCurrentlyRolling) do
+        for num, row in ipairs(mCurrentlyRolling.rollData) do
             if row.rollType == RollType.Need then
                 someoneHasNeeded = true
             elseif row.rollType == false then
@@ -386,7 +395,7 @@ function RollFinish()
         end
 
         -- Go through rolls
-        for num, row in ipairs(aCurrentlyRolling) do
+        for num, row in ipairs(mCurrentlyRolling.rollData) do
             -- Inverted logic because Lua doesn't have continue
             -- Skip greed rolls if someone has needed, as well as any pass rolls
             if not(someoneHasNeeded and row.rollType == RollType.Greed) and not (row.rollType == RollType.Pass or row.rollType == false) then
@@ -402,16 +411,17 @@ function RollFinish()
                     winner = row.name -- Determine winner as we roll
                 end
 
+                -- Store it in the rollData so that we can use it later
+                row.rollValue = roll
+
                 -- Append to rolls table
                 table.insert(rolls, {roll=roll, rolledBy=row.name})
-
-            end
-            
+            end 
         end
 
         -- If there were no rolls, assign free for all and send event
         if next(rolls) == nil then
-            mCurrentlyRolling.assignedTo = true -- Fixme: wtf
+            mCurrentlyRolling.assignedTo = AssignedTo.FreeForAll
             OnRollNobody({item=mCurrentlyRolling})
 
         -- Otherwise, send distribute event and assign to the winner

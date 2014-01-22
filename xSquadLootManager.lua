@@ -13,6 +13,7 @@ require 'lib/lib_Button' -- Buttons used by Tracker
 require 'lib/lib_Tooltip' -- Tooltip used by Tracker
 require 'lib/lib_ChatLib' -- Used to send some chat messages
 require 'lib/lib_table' -- Common table functions
+require 'lib/lib_UserKeybinds' -- User keybinds
 
 -- Custom Libs
 require './lib/Lokii' -- Localization
@@ -32,10 +33,9 @@ bInSquad = false -- Whether we are currently in a squad or not
 bIsSquadLeader = false -- Whether we are currently the squad leader or not
 bHUD = false -- Whether game wants HUD to be displayed or not, updated by OnHudShow
 bCursor = false -- Whether game is in cursor mode or not, updated by OnInputModeChanged
-bTooltipActive = false -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this addon to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused) it should serve its purpose.
+bTooltipActive = false -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused) it should serve its purpose.
 
-mCurrentlyRolling = false -- false if not rolling, table otherwise, all the wtfs you want
-aCurrentlyRolling = {} -- During a need-before-greed roll, stores data of squadroster with additional fields like rolltype, rollvalue etc. Merge this with mCurrentlyRolling sometime for awesomeness
+mCurrentlyRolling = false -- Reference to an item in the aIdentifiedLoot table when that item is being rolled, false when no item is being rolled.
 
 iRoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
 
@@ -58,6 +58,7 @@ require './types'   -- Types
 require './options' -- Options
 
 -- Addon Modules
+require './communication' -- Communication
 require './markers' -- Markers (Panels / Waypoints)
 require './detection' -- Detection
 require './distribution' -- Distribution

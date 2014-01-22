@@ -17,7 +17,7 @@ function Communication.SendAssign()
     if not bIsSquadLeader then return end
 
     --[[
-        Relevant data:  itemTypeId, itemQuality, itemQuantity (maybe, for resources)
+        Relevant data:  itemTypeId, itemQuality, itemQuantity (maybe, for resources), unique reference id
     --]]
 
 end
@@ -31,14 +31,19 @@ function Communication.SendRollAnnouncement()
 
 end
 
-function Communication.SendRollDecision()
+function Communication.SendRollDecision(item, rollType)
+    Debug.Table({func='Communication.SendRollDecision', item=item, rollType=rollType})
+
+
 end
 
 
 function Communication.ReceiveAssign()
+
 end
 
-function Communicaiton.ReceiveRollAnnouncement()
+function Communication.ReceiveRollAnnouncement()
+    Tracker.Update()
 end
 
 function Communication.RecieveRollDecision()
@@ -48,4 +53,5 @@ function Communication.RecieveRollDecision()
     -- Requires that we are listening for a roll
     if not mCurrentlyRolling then return end
 
+    RollDecision({author = data.author, rollType = data.rollType})
 end

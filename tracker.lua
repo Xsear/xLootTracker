@@ -33,6 +33,7 @@ function Tracker.Update()
         local numberOfItemsInTracker = 0
         if not _table.empty(aIdentifiedLoot) then
             for num, item in ipairs(aIdentifiedLoot) do
+
                 if ItemPassesFilter(item, Options['Tracker']) then
 
                     -- Create widget
@@ -75,50 +76,91 @@ function Tracker.Update()
                     ENTRY:GetChild('item'):GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
 
                     -- Left
-                    --[[
-                    -- Setup Buttons
-                        -- Need
-                        BUTTON1 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                        BUTTON1_ICON = MultiArt.Create(BUTTON1:GetWidget())
-                        BUTTON1_ICON:SetTexture('TrackerIcons')
-                        BUTTON1_ICON:SetRegion('Need')
+                    if item.rollData then 
 
-                        BUTTON1:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                        -- If Ongoing roll then Setup Buttons
+                        if item.assignedTo == nil then
 
-                        BUTTON1:Bind(function() 
-                                System.PlaySound('Play_UI_Beep_06')
-                            end)
+                            -- Need
+                            BUTTON_NEED = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                        -- Greed
-                        BUTTON2 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                            BUTTON_NEED_ICON = MultiArt.Create(BUTTON_NEED:GetWidget())
+                            BUTTON_NEED_ICON:SetTexture('TrackerIcons')
+                            BUTTON_NEED_ICON:SetRegion('Need')
 
-                        BUTTON2_ICON = MultiArt.Create(BUTTON2:GetWidget())
-                        BUTTON2_ICON:SetTexture('TrackerIcons')
-                        BUTTON2_ICON:SetRegion('Greed')
+                            BUTTON_NEED:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
 
-                        BUTTON2:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-                        BUTTON2:Bind(function() 
-                                System.PlaySound('Play_UI_Beep_06')
-                            end)
 
-                        -- Pass
-                        BUTTON3 = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                            -- Greed
+                            BUTTON_GREED = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
 
-                        BUTTON3_ICON = MultiArt.Create(BUTTON3:GetWidget())
-                        BUTTON3_ICON:SetTexture('TrackerIcons')
-                        BUTTON3_ICON:SetRegion('Pass')
+                            BUTTON_GREED_ICON = MultiArt.Create(BUTTON_GREED:GetWidget())
+                            BUTTON_GREED_ICON:SetTexture('TrackerIcons')
+                            BUTTON_GREED_ICON:SetRegion('Greed')
 
-                        BUTTON3:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-                        BUTTON3:Bind(function() 
-                                System.PlaySound('Play_UI_Beep_06')
-                            end)
-                    --]]
+                            BUTTON_GREED:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+
+                            -- Pass
+                            BUTTON_PASS = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+
+                            BUTTON_PASS_ICON = MultiArt.Create(BUTTON_PASS:GetWidget())
+                            BUTTON_PASS_ICON:SetTexture('TrackerIcons')
+                            BUTTON_PASS_ICON:SetRegion('Pass')
+
+                            BUTTON_PASS:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
+                            
+
+                            local haveRolled = false
+                            for _, member in ipairs(item.rollData) do
+                                if namecompare(Player.GetInfo(), member.name) then
+                                    if member.rollType then
+                                        haveRolled = true
+                                    end
+                                end
+                            end
+
+                            if  haveRolled then
+                                BUTTON_NEED:Disable(true)
+                                BUTTON_GREED:Disable(true)
+                                BUTTON_PASS:Disable(true)
+                            else
+                                BUTTON_NEED:Bind(function(args) 
+                                    Debug.Log("need button pressed, here's the args")
+                                    Debug.Table(args)
+                                    System.PlaySound('Play_UI_Beep_06')
+                                    BUTTON_NEED:Disable(true)
+                                    BUTTON_GREED:Disable(true)
+                                    BUTTON_PASS:Disable(true)
+                                    Communication.SendRollDecision(item, RollType.Need)
+                                end, {button = "Need", item = item})
+
+                                BUTTON_GREED:Bind(function(args) 
+                                    System.PlaySound('Play_UI_Beep_06')
+                                    BUTTON_NEED:Disable(true)
+                                    BUTTON_GREED:Disable(true)
+                                    BUTTON_PASS:Disable(true)
+                                    Communication.SendRollDecision(item, RollType.Greed)
+                                end, {button = "Greed", item = item})
+
+                                BUTTON_PASS:Bind(function(args) 
+                                    System.PlaySound('Play_UI_Beep_06')
+                                    BUTTON_NEED:Disable(true)
+                                    BUTTON_GREED:Disable(true)
+                                    BUTTON_PASS:Disable(true)
+                                    Communication.SendRollDecision(item, RollType.Pass)
+                                end, {button = "Pass", item = item})
+                            end
+                            
+                        end
+
+                    end
+
                     
                     -- Setup Assigned To text
                     if item.assignedTo == nil then
                         ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
-                    elseif item.assignedTo == false or item.assignedTo == true then
+                    elseif item.assignedTo == AssignedTo.FreeForAll then
                         ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
                     else
                         ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
