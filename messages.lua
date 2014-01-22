@@ -152,8 +152,7 @@ end
 function RollsFormater(format, rolls, item)
     local t = {}
     for num, row in ipairs(rolls) do
-            table.insert(t, RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item}))
-        end
+        t[#t+1] = RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
     end
     return table.concat(t, '\n')
 end
