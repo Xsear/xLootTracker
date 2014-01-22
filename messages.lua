@@ -150,15 +150,12 @@ end
     Helper function to generate the proper format for multi-line roll messages
 ]]--
 function RollsFormater(format, rolls, item)
-    local message = ''
+    local t = {}
     for num, row in ipairs(rolls) do
-        if message ~= '' then
-            message = message..'\n'..RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
-        else
-            message = RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
+            table.insert(t, RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item}))
         end
     end
-    return message
+    return table.concat(t, '\n')
 end
 
 --[[
