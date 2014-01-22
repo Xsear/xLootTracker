@@ -129,7 +129,9 @@ function MessageEvent(eventClass, eventName, eventArgs, canSend)
 
             -- If we have rolls data, and OnRolls message is enabled, add
             if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] and Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Enabled'] then
+
                 local rollsMessage = RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Format'], eventArgs.rolls, eventArgs.item)
+                
                 if message == '' then
                     message = rollsMessage
                 else
@@ -179,24 +181,49 @@ function RunMessageFilters(message, args)
     args.rollType            = args.rollType                or undefinedValue
     args.lootedTo            = args.lootedTo                or undefinedValue
     args.assignedTo          = args.assignedTo              or undefinedValue
-    args.eligible            = args.eligibleNames           or undefinedValue
     args.distributionMode    = args.distributionMode        or undefinedValue
 
+    args.members             = args.members                 or undefinedValue
+    args.eligible            = args.eligible                or undefinedValue
 
---[[
-    -- Archetype/Frame replacements
-    local itemForArchetype, itemForFrame = undefinedValue
-    if args.item.craftingTypeId ~= undefinedValue then
-        itemForArchetype, itemForFrame = xBattleframes.GetInfoByCraftingTypeId(args.item.craftingTypeId)
+
+    -- Item (Text)
+    local itemAsText = ChatLib.CreateItemText({name = args.item.name}, args.item.quality)
+
+    -- Item (Linked)
+    local itemAsLink = ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
+
+    -- Item entityId
+    local itemEntityId = tostring(args.item.entityId)
+    -- Item itemTypeId
+    local itemItemTypeId = tostring(args.item.itemTypeId)
+    -- Item craftingTypeId
+    local itemCraftingTypeId = tostring(args.item.craftingTypeId)
+
+    -- Player Subject (Link)
+    local playerAsLink = ChatLib.EncodePlayerLink(args.playerName)
+    -- Player Looted To (Link)
+    local playerLootedToAsLink = ChatLib.EncodePlayerLink(args.lootedTo)
+    -- Player Assigned To (Link)
+    local playerAssignedToAsLink = ChatLib.EncodePlayerLink(args.assignedTo)
+
+    -- Members (Links)
+    local membersAsLinks = {}
+    for _, player in ipairs(members) do
+        membersAsLinks[#membersAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
     end
-    if itemForArchetype == nil then
-        itemForArchetype = undefinedValue
-    else
-        itemForArchetype = xBattleframes.GetDisplayNameOfArchetype(itemForArchetype)
+    membersAsLinks = membersAsLinks:concat(', ')
+
+    -- Eligible (Links)
+    local eligibleAsLinks = {}
+    for _, player in ipairs(eligible) do
+        eligibleAsLinks[#eligibleAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
     end
-    if itemForFrame == nil then itemForFrame = undefinedValue end
---]]
-    
+    eligibleAsLinks = eligibleAsLinks:concat(', ')
+
+    -- Distribution Mode
+    local distributionMode = args.distributionMode -- Might need a formatter here
+
     -- Archetype/Frame replacements
     local itemForArchetype = undefinedValue
     local itemForFrame = undefinedValue
@@ -235,26 +262,27 @@ function RunMessageFilters(message, args)
         itemForFrame = eligibleFrames[1]
     end
 
+
     -- Start building the output
     local output = message
 
     -- What sort of mode the item was distributed in
-    output = unicode.gsub(output, '%%m', args.distributionMode)
+    output = unicode.gsub(output, '%%m', distributionMode)
 
     -- Item (Text)
-    output = unicode.gsub(output, '%%iq', ChatLib.CreateItemText({name = args.item.name}, args.item.quality))
+    output = unicode.gsub(output, '%%iq', itemAsText)
 
     -- Item (Linked)
-    output = unicode.gsub(output, '%%i', ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil)) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
+    output = unicode.gsub(output, '%%i', itemAsLink)
 
     -- Item entityId
-    output = unicode.gsub(output, '%%eId', tostring(args.item.entityId))
+    output = unicode.gsub(output, '%%eId', itemEntityId)
 
     -- Item itemTypeId
-    output = unicode.gsub(output, '%%tId', tostring(args.item.itemTypeId))
+    output = unicode.gsub(output, '%%tId', itemItemTypeId)
 
     -- Item craftingTypeId
-    output = unicode.gsub(output, '%%cId', tostring(args.item.craftingTypeId))
+    output = unicode.gsub(output, '%%cId', itemCraftingTypeId)
 
     -- Item For Archetype
     output = unicode.gsub(output, '%%fA', itemForArchetype)
@@ -263,7 +291,13 @@ function RunMessageFilters(message, args)
     output = unicode.gsub(output, '%%fF', itemForFrame)
 
     -- Player name
-    output = unicode.gsub(output, '%%n', ChatLib.EncodePlayerLink(args.playerName))
+    output = unicode.gsub(output, '%%n', playerAsLink)
+
+    -- Looted To
+    output = unicode.gsub(output, '%%l', playerLootedToAsLink) 
+
+    -- Assigned To
+    output = unicode.gsub(output, '%%a', playerAssignedToAsLink)
 
     -- Roll
     output = unicode.gsub(output, '%%r', args.roll) 
@@ -271,14 +305,11 @@ function RunMessageFilters(message, args)
     -- Roll type
     output = unicode.gsub(output, '%%t', args.rollType) 
 
-    -- Looted To
-    output = unicode.gsub(output, '%%l', ChatLib.EncodePlayerLink(args.lootedTo)) 
+    -- Members
+    output = unicode.gsub(output, '%%p', membersAsLinks)
 
-    -- Assigned To
-    output = unicode.gsub(output, '%%a', ChatLib.EncodePlayerLink(args.assignedTo))
-
-    -- Eligible (super hardcoded)
-    output = unicode.gsub(output, '%%e', args.eligibleNames)
+    -- Eligible
+    output = unicode.gsub(output, '%%e', eligibleAsLinks)
 
    return output
 end

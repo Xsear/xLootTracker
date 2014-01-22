@@ -235,11 +235,7 @@ function Private.NeedBeforeGreed(item, members, eligible)
     -- Use a list from the global scope to store data for this roll
     aCurrentlyRolling = members
 
-
-
     -- Prep roll list
-    local eligibleNames = '' -- used for output later on, comma separated string of names eligible for need TODO: Move this to formatting function xD
-
     for num, row in ipairs(aCurrentlyRolling) do
         -- Setup new fields
         row.hasRolled = false
@@ -251,23 +247,15 @@ function Private.NeedBeforeGreed(item, members, eligible)
         for i, v in ipairs(eligible) do
             if namecompare(row.name, v.name) then
                 row.canNeed = true
-
-                if eligibleNames ~= '' then
-                    eligibleNames = eligibleNames..', '..row.name
-                else
-                    eligibleNames = row.name
-                end
             end
         end
     end
-
-    if eligibleNames == '' then eligibleNames = Lokii.GetString('UI_Messages_Distribution_NobodyEligible') end
 
     -- Start roll timeout timer
     mCurrentlyRolling.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
 
     -- Announce that we're rolling
-    OnAcceptingRolls({item=item, eligibleNames=eligibleNames, distributionMode=DistributionMode.NeedBeforeGreed})
+    OnAcceptingRolls({item=item, members=aCurrentlyRolling, eligible=eligible, distributionMode=DistributionMode.NeedBeforeGreed})
 end
 
 
