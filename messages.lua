@@ -186,7 +186,6 @@ function RunMessageFilters(message, args)
     args.members             = args.members                 or undefinedValue
     args.eligible            = args.eligible                or undefinedValue
 
-
     -- Item (Text)
     local itemAsText = ChatLib.CreateItemText({name = args.item.name}, args.item.quality)
 
@@ -209,8 +208,8 @@ function RunMessageFilters(message, args)
 
     -- Members (Links)
     local membersAsLinks = {}
-    if members then
-        for _, player in ipairs(members) do
+    if args.members ~= undefinedValue then
+        for _, player in ipairs(args.members) do
             membersAsLinks[#membersAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
         end
     end
@@ -218,8 +217,8 @@ function RunMessageFilters(message, args)
 
     -- Eligible (Links)
     local eligibleAsLinks = {}
-    if eligible then
-        for _, player in ipairs(eligible) do
+    if args.eligible ~= undefinedValue then
+        for _, player in ipairs(args.eligible) do
             eligibleAsLinks[#eligibleAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
         end
     end
