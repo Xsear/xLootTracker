@@ -273,7 +273,7 @@ function RunMessageFilters(message, args)
     output = unicode.gsub(output, '%%m', distributionMode)
 
     -- Item (Text)
-    output = unicode.gsub(output, '%%iq', itemAsText)
+    output = unicode.gsub(output, '%%it', itemAsText)
 
     -- Item (Linked)
     output = unicode.gsub(output, '%%i', itemAsLink)
