@@ -283,7 +283,13 @@ end
 ]]--
 function RollCancel(args)
     if mCurrentlyRolling then
-        SendChatMessage('system', 'RollCancel for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality))
+        local message = 'RollCancel for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality)
+
+        if args.reason then
+            message = message..'\nReason: '..args.reason
+        end
+
+        SendChatMessage('system', message)
         RollCleanup()
     end
 end
