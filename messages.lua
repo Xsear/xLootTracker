@@ -209,17 +209,21 @@ function RunMessageFilters(message, args)
 
     -- Members (Links)
     local membersAsLinks = {}
-    for _, player in ipairs(members) do
-        membersAsLinks[#membersAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
+    if members then
+        for _, player in ipairs(members) do
+            membersAsLinks[#membersAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
+        end
     end
-    membersAsLinks = membersAsLinks:concat(', ')
+    membersAsLinks = table.concat(membersAsLinks, ', ')
 
     -- Eligible (Links)
     local eligibleAsLinks = {}
-    for _, player in ipairs(eligible) do
-        eligibleAsLinks[#eligibleAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
+    if eligible then
+        for _, player in ipairs(eligible) do
+            eligibleAsLinks[#eligibleAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
+        end
     end
-    eligibleAsLinks = eligibleAsLinks:concat(', ')
+    eligibleAsLinks = table.concat(eligibleAsLinks, ', ')
 
     -- Distribution Mode
     local distributionMode = args.distributionMode -- Might need a formatter here
