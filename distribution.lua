@@ -431,7 +431,7 @@ function RollFinish()
         -- Otherwise, send distribute event and assign to the winner
         else
             OnDistributeItem({item=mCurrentlyRolling, rolls=rolls, distributionMode=DistributionMode.NeedBeforeGreed})
-            AssignItem(mCurrentlyRolling.entityId, winner)
+            Distribution.AssignItem(mCurrentlyRolling.entityId, winner)
         end
 
         -- Update loot panels
