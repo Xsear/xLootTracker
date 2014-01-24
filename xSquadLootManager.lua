@@ -98,12 +98,8 @@ function OnComponentLoad()
     -- Best make sure the tracker is set up
     Tracker.Update()
 
-    ChatLib.RegisterCustomLinkType('xslm_assign', Communication.ReceiveAssign)
-    ChatLib.RegisterCustomLinkType('xslm_r_s', Communication.ReceiveRollStart)
-    ChatLib.RegisterCustomLinkType('xslm_rolldecision', Communication.RecieveRollDecision)
-
-
-
+    -- Setup Communication links
+    Communication.Setup()
 
     -- Print version message
     if Component.GetSetting('Core_VersionMessage') then

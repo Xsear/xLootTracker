@@ -41,10 +41,12 @@ function Identify(entityId, targetInfo, itemInfo)
 
     -- If squad leader, generate identity
     if bIsSquadLeader then
+        Debug.Log('Generating identity id')
         local player = Player.GetInfo()
         local time = tonumber(System.GetLocalUnixTime())
-        item.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
+        loot.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
         identityCounter = identityCounter + 1
+        Communication.SendItemIdentity(loot)
     end
 
     -- Save data

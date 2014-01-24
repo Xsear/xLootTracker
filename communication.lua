@@ -12,13 +12,165 @@ local Private = {
 }
 
 
-function Communication.SendAssign()
+
+local ChatLink = {
+    PairBreak = ChatLib.GetLinkTypeIdBreak(),
+    Endcap = ChatLib.GetEndcapString(),
+    DataBreak = ':',
+    SubDataBreak = ';',
+    BooleanValue = '>',
+}
+
+local ChatLinkId = {
+    Assign = 'xslm_a',
+    ItemIdentity = 'xslm_ii',
+    RollStart = 'xslm_r_s',
+    RollDecision = 'xslm_r_d',
+    RollUpdate = 'xslm_r_u'
+}
+
+
+function Communication.Setup()
+    ChatLib.RegisterCustomLinkType(ChatLinkId.Assign, Communication.ReceiveAssign)
+    ChatLib.RegisterCustomLinkType(ChatLinkId.ItemIdentity, Communication.ReceiveItemIdentity)
+    ChatLib.RegisterCustomLinkType(ChatLinkId.RollStart, Communication.ReceiveRollStart)
+    ChatLib.RegisterCustomLinkType(ChatLinkId.RollDecision, Communication.ReceiveRollDecision)
+    ChatLib.RegisterCustomLinkType(ChatLinkId.RollUpdate, Communication.ReceiveRollUpdate)
+end
+
+
+function Communication.SendItemIdentity(item)
     -- Requires that you are the squad leader
     if not bIsSquadLeader then return end
 
-    --[[
-        Relevant data:  itemTypeId, itemQuality, itemQuantity (maybe, for resources), unique reference id
-    --]]
+
+    local link = ChatLink.Endcap..ChatLinkId.ItemIdentity..ChatLink.PairBreak..EncodeItemReference(item)..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..ChatLink.Endcap
+
+    Debug.Log('SendItemIdentity: '..link)
+
+    --ChatLib.SystemMessage({text=link})
+    Private.SendLink(link)
+end
+
+function Communication.ReceiveItemIdentity(args)
+
+    Debug.Log('ReceiveItemIdentity')
+    Debug.Table(args)
+
+    -- Only listen if author is the master and it's not us
+    --if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+    if true then
+
+        Debug.Log('ItemIdentity declaration acknowledged, attempting to decode')
+
+        local data = args.link_data
+        local dataPattern = '(.-)('..ChatLink.PairBreak..')'
+
+        local itemDataPart
+        local identityDataPart
+
+        -- Separate data parts
+        for a, b in unicode.gmatch(data, dataPattern) do
+            Debug.Table({'ItemIdentity Parts Gmatch', a=a, b=b})
+            if not itemDataPart then
+                itemDataPart = a
+            else
+                identityDataPart = a
+            end
+        end
+
+        -- Decode each part
+        local itemTypeId, quality, quantity = DecodeItemReference(itemDataPart)
+        local identityId = DecodeItemIdentity(identityDataPart)
+
+        -- See if we can assign the identityId
+        local success = false
+        for _, item in ipairs(aIdentifiedLoot) do
+            
+            -- We shouldn't overwrite an existing identityId
+            if not item.identityId then
+
+                -- Does it match the references?
+                if tostring(item.itemTypeId) == tostring(itemTypeId) and tostring(item.quality) == tostring(quality) then
+
+                    -- It does! Great success :D Set!
+                    item.identityId = identityId
+                    success = true
+                    break
+                end
+            end
+        end
+
+        if not success then
+            Debug.Log('Failed to match item identity, but it could have already been assigned or something.')
+        else
+            Debug.Log('Succesfully set the item identity')
+        end
+    end
+
+end
+
+function Communication.SendAssign(item, assignTarget)
+    -- Requires that you are the squad leader
+    if not bIsSquadLeader then return end
+
+    local assignValue = assignTarget
+    if type(assignTarget) == 'boolean' then
+        assignValue = tostring(tonumber(assignTarget))
+    end
+
+    local link = ChatLink.Endcap..ChatLinkId.Assign..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..assignValue..ChatLink.PairBreak..ChatLink.Endcap
+
+    Private.SendLink(link)
+end
+
+
+function Communication.ReceiveAssign(args)
+
+    local dataPattern = '(.-)('..ChatLink.PairBreak..')'
+
+    local identityPart
+    local assignTargetPart
+
+    --if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+    if true then
+
+        for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
+            Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
+
+            if not identityPart then 
+                identityPart = contents
+            else 
+                assignTargetPart = contents
+            end
+        end
+
+        local identityId = DecodeItemIdentity(identityPart)
+        local assignTarget = assignTargetPart
+
+        if assignTargetPart == tostring(0) then
+            assignTarget = false
+        elseif assignTargetPArt == tostring(1) then
+            assignTarget = true
+        end
+
+
+        -- Identify item
+        local localItem = GetItemByIdentity(identityId)
+
+        -- If we found the item, assign it
+        if localItem then
+            -- Because it matters yo
+            if IsAssigned(localItem.entityId) then
+                SendChatMessage('system', 'Squad Leader is reassigning '..FixItemNameTag(localItem.name, localItem.quality)..' from '..localItem.assignedTo..' to '..tostring(assignTarget))
+            end
+
+            Distribution.AssignItem(localItem.entityId, tostring(assignTarget))
+        else
+            Debug.Log('Fail, didnt find the item to assign')
+        end
+        
+    end
 
 end
 
@@ -30,19 +182,10 @@ function Communication.SendRollDecision(item, rollType)
 
 end
 
-function Communication.SendRollUpdate()
-end
 
 
-function Communication.ReceiveAssign()
 
-end
-
-function Communication.ReceiveRollUpdate()
-    Tracker.Update()
-end
-
-function Communication.RecieveRollDecision()
+function Communication.ReceiveRollDecision(args)
     -- Requires that you are the squad leader
     if not bIsSquadLeader then return end
 
@@ -50,54 +193,160 @@ function Communication.RecieveRollDecision()
     if not mCurrentlyRolling then return end
 
 
-
     RollDecision({author = data.author, rollType = data.rollType})
+
+    Communication.SendRollUpdate(localItem)
 end
 
 
 
-
-    c_PairBreak = ChatLib.GetLinkTypeIdBreak()
-    c_Endcap = ChatLib.GetEndcapString()
-        
-    c_DataBreak = ':'
-    c_SubDataBreak = ';'
-
-    c_BooleanValue = '>'
 
 
 function Communication.SendRollStart(item)
     -- Requires that you are the squad leader
     if not bIsSquadLeader then return end
 
-
     Debug.Log('Com Send Roll Start')
-    Debug.Table({itemName = item.name, itemTypeId = item.itemTypeId, itemQuality = item.quality, rollData = item.rollData})
+
+    local distributionMode = DistributionMode.NeedBeforeGreed -- TODO: Send me
+
+    local link = ChatLink.Endcap..ChatLinkId.RollStart..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
+
+    --ChatLib.SystemMessage({text=link})
+    Private.SendLink(link)
+end
 
 
-    c_ItemLinkId = 'xslm_r_s'
+function Communication.SendRollUpdate(item)
     
+    local link = ChatLink.Endcap..ChatLinkId.RollUpdate..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
 
-    local link = c_ItemLinkId..c_PairBreak
+    --ChatLib.SystemMessage({text=link})
+    Private.SendLink(link)
+end
 
-    local dataTable = {}
 
+function Communication.ReceiveRollStart(args)
+    Debug.Table(args)
+
+    local dataPattern = '(.-)('..ChatLink.PairBreak..')'
+
+    local identityPart
+    local rollDataPart
+
+    for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
+        Debug.Table('Link Part Gmatch', {contents=contents, separator=separator})
+
+        if not identityPart then 
+            identityPart = contents
+        else 
+            rollDataPart = contents..ChatLink.SubDataBreak
+        end
+    end
+
+ 
+    local identityId = DecodeItemIdentity(identityPart)   
+    
+    local rollData = DecodeRollData(rollDataPart)
+
+    Debug.Table({identityId=itentityId, rollData=rollData})
+
+    -- Identify item
+    local localItem = GetItemByIdentity(identityId)
+
+    if localItem then
+        -- Update data
+        localItem.rollData = rollData
+
+        Tracker.Update()
+    end
+
+    
+end
+
+
+function GetItemByIdentity(identityId)
+    local localItem
+    for num, item in ipairs(aIdentifiedLoot) do
+        if tostring(item.identityId) == identityId then
+            localItem = item
+            break
+        end
+    end
+
+    -- If we don't know about this item we won't get info from it anyway, so just abort
+    if not localItem then Debug.Warn('No matching item for identity id that squad leader is starting a roll for') end
+    return localItem
+end
+
+function Communication.ReceiveRollUpdate(args)
+    
+    local rollData = DecodeRollData(args.link_data)
+
+    Debug.Table('ReceiveRollUpdate', rollData)
+
+    Tracker.Update()
+
+end
+
+
+function EncodeItemIdentity(item)
+    local identityId = item.identityId
+    if not identityId then
+        Debug.Warn('Attempted to EncodeItemIdenttiy on an item with no identityId')
+        return ''
+    end
+
+    return identityId..ChatLink.DataBreak
+end
+
+function DecodeItemIdentity(identityDataPart)
+    Debug.Log('DecodeItemIdentity: '..identityDataPart)
+    local identityId
+    local identityPattern = '(.-)'..ChatLink.DataBreak
+
+    for a, b in unicode.gmatch(identityDataPart, identityPattern) do
+        identityId = a
+    end
+
+    Debug.Log('Decoded itemIdentity result: '..tostring(identityId))
+
+    return identityId
+end
+
+function EncodeItemReference(item)
     local itemTypeId = tostring(item.itemTypeId)
     local quality = math.max(0, tonumber(item.quality))
-    local distributionMode = DistributionMode.NeedBeforeGreed
+    local quantity = math.max(0, tonumber(item.quantity))
 
-    dataTable[#dataTable + 1] = itemTypeId
-    dataTable[#dataTable + 1] = quality
-    dataTable[#dataTable + 1] = distributionMode
+    return itemTypeId..ChatLink.DataBreak..quality..ChatLink.DataBreak..quantity..ChatLink.DataBreak
+end
 
-    link = link..table.concat(dataTable, c_DataBreak)..c_PairBreak
+function DecodeItemReference(itemDataPart)
+    local itemReferencePattern = '(.-)'..ChatLink.DataBreak..'(.-)'..ChatLink.DataBreak..'(.-)'..ChatLink.DataBreak
 
-    -- Members
+    local itemTypeId
+    local quality
+    local quantity
+
+    for a, b, c in unicode.gmatch(itemDataPart, itemReferencePattern) do
+        itemTypeId = a
+        quality = tonumber(b)
+        quantity = tonumber(c)
+    end
+
+    Debug.Table({'Decoded itemReference', itemTypeId=itemTypeId, quality=quality, quantity=quantity})
+    return itemTypeId, quality, quantity
+end
+
+
+
+function EncodeRollData(rollData)
     local rollTable = {}
 
     local tempMembersTable = {}
 
-    for i, member in ipairs(item.rollData) do
+    for i, member in ipairs(rollData) do
 
         Debug.Log(member)
 
@@ -107,11 +356,11 @@ function Communication.SendRollStart(item)
 
             Debug.Table({j=j, value=value})
 
-            local valueType = c_DataBreak
+            local valueType = ChatLink.DataBreak
             local linkValue = value
 
             if type(value) == 'boolean' then
-                valueType = c_BooleanValue
+                valueType = ChatLink.BooleanValue
                 linkValue = tonumber(value)
             end
 
@@ -123,63 +372,25 @@ function Communication.SendRollStart(item)
 
     end
 
-    local membersDataPair = table.concat(tempMembersTable, c_SubDataBreak)
+    local membersDataPair = table.concat(tempMembersTable, ChatLink.SubDataBreak)
 
-    link = link..membersDataPair..c_PairBreak
-
-
-    
-
-    link = c_Endcap..link..c_Endcap
-
-    ChatLib.SystemMessage({text=link})
-
+    Debug.Table('Encoded rollData result', membersDataPair)
+    return membersDataPair
 end
 
+function DecodeRollData(rollDataPart)
+    Debug.Log('DecodeRollData() called with following part: '..rollDataPart)
 
-function Communication.ReceiveRollStart(args)
-    Debug.Table(args)
+    local rollData = {}
 
-    local crushPattern = '(.-)('..c_PairBreak..')'
-    local membersCrushPattern = '(.-)('..c_SubDataBreak..')'
+    local membersCrushPattern = '(.-)('..ChatLink.SubDataBreak..')'
+    local memberDataPattern = '(.-)(['..ChatLink.DataBreak..ChatLink.BooleanValue..'])'
 
-    local dataPart
-    local membersPart
+    -- Break up the data into one segment for each member
+    for contents, separator in unicode.gmatch(rollDataPart, membersCrushPattern) do
+        Debug.Table('Members Member Gmatch: ', {contents=contents, separator=separator})
 
-    for contents, separator in unicode.gmatch(args.link_data, crushPattern) do
-        Debug.Table({p="Crush", contents=contents, separator=separator})
-
-        if not dataPart then 
-            dataPart = contents..c_DataBreak
-        else 
-            membersPart = contents..c_SubDataBreak
-        end
-    end
-
-    Debug.Log('DataPart: '..dataPart)
-    
-    local dataPartPattern = '(.-)'..c_DataBreak..'(.-)'..c_DataBreak..'(.-)'..c_DataBreak
-
-    local itemTypeId
-    local quality
-    local distributionMode
-
-    for a, b, c in unicode.gmatch(dataPart, dataPartPattern) do
-        itemTypeId = a
-        quality = b
-        distributionMode = c
-    end
-
-    Debug.Table({itemTypeId=itemTypeId, quality=quality, distributionMode=distributionMode})
-
-
-    Debug.Log('MembersPart: '..membersPart)
-
-    local members = {}
-
-    for contents, separator in unicode.gmatch(membersPart, membersCrushPattern) do
-        Debug.Table({p='membersCrush', contents=contents, separator=separator})
-
+        -- Template
         local member = {
             canNeed = nil,
             name = nil,
@@ -188,17 +399,19 @@ function Communication.ReceiveRollStart(args)
             rollType = nil,
         }
 
-        local memberDataPattern = '(.-)(['..c_DataBreak..c_BooleanValue..'])'
-
+        -- For each value of this member
         for subcontents, valueType in unicode.gmatch(contents, memberDataPattern) do
-            Debug.Table({subcontents=subcontents, valueType=valueType})
+            Debug.Table('Member Value Gmatch: ', {subcontents=subcontents, valueType=valueType})
 
+            -- Value is string by default
             local value = subcontents
 
-            if valueType == c_BooleanValue then
+            -- If we had the boolean indicator, convert to number
+            if valueType == ChatLink.BooleanValue then
                 value = tonumber(value)
             end
 
+            -- Fill in the fields in this very specific order :/
             if not member.canNeed then
                 member.canNeed = value
             elseif not member.name then 
@@ -210,64 +423,30 @@ function Communication.ReceiveRollStart(args)
             elseif not member.rollType then 
                 member.rollType = value
             end
+
         end
 
-        Debug.Table(member)
-        members[#members + 1] = member
+        Debug.Table('Decoded member result', member)
+        
+        -- Add decoded member to rollData
+        rollData[#rollData + 1] = member
     end
 
-    Debug.Table(members)
+    Debug.Table('Decoded rollData result', rollData)
+
+    return rollData
+end
 
 
+function Private.SendLink(link)
+
+    --Chat.SendChannelText('squad', link)
+    SendMessageToChat('squad', link, false)
 
 end
 
 
-
 --[[
-
-    "rollData" : [
-        {
-            "canNeed" : true, 
-            "name" : "Xsear", 
-            "hasRolled" : false, 
-            "battleframe" : "medic", 
-            "rollType" : false
-        }, 
-        {
-            "canNeed" : true, 
-            "name" : "SquadRosterUpdateFake1", 
-            "hasRolled" : false, 
-            "battleframe" : "berzerker", 
-            "rollType" : false
-        }, 
-        {
-            "canNeed" : true, 
-            "name" : "SquadRosterUpdateFake2", 
-            "hasRolled" : false, 
-            "battleframe" : "recon", 
-            "rollType" : false
-        }
-    ], 
-
-    EncodeTest = function(itemTypeId, quality, attributes)
-        itemTypeId = tostring(itemTypeId)
-        quality = math.max(0, tonumber(quality)) --nil becomes -1; need min of 0
-        attributes = lf.FormatAttributes(attributes or {})
-        local link = c_ItemLinkId..c_PairBreak..lf.Compress(itemTypeId)..c_DataBreak..lf.Compress(quality)
-        for _, attribute in ipairs(attributes) do
-            local value_break = c_DataBreak
-            local value = attribute.value
-            if value < 0 then
-                value_break = c_NegDataBreak
-                value = -value
-            end
-            value = math.floor(0.5 + (value * c_PreserveDecimal))
-            link = link..c_PairBreak..lf.Compress(attribute.id)..value_break..lf.Compress(value)
-        end
-        return c_Endcap..link..c_Endcap
-    end
-
 
 
 
@@ -283,13 +462,13 @@ end
 
     function encodeTable(table)
 
-        local c_DataBreak
+        local ChatLink.DataBreak
         local c_NegDataBreak
-        local c_PairBreak
+        local ChatLink.PairBreak
 
         for _, value in pairs(table) do
 
-            local breakValue = c_DataBreak
+            local breakValue = ChatLink.DataBreak
 
 
 

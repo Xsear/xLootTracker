@@ -80,6 +80,7 @@ function Distribution.AssignItem(ref, winner, rolls)
         for num, item in ipairs(aIdentifiedLoot) do 
             if tostring(item.entityId) == entityId then
                 item.assignedTo = winner
+                Communication.SendAssign(item, winner)
                 OnAssignItem({
                     item = item,
                     assignedTo = winner,
