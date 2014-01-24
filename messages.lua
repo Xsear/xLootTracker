@@ -192,12 +192,16 @@ function RunMessageFilters(message, args)
     -- Item (Linked)
     local itemAsLink = ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
 
+    -- Item coordinates (Link)
+    local itemCoordLink = ChatLib.EncodeCoordLink(args.item.pos)
+
     -- Item entityId
     local itemEntityId = tostring(args.item.entityId)
     -- Item itemTypeId
     local itemItemTypeId = tostring(args.item.itemTypeId)
     -- Item craftingTypeId
     local itemCraftingTypeId = tostring(args.item.craftingTypeId)
+
 
     -- Player Subject (Link)
     local playerAsLink = ChatLib.EncodePlayerLink(args.playerName)
@@ -313,6 +317,9 @@ function RunMessageFilters(message, args)
 
     -- Eligible
     output = unicode.gsub(output, '%%e', eligibleAsLinks)
+
+    -- Item coordinates (Linked)
+    output = unicode.gsub(output, '%%c', itemCoordLink)
 
    return output
 end
