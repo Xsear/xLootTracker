@@ -17,21 +17,6 @@ function SendChatMessage(channel, message, alert)
     -- Setup prefixe
     local prefix = Options['Messages']['Prefix']
 
-    -- Function to handle the actual sending of messages
-    local function SendMessageToChat(channel, message, alert)
-        channel = unicode.lower(channel)
-        if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
-        local alertprefix = ''
-        if alert then alertprefix = '!' end
-        if channel == 'system' then
-            ChatLib.SystemMessage({text=message})
-        elseif channel == 'notification' or channel == 'notifications' then
-            ChatLib.Notification({text=message})
-        else
-            Chat.SendChannelText(channel, alertprefix..message)
-        end
-    end
-
     -- Calculate message content length limit
     local messageContentLengthLimit = ciSquadMessageLengthLimit - unicode.len(Options['Messages']['Prefix'])
 
@@ -78,6 +63,21 @@ function SendChatMessage(channel, message, alert)
         Debug.Log('Sending Chat Message: '..prefix..message)
         Debug.Log('Message Length: '..unicode.len(prefix..message))
         SendMessageToChat(channel, prefix..message, alert)
+    end
+end
+
+-- Function to handle the actual sending of messages
+function SendMessageToChat(channel, message, alert)
+    channel = unicode.lower(channel)
+    if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
+    local alertprefix = ''
+    if alert then alertprefix = '!' end
+    if channel == 'system' then
+        ChatLib.SystemMessage({text=message})
+    elseif channel == 'notification' or channel == 'notifications' then
+        ChatLib.Notification({text=message})
+    else
+        Chat.SendChannelText(channel, alertprefix..message)
     end
 end
 
