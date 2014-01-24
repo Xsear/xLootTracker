@@ -1,5 +1,6 @@
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
 
+local identityCounter = 1
 
 --[[
     Identify(entityId, [targetInfo])
@@ -16,7 +17,7 @@ function Identify(entityId, targetInfo)
     Debug.Table(itemInfo)
 
     -- Unify data
-    local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil, rollData=nil}
+    local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil, rollData=nil, identityId=nil}
 
     -- Optionally create waypoint
     if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
@@ -36,6 +37,14 @@ function Identify(entityId, targetInfo)
     -- Setup despawn timer
     loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item=loot})
     loot.timer:StartTimer()
+
+    -- If squad leader, generate identity
+    if bIsSquadLeader then
+        local player = Player.GetInfo()
+        local time = tonumber(System.GetLocalUnixTime())
+        item.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
+        identityCounter = identityCounter + 1
+    end
 
     -- Save data
     table.insert(aIdentifiedLoot, loot)
