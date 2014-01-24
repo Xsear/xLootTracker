@@ -193,6 +193,11 @@ function OnSquadRosterUpdate()
         -- Update Squad leader status
         if Options['Distribution']['AlwaysSquadLeader'] then
             bIsSquadLeader = true
+
+            if Options['Debug']['FakeOnSquadRoster'] then
+                aSquadRoster.leader = Player.GetInfo()
+            end
+
         else
             bIsSquadLeader = false
         end
@@ -1001,8 +1006,6 @@ function RemoveAllChildren(PARENT)
         Component.RemoveWidget(PARENT:GetChild(i))
     end
 end
-
-
 
 --[[
     ToggleEnabled(cmd)
