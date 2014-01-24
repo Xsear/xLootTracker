@@ -6,10 +6,11 @@ local identityCounter = 1
     Identify(entityId, [targetInfo])
     Identifies entity, adding it to a list of items that have been seen
 ]]--
-function Identify(entityId, targetInfo)
+function Identify(entityId, targetInfo, itemInfo)
     -- Get data if we don't have it
     targetInfo = targetInfo or Game.GetTargetInfo(entityId)
-    local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
+    itemInfo = itemInfo or Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
+    targetInfo.name = targetInfo.name or itemInfo.name
     Debug.Log('Identifying '..tostring(entityId)..','..targetInfo.name)
     Debug.Log('targetInfo: ')
     Debug.Table(targetInfo)

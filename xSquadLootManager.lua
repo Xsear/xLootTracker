@@ -1157,7 +1157,7 @@ function Test(args)
             -- Fixme: Find a way to feed this better
             -- Identify Hack
             if not IsIdentified(entityId) then
-
+--[[
                 local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
 
                 local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=itemInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
@@ -1180,7 +1180,10 @@ function Test(args)
 
 
                 table.insert(aIdentifiedLoot, loot)
+                Communication.SendItemIdentity(loot)
                 OnIdentify({item=loot})
+--]]
+                Identify(entityId, targetInfo, itemInfo)
             end
 
         end
