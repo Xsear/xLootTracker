@@ -20,7 +20,7 @@ function Distribution.DistributeItem(item, distributionMode, weightingMode)
     -- If we're doing a Need Before Greed roll, we won't get a winner now, so let's handle that first
     if distributionMode == DistributionMode.NeedBeforeGreed then
 
-        Private.NeedBeforeGreed(item, aSquadRoster, Distribution.GetEntitled(item, weightingMode))
+        Private.NeedBeforeGreed(item, aSquadRoster.members, Distribution.GetEntitled(item, weightingMode))
 
     -- For all other kinds of rolls, we'll determine the winner here and now!
     else
@@ -238,9 +238,6 @@ function Private.NeedBeforeGreed(item, members, eligible)
     -- Okay, lock us down while we roll
     mCurrentlyRolling = item
 
-    -- Establish table
-    item.rollData = {}
-
     -- Fill data
     for num, row in ipairs(members) do
         -- Setup new fields
@@ -257,11 +254,18 @@ function Private.NeedBeforeGreed(item, members, eligible)
         end
     end
 
+    -- Establish table in item
+    item.rollData = members
+
+
     -- Start roll timeout timer
     item.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
 
     -- Announce that we're rolling
     OnAcceptingRolls({item=item, members=members, eligible=eligible, distributionMode=DistributionMode.NeedBeforeGreed})
+
+    Communication.SendRollStart(item)
+
 end
 
 
@@ -291,7 +295,7 @@ function RollCancel(args)
     if mCurrentlyRolling then
         local message = 'RollCancel for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality)
 
-        if args.reason then
+        if args and args.reason then
             message = message..'\nReason: '..args.reason
         end
 
