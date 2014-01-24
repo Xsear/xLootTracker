@@ -21,7 +21,7 @@ require './lib/lib_GTimer' -- Timer for rolltimeout
 require './lib/lib_LKObjects' -- Trivialize objects
 
 -- Constants
-csVersion = '0.91 Janstone'
+csVersion = '0.91 Janstone T1'
 ciSaveVersion = 0.90
 
 -- Global Variables
@@ -233,6 +233,8 @@ function OnSlash(args)
         DistributeItem()
     elseif args.text == 'list' then
         ListUnAssigned()
+    elseif (args[1] == 'assign' or args[1] == 'a') and args[2] and args[3] then
+        Distribution.AssignItem(args[2], args[3])
     end
 end
 
@@ -947,7 +949,7 @@ function ListUnAssigned()
         local unAssignedLoot = {}
 
         for num, item in ipairs(aIdentifiedLoot) do 
-            vardump(item)
+            Debug.Table(item)
             if not IsAssigned(item.entityId) then
                 table.insert(unAssignedLoot, item)
             end
@@ -955,7 +957,7 @@ function ListUnAssigned()
 
         if unAssignedLoot ~= nil then
             for num, item in ipairs(unAssignedLoot) do
-                SendChatMessage('system', num..' '..item.name..tostring(item.quality))
+                SendFilteredMessage('system', num..': %i E:('..tostring(item.entityId)..') I:('..tostring(item.identityId)..')', {item=item})
             end
         else
             SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
@@ -1031,12 +1033,15 @@ function ClearIdentified()
     SendChatMessage('system', 'Clear')
     RollCancel()
 
-    -- YOLO
-    while not _table.empty(aIdentifiedLoot) do
-        for num, item in ipairs(aIdentifiedLoot) do 
-            RemoveIdentifiedItem(item)
-        end
+    local itemsToRemove = {}
+    for num, item in ipairs(aIdentifiedLoot) do 
+        itemsToRemove[#itemsToRemove + 1] = item
     end
+
+    for num, item in ipairs(itemsToRemove) do
+        RemoveIdentifiedItem(item)
+    end
+
     --aIdentifiedLoot = {}
     
     Tracker.Update()
@@ -1072,6 +1077,11 @@ function Test(args)
     Debug.Log('args[1]: '..tostring(args[1]))
     Debug.Log('args[2]: '..tostring(args[1]))
 
+    Debug.Table('numeric', Game.GetItemAttributeModifiers(85974, 1000))
+    Debug.Table('stringType', Game.GetItemAttributeModifiers('85974', 1000))
+    Debug.Table('stringQuality', Game.GetItemAttributeModifiers(85974, '1000'))
+    Debug.Table('string', Game.GetItemAttributeModifiers('85974', '1000'))
+
     if true then
         -- First parameter to test controls number of panels
         local numberOfPanels = args[1] or 1
@@ -1084,31 +1094,36 @@ function Test(args)
         -- Target info must be faked because we have no real entity
         local targetInfoData = {
             -- Equipment Items
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85050, quality=500, filterType = {'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85017, quality=500, filterType = {'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85099, quality=500, filterType = {'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=82923, quality=500, filterType = {'eq'}},
+
+            {itemTypeId=85972, quality=500, filterType = {'eq', 'weapons'}}, -- needlar
+            {itemTypeId=85984, quality=600, filterType = {'eq', 'weapons'}}, -- assault rifle
+            {itemTypeId=86054, quality=500, filterType = {'eq', 'hkm'}}, -- chemical sprayer
+            {itemTypeId=86021, quality=400, filterType = {'eq', 'passive'}}, -- regen plating
+            {itemTypeId=86018, quality=500, filterType = {'eq'}}, -- platin
+            {itemTypeId=85990, quality=500, filterType = {'eq', 'neutral'}}, -- servos/jumpjets
+            {itemTypeId=85989, quality=801, filterType = {'eq', 'neutral'}},
 
             -- Crossbows ftw
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=79061, quality=401, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83241, quality=501, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=83575, quality=601, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84443, quality=701, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=84985, quality=901, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {itemTypeId=85974, quality=125, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {itemTypeId=85974, quality=250, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {itemTypeId=85974, quality=500, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {itemTypeId=85974, quality=801, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {itemTypeId=85974, quality=1000, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+
 
             -- Crafting Components
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10009, quality=1, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10010, quality=101, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10011, quality=201, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10012, quality=301, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10014, quality=401, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10015, quality=501, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10016, quality=601, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=10024, quality=701, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=82500, quality=801, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85235, quality=901, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85626, quality=1001, filterType = {'cc'}},
-            {lootPos={x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}, itemTypeId=85627, quality=1101, filterType = {'cc'}},
+            {itemTypeId=10009, quality=1, filterType = {'cc'}},
+            {itemTypeId=10010, quality=101, filterType = {'cc'}},
+            {itemTypeId=10011, quality=201, filterType = {'cc'}},
+            {itemTypeId=10012, quality=301, filterType = {'cc'}},
+            {itemTypeId=10014, quality=401, filterType = {'cc'}},
+            {itemTypeId=10015, quality=501, filterType = {'cc'}},
+            {itemTypeId=10016, quality=601, filterType = {'cc'}},
+            {itemTypeId=10024, quality=701, filterType = {'cc'}},
+            {itemTypeId=82500, quality=801, filterType = {'cc'}},
+            {itemTypeId=85235, quality=901, filterType = {'cc'}},
+            {itemTypeId=85626, quality=1000, filterType = {'cc'}},
+            {itemTypeId=85627, quality=50, filterType = {'cc'}},
         }
 
         -- Filter
@@ -1148,40 +1163,15 @@ function Test(args)
 
             -- Location
             entityId = num
+            targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}
             local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
 
             --Debug.Log('Position modifier for num '..tostring(num)..': '..tostring(posMod))
             targetInfo.lootPos.x = targetInfo.lootPos.x - posMod
 
-            -- Fixme: Find a way to feed this better
             -- Identify Hack
             if not IsIdentified(entityId) then
---[[
-                local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
 
-                local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=itemInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil}
-
-                targetInfo.name = itemInfo.name
-
-                if Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels']) then
-                    loot.panel = CreatePanel(targetInfo, itemInfo)
-                end
-
-                -- Create timer
-                loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1);
-                
-                -- Setup despawn timer
-                loot.timer:SetAlarm('despawn', 30, LootDespawn, {item=loot})
-                loot.timer:StartTimer()
-
-
-                loot.waypoint = CreateWaypoint(loot)
-
-
-                table.insert(aIdentifiedLoot, loot)
-                Communication.SendItemIdentity(loot)
-                OnIdentify({item=loot})
---]]
                 Identify(entityId, targetInfo, itemInfo)
             end
 
@@ -1216,44 +1206,6 @@ end
 function round(num, idp)
   local mult = 10^(idp or 0)
   return math.floor(num * mult + 0.5) / mult
-end
-
--- TODO: Remove this function, it does a bad things
-function vardump(value, depth, key)
-  local linePrefix = ""
-  local spaces = ""
-  
-  if key ~= nil then
-    linePrefix = "["..key.."] = "
-  end
-  
-  if depth == nil then
-    depth = 0
-  else
-    depth = depth + 1
-    for i=1, depth do spaces = spaces .. "  " end
-  end
-  
-  if type(value) == 'table' then
-    mTable = getmetatable(value)
-    if mTable == nil then
-      log(spaces ..linePrefix.."(table) ")
-    else
-      log(spaces .."(metatable) ")
-        value = mTable
-    end     
-    for tableKey, tableValue in pairs(value) do
-      vardump(tableValue, depth, tableKey)
-    end
-  elseif type(value)    == 'function' or 
-      type(value)   == 'thread' or 
-      type(value)   == 'userdata' or
-      value     == nil
-  then
-    log(spaces..tostring(value))
-  else
-    log(spaces..linePrefix.."("..type(value)..") "..tostring(value))
-  end
 end
 
 -- Source: http://lua-users.org/wiki/MakingLuaLikePhp

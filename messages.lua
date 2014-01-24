@@ -66,6 +66,12 @@ function SendChatMessage(channel, message, alert)
     end
 end
 
+
+function SendFilteredMessage(channel, message, args)
+    message = RunMessageFilters(message, args)
+    SendChatMessage(channel, message)
+end
+
 -- Function to handle the actual sending of messages
 function SendMessageToChat(channel, message, alert)
     channel = unicode.lower(channel)
@@ -190,7 +196,7 @@ function RunMessageFilters(message, args)
     local itemAsText = ChatLib.CreateItemText({name = args.item.name}, args.item.quality)
 
     -- Item (Linked)
-    local itemAsLink = ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, nil) -- Nil for attributes, lib_ChatLib will handle this for us since we included both typeId and quality.
+    local itemAsLink = ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, Game.GetItemAttributeModifiers(args.item.itemTypeId, args.item.quality))
 
     -- Item coordinates (Link)
     local itemCoordLink = ChatLib.EncodeCoordLink(args.item.pos)

@@ -58,8 +58,8 @@ function Communication.ReceiveItemIdentity(args)
     Debug.Table(args)
 
     -- Only listen if author is the master and it's not us
-    --if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
-    if true then
+    if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+    --if true then
 
         Debug.Log('ItemIdentity declaration acknowledged, attempting to decode')
 
@@ -127,13 +127,16 @@ end
 
 function Communication.ReceiveAssign(args)
 
+    Debug.Log('ReceiveAssign')
+    Debug.Table(args)
+
     local dataPattern = '(.-)('..ChatLink.PairBreak..')'
 
     local identityPart
     local assignTargetPart
 
-    --if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
-    if true then
+    if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+    --if true then
 
         for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
             Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
@@ -162,14 +165,14 @@ function Communication.ReceiveAssign(args)
         if localItem then
             -- Because it matters yo
             if IsAssigned(localItem.entityId) then
-                SendChatMessage('system', 'Squad Leader is reassigning '..FixItemNameTag(localItem.name, localItem.quality)..' from '..localItem.assignedTo..' to '..tostring(assignTarget))
+                SendFilteredMessage('system', 'Squad Leader is reassigning %i from %a to %n', {item=localItem, assignedTo = localItem.assignedTo, playerName = tostring(assignTarget)})
             end
 
             Distribution.AssignItem(localItem.entityId, tostring(assignTarget))
         else
             Debug.Log('Fail, didnt find the item to assign')
         end
-        
+
     end
 
 end

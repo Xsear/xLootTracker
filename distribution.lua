@@ -11,6 +11,10 @@ function Distribution.DistributeItem(item, distributionMode, weightingMode)
     if not item then
         Debug.Warn('DistributeItem was not called with an item.', tostring(args))
         return
+    elseif not bInSquad then
+        Debug.Warn('DistributeItem but bInSquad is false.')
+        SendFilteredMessage('system', 'Unable to distribute %i. We are not in a squad at the moment.', {item=item})
+        return
     end
 
     -- If not specified, default distribution and weighting modes.
@@ -79,8 +83,19 @@ function Distribution.AssignItem(ref, winner, rolls)
     if not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
             if tostring(item.entityId) == entityId then
+                local shouldComm = true
+
+                if item.assignedTo == winner then
+                    shouldComm = false
+                end
+
                 item.assignedTo = winner
-                Communication.SendAssign(item, winner)
+
+
+                if shouldComm then
+                    Communication.SendAssign(item, winner)
+                end
+
                 OnAssignItem({
                     item = item,
                     assignedTo = winner,
