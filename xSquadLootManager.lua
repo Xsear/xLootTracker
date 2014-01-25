@@ -14,6 +14,7 @@ require 'lib/lib_Tooltip' -- Tooltip used by Tracker
 require 'lib/lib_ChatLib' -- Used to send some chat messages
 require 'lib/lib_table' -- Common table functions
 require 'lib/lib_UserKeybinds' -- User keybinds
+require 'lib/lib_Colors' -- Colors, used by markers
 
 -- Custom Libs
 require './lib/Lokii' -- Localization
@@ -333,6 +334,12 @@ function OnLootCollected(args)
         return 
     end
 
+    -- Fix quality argument if nonexistant
+    if not args.quality then
+        args.quality = 0
+    end
+
+
     -- Get item info
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId, Game.GetItemAttributeModifiers(args.itemTypeId, args.quality))
 
@@ -354,6 +361,8 @@ function OnLootCollected(args)
             local loot = nil
             for num, item in ipairs(aIdentifiedLoot) do 
                 Debug.Table({'Is it this item?', item})
+                Debug.Log('item.itemTypeId == args.itemTypeId : '..tostring(item.itemTypeId == args.itemTypeId))
+                Debug.Log('item.quality ('..tostring(item.quality)..') == args.quality ('..tostring(args.quality)..') : '..tostring(item.quality == args.quality))
                 if item.itemTypeId == args.itemTypeId and item.quality == args.quality then
                     if Game.IsTargetAvailable(item.entityId) then
                         Debug.Log('Found looted item but target is still available ')
@@ -1119,6 +1128,7 @@ function Test(args)
             {itemTypeId=86018, quality=500, filterType = {'eq'}}, -- platin
             {itemTypeId=85990, quality=500, filterType = {'eq', 'neutral'}}, -- servos/jumpjets
             {itemTypeId=85989, quality=801, filterType = {'eq', 'neutral'}},
+            {itemTypeId=86114, quality=23, filterType = {'eq', 'ability', 'abilities'}},
 
             -- Crossbows ftw
             {itemTypeId=85974, quality=125, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
@@ -1218,6 +1228,26 @@ function _table.length(table)
   local count = 0
   for _ in pairs(table) do count = count + 1 end
   return count
+end
+
+function _table.compare(t1,t2,ignore_mt)
+    local ty1 = type(t1)
+    local ty2 = type(t2)
+    if ty1 ~= ty2 then return false end
+    -- non-table types can be directly compared
+    if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
+    -- as well as tables which have the metamethod __eq
+    local mt = getmetatable(t1)
+    if not ignore_mt and mt and mt.__eq then return t1 == t2 end
+    for k1,v1 in pairs(t1) do
+        local v2 = t2[k1]
+        if v2 == nil or not _table.compare(v1,v2) then return false end
+    end
+    for k2,v2 in pairs(t2) do
+        local v1 = t1[k2]
+        if v1 == nil or not _table.compare(v1,v2) then return false end
+    end
+    return true
 end
 
 function round(num, idp)

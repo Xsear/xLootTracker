@@ -45,9 +45,19 @@ function CreatePanel(targetInfo, itemInfo)
 
     Debug.Log('qualityColor', qualityColor, 'headerBarColor', headerBarColor, 'itemNameColor', itemNameColor)
 
+
+    headerBarColor = Colors.Create(headerBarColor)
+    itemNameColor = Colors.Create(itemNameColor)
+
+    if _table.compare(headerBarColor, itemNameColor) then
+        Debug.Log('HeaderBar and ItemName colors are equal')
+    end
+    
     -- Set the colours
     LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
     LOOT_PANEL_HEADER:GetChild('itemName'):SetTextColor(itemNameColor)
+
+
 
 
     -- Iconbar
