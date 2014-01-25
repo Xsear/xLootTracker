@@ -182,7 +182,9 @@ end
 function Communication.SendRollDecision(item, rollType)
     Debug.Table({func='Communication.SendRollDecision', item=item, rollType=rollType})
 
+    local link = ChatLink.Endcap..ChatLinkId.RollDecision..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..rollType..ChatLink.PairBreak..ChatLink.Endcap
 
+    Private.SendLink(link)
 end
 
 
@@ -196,9 +198,45 @@ function Communication.ReceiveRollDecision(args)
     if not mCurrentlyRolling then return end
 
 
-    RollDecision({author = data.author, rollType = data.rollType})
+    local dataPattern = '(.-)('..ChatLink.PairBreak..')'
 
-    Communication.SendRollUpdate(localItem)
+    local identityPart
+    local rollTypePart
+
+    if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+    --if true then
+
+        for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
+            Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
+
+            if not identityPart then 
+                identityPart = contents
+            else 
+                rollTypePart = contents
+            end
+        end
+
+        local identityId = DecodeItemIdentity(identityPart)
+        local rollType = rollTypePart
+
+        -- Identify item
+        local localItem = GetItemByIdentity(identityId)
+
+        -- If we found the item, assign it
+        if localItem then
+
+            if localItem.identityId == mCurrentlyRolling.identityId then
+                RollDecision({author = data.author, rollType = rollType})
+            else
+                Debug.Log('Received a roll declaration, but the item identity didnt match the one we were rolling')
+            end
+
+        else
+            Debug.Log('Fail, didnt find the item to assign')
+        end
+
+    end
+
 end
 
 

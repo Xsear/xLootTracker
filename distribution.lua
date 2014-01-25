@@ -352,6 +352,7 @@ function RollDecision(args)
         -- Let's see if the author is actually allowed to roll
         local totalRemaining = 0
         local needRemaining = 0
+        local didChange = false
         -- Go through all the people who can roll
         for num, row in ipairs(mCurrentlyRolling.rollData) do
             -- If we've found the person who sent this message and he has not yet selected rollType
@@ -364,6 +365,7 @@ function RollDecision(args)
 
                 -- Set the roll type and acknowledge
                 row.rollType = args.rollType
+                didChange = true
                 OnRollAccept({item=mCurrentlyRolling, rollType=args.rollType, playerName=args.author})
             end
 
@@ -385,6 +387,8 @@ function RollDecision(args)
         -- If this was the last call needed, do rolls
         if totalRemaining == 0 or needRemaining == 0 then
             RollFinish()
+        elseif didChange then
+            Communication.SendRollUpdate(mCurrentlyRolling)
         end
     end
 end
