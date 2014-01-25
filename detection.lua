@@ -33,7 +33,7 @@ function Identify(entityId, targetInfo, itemInfo)
         entityId       = entityId, 
         identityId     = nil,
         itemTypeId     = targetInfo.itemTypeId,
-        quality        = targetInfo.quality,
+        quality        = targetInfo.quality or 0,
         itemInfo       = itemInfo,
         craftingTypeId = itemInfo.craftingTypeId,
         name           = targetInfo.name,

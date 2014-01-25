@@ -254,16 +254,12 @@ function OnEntityAvailable(args)
         local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
 
         -- Debug
-        if Options['Debug']['Enabled'] and Options['Debug']['LogLootableTargets'] and IsLootableTarget(targetInfo) then
-            Debug.Log('Lootable Target Available')
-            Debug.Log('targetInfo')
-            Debug.Table(targetInfo)
-            Debug.Log('itemInfo')
-            Debug.Table(itemInfo)
+        if Options['Debug']['Enabled'] and Options['Debug']['LogLootableTargets'] and IsSquadLoot(targetInfo) then
+            Debug.Table({'Lootable Target Available', targetInfo = targetInfo, itemInfo = itemInfo})
         end
 
         -- Determine if it is a lootable entity
-        if IsLootableTarget(targetInfo) and IsTrackableItemType(itemInfo) then
+        if IsSquadLoot(targetInfo) and IsTrackableItem(itemInfo) then
 
             -- If we're not tracking it already, track it!
             if not IsIdentified(args.entityId) then
@@ -312,7 +308,7 @@ end
 function OnLootPickup(args)
     -- Don't send if the item was looted by and to the local player - preventing double messages.
     if namecompare(args.lootedTo, Player.GetInfo()) and namecompare(args.lootedBy, Player.GetInfo()) then 
-        Debug.Log('Skipping OnLootPickup event because conditions ensure OnLootCollected.')
+        --Debug.Log('Skipping OnLootPickup event because conditions ensure OnLootCollected.')
         return 
     end
 
@@ -331,20 +327,21 @@ function OnLootCollected(args)
     if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
     -- Requires args.itemTypeId, otherwise we can't get item info
-    -- Fixme: Is this check needed? Is this error needed? Does it trigger on Powerups for example?
-    if not args.itemTypeId then Debug.Error('OnLootCollected args.itemTypeId is nil') return end
+    if not args.itemTypeId then 
+        Debug.Event(args)
+        Debug.Error('OnLootCollected requires args.itemTypeId') 
+        return 
+    end
 
     -- Get item info
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId, Game.GetItemAttributeModifiers(args.itemTypeId, args.quality))
 
     -- Is it loot that we care about?
-    if IsTrackableItemType(itemInfo) then
+    if itemInfo and IsTrackableItem(itemInfo) then
 
         -- Debug Log
         if Options['Debug']['Enabled'] and Options['Debug']['LogLootableCollection'] then
-            Debug.Log('OnLootCollected')
-            Debug.Log('iteminfo')
-            Debug.Table(itemInfo)
+            Debug.Table({'OnLootCollected', itemInfo = itemInfo})
         end
 
 
@@ -356,6 +353,7 @@ function OnLootCollected(args)
             -- Grab the first identified item that this item could be, checking that the entity is no longer available
             local loot = nil
             for num, item in ipairs(aIdentifiedLoot) do 
+                Debug.Table({'Is it this item?', item})
                 if item.itemTypeId == args.itemTypeId and item.quality == args.quality then
                     if Game.IsTargetAvailable(item.entityId) then
                         Debug.Log('Found looted item but target is still available ')
@@ -400,8 +398,10 @@ function OnLootCollected(args)
         OnLootClaimed({
             lootedTo = args.lootedTo,
             item     = {
-                name    = itemInfo.name,
-                quality = args.quality
+                name = itemInfo.name,
+                itemTypeId = itemInfo.itemTypeId,
+                quality = args.quality,
+                itemInfo = itemInfo
             }
         })
     end
@@ -439,9 +439,15 @@ function OnIdentify(args)
         if Options['Distribution']['AutoDistribute'] then
 
             if not IsAssigned(args.item.entityId) and ItemPassesFilter(args.item, Options['Distribution']) then
-                local typeKey, stageKey = GetItemOptionsKeys(args.item, Options['Distribution']) 
-                local distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
-                local weightingMode = Options['Distribution'][typeKey][stageKey]['Weighting']
+                local typeKey, stageKey = GetItemOptionsKeys(args.item, Options['Distribution'])
+
+                local distributionMode = DistributionMode.RoundRobin
+                local weightingMode = WeightingOptions.None
+
+                if typeKey and stageKey then
+                    distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
+                    weightingMode = Options['Distribution'][typeKey][stageKey]['Weighting']
+                end
 
                 Distribution.DistributeItem(args.item, distributionMode, weightingMode)
             end
@@ -686,6 +692,10 @@ function ItemPassesFilter(item, moduleOptions)
                 return true
             end
         end
+
+    elseif not typeKey then
+        Debug.Log('ItemPassesFilter unable to determine options typeKey for '..tostring(item.name)..', '..tostring(item.itemTypeId))
+        return true -- Best chance of future compatability. Unrelated items shouldn't ever get here, since detection filters differently.
     end
     return false
 end
@@ -709,7 +719,7 @@ function GetItemOptionsKeys(item, moduleOptions)
            item.itemInfo.type == 'weapon' then
         typeKey = 'EquipmentItems'
     end
-    if typeKey == nil then Debug.Error('GetItemOptionsKeys() does not recognize type! (Why are you passing incorrect items)', item.itemInfo.type) end
+    if typeKey == nil then Debug.Warn('GetItemOptionsKeys() does not recognize type! (Why are you passing incorrect items)', item.itemInfo.type) return nil, nil end
 
     -- Determine stage
     if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
@@ -729,30 +739,24 @@ end
 
 
 --[[
-    IsLootableTarget(targetInfo)
-    Whether or not an entity target is lootable
+    IsSquadLoot(targetInfo)
+    Whether a loot entity is Squad loot or not.
 ]]--
-function IsLootableTarget(targetInfo)
-    -- By the current standards, anything that is interactToLoot is obviously something we want to track.
-    if targetInfo.interactToLoot == true then
+function IsSquadLoot(targetInfo)
+    -- As of now, interactToLoot is the only indication we have that this is squad loot.
+    if targetInfo.interactToLoot then
         return true
-    else
-        return false
     end
+    return false
 end
 
 --[[
-    IsTrackableItemType([itemInfo(table)|itemType])
+    IsTrackableItem(itemInfo)
     Whether or not an item (post pickup) was a lootable target (ish)
 ]]--
-function IsTrackableItemType(info)
-    -- Handle arguments
-    local itemType
-    if type(info) == 'table' then itemType = info.type
-    else itemType = tostring(info) end
-
+function IsTrackableItem(itemInfo)
     -- Verify that the looted item is of a type that we care about
-    if IsEquipmentItem(itemType) or IsCraftingComponent(itemType) then
+    if IsSalvageModule(itemInfo) or IsEquipmentItem(itemInfo) or IsCraftingComponent(itemInfo) then
         return true
     end
 
@@ -806,6 +810,19 @@ function IsCraftingComponent(info)
 
     return false
 
+end
+
+function IsSalvageModule(itemInfo)
+    if type(itemInfo) ~= 'table' then
+        Debug.Warn('IsSalvageModule needs itemInfo, expects table (.type, .rarity), got '..type(itemInfo))
+        return false
+    end
+
+    if(itemInfo.type == 'basic' and itemInfo.rarity == 'salvage') then
+        return true
+    end
+
+    return false
 end
 
 --[[
@@ -1083,13 +1100,13 @@ function Test(args)
     Debug.Table('string', Game.GetItemAttributeModifiers('85974', '1000'))
 
     if true then
-        -- First parameter to test controls number of panels
-        local numberOfPanels = args[1] or 1
-        Debug.Log('numberOfPanels: '..tostring(numberOfPanels))
-
-        -- Second parameter sets filters
-        local filterType = args[2] or nil
+        -- First parameter sets filters
+        local filterType = args[1] or 'any'
         Debug.Log('filterType: '..tostring(filterType))
+
+        -- Second parameter to test controls number of panels
+        local numberOfPanels = args[2] or 1
+        Debug.Log('numberOfPanels: '..tostring(numberOfPanels))
 
         -- Target info must be faked because we have no real entity
         local targetInfoData = {
@@ -1124,10 +1141,14 @@ function Test(args)
             {itemTypeId=85235, quality=901, filterType = {'cc'}},
             {itemTypeId=85626, quality=1000, filterType = {'cc'}},
             {itemTypeId=85627, quality=50, filterType = {'cc'}},
+
+            -- Salvage Modules
+            {itemTypeId=86398, quality=0, filterType = {'sm', 'salvage', 'tech'}}, -- half-digested
+            {itemTypeId=86404, quality=0, filterType = {'sm', 'salvage', 'tech'}}, -- chosen
         }
 
         -- Filter
-        if filterType then
+        if filterType and filterType ~= 'any' then
             for num, targetInfo in pairs(targetInfoData) do
                 for k, v in ipairs(targetInfo.filterType) do
                     if v == filterType then targetInfo.match = true break end
@@ -1142,11 +1163,7 @@ function Test(args)
                     i = i + 1
                 end
             end
-
         end
-
-
-
 
         -- Determine all
         if numberOfPanels == 'all' then numberOfPanels = #targetInfoData end
