@@ -3,22 +3,51 @@ local ciLootDespawn = 20 -- Seconds into the future that the callback that check
 local identityCounter = 1
 
 --[[
-    Identify(entityId, [targetInfo])
+    Identify(entityId, [targetInfo], [itemInfo])
     Identifies entity, adding it to a list of items that have been seen
 ]]--
 function Identify(entityId, targetInfo, itemInfo)
-    -- Get data if we don't have it
+    -- We must have an entityId
+    if not entityId then
+        Debug.Error('Identify called without an entityId')
+    -- If we don't have targetInfo, we must have an entityId that references a valid target, so that we can retrieve the information
+    elseif not targetInfo then
+        if not Game.IsTargetAvailable(entityId) then
+            Debug.Error('Identify called without targetInfo, and entityId does not reference an available entity.')
+        end
+    end
+
+    -- Setup targetInfo and itemInfo
     targetInfo = targetInfo or Game.GetTargetInfo(entityId)
     itemInfo = itemInfo or Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
-    targetInfo.name = targetInfo.name or itemInfo.name
-    Debug.Log('Identifying '..tostring(entityId)..','..targetInfo.name)
-    Debug.Log('targetInfo: ')
-    Debug.Table(targetInfo)
-    Debug.Log('itemInfo: ')
-    Debug.Table(itemInfo)
+    targetInfo.name = targetInfo.name or itemInfo.name -- This reduces the amount of data needed to be stored in the test function.
+
+    -- Test our data before we get started
+    Debug.Table({'Identify', entityId = entityId, targetInfo = targetInfo, itemInfo = itemInfo})
+    if not targetInfo or not itemInfo then
+        Debug.Error('Identify was unable to acquire the neccessary data')
+    end
 
     -- Unify data
-    local loot = {entityId=entityId, itemTypeId=targetInfo.itemTypeId, craftingTypeId=itemInfo.craftingTypeId, itemInfo=itemInfo, assignedTo=nil, quality=targetInfo.quality, name=targetInfo.name, pos={x=targetInfo.lootPos.x, y=targetInfo.lootPos.y, z=targetInfo.lootPos.z}, panel=nil, waypoint=nil, timer=nil, rollData=nil, identityId=nil}
+    local loot = {
+        entityId       = entityId, 
+        identityId     = nil,
+        itemTypeId     = targetInfo.itemTypeId,
+        quality        = targetInfo.quality,
+        itemInfo       = itemInfo,
+        craftingTypeId = itemInfo.craftingTypeId,
+        name           = targetInfo.name,
+        pos            = {
+                            x = targetInfo.lootPos.x,
+                            y = targetInfo.lootPos.y,
+                            z = targetInfo.lootPos.z,
+        },
+        assignedTo     = nil,
+        panel          = nil,
+        waypoint       = nil,
+        timer          = nil,
+        rollData       = nil,
+    }
 
     -- Optionally create waypoint
     if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
@@ -36,12 +65,12 @@ function Identify(entityId, targetInfo, itemInfo)
     loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1) -- TODO: Avoid code dependant on structure of panel as much as possible
         
     -- Setup despawn timer
-    loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item=loot})
+    loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item = loot})
     loot.timer:StartTimer()
 
     -- If squad leader, generate identity
     if bIsSquadLeader then
-        Debug.Log('Generating identity id')
+        Debug.Log('Generating identityId')
         local player = Player.GetInfo()
         local time = tonumber(System.GetLocalUnixTime())
         loot.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
@@ -51,7 +80,6 @@ function Identify(entityId, targetInfo, itemInfo)
 
     -- Save data
     table.insert(aIdentifiedLoot, loot)
-    Debug.Log('Identified: '..tostring(loot.entityId)..', '..loot.name)
     
     -- Fire event
     OnIdentify({item=loot})
@@ -70,6 +98,8 @@ function LootDespawn(args)
         end
         args.item.timer:SetAlarm('despawn', args.item.timer:GetTime() + ciLootDespawn, LootDespawn, {item=args.item})
         return
+
+    -- If it did despawn, then send the despawn event now, before we remove the item.
     else
         OnLootDespawn({item=args.item})
     end
