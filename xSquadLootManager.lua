@@ -161,7 +161,7 @@ function OnSquadRosterUpdate()
         bInSquad = true
 
         -- Update Squad Leader status
-        if Options['Distribution']['AlwaysSquadLeader'] then
+        if Options['Debug']['AlwaysSquadLeader'] then
             bIsSquadLeader = true
         else
             bIsSquadLeader = IsSquadLeader(Player.GetInfo())
@@ -188,7 +188,7 @@ function OnSquadRosterUpdate()
         end
 
         -- Update Squad leader status
-        if Options['Distribution']['AlwaysSquadLeader'] then
+        if Options['Debug']['AlwaysSquadLeader'] then
             bIsSquadLeader = true
 
             if Options['Debug']['FakeOnSquadRoster'] then
@@ -1095,7 +1095,7 @@ function Test(args)
     Debug.Log('Core_Enabled: '..tostring(Options['Core']['Enabled']))
     Debug.Log('Debug_SquadToArmy: '..tostring(Options['Debug']['SquadToArmy']))
     Debug.Log('Debug_FakeSquadRoster: '..tostring(Options['Debug']['FakeOnSquadRoster']))
-    Debug.Log('Distribution_AlwaysSquadLeader: '..tostring(Options['Distribution']['AlwaysSquadLeader']))
+    Debug.Log('Debug_AlwaysSquadLeader: '..tostring(Options['Debug']['AlwaysSquadLeader']))
 
     Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
     Debug.Log('bInSquad: '..tostring(bInSquad))

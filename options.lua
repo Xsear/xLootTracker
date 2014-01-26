@@ -11,8 +11,6 @@ Options = {
     ['Distribution'] = {
         ['Enabled'] = true,
 
-        ['AlwaysSquadLeader'] = false,
-
         ['AutoDistribute'] = true,
 
         ['RollMin'] = 1,
@@ -764,6 +762,7 @@ Options = {
 
     ['Debug'] = {
         ['Enabled'] = false,
+        ['AlwaysSquadLeader'] = false,
         ['FakeOnSquadRoster'] = false,
         ['SquadToArmy'] = false,
         ['UndefinedFilterArguments'] = false,
@@ -815,7 +814,7 @@ function OnOptionChange(args)
     -- Perform extra actions
     if args.id == 'Debug_Enabled' then
         Debug.EnableLogging(args.val)
-    elseif args.id == 'Debug_FakeOnSquadRoster' or args.id == 'Distribution_AlwaysSquadLeader' then
+    elseif args.id == 'Debug_FakeOnSquadRoster' or args.id == 'Debug_AlwaysSquadLeader' then
         OnSquadRosterUpdate()
     end
 
@@ -1097,6 +1096,17 @@ function BuildInterfaceOptions_Front()
         tooltip  = Lokii.GetString('Debug_Enabled_Tooltip'),
     })
 
+        -- Always Squad Leader
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_AlwaysSquadLeader',
+            default = Options['Debug']['AlwaysSquadleader'],
+            label   = Lokii.GetString('Debug_AlwaysSquadLeader_Label'),
+            tooltip = Lokii.GetString('Debug_AlwaysSquadLeader_Tooltip'),
+            subtab  = {
+                Lokii.GetString('Subtab_Distribution')
+            },
+        })
+
         InterfaceOptions.AddCheckBox({
             id      = 'Debug_FakeOnSquadRoster',
             default = Options['Debug']['FakeOnSquadRoster'],
@@ -1146,17 +1156,6 @@ function BuildInterfaceOptions_Distribution()
     -- Filters
     UIHELPER_DetectDistributeMarkX('Distribution', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Distribution', 'CraftingComponents')
-
-    -- Always Squad Leader
-    InterfaceOptions.AddCheckBox({
-        id      = 'Distribution_AlwaysSquadLeader',
-        default = Options['Distribution']['AlwaysSquadleader'],
-        label   = Lokii.GetString('Distribution_AlwaysSquadLeader_Label'),
-        tooltip = Lokii.GetString('Distribution_AlwaysSquadLeader_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Subtab_Distribution')
-        },
-    })
 
     -- Auto Distribute
     InterfaceOptions.AddCheckBox({
