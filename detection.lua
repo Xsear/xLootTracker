@@ -49,6 +49,10 @@ function Identify(entityId, targetInfo, itemInfo)
         rollData       = nil,
     }
 
+    if not itemInfo.tier then
+        itemInfo.tier = {level = 0}
+    end
+
     -- Optionally create waypoint
     if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
         loot.waypoint = CreateWaypoint(loot)

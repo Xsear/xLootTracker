@@ -636,6 +636,8 @@ end
     Where moduleOptions is for example Options['Detection']
 ]]--
 function ItemPassesFilter(item, moduleOptions)
+    Debug.Log('ItemPassesFilter called')
+
     -- Vars
     local typeKey = nil
     local stageKey = nil
@@ -643,11 +645,13 @@ function ItemPassesFilter(item, moduleOptions)
     -- Determine type
     if item.itemInfo.type == 'crafting_component' then
         typeKey = 'CraftingComponents'
-
     elseif item.itemInfo.type == 'frame_module' or
            item.itemInfo.type == 'ability_module' or
            item.itemInfo.type == 'weapon' then
         typeKey = 'EquipmentItems'
+    elseif item.itemInfo.type == 'basic' and item.itemInfo.rarity == 'salvage' then
+        typeKey = 'SalvageModules'
+        Debug.Log('typekye salvemdules')
     end
 
     -- Verify that type passes filter
@@ -656,7 +660,8 @@ function ItemPassesFilter(item, moduleOptions)
         if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
             stageKey = 'Simple'
         else -- TriggerModeOptions.Advanced
-            if        item.itemInfo.tier.level == 1 then stageKey = 'Stage1'
+            if        item.itemInfo.tier.level == 0 then stageKey = 'Unstaged'
+            elseif    item.itemInfo.tier.level == 1 then stageKey = 'Stage1'
             elseif    item.itemInfo.tier.level == 2 then stageKey = 'Stage2'
             elseif    item.itemInfo.tier.level == 3 then stageKey = 'Stage3'
             elseif    item.itemInfo.tier.level == 4 then stageKey = 'Stage4'   
@@ -667,7 +672,7 @@ function ItemPassesFilter(item, moduleOptions)
         -- Verify that stage passes filter
         -- WontFixMe: Bluuurgh --------------------------| wtf this coder can't plan for shit
         if (stageKey == 'Simple' and item.itemInfo.tier.level >= tonumber(moduleOptions[typeKey]['Simple']['TierThreshold'])) 
-        or moduleOptions[typeKey][stageKey]['Enabled'] then
+        or (stageKey ~= 'Simple' and moduleOptions[typeKey][stageKey]['Enabled']) then
             -- Determine quality threshold
             local qualityThreshold
             local option = moduleOptions[typeKey][stageKey]['QualityThreshold'] -- Just saving some characters~ :3
@@ -727,14 +732,20 @@ function GetItemOptionsKeys(item, moduleOptions)
            item.itemInfo.type == 'ability_module' or
            item.itemInfo.type == 'weapon' then
         typeKey = 'EquipmentItems'
+    
+    elseif item.itemInfo.type == 'basic' and item.itemInfo.rarity == 'salvage' then
+        typeKey = 'SalvageModules'
     end
+
+
     if typeKey == nil then Debug.Warn('GetItemOptionsKeys() does not recognize type! (Why are you passing incorrect items)', item.itemInfo.type) return nil, nil end
 
     -- Determine stage
     if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
         stageKey = 'Simple'
     else -- TriggerModeOptions.Advanced
-        if        item.itemInfo.tier.level == 1 then stageKey = 'Stage1'
+        if        item.itemInfo.tier.level == 0 then stageKey = 'Unstaged'
+        elseif    item.itemInfo.tier.level == 1 then stageKey = 'Stage1'
         elseif    item.itemInfo.tier.level == 2 then stageKey = 'Stage2'
         elseif    item.itemInfo.tier.level == 3 then stageKey = 'Stage3'
         elseif    item.itemInfo.tier.level == 4 then stageKey = 'Stage4'   

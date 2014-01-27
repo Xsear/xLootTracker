@@ -32,6 +32,14 @@ Options = {
                 ['QualityThresholdCustomValue'] = 500,
             },
 
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.RoundRobin,
+                ['Weighting'] = WeightingOptions.None,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
             ['Stage1'] = {
                 ['Enabled'] = false,
                 ['LootMode'] = DistributionMode.RoundRobin,
@@ -75,6 +83,68 @@ Options = {
                 ['LootMode'] = DistributionMode.NeedBeforeGreed,
                 ['Weighting'] = WeightingOptions.None,
                 ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.None,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.None,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.None,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.None,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.None,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['SalvageModules'] = {
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['LootMode'] = DistributionMode.RoundRobin,
+                ['Weighting'] = WeightingOptions.None,
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+                ['LootMode'] = DistributionMode.NeedBeforeGreed,
+                ['Weighting'] = WeightingOptions.None,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -136,6 +206,13 @@ Options = {
                 ['QualityThresholdCustomValue'] = 500,
             },
 
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
             ['Stage1'] = {
                 ['Enabled'] = false,
 
@@ -173,6 +250,61 @@ Options = {
 
             ['Simple'] = {
                 ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['SalvageModules'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -246,6 +378,13 @@ Options = {
                 ['QualityThresholdCustomValue'] = 500,
             },
 
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
             ['Stage1'] = {
                 ['Enabled'] = false,
 
@@ -283,6 +422,61 @@ Options = {
 
             ['Simple'] = {
                 ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['SalvageModules'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -684,6 +878,12 @@ Options = {
                 ['QualityThresholdCustomValue'] = 500,
             },
 
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
             ['Stage1'] = {
                 ['Enabled'] = false,
                 ['QualityThreshold'] = QualityOptions.Any,
@@ -717,6 +917,55 @@ Options = {
 
             ['Simple'] = {
                 ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage1'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage2'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage3'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Stage4'] = {
+                ['Enabled'] = false,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+        },
+
+        ['SalvageModules'] = {
+        
+            ['Enabled'] = true,
+
+            ['Mode'] = TriggerModeOptions.Simple,
+
+            ['Simple'] = {
+                ['TierThreshold'] = TierOptions.Any,
+                ['QualityThreshold'] = QualityOptions.Any,
+                ['QualityThresholdCustomValue'] = 500,
+            },
+
+            ['Unstaged'] = {
+                ['Enabled'] = false,
                 ['QualityThreshold'] = QualityOptions.Any,
                 ['QualityThresholdCustomValue'] = 500,
             },
@@ -907,13 +1156,13 @@ function SetOptionsAvailability()
     -- If simple disable advanced options
     for i, rootKey in pairs({'Tracker', 'Distribution', 'Panels', 'Waypoints'}) do
 
-        for i, typeKey in pairs({'EquipmentItems', 'CraftingComponents'}) do
+        for i, typeKey in pairs({'EquipmentItems', 'CraftingComponents', 'SalvageModules'}) do
 
 
             -- Mode selection only available when type enabled
             InterfaceOptions.EnableOption(rootKey..'_'..typeKey..'_Mode', Options[rootKey][typeKey]['Enabled'])
 
-            for i, stageKey in pairs({'Simple', 'Stage1', 'Stage2', 'Stage3', 'Stage4'}) do
+            for i, stageKey in pairs({'Simple', 'Unstaged', 'Stage1', 'Stage2', 'Stage3', 'Stage4'}) do
                 --Debug.Log(rootKey..'_'..typeKey)
 
                 -- Disable/Enable logic
@@ -1156,6 +1405,8 @@ function BuildInterfaceOptions_Distribution()
     -- Filters
     UIHELPER_DetectDistributeMarkX('Distribution', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Distribution', 'CraftingComponents')
+    UIHELPER_DetectDistributeMarkX('Distribution', 'SalvageModules')
+
 
     -- Auto Distribute
     InterfaceOptions.AddCheckBox({
@@ -1203,6 +1454,8 @@ function BuildInterfaceOptions_Panels()
     -- Filters
     UIHELPER_DetectDistributeMarkX('Panels', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Panels', 'CraftingComponents')
+    UIHELPER_DetectDistributeMarkX('Panels', 'SalvageModules')
+    
 
     -- Display Assigned To
     InterfaceOptions.AddCheckBox({
@@ -1288,6 +1541,7 @@ end
 function BuildInterfaceOptions_Waypoints()
     UIHELPER_DetectDistributeMarkX('Waypoints', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Waypoints', 'CraftingComponents')
+    UIHELPER_DetectDistributeMarkX('Waypoints', 'SalvageModules')
 
     InterfaceOptions.AddCheckBox({
         id      = 'Waypoints_ShowOnHud',
@@ -1445,6 +1699,7 @@ function BuildInterfaceOptions_Tracker()
     -- Filters
     UIHELPER_DetectDistributeMarkX('Tracker', 'EquipmentItems')
     UIHELPER_DetectDistributeMarkX('Tracker', 'CraftingComponents')
+    UIHELPER_DetectDistributeMarkX('Tracker', 'SalvageModules')
 end
 
 function BuildInterfaceOptions_Sounds()
@@ -1491,6 +1746,7 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
         UIHELPER_StageX(rootKey, x, 'Simple', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
 
         -- Advanced mode options
+        UIHELPER_StageX(rootKey, x, 'Unstaged', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
         UIHELPER_StageX(rootKey, x, 'Stage1', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
         UIHELPER_StageX(rootKey, x, 'Stage2', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
         UIHELPER_StageX(rootKey, x, 'Stage3', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
