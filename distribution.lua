@@ -80,6 +80,13 @@ function Distribution.AssignItem(ref, winner, rolls)
         entityId = tostring(ref)
     end
 
+    local winningRoll
+    for _, row in ipairs(rolls) do
+        if row.rolledBy == winner then
+            winningRoll = row.roll
+        end
+    end
+
     if not _table.empty(aIdentifiedLoot) then
         for num, item in ipairs(aIdentifiedLoot) do 
             if tostring(item.entityId) == entityId then
@@ -100,6 +107,7 @@ function Distribution.AssignItem(ref, winner, rolls)
                     item = item,
                     assignedTo = winner,
                     playerName = winner,
+                    roll = winningRoll,
                 })
                 return
             end
@@ -451,7 +459,7 @@ function RollFinish()
         -- Otherwise, send distribute event and assign to the winner
         else
             OnDistributeItem({item=mCurrentlyRolling, rolls=rolls, distributionMode=DistributionMode.NeedBeforeGreed})
-            Distribution.AssignItem(mCurrentlyRolling.entityId, winner)
+            Distribution.AssignItem(mCurrentlyRolling.entityId, winner, rolls)
         end
 
         -- Update loot panels
