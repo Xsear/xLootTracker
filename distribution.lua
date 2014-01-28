@@ -297,7 +297,7 @@ end
 ]]--
 function RollTimeout(args)
     if mCurrentlyRolling then
-        SendChatMessage('system', 'RollTimeout for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality))
+        SendFilteredMessage('system', 'RollTimeout for %i')
         RollFinish()
     end
 end
@@ -309,13 +309,13 @@ end
 ]]--
 function RollCancel(args)
     if mCurrentlyRolling then
-        local message = 'RollCancel for '..ChatLib.EncodeItemLink(mCurrentlyRolling.itemTypeId, mCurrentlyRolling.quality)
+        local message = 'RollCancel for %i'
 
         if args and args.reason then
             message = message..'\nReason: '..args.reason
         end
 
-        SendChatMessage('system', message)
+        SendFilteredMessage('system', message)
         RollCleanup()
     end
 end

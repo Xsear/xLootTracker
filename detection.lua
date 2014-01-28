@@ -98,7 +98,7 @@ function LootDespawn(args)
     -- Check that it really despawned
     if Game.IsTargetAvailable(args.item.entityId) then
         if Options['Debug']['Enabled'] then
-            SendChatMessage('system', args.item.name..' has not despawned yet, reseting despawn timer')
+            SendFilteredMessage('system', '%i has not despawned yet, resetting despawn timer.')
         end
         args.item.timer:SetAlarm('despawn', args.item.timer:GetTime() + ciLootDespawn, LootDespawn, {item=args.item})
         return
