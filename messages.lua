@@ -12,7 +12,7 @@ function SendChatMessage(channel, message, alert)
     if channel == 'squad' and not bIsSquadLeader then return end
 
     -- Handle optional arguments
-    alert = alert or false
+    alert = false -- Fixme: Deprecate
 
     -- Setup prefix
     local prefix = Options['Messages']['Prefix']
