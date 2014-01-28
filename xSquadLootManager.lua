@@ -212,31 +212,55 @@ end
     Callback function for Slash commands
 ]]--
 function OnSlash(args)
+    -- Help / command list
     if args.text == '' or args.text == 'help' or args.text == '?' then
         SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion)
-        SendChatMessage('system', 'Command list')
+        SendChatMessage('system', 'Slash Commands')
         SendChatMessage('system', '/slm [help|?]: Version message and command list')
         SendChatMessage('system', '/slm <enable|disable|toggle> : Turn addon on or off')
-        SendChatMessage('system', '/slm <distribute|roll> : Distribute first rollable item')
+        SendChatMessage('system', '/slm <distribute|roll|next> : Distribute first rollable item')
         SendChatMessage('system', '/slm list : List rollable items')
-        SendChatMessage('system', '/slm clear : Clears list of identified items')
-    elseif args[1] == 'test' then
-        Test({args[2], args[3]})
-    elseif args.text == 'ut' then
-        Tracker.Update()
-    elseif args.text == 'us' then
-        OnSquadRosterUpdate()
-    elseif args.text == 'clear' then
-        ClearIdentified()
+        SendChatMessage('system', '/slm clear : Clear tracked items')
+
+        if Options['Debug']['Enabled'] then
+            SendChatMessage('system', 'Debug Commands')
+            SendChatMessage('system', '/slm test [filter|any] [number|any] : Fake detection of items.')
+            SendChatMessage('system', '/slm assign <entityId> <playerName> : Assign an item to a player.')
+            SendChatMessage('system', '/slm ut : Force Tracker.Update()')
+            SendChatMessage('system', '/slm us : Force OnSquadRosterUpdate()')
+        end
+
+    -- Toggle
     elseif args.text == 'enable' or args.text == 'disable' or args.text == 'toggle' then
         ToggleEnabled(args.text)
-    elseif args.text == 'distribute' or args.text == 'roll' then
-        DistributeItem()
+
+    -- Distribute
+    elseif args.text == 'distribute' or args.text == 'roll' or args.text == 'next' then
+        DistributeNextItem()
+
+    -- List
     elseif args.text == 'list' then
         ListUnAssigned()
+
+    -- Clear
+    elseif args.text == 'clear' then
+        ClearIdentified()
+
+    -- Debug/testing commands, subject to change
+    elseif args[1] == 'test' then
+        Test({args[2], args[3]})
+
     elseif (args[1] == 'assign' or args[1] == 'a') and args[2] and args[3] then
         Distribution.AssignItem(args[2], args[3])
+
+    elseif args.text == 'ut' then
+        Tracker.Update()
+
+    elseif args.text == 'us' then
+        OnSquadRosterUpdate()
     end
+
+
 end
 
 --[[
