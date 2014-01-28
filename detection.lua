@@ -110,7 +110,7 @@ function LootDespawn(args)
 
     -- If currently rolling for this item, cancel the roll
     if mCurrentlyRolling and mCurrentlyRolling.entityId == args.item.entityId then
-        RollCancel()
+        RollCancel({reason='The item has despawned.'})
     end
 
     -- Remove item

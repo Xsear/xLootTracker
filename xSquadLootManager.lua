@@ -958,7 +958,7 @@ function RemoveIdentifiedItem(loot)
     loot.timer:Destroy()
 
     -- If currently rolling for this item, kill the roll
-    if mCurrentlyRolling == loot.entityId then RollCancel() end
+    if mCurrentlyRolling == loot.entityId then RollCancel({reason='The item is no longer being tracked.'}) end
 
     -- Kill the panel object
     if loot.panel ~= nil then
@@ -1068,7 +1068,7 @@ end
 ]]--
 function ClearIdentified()
     SendChatMessage('system', 'Clear')
-    RollCancel()
+    RollCancel({reason='Clearing tracked items.'})
 
     local itemsToRemove = {}
     for num, item in ipairs(aIdentifiedLoot) do 
