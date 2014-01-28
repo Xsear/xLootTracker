@@ -216,16 +216,18 @@ function OnSlash(args)
     if args.text == '' or args.text == 'help' or args.text == '?' then
         SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion)
         SendChatMessage('system', 'Slash Commands')
-        SendChatMessage('system', '/slm [help|?]: Version message and command list')
-        SendChatMessage('system', '/slm <enable|disable|toggle> : Turn addon on or off')
-        SendChatMessage('system', '/slm <distribute|roll|next> : Distribute first rollable item')
-        SendChatMessage('system', '/slm list : List rollable items')
-        SendChatMessage('system', '/slm clear : Clear tracked items')
+        SendChatMessage('system', '/slm [help|?]: Version message and command list.')
+        SendChatMessage('system', '/slm <enable|disable|toggle> : Turn addon on or off.')
+        SendChatMessage('system', '/slm <distribute|roll|next> : Distribute first rollable item.')
+        SendChatMessage('system', '/slm cancel : Cancel an ongoing roll.')
+        SendChatMessage('system', '/slm list : List rollable items.')
+        SendChatMessage('system', '/slm clear : Clear tracked items.')
 
         if Options['Debug']['Enabled'] then
             SendChatMessage('system', 'Debug Commands')
             SendChatMessage('system', '/slm test [filter|any] [number|any] : Fake detection of items.')
             SendChatMessage('system', '/slm assign <entityId> <playerName> : Assign an item to a player.')
+            SendChatMessage('system', '/slm <stfu|silence|no> : Forcefully disables Messages and Distribution.')
             SendChatMessage('system', '/slm ut : Force Tracker.Update()')
             SendChatMessage('system', '/slm us : Force OnSquadRosterUpdate()')
         end
@@ -237,6 +239,10 @@ function OnSlash(args)
     -- Distribute
     elseif args.text == 'distribute' or args.text == 'roll' or args.text == 'next' then
         DistributeNextItem()
+
+    -- Cancel
+    elseif args[1] == 'cancel' then
+        RollCancel({reason=args[2]})
 
     -- List
     elseif args.text == 'list' then
@@ -252,6 +258,11 @@ function OnSlash(args)
 
     elseif (args[1] == 'assign' or args[1] == 'a') and args[2] and args[3] then
         Distribution.AssignItem(args[2], args[3])
+
+    elseif args.text == 'no' or args.text == 'stfu' or args.text == 'silence' then
+        Options['Messages']['Enabled'] = false
+        Options['Distribution']['Enabled'] = false
+        SendChatMessage('system', 'Forcefully disabled Messages and Distribution. Reload the UI to reset.')
 
     elseif args.text == 'ut' then
         Tracker.Update()
