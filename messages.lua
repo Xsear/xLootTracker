@@ -12,9 +12,9 @@ function SendChatMessage(channel, message, alert)
     if channel == 'squad' and not bIsSquadLeader then return end
 
     -- Handle optional arguments
-    alert = false -- Fixme: Remove thie functionality completely as it no longer exists in the game.
+    alert = alert or false
 
-    -- Setup prefixe
+    -- Setup prefix
     local prefix = Options['Messages']['Prefix']
 
     -- Calculate message content length limit
@@ -60,8 +60,6 @@ function SendChatMessage(channel, message, alert)
 
     -- Otherwise, send message normally
     else
-        Debug.Log('Sending Chat Message: '..prefix..message)
-        Debug.Log('Message Length: '..unicode.len(prefix..message))
         SendMessageToChat(channel, prefix..message, alert)
     end
 end
