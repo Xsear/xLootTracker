@@ -7,6 +7,7 @@ Detect =    "Detect"
 Distribute =    "Distribute"
 Mark =    "Mark"
 Simple =    "Simple"
+Unstaged =    "Unstaged"
 Stage1 =    "Stage 1"
 Stage2 =    "Stage 2"
 Stage3 =    "Stage 3"
@@ -113,6 +114,8 @@ LANG = {
 
     Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    SimpleEnabled_Label,
     Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    SimpleEnabled_Tooltip,  
+    Filter_Generic_CraftingComponents_Unstaged_Enabled_Label                        =    FilterGenericX_Label(Unstaged, CraftingComponents),
+    Filter_Generic_CraftingComponents_Unstaged_Enabled_Tooltip                      =    FilterGenericX_Tooltip(Unstaged, CraftingComponents), 
     Filter_Generic_CraftingComponents_Stage1_Enabled_Label                          =    FilterGenericX_Label(Stage1, CraftingComponents),
     Filter_Generic_CraftingComponents_Stage1_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage1, CraftingComponents), 
     Filter_Generic_CraftingComponents_Stage2_Enabled_Label                          =    FilterGenericX_Label(Stage2, CraftingComponents),
@@ -124,6 +127,8 @@ LANG = {
 
     Filter_Generic_EquipmentItems_Simple_Enabled_Label                              =    SimpleEnabled_Label,
     Filter_Generic_EquipmentItems_Simple_Enabled_Tooltip                            =    SimpleEnabled_Tooltip,  
+    Filter_Generic_EquipmentItems_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, EquipmentItems),
+    Filter_Generic_EquipmentItems_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, EquipmentItems), 
     Filter_Generic_EquipmentItems_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, EquipmentItems),
     Filter_Generic_EquipmentItems_Stage1_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage1, EquipmentItems), 
     Filter_Generic_EquipmentItems_Stage2_Enabled_Label                              =    FilterGenericX_Label(Stage2, EquipmentItems),
@@ -132,6 +137,19 @@ LANG = {
     Filter_Generic_EquipmentItems_Stage3_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage3, EquipmentItems), 
     Filter_Generic_EquipmentItems_Stage4_Enabled_Label                              =    FilterGenericX_Label(Stage4, EquipmentItems),
     Filter_Generic_EquipmentItems_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, EquipmentItems),
+
+    Filter_Generic_SalvageModules_Simple_Enabled_Label                              =    SimpleEnabled_Label,
+    Filter_Generic_SalvageModules_Simple_Enabled_Tooltip                            =    SimpleEnabled_Tooltip,  
+    Filter_Generic_SalvageModules_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, SalvageModules),
+    Filter_Generic_SalvageModules_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, SalvageModules), 
+    Filter_Generic_SalvageModules_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, SalvageModules),
+    Filter_Generic_SalvageModules_Stage1_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage1, SalvageModules), 
+    Filter_Generic_SalvageModules_Stage2_Enabled_Label                              =    FilterGenericX_Label(Stage2, SalvageModules),
+    Filter_Generic_SalvageModules_Stage2_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage2, SalvageModules), 
+    Filter_Generic_SalvageModules_Stage3_Enabled_Label                              =    FilterGenericX_Label(Stage3, SalvageModules),
+    Filter_Generic_SalvageModules_Stage3_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage3, SalvageModules), 
+    Filter_Generic_SalvageModules_Stage4_Enabled_Label                              =    FilterGenericX_Label(Stage4, SalvageModules),
+    Filter_Generic_SalvageModules_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, SalvageModules),
 
 
     Messages_Generic_Channels_Squad_Enabled_Label                                   =    Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Label,
@@ -539,7 +557,7 @@ LANG = {
     RollType_Choice_Pass_Label                              =    "Pass",
     RollType_Choice_Pass_Tooltip                            =    "",
     RollType_Choice_Need_Label                              =    "Need",
-    RollType_Choice_Need_Tooltip                            =    "asd",
+    RollType_Choice_Need_Tooltip                            =    "",
     ColorModes_Choice_Custom_Label                          =    "Custom",
     ColorModes_Choice_Custom_Tooltip                        =    "",
     ColorModes_Choice_MatchItem_Label                       =    "Match Item",
