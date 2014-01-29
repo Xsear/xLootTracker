@@ -127,29 +127,25 @@ function Tracker.Update()
                                 BUTTON_PASS:Disable(true)
                             else
                                 BUTTON_NEED:Bind(function(args) 
-                                    Debug.Log("need button pressed, here's the args")
-                                    Debug.Table(args)
-                                    System.PlaySound('Play_UI_Beep_06')
-                                    BUTTON_NEED:Disable(true)
-                                    BUTTON_GREED:Disable(true)
-                                    BUTTON_PASS:Disable(true)
-                                    Communication.SendRollDecision(item, RollType.Need)
+                                    ActionRollDecision({
+                                                       item = item,
+                                                       rollType = RollType.Need,
+                                                       })
+
                                 end, {button = "Need", item = item})
 
                                 BUTTON_GREED:Bind(function(args) 
-                                    System.PlaySound('Play_UI_Beep_06')
-                                    BUTTON_NEED:Disable(true)
-                                    BUTTON_GREED:Disable(true)
-                                    BUTTON_PASS:Disable(true)
-                                    Communication.SendRollDecision(item, RollType.Greed)
+                                    ActionRollDecision({
+                                                       item = item,
+                                                       rollType = RollType.Greed,
+                                                       })
                                 end, {button = "Greed", item = item})
 
                                 BUTTON_PASS:Bind(function(args) 
-                                    System.PlaySound('Play_UI_Beep_06')
-                                    BUTTON_NEED:Disable(true)
-                                    BUTTON_GREED:Disable(true)
-                                    BUTTON_PASS:Disable(true)
-                                    Communication.SendRollDecision(item, RollType.Pass)
+                                    ActionRollDecision({
+                                                       item = item,
+                                                       rollType = RollType.Pass,
+                                                       })
                                 end, {button = "Pass", item = item})
                             end
                             

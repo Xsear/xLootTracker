@@ -1119,6 +1119,19 @@ function ClearIdentified()
 end
 
 
+function ActionRollDecision(args)
+    System.PlaySound('Play_UI_Beep_06')
+    SendFilteredMessage('system', 'Declaring %t on %i', args)
+
+    -- If we are the squad leader, then we must manually call RollDecision since we ignore our own communication messages
+    if bIsSquadLeader then
+        RollDecision({author = Player.GetInfo(), rollType = args.rollType})
+    end
+
+    Communication.SendRollDecision(args.item, args.rollType)
+end
+
+
 -- Todo: Comment (what can I say, does exactly what it looks like), figure out what to do if we don't know the frame or potential universal frame icon or something
 -- Todo: Move elsewhere?
 function GetFrameWebIconByName(frameName)
