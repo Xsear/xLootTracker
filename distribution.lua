@@ -81,9 +81,11 @@ function Distribution.AssignItem(ref, winner, rolls)
     end
 
     local winningRoll
-    for _, row in ipairs(rolls) do
-        if row.rolledBy == winner then
-            winningRoll = row.roll
+    if rolls then
+        for _, row in ipairs(rolls) do
+            if row.rolledBy == winner then
+                winningRoll = row.roll
+            end
         end
     end
 
@@ -305,7 +307,7 @@ end
 ]]--
 function RollTimeout(args)
     if mCurrentlyRolling then
-        SendFilteredMessage('system', 'RollTimeout for %i')
+        SendFilteredMessage('system', 'RollTimeout for %i', {item=args.item})
         RollFinish()
     end
 end
@@ -323,7 +325,7 @@ function RollCancel(args)
             message = message..'\nReason: '..args.reason
         end
 
-        SendFilteredMessage('system', message)
+        SendFilteredMessage('system', message, {item=args.item})
         RollCleanup()
     end
 end

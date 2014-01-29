@@ -449,19 +449,19 @@ function DecodeRollData(rollDataPart)
 
             -- If we had the boolean indicator, convert to number
             if valueType == ChatLink.BooleanValue then
-                value = tonumber(value)
+                value = DecodeBooleanValue(value)
             end
 
             -- Fill in the fields in this very specific order :/
-            if not member.canNeed then
+            if member.canNeed == nil then
                 member.canNeed = value
-            elseif not member.name then 
+            elseif member.name == nil then 
                 member.name = value
-            elseif not member.hasRolled then 
+            elseif member.hasRolled == nil then 
                 member.hasRolled = value
-            elseif not member.battleframe then 
+            elseif member.battleframe == nil then 
                 member.battleframe = value
-            elseif not member.rollType then 
+            elseif member.rollType == nil then 
                 member.rollType = value
             end
 
@@ -476,6 +476,16 @@ function DecodeRollData(rollDataPart)
     Debug.Table('Decoded rollData result', rollData)
 
     return rollData
+end
+
+
+function DecodeBooleanValue(value)
+    if value == tostring(0) then
+        value = false
+    elseif value == tostring(1) then
+        value = true
+    end
+    return value
 end
 
 

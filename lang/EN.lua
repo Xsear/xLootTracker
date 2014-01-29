@@ -14,6 +14,7 @@ Stage3 =    "Stage 3"
 Stage4 =    "Stage 4"
 EquipmentItems =    "Equipment Items"
 CraftingComponents =    "Crafting Components"
+SalvageModules = "Salvage Modules"
 
 function DetectDistributeMarkX_Label(type, stage, x)
     return type.." "..stage.." "..x
@@ -111,6 +112,12 @@ LANG = {
     Filter_Generic_CraftingComponents_Enabled_Tooltip                               =    "Toggle",
     Filter_Generic_CraftingComponents_Mode_Label                                    =    "Crafting Components Mode",
     Filter_Generic_CraftingComponents_Mode_Tooltip                                  =    "Simple or Advanced configuration mode.",
+
+    Filter_Generic_SalvageModules_Enabled_Label                                 =    "Salvage Modules Enabled",
+    Filter_Generic_SalvageModules_Enabled_Tooltip                               =    "Toggle",
+    Filter_Generic_SalvageModules_Mode_Label                                    =    "Salvage Modules Mode",
+    Filter_Generic_SalvageModules_Mode_Tooltip                                  =    "Simple or Advanced configuration mode.",
+
 
     Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    SimpleEnabled_Label,
     Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    SimpleEnabled_Tooltip,  
@@ -223,7 +230,7 @@ LANG = {
     Messages_Events_Distribution_OnAssignItem_Channels_System_Format_Label              = Generic_Messages_Events_X_Event_Channels_System_Format_Label,
     Messages_Events_Distribution_OnAssignItem_Channels_System_Format_Tooltip            = Generic_Messages_Events_X_Event_Channels_System_Format_Tooltip,
     Messages_Events_Distribution_OnDistributeItem_Enabled_Label                         =    "On Distribute Item",
-    Messages_Events_Distribution_OnDistributeItem_Enabled_Tooltip                       =    "When an item is being assigned",
+    Messages_Events_Distribution_OnDistributeItem_Enabled_Tooltip                       =    "When an item is about to distribute an item",
     Messages_Events_Distribution_OnDistributeItem_Channels_Squad_Enabled_Label          = Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Label,
     Messages_Events_Distribution_OnDistributeItem_Channels_Squad_Enabled_Tooltip        = Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Tooltip,
     Messages_Events_Distribution_OnDistributeItem_Channels_Squad_Format_Label           = Generic_Messages_Events_X_Event_Channels_Squad_Format_Label,

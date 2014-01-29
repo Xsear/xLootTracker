@@ -1351,9 +1351,6 @@ function BuildInterfaceOptions_Front()
             default = Options['Debug']['AlwaysSquadleader'],
             label   = Lokii.GetString('Debug_AlwaysSquadLeader_Label'),
             tooltip = Lokii.GetString('Debug_AlwaysSquadLeader_Tooltip'),
-            subtab  = {
-                Lokii.GetString('Subtab_Distribution')
-            },
         })
 
         InterfaceOptions.AddCheckBox({

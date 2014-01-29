@@ -115,6 +115,7 @@ function Tracker.Update()
                             for _, member in ipairs(item.rollData) do
                                 if namecompare(Player.GetInfo(), member.name) then
                                     if member.rollType then
+                                        Debug.Log('member.rollType == '..tostring(member.rollType))
                                         haveRolled = true
                                     end
                                 end
