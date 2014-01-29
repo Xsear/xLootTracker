@@ -208,11 +208,20 @@ function RunMessageFilters(message, args)
 
 
     -- Player Subject (Link)
-    local playerAsLink = ChatLib.EncodePlayerLink(args.playerName)
+    local playerAsLink = undefinedValue
+    if args.playerName ~= undefinedValue then
+        playerAsLink = ChatLib.EncodePlayerLink(args.playerName)
+    end
     -- Player Looted To (Link)
-    local playerLootedToAsLink = ChatLib.EncodePlayerLink(args.lootedTo)
+    local playerLootedToAsLink = undefinedValue
+    if args.lootedTo ~= undefinedValue then
+        playerLootedToAsLink = ChatLib.EncodePlayerLink(args.lootedTo)
+    end
     -- Player Assigned To (Link)
-    local playerAssignedToAsLink = ChatLib.EncodePlayerLink(args.assignedTo)
+    local playerAssignedToAsLink = undefinedValue
+    if args.assignedTo ~= undefinedValue then
+        playerAssignedToAsLink = ChatLib.EncodePlayerLink(args.assignedTo)
+    end
 
     -- Members (Links)
     local membersAsLinks = {}
@@ -238,31 +247,36 @@ function RunMessageFilters(message, args)
     -- Archetype/Frame replacements
     local itemForArchetype = undefinedValue
     local itemForFrame = undefinedValue
+
+
         local eligibleArchetypes = {}
         local eligibleFrames = {}
 
-        -- If it's an equipment item, check local data
-        if IsEquipmentItem(args.item.itemInfo) and args.item.craftingTypeId then
-            local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(args.item.craftingTypeId))
-            if itemArchetype then
-                eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
-            end
-            if itemFrame then
-                eligibleFrames[#eligibleFrames + 1] = itemFrame
-            end
-        -- Else If it's a crafting component, check local data
-        elseif IsCraftingComponent(args.item.itemInfo) and args.item.itemTypeId then
-            for k, v in pairs(data_CraftingComponents) do
-                if v.itemTypeId == tostring(args.item.itemTypeId) and v.classes then
-                    for i, class in ipairs(v.classes) do
-                        eligibleArchetypes[#eligibleArchetypes + 1] = class
+        if args.item.itemInfo then
+
+            -- If it's an equipment item, check local data
+            if IsEquipmentItem(args.item.itemInfo) and args.item.craftingTypeId then
+                local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(args.item.craftingTypeId))
+                if itemArchetype then
+                    eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
+                end
+                if itemFrame then
+                    eligibleFrames[#eligibleFrames + 1] = itemFrame
+                end
+            -- Else If it's a crafting component, check local data
+            elseif IsCraftingComponent(args.item.itemInfo) and args.item.itemTypeId then
+                for k, v in pairs(data_CraftingComponents) do
+                    if v.itemTypeId == tostring(args.item.itemTypeId) and v.classes then
+                        for i, class in ipairs(v.classes) do
+                            eligibleArchetypes[#eligibleArchetypes + 1] = class
+                        end
                     end
                 end
-            end
-        -- Else If itemInfo has classes, use those
-        elseif args.item.itemInfo.classes then
-            for i, class in ipairs(args.item.itemInfo.classes) do
-                eligibleArchetypes[#eligibleArchetypes + 1] = class
+            -- Else If itemInfo has classes, use those
+            elseif args.item.itemInfo.classes then
+                for i, class in ipairs(args.item.itemInfo.classes) do
+                    eligibleArchetypes[#eligibleArchetypes + 1] = class
+                end
             end
         end
 
