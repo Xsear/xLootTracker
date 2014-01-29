@@ -604,6 +604,9 @@ function OnAssignItem(args)
             args.item.waypoint:Ping()
         end
     end
+
+    -- Messages
+    MessageEvent('Distribution', 'OnAssignItem', args)
 end
 
 --[[
