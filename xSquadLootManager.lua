@@ -1199,7 +1199,7 @@ function Test(args)
             -- Crafting Components
             {itemTypeId=10009, quality=1, filterType = {'cc'}},
             {itemTypeId=10010, quality=101, filterType = {'cc'}},
-            {itemTypeId=10011, quality=201, filterType = {'cc'}},
+            --{itemTypeId=10011, quality=201, filterType = {'cc'}}, -- Brinewyrm Goo, seems to have been removed
             {itemTypeId=10012, quality=301, filterType = {'cc'}},
             {itemTypeId=10014, quality=401, filterType = {'cc'}},
             {itemTypeId=10015, quality=501, filterType = {'cc'}},
