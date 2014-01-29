@@ -671,7 +671,7 @@ end
     Where moduleOptions is for example Options['Detection']
 ]]--
 function ItemPassesFilter(item, moduleOptions)
-    Debug.Log('ItemPassesFilter called')
+    --Debug.Log('ItemPassesFilter called')
 
     -- Vars
     local typeKey = nil
@@ -686,7 +686,6 @@ function ItemPassesFilter(item, moduleOptions)
         typeKey = 'EquipmentItems'
     elseif item.itemInfo.type == 'basic' and item.itemInfo.rarity == 'salvage' then
         typeKey = 'SalvageModules'
-        Debug.Log('typekye salvemdules')
     end
 
     -- Verify that type passes filter
