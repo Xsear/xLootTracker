@@ -84,29 +84,45 @@ function Tracker.Update()
 
                             -- Need
                             BUTTON_NEED = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                            BUTTON_NEED:AddHandler('OnMouseEnter', function() Tooltip.Show('Need') bTooltipActive = true end)
+                            BUTTON_NEED:AddHandler('OnMouseLeave', function() Tooltip.Show(false) bTooltipActive = false end)
 
                             BUTTON_NEED_ICON = MultiArt.Create(BUTTON_NEED:GetWidget())
-                            BUTTON_NEED_ICON:SetTexture('TrackerIcons')
-                            BUTTON_NEED_ICON:SetRegion('Need')
+                            --BUTTON_NEED_ICON:SetTexture('TrackerIcons')
+                            --BUTTON_NEED_ICON:SetRegion('Need')
+
+                            BUTTON_NEED_ICON:SetTexture('icons')
+                            BUTTON_NEED_ICON:SetRegion('battleframe_station')
+
 
                             BUTTON_NEED:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
 
 
                             -- Greed
                             BUTTON_GREED = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                            BUTTON_GREED:AddHandler('OnMouseEnter', function() Tooltip.Show('Greed') bTooltipActive = true end)
+                            BUTTON_GREED:AddHandler('OnMouseLeave', function() Tooltip.Show(false) bTooltipActive = false end)
 
                             BUTTON_GREED_ICON = MultiArt.Create(BUTTON_GREED:GetWidget())
-                            BUTTON_GREED_ICON:SetTexture('TrackerIcons')
-                            BUTTON_GREED_ICON:SetRegion('Greed')
+                            --BUTTON_GREED_ICON:SetTexture('TrackerIcons')
+                            --BUTTON_GREED_ICON:SetRegion('Greed')
+
+                            BUTTON_GREED_ICON:SetTexture('icons')
+                            BUTTON_GREED_ICON:SetRegion('crystite')
 
                             BUTTON_GREED:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
 
                             -- Pass
                             BUTTON_PASS = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
+                            BUTTON_PASS:AddHandler('OnMouseEnter', function() Tooltip.Show('Pass') bTooltipActive = true end)
+                            BUTTON_PASS:AddHandler('OnMouseLeave', function() Tooltip.Show(false) bTooltipActive = false end)
 
                             BUTTON_PASS_ICON = MultiArt.Create(BUTTON_PASS:GetWidget())
-                            BUTTON_PASS_ICON:SetTexture('TrackerIcons')
-                            BUTTON_PASS_ICON:SetRegion('Pass')
+                            --BUTTON_PASS_ICON:SetTexture('TrackerIcons')
+                            --BUTTON_PASS_ICON:SetRegion('Pass')
+
+                            BUTTON_PASS_ICON:SetTexture('icons')
+                            BUTTON_PASS_ICON:SetRegion('security')
 
                             BUTTON_PASS:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
                             
