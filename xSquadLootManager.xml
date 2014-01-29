@@ -26,23 +26,6 @@
     </Events>
 
     <Textures>
-        <Texture name="PanelTex" src="./texture/lootpanel.dds" premultiplied="false">
-            <Region name="Panel" top="26" left="26" right="486" bottom="272" />
-            <Region name="ArrowMarker1" top="310" left="28" right="75" bottom="343" />
-            <Region name="ArrowMarker2" top="310" left="78" right="125" bottom="343" />
-            <Region name="Dragon" top="360" left="26" right="486" bottom="440" />
-        </Texture>
-
-        <Texture name="TrackerIcons" src="./texture/trackericons.dds" premultiplied="false">
-            <Region name="Need" top="0" left="0" right="25" bottom="25" />
-            <Region name="Greed" top="30" left="0" right="25" bottom="55" />
-            <Region name="Pass" top="60" left="0" right="25" bottom="85" />
-
-            <Region name="Dismiss" top="0" left="30" right="55" bottom="25" />
-            <Region name="Info" top="30" left="30" right="55" bottom="55" />
-            <Region name="Compare" top="60" left="30" right="55" bottom="85" />
-        </Texture>
-
         <Texture name="ItemPlates" src="components/MainUI/HUD/Loot/itemplates.png" premultiplied="false" >
             <Region name="epic_64" top="0" bottom="64" left="392" right="456" />
             <Region name="epic_96" top="0" bottom="96" left="196" right="292" />
