@@ -23,7 +23,7 @@ require './lib/lib_GTimer' -- Timer for rolltimeout
 require './lib/lib_LKObjects' -- Trivialize objects
 
 -- Constants
-csVersion = '0.91 Janstone T1'
+csVersion = '0.91 Janstone T2'
 ciSaveVersion = 0.90
 
 -- Global Variables
