@@ -1224,36 +1224,33 @@ function Test(args)
         local targetInfoData = {
             -- Equipment Items
 
-            {itemTypeId=85972, quality=500, filterType = {'eq', 'weapons'}}, -- needlar
-            {itemTypeId=85984, quality=600, filterType = {'eq', 'weapons'}}, -- assault rifle
-            {itemTypeId=86054, quality=500, filterType = {'eq', 'hkm'}}, -- chemical sprayer
-            {itemTypeId=86021, quality=400, filterType = {'eq', 'passive'}}, -- regen plating
-            {itemTypeId=86018, quality=500, filterType = {'eq'}}, -- platin
-            {itemTypeId=85990, quality=500, filterType = {'eq', 'neutral'}}, -- servos/jumpjets
-            {itemTypeId=85989, quality=801, filterType = {'eq', 'neutral'}},
-            {itemTypeId=86114, quality=23, filterType = {'eq', 'ability', 'abilities'}},
+            {itemTypeId=85972, filterType = {'eq', 'weapons'}}, -- needlar
+            {itemTypeId=85984, filterType = {'eq', 'weapons'}}, -- assault rifle
+            {itemTypeId=86054, filterType = {'eq', 'hkm'}}, -- chemical sprayer
+            {itemTypeId=86021, filterType = {'eq', 'passive'}}, -- regen plating
+            {itemTypeId=86018, filterType = {'eq'}}, -- platin
+            {itemTypeId=85990, filterType = {'eq', 'neutral'}}, -- servos/jumpjets
+            {itemTypeId=85989, filterType = {'eq', 'neutral'}},
+            {itemTypeId=86114, filterType = {'eq', 'ability', 'abilities'}},
 
             -- Crossbows ftw
-            {itemTypeId=85974, quality=125, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {itemTypeId=85974, quality=250, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {itemTypeId=85974, quality=500, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
-            {itemTypeId=85974, quality=801, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
+            {itemTypeId=85974, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
             {itemTypeId=85974, quality=1000, filterType = {'cb', 'crossbow', 'weapons', 'eq'}},
 
 
             -- Crafting Components
-            {itemTypeId=10009, quality=1, filterType = {'cc'}},
-            {itemTypeId=10010, quality=101, filterType = {'cc'}},
+            {itemTypeId=10009, filterType = {'cc'}},
+            {itemTypeId=10010, filterType = {'cc'}},
             --{itemTypeId=10011, quality=201, filterType = {'cc'}}, -- Brinewyrm Goo, seems to have been removed
-            {itemTypeId=10012, quality=301, filterType = {'cc'}},
-            {itemTypeId=10014, quality=401, filterType = {'cc'}},
-            {itemTypeId=10015, quality=501, filterType = {'cc'}},
-            {itemTypeId=10016, quality=601, filterType = {'cc'}},
-            {itemTypeId=10024, quality=701, filterType = {'cc'}},
-            {itemTypeId=82500, quality=801, filterType = {'cc'}},
-            {itemTypeId=85235, quality=901, filterType = {'cc'}},
-            {itemTypeId=85626, quality=1000, filterType = {'cc'}},
-            {itemTypeId=85627, quality=50, filterType = {'cc'}},
+            {itemTypeId=10012, filterType = {'cc'}},
+            {itemTypeId=10014, filterType = {'cc'}},
+            {itemTypeId=10015, filterType = {'cc'}},
+            {itemTypeId=10016, filterType = {'cc'}},
+            {itemTypeId=10024, filterType = {'cc'}},
+            {itemTypeId=82500, filterType = {'cc'}},
+            {itemTypeId=85235, filterType = {'cc'}},
+            {itemTypeId=85626, filterType = {'cc'}},
+            {itemTypeId=85627, filterType = {'cc'}},
 
             -- Salvage Modules
             {itemTypeId=86398, quality=0, filterType = {'sm', 'salvage', 'tech'}}, -- half-digested
@@ -1289,6 +1286,11 @@ function Test(args)
             -- Else numberOfPanels == #targetInfoData then get one of all kinds
             else
                 targetInfo = targetInfoData[num]
+            end
+
+            -- Randomly set the quality if not specified
+            if not targetInfo.quality then
+                targetInfo.quality = math.random(0, 1000)
             end
 
             -- Location
