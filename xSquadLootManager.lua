@@ -181,7 +181,43 @@ function OnSquadRosterUpdate()
         if Options['Debug']['Enabled'] and Options['Debug']['FakeOnSquadRoster'] then
             bInSquad = true
             Debug.Log('OnSquadRosterUpdate faking a squad roster')
-            aSquadRoster = {members={{name=Player.GetInfo(), battleframe='medic'}, {name='SquadRosterUpdateFake1', battleframe='berzerker'}, {name='SquadRosterUpdateFake2', battleframe='recon'}}}
+            aSquadRoster = {
+                members = {
+                    {
+                        voip = false,
+                        voip_state = 'None',
+                        entityId = Player.GetTargetId(),
+                        battleframe = 'medic',
+                        isTalking = false,
+                        chatId = Chat.GetLocalUserInfo().player_id,
+                        name=Player.GetInfo(),
+                        tier = 2,
+                        gender = 'male',
+                    },
+                    {
+                        voip = false,
+                        voip_state = 'None',
+                        entityId = 9000000000000000001,
+                        battleframe = 'berzerker',
+                        isTalking = false,
+                        chatId = 9100000000000000001,
+                        name = 'Minamin',
+                        tier = 2,
+                        gender = 'female',
+                    },
+                    {
+                        voip = false,
+                        voip_state = 'None',
+                        entityId = 9000000000000000002,
+                        battleframe = 'recon',
+                        isTalking = false,
+                        chatId = 9200000000000000002,
+                        name = 'Mitty',
+                        tier = 2,
+                        gender = 'female',
+                    },
+                },
+            }
             iRoundRobinIndex = 1
             Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
         else
