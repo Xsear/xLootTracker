@@ -17,6 +17,15 @@ function Identify(entityId, targetInfo, itemInfo)
         end
     end
 
+    if tonumber(entityId) > 100 then
+        if not Game.IsTargetAvailable(entityId) then
+            Debug.Warn('Ghost Item Detected')
+            if Options['Debug']['Enabled'] then
+                SendChatMessage('system', 'Ghost Item Detected')
+            end
+        end
+    end
+
     -- Setup targetInfo and itemInfo
     targetInfo = targetInfo or Game.GetTargetInfo(entityId)
     itemInfo = itemInfo or Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
