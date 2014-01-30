@@ -467,6 +467,9 @@ function RollFinish()
         -- Update loot panels
         UpdatePanel(mCurrentlyRolling)
 
+        -- Update tracker
+        Tracker.Update()
+
         -- Clean up after this roll
         RollCleanup()
 
