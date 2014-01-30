@@ -265,12 +265,16 @@ function Private.NeedBeforeGreed(item, members, eligible)
     mCurrentlyRolling = item
 
     -- Fill data
-    for num, row in ipairs(members) do
+    local rollData = {}
+    for num, member in ipairs(members) do
+        local row = {}
         -- Setup new fields
+        row.canNeed = false
+        row.name = member.name
         row.hasRolled = false
+        row.battleframe = member.battleframe
         row.rollType = false
         row.rollValue = nil
-        row.canNeed = false
 
         -- Determine if this person is eligible for need rolls
         for i, v in ipairs(eligible) do
@@ -278,10 +282,12 @@ function Private.NeedBeforeGreed(item, members, eligible)
                 row.canNeed = true
             end
         end
+
+        rollData[#rollData + 1] = row
     end
 
     -- Establish table in item
-    item.rollData = members
+    item.rollData = rollData
 
 
     -- Start roll timeout timer
