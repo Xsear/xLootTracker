@@ -379,23 +379,28 @@ end
     Currently just redirecting to OnLootCollected should be fine.
 ]]--
 function OnLootPickup(args)
-    -- Don't send if the item was looted by and to the local player - preventing double messages.
+    -- Handled in OnLootHandle
+    OnLootHandle(args)
+end
+
+function OnLootCollected(args)
     if namecompare(args.lootedTo, Player.GetInfo()) and namecompare(args.lootedBy, Player.GetInfo()) then 
-        --Debug.Log('Skipping OnLootPickup event because conditions ensure OnLootCollected.')
+        --Debug.Log('Skipping OnLootCollected event for '..tostring(args.itemTypeId)..' under the assumption that OnLootPickup occurs.')
         return 
     end
 
-    -- Redirect to OnLootCollected
-    OnLootCollected(args)
+    -- Handled in OnLootHandle
+    OnLootHandle(args)
 end
 
 --[[
-    OnLootCollected(args)
+    OnLootHandle(args)
     Callback for when someone loots something.
     Used to detect ninja lootaz!
     
 ]]--
-function OnLootCollected(args)
+function OnLootHandle(args)
+    Debug.Event(args)
     -- Requires Core and Detection enabled
     if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
