@@ -15,6 +15,7 @@ require 'lib/lib_ChatLib' -- Used to send some chat messages
 require 'lib/lib_table' -- Common table functions
 require 'lib/lib_UserKeybinds' -- User keybinds
 require 'lib/lib_Colors' -- Colors, used by markers
+require 'lib/lib_RowScroller' -- Row Scroller, used by Tacker
 
 -- Custom Libs
 require './lib/Lokii' -- Localization
@@ -97,7 +98,7 @@ function OnComponentLoad()
     LKObjects.SetMemoryWarning(20) -- should be about 5 panels
 
     -- Best make sure the tracker is set up
-    Tracker.Update()
+    Tracker.Setup()
 
     -- Setup Communication links
     Communication.Setup()

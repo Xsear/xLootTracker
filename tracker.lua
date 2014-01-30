@@ -5,47 +5,73 @@ Tracker = {}
 
 -- Frames
 local FRAME = Component.GetFrame('Tracker')
+local SLIDER = FRAME:GetChild('Slider')
+local LIST = FRAME:GetChild('List')
+local SCROLLER = RowScroller.Create(LIST)
+
 local TOOLTIP_PROG = FRAME:GetChild('TooltipProg')
 local TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
-TOOLTIP_ITEM.GROUP:Show(false)
+
+-- Constants
+local cTrackerButtonSize = 25 -- Height and Width of the Need/Greed/Pass buttons in the Tracker.
+
 
 function Tracker.GetFrame()
     return FRAME
 end
 
+function Tracker.Setup()
+    -- Scroller
+    SCROLLER:SetSlider(SLIDER)
+    SCROLLER:SetSliderMargin(5, 5)
+    SCROLLER:SetSpacing(8)
+    SCROLLER:ShowSlider(true)
+
+    -- Tooltip
+    TOOLTIP_ITEM.GROUP:Show(false)
+
+    -- Force Update
+    Tracker.Update()
+end
+
 function Tracker.Update()
     -- Debug.Log('UpdateTracker')
+
     -- Only update and show tracker if enabled
     if Options['Tracker']['Enabled'] then
-
-        local cTrackerEntrySize = 30 -- Fixme: Wat
-        local cTrackerButtonSize = 25 -- Fixme: Explain
        
         -- Hide tooltip if is currently being displayed
+        -- Fixme: What...?
         if bTooltipActive then
             Tooltip.Show(false)
             TOOLTIP_PROG:Show(false) -- No need to display tooltip info now.
             TOOLTIP_ITEM.GROUP:Show(false)
         end
 
-         -- Update List of tracked items
-        RemoveAllChildren(FRAME:GetChild('List')) -- clear previous entries
-        local numberOfItemsInTracker = 0
+        -- Clear
+        SCROLLER:Reset() 
+
+        -- Populate
         if not _table.empty(aIdentifiedLoot) then
+
             for num, item in ipairs(aIdentifiedLoot) do
 
                 if ItemPassesFilter(item, Options['Tracker']) then
 
                     -- Create widget
-                    local ENTRY = Component.CreateWidget('Tracker_List_Entry', FRAME:GetChild('List'))
-                    ENTRY:SetDims('top:0; left:0; width:100%; height:'..cTrackerEntrySize..';');
+                    local ENTRY = Component.CreateWidget('Tracker_List_Entry', LIST)
+                    local ENTRY_PLATE = ENTRY:GetChild('plate')
+                    local ENTRY_ITEM = ENTRY:GetChild('item')
+
+                    -- Set dimensions
+                    ENTRY:SetDims('top:0; left:0; width:100%; height:32');
 
                     -- Set the plate tag
-                    ENTRY:GetChild('plate'):SetTag(tostring(item.entityId))
+                    ENTRY_PLATE:SetTag(tostring(item.entityId))
                     
                     -- Tooltip
                     if Options['Tracker']['Tooltip']['Enabled'] then
-                        ENTRY:GetChild('plate'):BindEvent('OnMouseEnter', function(args)
+                        ENTRY_PLATE:BindEvent('OnMouseEnter', function(args)
 
                             if Options['Tracker']['Tooltip']['Mode'] == TrackerTooltipModes.ProgressionStyle then
                                 TOOLTIP_PROG:Show(true)
@@ -55,7 +81,7 @@ function Tracker.Update()
                             Tooltip.Show(Tracker.UpdateTooltip(args.widget:GetTag()))
                             bTooltipActive = true
                         end)
-                        ENTRY:GetChild('plate'):BindEvent('OnMouseLeave', function(args)
+                        ENTRY_PLATE:BindEvent('OnMouseLeave', function(args)
                             TOOLTIP_PROG:Show(false)
                             TOOLTIP_ITEM.GROUP:Show(false)
                             Tooltip.Show(false)
@@ -64,19 +90,18 @@ function Tracker.Update()
                     end
                         
                     -- Colours
-                    ENTRY:GetChild('plate'):GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY:GetChild('plate'):GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY:GetChild('item'):GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY:GetChild('item'):GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY_PLATE:GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY_PLATE:GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY_ITEM:GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
+                    ENTRY_ITEM:GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
 
                     -- Item Backplate
-                    ENTRY:GetChild('item'):GetChild('backplate'):SetRegion(tostring(item.itemInfo.rarity)..'_64')
+                    ENTRY_ITEM:GetChild('backplate'):SetRegion(tostring(item.itemInfo.rarity))
 
                     -- Item Icon
-                    ENTRY:GetChild('item'):GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
+                    ENTRY_ITEM:GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
 
                     -- Left
-
                     if item.rollData then 
 
                         -- If Ongoing roll then Setup Buttons
@@ -179,12 +204,12 @@ function Tracker.Update()
                         ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
                     end
 
-                -- Right
+                    -- Right
                     -- Item Name text
                     ENTRY:GetChild('itemName'):SetText(itemPrefixShortener(FixItemNameTag(item.name, item.quality)))
 
-                -- Determine what to display
-                -- State Dependant Stuff
+                    -- Determine what to display
+                    -- State Dependant Stuff
                     -- Left Side
                     if item.assignedTo == nil then
                         ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(true)
@@ -198,73 +223,73 @@ function Tracker.Update()
                     ENTRY:GetChild('itemName'):Show(true)
 
 
-                -- Options Dependant Stuff
+                    -- Options Dependant Stuff
                     if Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.Decorated then
-                        ENTRY:GetChild('plate'):GetChild('bg'):Show(true)
-                        ENTRY:GetChild('plate'):GetChild('outer'):Show(true)
-                        ENTRY:GetChild('plate'):GetChild('shade'):Show(true)
+                        ENTRY_PLATE:GetChild('bg'):Show(true)
+                        ENTRY_PLATE:GetChild('outer'):Show(true)
+                        ENTRY_PLATE:GetChild('shade'):Show(true)
 
                     elseif Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.Simple then
-                        ENTRY:GetChild('plate'):GetChild('bg'):Show(true)
-                        ENTRY:GetChild('plate'):GetChild('outer'):Show(false)
-                        ENTRY:GetChild('plate'):GetChild('shade'):Show(false)
+                        ENTRY_PLATE:GetChild('bg'):Show(true)
+                        ENTRY_PLATE:GetChild('outer'):Show(false)
+                        ENTRY_PLATE:GetChild('shade'):Show(false)
                     
                     elseif Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.None then
-                        ENTRY:GetChild('plate'):GetChild('bg'):Show(false)
-                        ENTRY:GetChild('plate'):GetChild('outer'):Show(false)
-                        ENTRY:GetChild('plate'):GetChild('shade'):Show(false)
+                        ENTRY_PLATE:GetChild('bg'):Show(false)
+                        ENTRY_PLATE:GetChild('outer'):Show(false)
+                        ENTRY_PLATE:GetChild('shade'):Show(false)
                     end
 
                     if Options['Tracker']['IconMode'] == TrackerIconModeOptions.Decorated then
                         
-                        ENTRY:GetChild('item'):GetChild('bg'):Show(true)
-                        ENTRY:GetChild('item'):GetChild('backplate'):Show(true)
-                        ENTRY:GetChild('item'):GetChild('outer'):Show(true)
-                        ENTRY:GetChild('item'):GetChild('shade'):Show(true)
-                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(true)
+                        ENTRY_ITEM:GetChild('bg'):Show(true)
+                        ENTRY_ITEM:GetChild('backplate'):Show(true)
+                        ENTRY_ITEM:GetChild('outer'):Show(true)
+                        ENTRY_ITEM:GetChild('shade'):Show(true)
+                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
 
 
                     elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.Simple then
                         
-                        ENTRY:GetChild('item'):GetChild('bg'):Show(true)
-                        ENTRY:GetChild('item'):GetChild('backplate'):Show(true)
-                        ENTRY:GetChild('item'):GetChild('outer'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('shade'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(true)
+                        ENTRY_ITEM:GetChild('bg'):Show(true)
+                        ENTRY_ITEM:GetChild('backplate'):Show(true)
+                        ENTRY_ITEM:GetChild('outer'):Show(false)
+                        ENTRY_ITEM:GetChild('shade'):Show(false)
+                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
                     
                     elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.IconOnly then                   
 
-                        ENTRY:GetChild('item'):GetChild('bg'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('backplate'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('outer'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('shade'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(true)
+                        ENTRY_ITEM:GetChild('bg'):Show(false)
+                        ENTRY_ITEM:GetChild('backplate'):Show(false)
+                        ENTRY_ITEM:GetChild('outer'):Show(false)
+                        ENTRY_ITEM:GetChild('shade'):Show(false)
+                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
 
                     elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.None then
 
-                        ENTRY:GetChild('item'):GetChild('bg'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('backplate'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('outer'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('shade'):Show(false)
-                        ENTRY:GetChild('item'):GetChild('itemIcon'):Show(false)
+                        ENTRY_ITEM:GetChild('bg'):Show(false)
+                        ENTRY_ITEM:GetChild('backplate'):Show(false)
+                        ENTRY_ITEM:GetChild('outer'):Show(false)
+                        ENTRY_ITEM:GetChild('shade'):Show(false)
+                        ENTRY_ITEM:GetChild('itemIcon'):Show(false)
                         
-                        --ENTRY:GetChild('plate'):SetDims('left:0')
+                        --ENTRY_PLATE:SetDims('left:0')
                     end
 
-                    -- Increment counter
-                    numberOfItemsInTracker = numberOfItemsInTracker + 1
+                    local ROW = SCROLLER:AddRow(ENTRY)
                 end -- item passes filter
             end -- for loop
         else -- no identified items
             -- Clear?
         end
 
+
         -- Should we display the tracker?
         --Debug.Log('Should we display the Tracker?')
         --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
         --Debug.Log('bHUD == '..tostring(bHUD))
         --Debug.Log('bCursor == '..tostring(bCursor))
-        if numberOfItemsInTracker > 0 and (
+        if SCROLLER:GetRowCount() > 0 and (
                (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.Always)
             or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.HUD and bHUD)
             or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor and bHUD)
@@ -297,9 +322,7 @@ function Tracker.Update()
         Tooltip.Show(false)
         bTooltipActive = false
     end
-
 end
-
 
 function Tracker.UpdateTooltip(entityId)
     -- Get info

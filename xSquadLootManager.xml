@@ -24,23 +24,6 @@
         <Event name="ON_LOOT_PICKUP"               bind="OnLootPickup"        />
         <Event name="ON_CHAT_MESSAGE"              bind="OnChatMessage"       />
     </Events>
-
-    <Textures>
-        <Texture name="ItemPlates" src="components/MainUI/HUD/Loot/itemplates.png" premultiplied="false" >
-            <Region name="epic_64" top="0" bottom="64" left="392" right="456" />
-            <Region name="epic_96" top="0" bottom="96" left="196" right="292" />
-            <Region name="legendary_64" top="98" bottom="162" left="164" right="228" />
-            <Region name="legendary_96" top="0" bottom="96" left="0" right="96" />
-            <Region name="rare_64" top="164" bottom="228" left="98" right="162" />
-            <Region name="rare_96" top="0" bottom="96" left="98" right="194" />
-            <Region name="salvage_64" top="98" bottom="162" left="230" right="294" />
-            <Region name="salvage_96" top="98" bottom="194" left="0" right="96" />
-            <Region name="common_64" top="98" bottom="162" left="230" right="294" />
-            <Region name="common_96" top="98" bottom="194" left="0" right="96" />
-            <Region name="uncommon_64" top="98" bottom="162" left="98" right="162" />
-            <Region name="uncommon_96" top="0" bottom="96" left="294" right="390" />
-        </Texture>
-    </Textures>
     
     <Styles>
         <StyleSheet name="ItemHeader">  
@@ -50,15 +33,6 @@
             color:FFFFFF;
             scaleX:2;
             scaleY:2";
-        </StyleSheet>
-        
-        <StyleSheet name="Tracker_Text">  
-            font:UbuntuMedium_10;
-            halign:left;
-            valign:middle;
-            color:FFFFFF;
-            alpha:1.0;
-            shadow:0;
         </StyleSheet>
 
         <StyleSheet name="LootPanel_Text_Large">  
@@ -86,6 +60,48 @@
             scaleX:2;
             scaleY:2;
         </StyleSheet>
+
+
+        <StyleSheet name="Tracker_Text">  
+            font:UbuntuMedium_10;
+            halign:left;
+            valign:middle;
+            color:FFFFFF;
+            alpha:1.0;
+            shadow:0;
+        </StyleSheet>
+
+        <StyleSheet name="Tracker_Slider" parent="#Slider">
+            texture:colors; 
+            region-thumb-min:white;
+            region-thumb-mid:white;
+            region-thumb-max:white;
+            region-slider-min:black;
+            region-slider-mid:black;
+            region-slider-max:black;
+            horizontal:false;
+            inverted:false;
+            visible:true;
+            alpha:0.5;
+            shadow:0.4;
+        </StyleSheet>
+
+
+        <StyleSheet name="Tracker_PlateBorder" parent="standard">
+            texture:ButtonSkin;
+            region-topleft:;
+            region-top:border_horz;
+            region-topright:border_corner_mh;
+            region-left:;
+            region-center:border_center;
+            region-right:border_vert_mh;
+            region-bottomleft:;
+            region-bottom:border_horz_mv;
+            region-bottomright:border_corner_md;
+            exposure:0.2
+            padding:4;
+        </StyleSheet>
+
     </Styles>
     
     <BluePrints>
@@ -100,23 +116,23 @@
         <BluePrint name="Tracker_List_Entry" instantiable="true">
 
             <!-- Plate -->
-            <FocusBox name="plate" dimensions="width:100%-35; height:100%; left:32; top:2;">
+            <FocusBox name="plate" dimensions="width:100%-30; height:28; left:30; top:2;">
                 <StillArt name="bg" dimensions="width:100%-2.2; height:99%-2;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
-                <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
+                <Border name="outer" dimensions="dock:fill" class="Tracker_PlateBorder"/>
                 <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
             </FocusBox>
 
             <!-- Item icon -->
-            <FocusBox name="item" dimensions="width:35; height:35; left:0; top:0;">
+            <FocusBox name="item" dimensions="width:32; height:32; left:0; top:0;">
                 <StillArt name="bg" dimensions="width:96%; height:96%;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
-                <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common_64"/>
+                <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common;"/>
                 <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
                 <Border name="shade" dimensions="width:0;height:0;" class="ButtonFade"/>
-                <WebImage name="itemIcon" dimensions="width:35; height:35; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
+                <WebImage name="itemIcon" dimensions="width:32; height:32; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
             </FocusBox>
 
             <!-- Bar on the left -->
-            <Group name="leftBar" dimensions="left:11%; width:25%; height:100%; top:2;">
+            <Group name="leftBar" dimensions="left:11%; width:25%; height:28; top:2;">
 
                  <!-- Bar Backplate -->
                 <!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#00FF00; alpha:0.6;"/>-->
@@ -145,9 +161,12 @@
                 <!--<StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>-->
                 
                     <!-- List -->
-                    <ListLayout name="List" dimensions="width:100%; height:98%; top:2%; center-x:50%;" style="vertical:true; vpadding:9; clip-children:true;">
+                    <Group name="List" dimensions="width:100%; height:98%; top:2%; center-x:50%;" style="vertical:true; vpadding:9; clip-children:false;">
                         <!-- Tracker_List_Entry:ies go in here -->
-                    </ListLayout>
+                    </Group>
+
+                    <!-- Slider -->
+                    <Slider name='Slider' dimensions="width:3; right:100%; top:0; bottom:100%" class="Tracker_Slider"/>
 
                     <!-- Tooltip -->
                     <ListLayout name="TooltipProg" dimensions="width:400; height:400; top:0; left:0" style="visible:false">
