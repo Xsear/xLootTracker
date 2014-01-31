@@ -247,22 +247,14 @@ function Private.NeedBeforeGreed(item, members, eligible)
     Debug.Log('Need Before Greed')
     Debug.Table({item=item, members=members, eligible=eligible})
 
-    -- Check that we're not busy rolling something else
-    if mCurrentlyRolling then
-        OnRollBusy({
-                    item = item,
-                   })
-        return
-    end
-
     -- If there is already rolls data for this item, that's probably not good.
     if item.rollData then
         Debug.Warn('Need Before Greed roll on an item that already has rolls information. Dumping and forcing to nil.', item.rollData)
         item.rollData = nil
     end
 
-    -- Okay, lock us down while we roll
-    mCurrentlyRolling = item
+    -- Track the roll
+    RollTracker.Add(item.identityId)
 
     -- Fill data
     local rollData = {}
@@ -289,15 +281,14 @@ function Private.NeedBeforeGreed(item, members, eligible)
     -- Establish table in item
     item.rollData = rollData
 
-
     -- Start roll timeout timer
-    item.timer:SetAlarm('roll_timeout', mCurrentlyRolling.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
+    item.timer:SetAlarm('roll_timeout', item.timer:GetTime() + Options['Distribution']['RollTimeout'], RollTimeout, {item=item})
 
     -- Announce that we're rolling
     OnAcceptingRolls({item=item, members=members, eligible=eligible, distributionMode=DistributionMode.NeedBeforeGreed})
 
+    -- Communicate
     Communication.SendRollStart(item)
-
 end
 
 
@@ -312,9 +303,9 @@ end
     Triggered by timer alarm when a roll has timed out.
 ]]--
 function RollTimeout(args)
-    if mCurrentlyRolling then
+    if args.item.identityId and RollTracker.IsBeingRolled(args.item.identityId) then
         SendFilteredMessage('system', 'RollTimeout for %i', {item=args.item})
-        RollFinish()
+        RollFinish({item=item})
     end
 end
 
@@ -322,9 +313,21 @@ end
     RollCancel(args)
     Behavior for when a roll is cancelled.
     Calls neccesary functions to clean up.
+
+    args.item.identityId
+    [args.reason]
+    args.item > SendFilteredMessage
+    args > RollCleanup
 ]]--
 function RollCancel(args)
-    if mCurrentlyRolling then
+
+    if not args.item then
+        if RollTracker.IsRolling() then
+            args.item = GetItemByIdentity(RollTracker.GetFirst()) -- Fixme:  Super totally tempoary bandaid shit
+        end
+    end
+
+    if args.item.identityId and RollTracker.IsBeingRolled(args.item.identityId) then
         local message = 'RollCancel for %i'
 
         if args and args.reason then
@@ -332,19 +335,23 @@ function RollCancel(args)
         end
 
         SendFilteredMessage('system', message, {item=args.item})
-        RollCleanup()
+        RollCleanup(args)
     end
 end
 
 --[[
-    RollCleanup()
+    RollCleanup(args)
     Resets roll variables so that we are ready to start a new roll.
+    
+    args.item.identityId
+    args.item.timer
+
 ]]--
-function RollCleanup()
-    if mCurrentlyRolling then
-        mCurrentlyRolling.timer:KillAlarm('roll_timeout')
+function RollCleanup(args)
+    if args.item.identityId and RollTracker.IsBeingRolled(args.item.identityId) then
+        args.item.timer:KillAlarm('roll_timeout')
         Debug.Log('RollCleanup killing roll timeout alarm')
-        mCurrentlyRolling = false
+        RollTracker.Remove(args.item.identityId)
     end
 end
 
@@ -358,31 +365,39 @@ end
     Calls OnRollChange if the rolltype is changed (because author was not eligible for the rollType)
     Calls OnRollAccept when the rolltype is saved to the list of rolls
     
+    args.identityId or args.item.identityId
     args.rollType
     args.author 
 
 ]]--
 function RollDecision(args)
 
-    if mCurrentlyRolling then 
+    local identityId = args.identityId or args.item.identityId
+    if not identityId then Debug.Warn('RollDecision called without identityId') end
+
+    if RollTracker.IsBeingRolled(identityId) then 
+
+        -- Get item
+        local item = args.item or GetItemByIdentity(identityId)
+
         -- Let's see if the author is actually allowed to roll
         local totalRemaining = 0
         local needRemaining = 0
         local didChange = false
         -- Go through all the people who can roll
-        for num, row in ipairs(mCurrentlyRolling.rollData) do
+        for num, row in ipairs(item.rollData) do
             -- If we've found the person who sent this message and he has not yet selected rollType
             if args.author == row.name and row.rollType == false then
                 -- If he wants to roll need but isn't allowed to, change his roll to greed (y bastard)
                 if args.rollType == RollType.Need and row.canNeed == false then
                     args.rollType = RollType.Greed
-                    OnRollChange({item=mCurrentlyRolling, rollType=args.rollType, playerName=args.author})
+                    OnRollChange({item=item, rollType=args.rollType, playerName=args.author})
                 end
 
                 -- Set the roll type and acknowledge
                 row.rollType = args.rollType
                 didChange = true
-                OnRollAccept({item=mCurrentlyRolling, rollType=args.rollType, playerName=args.author})
+                OnRollAccept({item=item, rollType=args.rollType, playerName=args.author})
             end
 
             -- If the rollType is not yet set, this is a person who has yet to roll
@@ -402,9 +417,9 @@ function RollDecision(args)
 
         -- If this was the last call needed, do rolls
         if totalRemaining == 0 or needRemaining == 0 then
-            RollFinish()
+            RollFinish({item=item})
         elseif didChange then
-            Communication.SendRollUpdate(mCurrentlyRolling)
+            Communication.SendRollUpdate(item)
         end
     end
 end
@@ -413,10 +428,17 @@ end
     RollFinish()
     Executes rolls, determines winner, assigns item, cleans up.
 ]]--
-function RollFinish()
+function RollFinish(args)
 
-    if mCurrentlyRolling then
-        mCurrentlyRolling.timer:KillAlarm('roll_timeout') -- Prevent timeout callback
+    local identityId = args.identityId or args.item.identityId
+    if not identityId then Debug.Warn('RollDecision called without identityId') end
+
+
+    if RollTracker.IsBeingRolled(identityId) then
+
+        local item = args.item or GetItemByIdentity(args.identityId)
+
+        item.timer:KillAlarm('roll_timeout') -- Prevent timeout callback
         Debug.Log('RollFinish killing roll timeout alarm')
 
         -- Declare vars
@@ -426,7 +448,7 @@ function RollFinish()
 
         -- Figure out if someone has need rolled, and set any un-decided roll types to the default
         local someoneHasNeeded = false
-        for num, row in ipairs(mCurrentlyRolling.rollData) do
+        for num, row in ipairs(item.rollData) do
             if row.rollType == RollType.Need then
                 someoneHasNeeded = true
             elseif row.rollType == false then
@@ -435,7 +457,7 @@ function RollFinish()
         end
 
         -- Go through rolls
-        for num, row in ipairs(mCurrentlyRolling.rollData) do
+        for num, row in ipairs(item.rollData) do
             -- Inverted logic because Lua doesn't have continue
             -- Skip greed rolls if someone has needed, as well as any pass rolls
             if not(someoneHasNeeded and row.rollType == RollType.Greed) and not (row.rollType == RollType.Pass or row.rollType == false) then
@@ -461,23 +483,23 @@ function RollFinish()
 
         -- If there were no rolls, assign free for all and send event
         if next(rolls) == nil then
-            mCurrentlyRolling.assignedTo = AssignedTo.FreeForAll
-            OnRollNobody({item=mCurrentlyRolling})
+            item.assignedTo = AssignedTo.FreeForAll
+            OnRollNobody({item=item})
 
         -- Otherwise, send distribute event and assign to the winner
         else
-            OnDistributeItem({item=mCurrentlyRolling, rolls=rolls, distributionMode=DistributionMode.NeedBeforeGreed})
-            Distribution.AssignItem(mCurrentlyRolling.entityId, winner, rolls)
+            OnDistributeItem({item=item, rolls=rolls, distributionMode=DistributionMode.NeedBeforeGreed})
+            Distribution.AssignItem(item.entityId, winner, rolls)
         end
 
         -- Update loot panels
-        UpdatePanel(mCurrentlyRolling)
+        UpdatePanel(item)
 
         -- Update tracker
         Tracker.Update()
 
         -- Clean up after this roll
-        RollCleanup()
+        RollCleanup({item=item})
 
         -- If auto distribute start next roll
         if Options['Distribution']['AutoDistribute'] then DistributeNextItem() end

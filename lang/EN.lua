@@ -93,8 +93,8 @@ LANG = {
     Filter_Generic_SalvageModules_Mode_Tooltip                                  =    "Simple or Advanced configuration mode.",
 
 
-    Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    LANG.Filter_Generic_SimpleEnabled_Label,
-    Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    LANG.Filter_Generic_SimpleEnabled_Tooltip,  
+    Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    Filter_Generic_SimpleEnabled_Label,
+    Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    Filter_Generic_SimpleEnabled_Tooltip,  
     Filter_Generic_CraftingComponents_Unstaged_Enabled_Label                        =    FilterGenericX_Label(Unstaged, CraftingComponents),
     Filter_Generic_CraftingComponents_Unstaged_Enabled_Tooltip                      =    FilterGenericX_Tooltip(Unstaged, CraftingComponents), 
     Filter_Generic_CraftingComponents_Stage1_Enabled_Label                          =    FilterGenericX_Label(Stage1, CraftingComponents),
@@ -106,8 +106,8 @@ LANG = {
     Filter_Generic_CraftingComponents_Stage4_Enabled_Label                          =    FilterGenericX_Label(Stage4, CraftingComponents),
     Filter_Generic_CraftingComponents_Stage4_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage4, CraftingComponents),
 
-    Filter_Generic_EquipmentItems_Simple_Enabled_Label                              =    LANG.Filter_Generic_SimpleEnabled_Label,
-    Filter_Generic_EquipmentItems_Simple_Enabled_Tooltip                            =    LANG.Filter_Generic_SimpleEnabled_Tooltip,  
+    Filter_Generic_EquipmentItems_Simple_Enabled_Label                              =    Filter_Generic_SimpleEnabled_Label,
+    Filter_Generic_EquipmentItems_Simple_Enabled_Tooltip                            =    Filter_Generic_SimpleEnabled_Tooltip,  
     Filter_Generic_EquipmentItems_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, EquipmentItems),
     Filter_Generic_EquipmentItems_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, EquipmentItems), 
     Filter_Generic_EquipmentItems_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, EquipmentItems),
@@ -119,8 +119,8 @@ LANG = {
     Filter_Generic_EquipmentItems_Stage4_Enabled_Label                              =    FilterGenericX_Label(Stage4, EquipmentItems),
     Filter_Generic_EquipmentItems_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, EquipmentItems),
 
-    Filter_Generic_SalvageModules_Simple_Enabled_Label                              =    LANG.Filter_Generic_SimpleEnabled_Label,
-    Filter_Generic_SalvageModules_Simple_Enabled_Tooltip                            =    LANG.Filter_Generic_SimpleEnabled_Tooltip,  
+    Filter_Generic_SalvageModules_Simple_Enabled_Label                              =    Filter_Generic_SimpleEnabled_Label,
+    Filter_Generic_SalvageModules_Simple_Enabled_Tooltip                            =    Filter_Generic_SimpleEnabled_Tooltip,  
     Filter_Generic_SalvageModules_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, SalvageModules),
     Filter_Generic_SalvageModules_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, SalvageModules), 
     Filter_Generic_SalvageModules_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, SalvageModules),

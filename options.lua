@@ -1342,6 +1342,7 @@ function BuildInterfaceOptions()
     BuildInterfaceOptions_Tracker()
     BuildInterfaceOptions_Sounds()
 
+    BuildInterfaceOptions_Communication()
 end
 
 

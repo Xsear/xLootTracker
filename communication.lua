@@ -200,18 +200,19 @@ function Communication.ReceiveRollDecision(args)
     if not bIsSquadLeader then return end
 
     -- Requires that we are listening for a roll
-    if not mCurrentlyRolling then return end
+    if not RollTracker.IsRolling() then return end
 
 
     -- Generic pattern
     local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
 
     -- Part holders
+    local data = args.link_data
     local identityPart
     local rollTypePart
 
     -- Get the parts
-    for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
+    for contents, separator in unicode.gmatch(data, dataPattern) do
         Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
 
         if not identityPart then 
@@ -232,10 +233,10 @@ function Communication.ReceiveRollDecision(args)
     if localItem then
 
         -- The item has to be the one we're rolling though, for now
-        if localItem.identityId == mCurrentlyRolling.identityId then
-            RollDecision({author = data.author, rollType = rollType})
+        if RollTracker.IsBeingRolled(localItem.identityId) then
+            RollDecision({item = localItem, author = data.author, rollType = rollType})
         else
-            Debug.Log('Received a roll declaration, but the item identity didnt match the one we were rolling')
+            Debug.Log('Received a roll declaration, but couldnt find a roll for that item')
         end
 
     else
@@ -366,19 +367,6 @@ end
 
 
 
-function GetItemByIdentity(identityId)
-    local localItem
-    for num, item in ipairs(aIdentifiedLoot) do
-        if tostring(item.identityId) == identityId then
-            localItem = item
-            break
-        end
-    end
-
-    -- If we don't know about this item we won't get info from it anyway, so just abort
-    if not localItem then Debug.Warn('No matching item for identity id that squad leader is starting a roll for') end
-    return localItem
-end
 
 
 

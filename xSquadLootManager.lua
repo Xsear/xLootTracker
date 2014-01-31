@@ -63,6 +63,7 @@ require './options' -- Options
 require './communication' -- Communication
 require './markers' -- Markers (Panels / Waypoints)
 require './detection' -- Detection
+require './rollTracker' -- Rolltracker (subpart to distribution really)
 require './distribution' -- Distribution
 require './messages' -- Messages
 require './tracker' -- Tracker
@@ -360,7 +361,7 @@ function OnChatMessage(args)
     if args.channel == 'squad' then
 
         -- If we are looking for roll decisions
-        if mCurrentlyRolling and bIsSquadLeader then
+        if RollTracker.IsRolling() and bIsSquadLeader then
             local rollType = nil
             args.text = unicode.lower(args.text)
             if args.text == 'n' or unicode.find(unicode.lower(args.text), '^nee+d$') ~= nil then
@@ -372,7 +373,7 @@ function OnChatMessage(args)
             end
 
             if rollType ~= nil then
-                RollDecision({author=args.author, rollType=rollType})
+                RollDecision({item = GetItemByIdentity(RollTracker.GetFirst()), author=args.author, rollType=rollType})
             end
         end
     end
@@ -526,7 +527,7 @@ function OnIdentify(args)
 
     -- Squad Leader only stuff
     if bIsSquadLeader then
-        
+
         -- If auto distribute is enabled, distribute the item
         if Options['Distribution']['AutoDistribute'] then
 
@@ -731,6 +732,22 @@ function OnRollNobody(args)
 end
 
 
+--[[
+    Get an item by its identityId
+--]]
+function GetItemByIdentity(identityId)
+    local localItem
+    for num, item in ipairs(aIdentifiedLoot) do
+        if tostring(item.identityId) == identityId then
+            localItem = item
+            break
+        end
+    end
+
+    -- If we don't know about this item we won't get info from it anyway, so just abort
+    if not localItem then Debug.Warn('No matching item for identity id that squad leader is starting a roll for') end
+    return localItem
+end
 
 
 
@@ -1061,7 +1078,7 @@ function RemoveIdentifiedItem(loot)
     loot.timer:Destroy()
 
     -- If currently rolling for this item, kill the roll
-    if mCurrentlyRolling == loot.entityId then RollCancel({reason='The item is no longer being tracked.'}) end
+    if RollTracker.IsBeingRolled(loot.identityId) then RollCancel({item=item, reason='The item is no longer being tracked.'}) end
 
     -- Kill the panel object
     if loot.panel ~= nil then
@@ -1171,10 +1188,14 @@ end
 ]]--
 function ClearIdentified()
     SendChatMessage('system', 'Clear')
-    RollCancel({reason='Clearing tracked items.'})
 
     local itemsToRemove = {}
     for num, item in ipairs(aIdentifiedLoot) do 
+            
+        if RollTracker.IsBeingRolled(item.identityId) then
+            RollCancel({item=item, reason='ClearIdentified called'})
+        end
+
         itemsToRemove[#itemsToRemove + 1] = item
     end
 
@@ -1194,7 +1215,7 @@ function ActionRollDecision(args)
 
     -- If we are the squad leader, then we must manually call RollDecision since we ignore our own communication messages
     if bIsSquadLeader then
-        RollDecision({author = Player.GetInfo(), rollType = args.rollType})
+        RollDecision({item = args.item, author = Player.GetInfo(), rollType = args.rollType})
     end
 
     Communication.SendRollDecision(args.item, args.rollType)
