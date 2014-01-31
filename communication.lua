@@ -1,5 +1,8 @@
 --[[
     For addon-to-addon communication events.
+    
+    Option checking is done in Private.SendLink and Private.CanReceive
+    Non-options related conditions must be checked explicitly.
 
 ]]--
 
@@ -43,29 +46,27 @@ function Communication.SendItemIdentity(item)
     -- Requires that you are the squad leader
     if not bIsSquadLeader then return end
 
-
+    -- Genereate
     local link = ChatLink.Endcap..ChatLinkId.ItemIdentity..ChatLink.PairBreak..EncodeItemReference(item)..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..ChatLink.Endcap
 
-    Debug.Log('SendItemIdentity: '..link)
-
-    --ChatLib.SystemMessage({text=link})
-    Private.SendLink(link)
+    -- Send
+    Private.SendLink(link, 'ItemIdentity')
 end
 
 function Communication.ReceiveItemIdentity(args)
-
-    Debug.Log('ReceiveItemIdentity')
-    Debug.Table(args)
+    -- Requires that we can receive this link
+    if not Private.CanReceive('ItemIdentity') then return end
 
     -- Only listen if author is the master and it's not us
     if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
-    --if true then
 
         Debug.Log('ItemIdentity declaration acknowledged, attempting to decode')
 
-        local data = args.link_data
-        local dataPattern = '(.-)('..ChatLink.PairBreak..')'
+        -- Generic pattern
+        local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
 
+        -- Prepare parts
+        local data = args.link_data
         local itemDataPart
         local identityDataPart
 
@@ -101,6 +102,7 @@ function Communication.ReceiveItemIdentity(args)
             end
         end
 
+        -- Debug the result
         if not success then
             Debug.Log('Failed to match item identity, but it could have already been assigned or something.')
         else
@@ -114,30 +116,35 @@ function Communication.SendAssign(item, assignTarget)
     -- Requires that you are the squad leader
     if not bIsSquadLeader then return end
 
+    -- If the assignValue is a boolean, convert it to 0/1 so that it can be easily determined later
     local assignValue = assignTarget
     if type(assignTarget) == 'boolean' then
         assignValue = tostring(tonumber(assignTarget))
     end
 
+    -- Genereate
     local link = ChatLink.Endcap..ChatLinkId.Assign..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..assignValue..ChatLink.PairBreak..ChatLink.Endcap
 
-    Private.SendLink(link)
+    -- Send
+    Private.SendLink(link, 'Assign')
 end
 
 
 function Communication.ReceiveAssign(args)
+    -- Requires that we can receive this link
+    if not Private.CanReceive('Assign') then return end
 
-    Debug.Log('ReceiveAssign')
-    Debug.Table(args)
-
-    local dataPattern = '(.-)('..ChatLink.PairBreak..')'
-
-    local identityPart
-    local assignTargetPart
-
+    -- Only listen to the master, and don't listen to ourselves
     if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
-    --if true then
 
+        -- Generic data pattern
+        local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
+
+        -- Parts
+        local identityPart
+        local assignTargetPart
+
+        -- Get parts
         for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
             Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
 
@@ -148,26 +155,22 @@ function Communication.ReceiveAssign(args)
             end
         end
 
+        -- Decode parts into data
         local identityId = DecodeItemIdentity(identityPart)
-        local assignTarget = assignTargetPart
-
-        if assignTargetPart == tostring(0) then
-            assignTarget = false
-        elseif assignTargetPArt == tostring(1) then
-            assignTarget = true
-        end
-
+        local assignTarget = DecodeBooleanValue(assignTargetPart) -- Note: Assign Target is not always a boolean value. Sorry. :D
 
         -- Identify item
         local localItem = GetItemByIdentity(identityId)
 
         -- If we found the item, assign it
         if localItem then
+
             -- Because it matters yo
             if IsAssigned(localItem.entityId) then
                 SendFilteredMessage('system', 'Squad Leader is reassigning %i from %a to %n', {item=localItem, assignedTo = localItem.assignedTo, playerName = tostring(assignTarget)})
             end
 
+            -- Assign
             Distribution.AssignItem(localItem.entityId, tostring(assignTarget))
         else
             Debug.Log('Fail, didnt find the item to assign')
@@ -177,20 +180,22 @@ function Communication.ReceiveAssign(args)
 
 end
 
-
-
 function Communication.SendRollDecision(item, rollType)
+    -- Debug
     Debug.Table({func='Communication.SendRollDecision', item=item, rollType=rollType})
 
+    -- Genereate
     local link = ChatLink.Endcap..ChatLinkId.RollDecision..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..rollType..ChatLink.PairBreak..ChatLink.Endcap
 
-    Private.SendLink(link)
+    -- Send
+    Private.SendLink(link, 'RollDecision')
 end
 
 
-
-
 function Communication.ReceiveRollDecision(args)
+    -- Requires that we can receive this link
+    if not Private.CanReceive('RollDecision') then return end
+
     -- Requires that you are the squad leader
     if not bIsSquadLeader then return end
 
@@ -198,112 +203,167 @@ function Communication.ReceiveRollDecision(args)
     if not mCurrentlyRolling then return end
 
 
-    local dataPattern = '(.-)('..ChatLink.PairBreak..')'
+    -- Generic pattern
+    local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
 
+    -- Part holders
     local identityPart
     local rollTypePart
 
-    if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
-    --if true then
-
-        for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
-            Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
-
-            if not identityPart then 
-                identityPart = contents
-            else 
-                rollTypePart = contents
-            end
-        end
-
-        local identityId = DecodeItemIdentity(identityPart)
-        local rollType = rollTypePart
-
-        -- Identify item
-        local localItem = GetItemByIdentity(identityId)
-
-        -- If we found the item, assign it
-        if localItem then
-
-            if localItem.identityId == mCurrentlyRolling.identityId then
-                RollDecision({author = data.author, rollType = rollType})
-            else
-                Debug.Log('Received a roll declaration, but the item identity didnt match the one we were rolling')
-            end
-
-        else
-            Debug.Log('Fail, didnt find the item to assign')
-        end
-
-    end
-
-end
-
-
-
-
-
-function Communication.SendRollStart(item)
-    -- Requires that you are the squad leader
-    if not bIsSquadLeader then return end
-
-    Debug.Log('Com Send Roll Start')
-
-    local distributionMode = DistributionMode.NeedBeforeGreed -- TODO: Send me
-
-    local link = ChatLink.Endcap..ChatLinkId.RollStart..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
-
-    --ChatLib.SystemMessage({text=link})
-    Private.SendLink(link)
-end
-
-
-function Communication.SendRollUpdate(item)
-    
-    local link = ChatLink.Endcap..ChatLinkId.RollUpdate..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
-
-    --ChatLib.SystemMessage({text=link})
-    Private.SendLink(link)
-end
-
-
-function Communication.ReceiveRollStart(args)
-    Debug.Table(args)
-
-    local dataPattern = '(.-)('..ChatLink.PairBreak..')'
-
-    local identityPart
-    local rollDataPart
-
+    -- Get the parts
     for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
-        Debug.Table('Link Part Gmatch', {contents=contents, separator=separator})
+        Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
 
         if not identityPart then 
             identityPart = contents
         else 
-            rollDataPart = contents..ChatLink.SubDataBreak
+            rollTypePart = contents
         end
     end
 
- 
-    local identityId = DecodeItemIdentity(identityPart)   
-    
-    local rollData = DecodeRollData(rollDataPart)
+    -- Decode parts into data
+    local identityId = DecodeItemIdentity(identityPart)
+    local rollType = rollTypePart
 
-    Debug.Table({identityId=itentityId, rollData=rollData})
-
-    -- Identify item
+    -- Figure out which item we are receiving a roll decision for
     local localItem = GetItemByIdentity(identityId)
 
+    -- If we found the item, forward the roll decision
     if localItem then
-        -- Update data
-        localItem.rollData = rollData
 
-        Tracker.Update()
+        -- The item has to be the one we're rolling though, for now
+        if localItem.identityId == mCurrentlyRolling.identityId then
+            RollDecision({author = data.author, rollType = rollType})
+        else
+            Debug.Log('Received a roll declaration, but the item identity didnt match the one we were rolling')
+        end
+
+    else
+        Debug.Log('Fail, didnt find the item to assign')
     end
-
-    
 end
+
+
+function Communication.SendRollStart(item)
+    -- We should only be sending this if we are the master
+    if not bIsSquadLeader then return end
+
+    local distributionMode = DistributionMode.NeedBeforeGreed -- TODO: Send me
+
+    -- Generate
+    local link = ChatLink.Endcap..ChatLinkId.RollStart..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
+
+    -- Send
+    Private.SendLink(link)
+end
+
+function Communication.ReceiveRollStart(args)
+    -- Verify that we can recieve this link
+    if not Private.CanReceive('RollStart') then return end
+
+    -- Only listen to the master, and don't listen to ourselves
+    if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+
+        -- Generic pattern to breakup string
+        local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
+
+        -- Prepare for parts
+        local identityPart
+        local rollDataPart
+
+        -- Get parts
+        for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
+            
+            Debug.Table('Link Part Gmatch', {contents=contents, separator=separator})
+
+            if not identityPart then 
+                identityPart = contents
+            else 
+                rollDataPart = contents..ChatLink.SubDataBreak
+            end
+        end
+
+        -- Decode parts
+        local identityId = DecodeItemIdentity(identityPart)   
+        local rollData = DecodeRollData(rollDataPart)
+
+        -- Debug
+        Debug.Table({identityId=itentityId, rollData=rollData})
+
+        -- Find the item that we received roll data for
+        local localItem = GetItemByIdentity(identityId)
+
+        -- If we were able to find the item, update it with the new roll data
+        if localItem then
+            -- Update data
+            localItem.rollData = rollData
+
+            -- Force a tracker update :)
+            Tracker.Update()
+        end
+    end
+end
+
+
+function Communication.SendRollUpdate(item)
+    -- We should only be sending this if we are the master
+    if not bIsSquadLeader then return end
+
+    -- Generate
+    local link = ChatLink.Endcap..ChatLinkId.RollUpdate..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
+
+    -- Send
+    Private.SendLink(link, 'RollUpdate')
+end
+
+function Communication.ReceiveRollUpdate(args)
+    -- Verify that we can recieve this link
+    if not Private.CanReceive('RollUpdate') then return end
+
+    -- Don't listen to ourselves
+    if not namecompare(args.author, Player.GetInfo()) then
+
+        -- Generic pattern to breakup string
+        local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
+
+        -- Prepare for parts
+        local identityPart
+        local rollDataPart
+
+        -- Get parts
+        for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
+            
+            Debug.Table('Link Part Gmatch', {contents=contents, separator=separator})
+
+            if not identityPart then 
+                identityPart = contents
+            else 
+                rollDataPart = contents..ChatLink.SubDataBreak
+            end
+        end
+
+        -- Decode parts
+        local identityId = DecodeItemIdentity(identityPart)   
+        local rollData = DecodeRollData(rollDataPart)
+
+        -- Debug
+        Debug.Table({'Communication.ReceiveRollUpdate', identityId=itentityId, rollData=rollData})
+
+        -- Find the item that we received roll data for
+        local localItem = GetItemByIdentity(identityId)
+
+        -- If we were able to find the item, update it with the new roll data
+        if localItem then
+            -- Update data
+            localItem.rollData = rollData
+
+            -- Force a tracker update :)
+            Tracker.Update()
+        end
+    end
+end
+
+
 
 
 function GetItemByIdentity(identityId)
@@ -320,15 +380,7 @@ function GetItemByIdentity(identityId)
     return localItem
 end
 
-function Communication.ReceiveRollUpdate(args)
-    
-    local rollData = DecodeRollData(args.link_data)
 
-    Debug.Table('ReceiveRollUpdate', rollData)
-
-    Tracker.Update()
-
-end
 
 
 function EncodeItemIdentity(item)
@@ -489,11 +541,52 @@ function DecodeBooleanValue(value)
 end
 
 
-function Private.SendLink(link)
+function Private.SendLink(link, linkKey)
+    -- Communication must be enabled
+    if not Options['Communication']['Enabled'] then return end
+        
+    -- Check general custom settings
+    if Options['Communication']['Custom'] then
+        if not Options['Communication']['Send'] then
+            return
+        end
+    end
 
-    --Chat.SendChannelText('squad', link)
+    -- Check specific custom settings
+    if Options['Communication']['Custom'] then
+        if not Options['Communication'][linkKey]['Enabled']
+        or not Options['Communication'][linkKey]['Send']
+        then
+            return
+        end
+    end
+
+    -- If all is well, send link
     SendMessageToChat('squad', link, false)
+end
 
+function Private.CanReceive(linkKey)
+    -- Communication must be enabled
+    if not Options['Communication']['Enabled'] then return false end
+        
+    -- Check general custom settings
+    if Options['Communication']['Custom'] then
+        if not Options['Communication']['Receive'] then
+            return false
+        end
+    end
+
+    -- Check specific custom settings
+    if Options['Communication']['Custom'] then
+        if not Options['Communication'][linkKey]['Enabled']
+        or not Options['Communication'][linkKey]['Receive']
+        then
+            return false
+        end
+    end
+
+    -- If all is well, return true
+    return true
 end
 
 
