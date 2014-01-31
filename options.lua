@@ -1980,21 +1980,21 @@ function UIHELPER_DetectDistributeMarkX(rootKey, x)
             default = Options[rootKey][x]['Enabled'],
             label   = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Label'),
             tooltip = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Tooltip'),
-            subtab  = {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')}
+            subtab  = {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')}
         })
 
         -- Mode dropdown
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[rootKey][x]['Mode'], TriggerModeOptions, 'Mode', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
+        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[rootKey][x]['Mode'], TriggerModeOptions, 'Mode', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
 
         -- Simple mode options
-        UIHELPER_StageX(rootKey, x, 'Simple', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Simple', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
 
         -- Advanced mode options
-        UIHELPER_StageX(rootKey, x, 'Unstaged', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage1', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage2', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage3', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage4', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Unstaged', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage1', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage2', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage3', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        UIHELPER_StageX(rootKey, x, 'Stage4', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
 
     --[[
     InterfaceOptions.StopGroup({

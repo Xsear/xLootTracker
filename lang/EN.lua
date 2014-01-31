@@ -1,20 +1,23 @@
+--[[
+    Does this look messy to you?
+    That's because it is!
+--]]
 
 
 
-
--- Reused
-Detect =    "Detect"
-Distribute =    "Distribute"
-Mark =    "Mark"
-Simple =    "Simple"
-Unstaged =    "Unstaged"
-Stage1 =    "Stage 1"
-Stage2 =    "Stage 2"
-Stage3 =    "Stage 3"
-Stage4 =    "Stage 4"
-EquipmentItems =    "Equipment Items"
+-- Parameters used for the functions below
+Detect             =    "Detect"
+Distribute         =    "Distribute"
+Mark               =    "Mark"
+Simple             =    "Simple"
+Unstaged           =    "Unstaged"
+Stage1             =    "Stage 1"
+Stage2             =    "Stage 2"
+Stage3             =    "Stage 3"
+Stage4             =    "Stage 4"
+EquipmentItems     =    "Equipment Items"
 CraftingComponents =    "Crafting Components"
-SalvageModules = "Salvage Modules"
+SalvageModules     =    "Salvage Modules"
 
 function DetectDistributeMarkX_Label(type, stage, x)
     return type.." "..stage.." "..x
@@ -34,41 +37,7 @@ function FilterGenericX_Tooltip(stage, x)
 end
 
 
-ModeX_Label                                     =    "Mode" 
-ModeX_Tooltip                                   =    "Simple or Advanced configuration mode."
-
-SimpleEnabled_Label                             =    "Simple"
-SimpleEnabled_Tooltip                           =    "If in Simple configuraiton mode, only these settings are used."
-
-LootMode_Label                                  =    "Ruleset"
-LootMode_Tooltip                                =    "Set the active ruleset/mode for how loot is distributed. This is affected by the weighting and threshold settings as well.\nRandom: Assigns the item to a random eligible group member\nDice: Rolls for each eligible member and assigns the item to the highest roller\nRound-robin: Awards items to each group member in order. Loot weighting doesn't work in this mode.\nNeed before Greed: Accepts need, greed or pass call from each eligible group member"
-LootWeighting_Label                             =    "Weighting"
-LootWeighting_Tooltip                           =    "Sets the active loot weighting criteria, which can be used to disallow users from rolling on loot drops that their currently active frame cannot use.\nDisabled: No loot weighting.\nArchetype: Only players in the same Battleframe Archetype as the item are eligible."
-QualityThreshold_Label                          =    "Quality Threshold"
-QualityThreshold_Tooltip                        =    "Loot below this quality threshold will not be distributed."
-QualityThresholdCustomValue_Label               =    "Custom Quality Threshold"
-QualityThresholdCustomValue_Tooltip             =    "If Quality Threshold is set to Custom, loot below this quality threshold will not be distributed."
-TierThreshold_Label                             =    "Tier Threshold"
-TierThreshold_Tooltip                           =    "Loot below this tier will not be distributed."
-LootMode_Label                                  =    "Ruleset"
-LootMode_Tooltip                                =    "Loot will be distributed according to this ruleset."
--- ----------
-
-
 Generic_MessageFormat = "Specify the format of the message. The following replacement variables exist, please note that they're not always available.\n%i : Subject item\n%eId : Item entityId\n%cId : Item craftingTypeId\n%c : The coordinates to the item, as a link\n%n : Subject player\n%l : Player that looted the item\n%a : Player that the item was assigned to\n%m : Distribution Mode that item was distributed in.\n%fA : Archetype suitable for item\n%fF : Frame suitable for item\n%r : The roll value\n%t : The roll type\n%p : Players that can roll\n%e : Players that can Need roll"
-
-Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Label              =    "Send Squad Message"
-Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Tooltip            =    "Send message to Squad on this event"
-Generic_Messages_Events_X_Event_Channels_Squad_Format_Label               =    "Squad Message Format"
-Generic_Messages_Events_X_Event_Channels_Squad_Format_Tooltip             =     Generic_MessageFormat
-Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_Label      =    "Send Notifications Message"
-Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_Tooltip    =    "Send message to Notifications on this event"
-Generic_Messages_Events_X_Event_Channels_Notifications_Format_Label       =    "Notifications Message Format"
-Generic_Messages_Events_X_Event_Channels_Notifications_Format_Tooltip     =     Generic_MessageFormat
-Generic_Messages_Events_X_Event_Channels_System_Enabled_Label             =    "Send System Message"
-Generic_Messages_Events_X_Event_Channels_System_Enabled_Tooltip           =    "Send message to System on this event"
-Generic_Messages_Events_X_Event_Channels_System_Format_Label              =    "System Message Format"
-Generic_Messages_Events_X_Event_Channels_System_Format_Tooltip            =     Generic_MessageFormat
 
 
 LANG = {
@@ -90,16 +59,21 @@ LANG = {
     Options_MoveableFrame_Tracker_Label                                             =     "xSLM Loot Tracker",
 
 
-    Filter_Generic_LootMode_Label                                                   =    LootMode_Label,
-    Filter_Generic_LootMode_Tooltip                                                 =    LootMode_Tooltip,
-    Filter_Generic_Weighting_Label                                                  =    LootWeighting_Label,
-    Filter_Generic_Weighting_Tooltip                                                =    LootWeighting_Tooltip,
-    Filter_Generic_TierThreshold_Label                                              =    TierThreshold_Label,
-    Filter_Generic_TierThreshold_Tooltip                                            =    TierThreshold_Tooltip,
-    Filter_Generic_QualityThreshold_Label                                           =    QualityThreshold_Label,
-    Filter_Generic_QualityThreshold_Tooltip                                         =    QualityThreshold_Tooltip,
-    Filter_Generic_QualityThresholdCustomValue_Label                                =    QualityThresholdCustomValue_Label,
-    Filter_Generic_QualityThresholdCustomValue_Tooltip                              =    QualityThresholdCustomValue_Tooltip,
+    Filter_Generic_SimpleEnabled_Label                                              =    "Simple",
+    Filter_Generic_SimpleEnabled_Tooltip                                            =    "If in Simple configuraiton mode, only these settings are used.",
+
+    Filter_Generic_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode.",
+
+    Filter_Generic_LootMode_Label                                                   =    "Ruleset",
+    Filter_Generic_LootMode_Tooltip                                                 =    "Set the active ruleset/mode for how loot is distributed. This is affected by the weighting and threshold settings as well.\nRandom: Assigns the item to a random eligible group member\nDice: Rolls for each eligible member and assigns the item to the highest roller\nRound-robin: Awards items to each group member in order. Loot weighting doesn't work in this mode.\nNeed before Greed: Accepts need, greed or pass call from each eligible group member",
+    Filter_Generic_Weighting_Label                                                  =    "Weighting",
+    Filter_Generic_Weighting_Tooltip                                                =    "Sets the active loot weighting criteria, which can be used to disallow users from rolling on loot drops that their currently active frame cannot use.\nDisabled: No loot weighting.\nArchetype: Only players in the same Battleframe Archetype as the item are eligible.",
+    Filter_Generic_TierThreshold_Label                                              =    "Tier Threshold",
+    Filter_Generic_TierThreshold_Tooltip                                            =    "Loot below this tier will not be distributed.",
+    Filter_Generic_QualityThreshold_Label                                           =    "Quality Threshold",
+    Filter_Generic_QualityThreshold_Tooltip                                         =    "Loot below this quality threshold will not be distributed.",
+    Filter_Generic_QualityThresholdCustomValue_Label                                =    "Custom Quality Threshold",
+    Filter_Generic_QualityThresholdCustomValue_Tooltip                              =    "If Quality Threshold is set to Custom, loot below this quality threshold will not be distributed.",
 
 
 
@@ -119,8 +93,8 @@ LANG = {
     Filter_Generic_SalvageModules_Mode_Tooltip                                  =    "Simple or Advanced configuration mode.",
 
 
-    Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    SimpleEnabled_Label,
-    Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    SimpleEnabled_Tooltip,  
+    Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    LANG.Filter_Generic_SimpleEnabled_Label,
+    Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    LANG.Filter_Generic_SimpleEnabled_Tooltip,  
     Filter_Generic_CraftingComponents_Unstaged_Enabled_Label                        =    FilterGenericX_Label(Unstaged, CraftingComponents),
     Filter_Generic_CraftingComponents_Unstaged_Enabled_Tooltip                      =    FilterGenericX_Tooltip(Unstaged, CraftingComponents), 
     Filter_Generic_CraftingComponents_Stage1_Enabled_Label                          =    FilterGenericX_Label(Stage1, CraftingComponents),
@@ -132,8 +106,8 @@ LANG = {
     Filter_Generic_CraftingComponents_Stage4_Enabled_Label                          =    FilterGenericX_Label(Stage4, CraftingComponents),
     Filter_Generic_CraftingComponents_Stage4_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage4, CraftingComponents),
 
-    Filter_Generic_EquipmentItems_Simple_Enabled_Label                              =    SimpleEnabled_Label,
-    Filter_Generic_EquipmentItems_Simple_Enabled_Tooltip                            =    SimpleEnabled_Tooltip,  
+    Filter_Generic_EquipmentItems_Simple_Enabled_Label                              =    LANG.Filter_Generic_SimpleEnabled_Label,
+    Filter_Generic_EquipmentItems_Simple_Enabled_Tooltip                            =    LANG.Filter_Generic_SimpleEnabled_Tooltip,  
     Filter_Generic_EquipmentItems_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, EquipmentItems),
     Filter_Generic_EquipmentItems_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, EquipmentItems), 
     Filter_Generic_EquipmentItems_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, EquipmentItems),
@@ -145,8 +119,8 @@ LANG = {
     Filter_Generic_EquipmentItems_Stage4_Enabled_Label                              =    FilterGenericX_Label(Stage4, EquipmentItems),
     Filter_Generic_EquipmentItems_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, EquipmentItems),
 
-    Filter_Generic_SalvageModules_Simple_Enabled_Label                              =    SimpleEnabled_Label,
-    Filter_Generic_SalvageModules_Simple_Enabled_Tooltip                            =    SimpleEnabled_Tooltip,  
+    Filter_Generic_SalvageModules_Simple_Enabled_Label                              =    LANG.Filter_Generic_SimpleEnabled_Label,
+    Filter_Generic_SalvageModules_Simple_Enabled_Tooltip                            =    LANG.Filter_Generic_SimpleEnabled_Tooltip,  
     Filter_Generic_SalvageModules_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, SalvageModules),
     Filter_Generic_SalvageModules_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, SalvageModules), 
     Filter_Generic_SalvageModules_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, SalvageModules),
@@ -159,18 +133,23 @@ LANG = {
     Filter_Generic_SalvageModules_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, SalvageModules),
 
 
-    Messages_Generic_Channels_Squad_Enabled_Label                                   =    Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Label,
-    Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    Generic_Messages_Events_X_Event_Channels_Squad_Enabled_Tooltip,
-    Messages_Generic_Channels_Squad_Format_Label                                    =    Generic_Messages_Events_X_Event_Channels_Squad_Format_Label,
-    Messages_Generic_Channels_Squad_Format_Tooltip                                  =    Generic_Messages_Events_X_Event_Channels_Squad_Format_Tooltip,
-    Messages_Generic_Channels_System_Enabled_Label                                  =    Generic_Messages_Events_X_Event_Channels_System_Enabled_Label,
-    Messages_Generic_Channels_System_Enabled_Tooltip                                =    Generic_Messages_Events_X_Event_Channels_System_Enabled_Tooltip,
-    Messages_Generic_Channels_System_Format_Label                                   =    Generic_Messages_Events_X_Event_Channels_System_Format_Label,
-    Messages_Generic_Channels_System_Format_Tooltip                                 =    Generic_Messages_Events_X_Event_Channels_System_Format_Tooltip,
-    Messages_Generic_Channels_Notifications_Enabled_Label                           =    Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_Label,
-    Messages_Generic_Channels_Notifications_Enabled_Tooltip                         =    Generic_Messages_Events_X_Event_Channels_Notifications_Enabled_Tooltip,
-    Messages_Generic_Channels_Notifications_Format_Label                            =    Generic_Messages_Events_X_Event_Channels_Notifications_Format_Label,
-    Messages_Generic_Channels_Notifications_Format_Tooltip                          =    Generic_Messages_Events_X_Event_Channels_Notifications_Format_Tooltip,
+
+    Messages_Generic_Channels_Squad_Enabled_Label                                   =    "Send Squad Message",
+    Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    "Send message to Squad on this event",
+    Messages_Generic_Channels_Squad_Format_Label                                    =    "Squad Message Format",
+    Messages_Generic_Channels_Squad_Format_Tooltip                                  =    Generic_MessageFormat,
+
+    Messages_Generic_Channels_System_Enabled_Label                                  =    "Send System Message",
+    Messages_Generic_Channels_System_Enabled_Tooltip                                =    "Send message to System on this event",
+    Messages_Generic_Channels_System_Format_Label                                   =    "System Message Format",
+
+    Messages_Generic_Channels_System_Format_Tooltip                                 =    Generic_MessageFormat,
+
+    Messages_Generic_Channels_Notifications_Enabled_Label                           =    "Send Notifications Message",
+    Messages_Generic_Channels_Notifications_Enabled_Tooltip                         =    "Send message to Notifications on this event",
+    Messages_Generic_Channels_Notifications_Format_Label                            =    "Notifications Message Format",
+
+    Messages_Generic_Channels_Notifications_Format_Tooltip                          =    Generic_MessageFormat,
 
     
     Messages_Enabled_Label                                                          =    "Enable Messages",
@@ -456,11 +435,12 @@ LANG = {
     Subtab_Waypoints                                        =    "Waypoints",
     Subtab_Tracker                                          =    "Tracker",
     Subtab_Sounds                                           =    "Sounds",
+    Subtab_Communication                                    =    "Communication",
+    Subtab_Filtering                                        =    "Filtering",
 
 
     -- Communication Options
 
-    Subtab_Communication                                = "Communication",
 
     Group_Communication_Label                           = "Communication",
     Group_Communication_Tooltip                         = "",
