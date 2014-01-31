@@ -843,15 +843,6 @@ Options = {
             },
  
         },
-
-        ['Communication'] = {
-            ['Custom'] = false,
-            ['Prefix'] = 'xSLM:',
-            ['Assign'] = {
-                ['Enabled'] = true,
-                ['Format'] = 'A:%tId:%q:%n',
-            },
-        },
     },
 
     ['Tracker'] = {
@@ -1008,6 +999,58 @@ Options = {
         ['OnAssignItemToOther'] = 'Play_SFX_UI_Ticker',
 
     },
+
+    ['Communication'] = {
+        ['Enabled'] = true,
+
+        ['Custom'] = false,
+
+        ['Send'] = false,
+        ['Receive'] = false,
+
+        ['Assign'] = {
+            ['Enabled'] = true,
+            ['Send'] = true,
+            ['Receive'] = true,
+        },
+
+        ['ItemIdentity'] = {
+            ['Enabled'] = true,
+            ['Send'] = true,
+            ['Receive'] = true,
+        },
+
+        ['RollStart'] = {
+            ['Enabled'] = true,
+            ['Send'] = true,
+            ['Receive'] = true,
+        },
+
+        ['RollDecision'] = {
+            ['Enabled'] = true,
+            ['Send'] = true,
+            ['Receive'] = true,
+        },
+
+        ['RollUpdate'] = {
+            ['Enabled'] = true,
+            ['Send'] = true,
+            ['Receive'] = true,
+        },
+
+
+    },
+
+--[[
+ ['Communication'] = {
+        ['Custom'] = false,
+        ['Prefix'] = 'xSLM:',
+        ['Assign'] = {
+            ['Enabled'] = true,
+            ['Format'] = 'A:%tId:%q:%n',
+        },
+    },
+--]]
 
     ['Debug'] = {
         ['Enabled'] = false,
@@ -1194,9 +1237,13 @@ function SetOptionsAvailability()
     end
 
     -- Communication Messages are disabled if the Custom Communication Messages option is not enabled
-    InterfaceOptions.DisableOption('Messages_Communication_Prefix', not Options['Messages']['Communication']['Custom'])
-    InterfaceOptions.DisableOption('Messages_Communication_Assign_Enabled', not Options['Messages']['Communication']['Custom'])
-    InterfaceOptions.DisableOption('Messages_Communication_Assign_Format', true) -- Locked option because whislt it is used for sending, the receiving end is a hardcoded match
+    InterfaceOptions.DisableOption('Communication_Send', not Options['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Communication_Receive', not Options['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Communication_Assign_Enabled', not Options['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Communication_ItemIdentity_Enabled', not Options['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Communication_RollStart_Enabled', not Options['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Communication_RollDecision_Enabled', not Options['Communication']['Custom'])
+    InterfaceOptions.DisableOption('Communication_RollUpdate_Enabled', not Options['Communication']['Custom'])
 
     -- Panels custom colormode is hidden when colormode is not set to cutom
     InterfaceOptions.DisableOption('Panels_ColorMode_HeaderBarCustomValue', Options['Panels']['ColorMode']['HeaderBar'] ~= ColorModes.Custom)
@@ -1626,51 +1673,6 @@ function BuildInterfaceOptions_Messages()
             UIHELPER_MessageEventOptions('Messages', tableKey..'_'..eventKey, Options['Messages']['Events'][tableKey][eventKey], {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_'..tableKey)})
         end
     end
-
-    -- Communication Settings
-    InterfaceOptions.StartGroup({
-        id          = 'Group_Com',
-        label       = Lokii.GetString('Group_Com_Label'),
-        tooltip     = Lokii.GetString('Group_Com_Tooltip'),
-        subtab      = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
-    })
-
-        InterfaceOptions.AddCheckBox({
-            id      = 'Messages_Communication_Custom',
-            default = Options['Messages']['Communication']['Custom'],
-            label   = Lokii.GetString('Messages_Communication_Custom_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Custom_Tooltip'),
-            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id      = 'Messages_Communication_Prefix',
-            default = Options['Messages']['Communication']['Prefix'],
-            label   = Lokii.GetString('Messages_Communication_Prefix_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Prefix_Tooltip'),
-            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
-        })
-
-        InterfaceOptions.AddCheckBox({
-            id      = 'Messages_Communication_Assign_Enabled',
-            default = Options['Messages']['Communication']['Assign']['Enabled'],
-            label   = Lokii.GetString('Messages_Communication_Assign_Enabled_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Assign_Enabled_Tooltip'),
-            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
-        })
-
-        InterfaceOptions.AddTextInput({
-            id      = 'Messages_Communication_Assign_Format',
-            default = Options['Messages']['Communication']['Assign']['Format'],
-            label   = Lokii.GetString('Messages_Communication_Assign_Format_Label'),
-            tooltip = Lokii.GetString('Messages_Communication_Assign_Format_Tooltip'),
-            subtab  = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
-        })
-
-    InterfaceOptions.StopGroup({
-        subtab      = {Lokii.GetString('Subtab_Messages'), Lokii.GetString('Subtab_Messages_Communication')}
-    })
-
 end
 
 function BuildInterfaceOptions_Tracker()
@@ -1709,6 +1711,197 @@ function BuildInterfaceOptions_Sounds()
     UIHELPER_SoundOptionsMenu('Sounds_OnAssignItemToOther', Lokii.GetString('Sounds_OnAssignItemToOther_Label'), Options['Sounds']['OnAssignItemToOther'], Lokii.GetString('Subtab_Sounds'))
 end
 
+function BuildInterfaceOptions_Communication()
+
+    -- Communication Settings
+    InterfaceOptions.StartGroup({
+        id          = 'Group_Communication',
+        label       = Lokii.GetString('Group_Communication_Label'),
+        tooltip     = Lokii.GetString('Group_Communication_Tooltip'),
+        subtab      = {Lokii.GetString('Subtab_Communication')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_Custom',
+            default = Options['Communication']['Custom'],
+            label   = Lokii.GetString('Communication_Custom_Label'),
+            tooltip = Lokii.GetString('Communication_Custom_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_Send',
+            default = Options['Communication']['Send'],
+            label   = Lokii.GetString('Communication_Send_Label'),
+            tooltip = Lokii.GetString('Communication_Send_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_Receive',
+            default = Options['Communication']['Receive'],
+            label   = Lokii.GetString('Communication_Receive_Label'),
+            tooltip = Lokii.GetString('Communication_Receive_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Subtab_Communication')}
+    })
+
+    -- Assign
+    InterfaceOptions.StartGroup({
+        id       = 'Communication_Assign_Enabled',
+        checkbox = true,
+        default  = Options['Communication']['Assign']['Enabled'],
+        label    = Lokii.GetString('Communication_Assign_Enabled_Label'),
+        tooltip  = Lokii.GetString('Communication_Assign_Enabled_Tooltip'),
+        subtab   = {Lokii.GetString('Subtab_Communication')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_Assign_Send',
+            default = Options['Communication']['Assign']['Send'],
+            label   = Lokii.GetString('Communication_Send_Label'),
+            tooltip = Lokii.GetString('Communication_Send_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_Assign_Receive',
+            default = Options['Communication']['Assign']['Receive'],
+            label   = Lokii.GetString('Communication_Receive_Label'),
+            tooltip = Lokii.GetString('Communication_Receive_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Subtab_Communication')}
+    })
+
+
+    -- ItemIdentity
+    InterfaceOptions.StartGroup({
+        id       = 'Communication_ItemIdentity_Enabled',
+        checkbox = true,
+        default  = Options['Communication']['ItemIdentity']['Enabled'],
+        label    = Lokii.GetString('Communication_ItemIdentity_Enabled_Label'),
+        tooltip  = Lokii.GetString('Communication_ItemIdentity_Enabled_Tooltip'),
+        subtab   = {Lokii.GetString('Subtab_Communication')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_ItemIdentity_Send',
+            default = Options['Communication']['ItemIdentity']['Send'],
+            label   = Lokii.GetString('Communication_Send_Label'),
+            tooltip = Lokii.GetString('Communication_Send_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_ItemIdentity_Receive',
+            default = Options['Communication']['ItemIdentity']['Receive'],
+            label   = Lokii.GetString('Communication_Receive_Label'),
+            tooltip = Lokii.GetString('Communication_Receive_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Subtab_Communication')}
+    })
+
+
+    -- RollStart
+    InterfaceOptions.StartGroup({
+        id       = 'Communication_RollStart_Enabled',
+        checkbox = true,
+        default  = Options['Communication']['RollStart']['Enabled'],
+        label    = Lokii.GetString('Communication_RollStart_Enabled_Label'),
+        tooltip  = Lokii.GetString('Communication_RollStart_Enabled_Tooltip'),
+        subtab   = {Lokii.GetString('Subtab_Communication')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_RollStart_Send',
+            default = Options['Communication']['RollStart']['Send'],
+            label   = Lokii.GetString('Communication_Send_Label'),
+            tooltip = Lokii.GetString('Communication_Send_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_RollStart_Receive',
+            default = Options['Communication']['RollStart']['Receive'],
+            label   = Lokii.GetString('Communication_Receive_Label'),
+            tooltip = Lokii.GetString('Communication_Receive_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Subtab_Communication')}
+    })
+
+    -- RollDecision
+    InterfaceOptions.StartGroup({
+        id       = 'Communication_RollDecision_Enabled',
+        checkbox = true,
+        default  = Options['Communication']['RollDecision']['Enabled'],
+        label    = Lokii.GetString('Communication_RollDecision_Enabled_Label'),
+        tooltip  = Lokii.GetString('Communication_RollDecision_Enabled_Tooltip'),
+        subtab   = {Lokii.GetString('Subtab_Communication')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_RollDecision_Send',
+            default = Options['Communication']['RollDecision']['Send'],
+            label   = Lokii.GetString('Communication_Send_Label'),
+            tooltip = Lokii.GetString('Communication_Send_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_RollDecision_Receive',
+            default = Options['Communication']['RollDecision']['Receive'],
+            label   = Lokii.GetString('Communication_Receive_Label'),
+            tooltip = Lokii.GetString('Communication_Receive_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Subtab_Communication')}
+    })
+
+    -- RollUpdate
+    InterfaceOptions.StartGroup({
+        id       = 'Communication_RollUpdate_Enabled',
+        checkbox = true,
+        default  = Options['Communication']['RollUpdate']['Enabled'],
+        label    = Lokii.GetString('Communication_RollUpdate_Enabled_Label'),
+        tooltip  = Lokii.GetString('Communication_RollUpdate_Enabled_Tooltip'),
+        subtab   = {Lokii.GetString('Subtab_Communication')}
+    })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_RollUpdate_Send',
+            default = Options['Communication']['RollUpdate']['Send'],
+            label   = Lokii.GetString('Communication_Send_Label'),
+            tooltip = Lokii.GetString('Communication_Send_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_RollUpdate_Receive',
+            default = Options['Communication']['RollUpdate']['Receive'],
+            label   = Lokii.GetString('Communication_Receive_Label'),
+            tooltip = Lokii.GetString('Communication_Receive_Tooltip'),
+            subtab  = {Lokii.GetString('Subtab_Communication')}
+        })
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Subtab_Communication')}
+    })
+
+end
 
 
 function UIHELPER_DetectDistributeMarkX(rootKey, x)

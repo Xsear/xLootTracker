@@ -86,35 +86,6 @@ function SendMessageToChat(channel, message, alert)
 end
 
 --[[
-    CommunicationEvent(type, eventArgs)
-    For addon-to-addon communication events.
---]]
-function CommunicationEvent(type, eventArgs)
-    -- Requires that Core and Messages are Enabled
-    if not (Options['Core']['Enabled'] and Options['Messages']['Enabled']) then return end
-
-    -- Requires that you are the squad leader
-    if not bIsSquadLeader then return end
-
-    -- Requires that args.type is supplied
-    if type == nil then 
-        Debug.Error('CommunicationEvent called without a type supplied')
-        return
-    end
-
-    -- Warn if custom communication settings are enabled
-    if Options['Messages']['Communication']['Custom'] then
-        Debug.Warn('Custom Communication Settings are enabled')
-    end
-
-    -- Requires that this communication message is enabled
-    if not Options['Messages']['Communication'][type]['Enabled'] then return end
-
-    -- Send message
-    Chat.SendChannelText('squad', Options['Messages']['Communication']['Prefix']..RunMessageFilters(Options['Messages']['Communication'][type]['Format'], eventArgs))
-end
-
---[[
     MessageEvent(eventClass, eventName, eventArgs, [canSend])
     Generic function used to handle the process of sending messages in response to events, based on specific options.
     Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.

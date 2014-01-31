@@ -85,6 +85,11 @@ function OnComponentLoad()
     -- Setup Interface Options
     SetupInterfaceOptions()
 
+    -- Warn if custom communication settings are enabled
+    if Options['Communication']['Custom'] then
+        Debug.Warn('Custom Communication Settings are enabled')
+    end
+
     -- Best make sure option visibility is set up quickly
     SetOptionsAvailability()
 

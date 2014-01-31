@@ -190,16 +190,6 @@ LANG = {
     Messages_Channels_Notifications_Tooltip                                         =    "Master switch for Notification messages. The addon will not send ANY notification messages if this is checked, regardless of other settings.",
     Messages_Channels_System_Label                                                  =    "Send on System Channel",
     Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send ANY system messages if this is checked, regardless of other settings.",
-    Messages_Communication_Prefix_Label                                             =    "Communication Prefix",
-    Messages_Communication_Prefix_Tooltip                                           =    "Prefix for all Communication messages. If changed, squad members must mirror.",
-    Messages_Communication_Custom_Label                                             =    "Enable Custom Communication Settings",
-    Messages_Communication_Custom_Tooltip                                           =    "Warning: So much as touching any of these settings will break addon-to-addon communication. These settings should be identical between addon users. Disabling the mode will not reset settings. You've been warned.",
-    Messages_Communication_Assign_Enabled_Label                                     =    "Communicate Assign",
-    Messages_Communication_Assign_Enabled_Tooltip                                   =    "Turning this off will render other users unable to see who you've assigned items to when you are squad leader.",
-    Messages_Communication_Assign_Format_Label                                      =    "Assign Format",
-    Messages_Communication_Assign_Format_Tooltip                                    =    "Can't be customized because receiving end is hardcoded.",
-
-
 
     Messages_Events_Distribution_OnRollNobody_Enabled_Label                             =    "On Roll Nobody",                                                          
     Messages_Events_Distribution_OnRollNobody_Enabled_Tooltip                           =    "When a roll ends without anyone rolling",
@@ -619,6 +609,38 @@ LANG = {
     Subtab_Waypoints                                        =    "Waypoints",
     Subtab_Tracker                                          =    "Tracker",
     Subtab_Sounds                                           =    "Sounds",
+
+
+    -- Communication Options
+
+    Subtab_Communication                                = "Communication",
+
+    Group_Communication_Label                           = "Communication",
+    Group_Communication_Tooltip                         = "",
+
+    Communication_Custom_Label                          = "Enable Custom Communication Settings",
+    Communication_Custom_Tooltip                        = "Warning: Changing these settings will prevent the addon from communicating with other players properly. Under normal circumstances, you shouldn't be touching them. You've been warned.",
+    Communication_Send_Label                            = "Send",
+    Communication_Send_Tooltip                          = "Master switch for Sending communication messages.",
+    Communication_Receive_Label                         = "Receive",
+    Communication_Receive_Tooltip                       = "Master switch for Receiveing communication messages.",
+
+    Communication_Assign_Enabled_Label                  = "Assign",
+    Communication_Assign_Enabled_Tooltip                = "Enable/Disable Assign",
+
+    Communication_ItemIdentity_Enabled_Label            = "ItemIdentity",
+    Communication_ItemIdentity_Enabled_Tooltip          = "Enable/Disable ItemIdentity",
+
+    Communication_RollStart_Enabled_Label               = "RollStart",
+    Communication_RollStart_Enabled_Tooltip             = "Enable/Disable RollStart",
+
+    Communication_RollDecision_Enabled_Label            = "RollDecision",
+    Communication_RollDecision_Enabled_Tooltip          = "Enable/Disable RollDecision",
+
+    Communication_RollUpdate_Enabled_Label              = "RollUpdate",
+    Communication_RollUpdate_Enabled_Tooltip            = "Enable/Disable RollUpdate",
+
+
 
     -- Sound choices
     Sounds_Option_none                                  =    "None",
