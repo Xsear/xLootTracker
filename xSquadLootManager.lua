@@ -23,7 +23,7 @@ require './lib/lib_GTimer' -- Timer for rolltimeout
 require './lib/lib_LKObjects' -- Trivialize objects
 
 -- Constants
-csVersion = '0.92'
+csVersion = '0.92 T1'
 ciSaveVersion = 0.90
 
 -- Global Variables
@@ -207,7 +207,7 @@ function OnSquadRosterUpdate()
                         battleframe = 'berzerker',
                         isTalking = false,
                         chatId = 9100000000000000001,
-                        name = 'Minamin',
+                        name = 'Nanamin',
                         tier = 2,
                         gender = 'female',
                     },
@@ -312,6 +312,10 @@ function OnSlash(args)
 
     elseif args.text == 'us' then
         OnSquadRosterUpdate()
+    
+    elseif args.text == 'fake' then
+        Fake()    
+
     end
 
 
@@ -342,6 +346,7 @@ function OnEntityAvailable(args)
 
             -- If we're not tracking it already, track it!
             if not IsIdentified(args.entityId) then
+                Debug.Event(args)
                 Identify(args.entityId, targetInfo)
             end
         end
@@ -458,6 +463,7 @@ function OnLootHandle(args)
 
             -- If we found the item, we will return from this function within this block after firing the appropriate event function.
             if loot ~= nil then
+                Debug.Event(args)
 
                 -- If we care about this item, trigger relevant event
                 local eventArgs = {
@@ -1078,7 +1084,7 @@ function RemoveIdentifiedItem(loot)
     loot.timer:Destroy()
 
     -- If currently rolling for this item, kill the roll
-    if RollTracker.IsBeingRolled(loot.identityId) then RollCancel({item=item, reason='The item is no longer being tracked.'}) end
+    if RollTracker.IsBeingRolled(loot.identityId) then RollCancel({item=loot, reason='The item is no longer being tracked.'}) end
 
     -- Kill the panel object
     if loot.panel ~= nil then
@@ -1219,6 +1225,8 @@ function ActionRollDecision(args)
     end
 
     Communication.SendRollDecision(args.item, args.rollType)
+
+    Tracker.Update()
 end
 
 
@@ -1362,6 +1370,35 @@ function Test(args)
     end
 end
 
+function Fake(args)
+
+
+    for _, item in ipairs(aIdentifiedLoot) do
+
+        if RollTracker.IsBeingRolled(item.identityId) then
+            
+            local resp1 = {
+                link_type = "xslm_r_d", 
+                author = "Nanamin", 
+                link_data = item.identityId..":|need|", 
+                channel = "army",
+            }
+            local resp2 = {
+                link_type = "xslm_r_d", 
+                author = "Mitty", 
+                link_data = item.identityId..":|pass|", 
+                channel = "army",
+            }
+
+            Communication.ReceiveRollDecision(resp1)
+            Communication.ReceiveRollDecision(resp2)
+        end
+
+
+    end
+
+    
+end
 
 
 

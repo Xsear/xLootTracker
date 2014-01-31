@@ -181,9 +181,6 @@ function Communication.ReceiveAssign(args)
 end
 
 function Communication.SendRollDecision(item, rollType)
-    -- Debug
-    Debug.Table({func='Communication.SendRollDecision', item=item, rollType=rollType})
-
     -- Genereate
     local link = ChatLink.Endcap..ChatLinkId.RollDecision..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..rollType..ChatLink.PairBreak..ChatLink.Endcap
 
@@ -201,6 +198,9 @@ function Communication.ReceiveRollDecision(args)
 
     -- Requires that we are listening for a roll
     if not RollTracker.IsRolling() then return end
+
+
+    Debug.Event(args)
 
 
     -- Generic pattern
@@ -234,7 +234,7 @@ function Communication.ReceiveRollDecision(args)
 
         -- The item has to be the one we're rolling though, for now
         if RollTracker.IsBeingRolled(localItem.identityId) then
-            RollDecision({item = localItem, author = data.author, rollType = rollType})
+            RollDecision({item = localItem, author = args.author, rollType = rollType})
         else
             Debug.Log('Received a roll declaration, but couldnt find a roll for that item')
         end

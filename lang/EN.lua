@@ -441,9 +441,8 @@ LANG = {
 
     -- Communication Options
 
-
     Group_Communication_Label                           = "Communication",
-    Group_Communication_Tooltip                         = "",
+    Group_Communication_Tooltip                         = "Data communication between other players that use this addon",
 
     Communication_Custom_Label                          = "Enable Custom Communication Settings",
     Communication_Custom_Tooltip                        = "Warning: Changing these settings will prevent the addon from communicating with other players properly. Under normal circumstances, you shouldn't be touching them. You've been warned.",

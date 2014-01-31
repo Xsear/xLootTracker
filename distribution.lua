@@ -215,6 +215,12 @@ end
 function Private.GetWinnerByRoundRobin(members)
     Debug.Log('Round Robin')
     Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex))
+    if not aSquadRoster or not aSquadRoster.members then
+
+        Debug.Log('bInSquad: '..tostring(bInSquad))
+        Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
+        Debug.Error('GetWinnerByRoundRobin, but no squad?')
+    end
     Debug.Log('#aSquadRoster.members: '..tostring(#aSquadRoster.members))
 
     local winner = ''
@@ -305,7 +311,7 @@ end
 function RollTimeout(args)
     if args.item.identityId and RollTracker.IsBeingRolled(args.item.identityId) then
         SendFilteredMessage('system', 'RollTimeout for %i', {item=args.item})
-        RollFinish({item=item})
+        RollFinish({item=args.item})
     end
 end
 
@@ -322,8 +328,12 @@ end
 function RollCancel(args)
 
     if not args.item then
-        if RollTracker.IsRolling() then
+        if args.identity then
+            args.item = GetItemByIdentity(args.identity)
+        elseif RollTracker.IsRolling() then
             args.item = GetItemByIdentity(RollTracker.GetFirst()) -- Fixme:  Super totally tempoary bandaid shit
+        else
+            Debug.Warn('Not enough arguments for RollCancel, needs item')
         end
     end
 
@@ -384,10 +394,13 @@ function RollDecision(args)
         local totalRemaining = 0
         local needRemaining = 0
         local didChange = false
+
         -- Go through all the people who can roll
         for num, row in ipairs(item.rollData) do
+
             -- If we've found the person who sent this message and he has not yet selected rollType
-            if args.author == row.name and row.rollType == false then
+            if namecompare(args.author, row.name) and row.rollType == false then
+
                 -- If he wants to roll need but isn't allowed to, change his roll to greed (y bastard)
                 if args.rollType == RollType.Need and row.canNeed == false then
                     args.rollType = RollType.Greed

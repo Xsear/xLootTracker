@@ -37,7 +37,7 @@ function RollTracker.Count()
 end
 
 function RollTracker.GetFirst()
-    return Private.currentlyRolling[0]
+    return Private.currentlyRolling[1]
 end
 
 function RollTracker.Add(itemIdentity)
