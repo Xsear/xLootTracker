@@ -23,7 +23,7 @@ require './lib/lib_GTimer' -- Timer for rolltimeout
 require './lib/lib_LKObjects' -- Trivialize objects
 
 -- Constants
-csVersion = '0.91'
+csVersion = '0.92'
 ciSaveVersion = 0.90
 
 -- Global Variables
@@ -526,21 +526,32 @@ function OnIdentify(args)
 
     -- Squad Leader only stuff
     if bIsSquadLeader then
+        
         -- If auto distribute is enabled, distribute the item
         if Options['Distribution']['AutoDistribute'] then
 
-            if not IsAssigned(args.item.entityId) and ItemPassesFilter(args.item, Options['Distribution']) then
-                local typeKey, stageKey = GetItemOptionsKeys(args.item, Options['Distribution'])
+            -- If the item has not been assigned
+            if not IsAssigned(args.item.entityId) then
 
-                local distributionMode = DistributionMode.RoundRobin
-                local weightingMode = WeightingOptions.None
+                -- Check if the item should be distributed or not
+                if ItemPassesFilter(args.item, Options['Distribution']) then
 
-                if typeKey and stageKey then
-                    distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
-                    weightingMode = Options['Distribution'][typeKey][stageKey]['Weighting']
+                    local typeKey, stageKey = GetItemOptionsKeys(args.item, Options['Distribution'])
+
+                    local distributionMode = DistributionMode.RoundRobin
+                    local weightingMode = WeightingOptions.None
+
+                    if typeKey and stageKey then
+                        distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']
+                        weightingMode = Options['Distribution'][typeKey][stageKey]['Weighting']
+                    end
+
+                    Distribution.DistributeItem(args.item, distributionMode, weightingMode)
+
+                -- If the item isn't going to be distributed, assign it as free for all
+                else
+                    Distribution.AssignItem(args.item, true)
                 end
-
-                Distribution.DistributeItem(args.item, distributionMode, weightingMode)
             end
         end
     end
