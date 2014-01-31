@@ -1,5 +1,5 @@
 # Version
-ADDON_VERSION = v0.90
+ADDON_VERSION = v0.91
 ADDON_NAME = xSquadLootManager
 
 # Paths
