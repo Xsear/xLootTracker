@@ -708,6 +708,50 @@ Options = {
 
                 },
 
+                ['OnAssignItemByRoll'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%n rolls %r and wins %i',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%n rolls %r and wins %i',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%n rolls %r and wins %i',
+                        },
+                    },
+
+                },
+
+                ['OnAssignItemFreeForAll'] = {
+                    ['Enabled'] = true,
+
+                    ['Channels'] = {
+                        ['Squad'] = {
+                            ['Enabled'] = true,
+                            ['Format'] = '%i is up for grabs',
+                        },
+
+                        ['System'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%i is up for grabs',
+                        },
+
+                        ['Notifications'] = {
+                            ['Enabled'] = false,
+                            ['Format'] = '%i is up for grabs',
+                        },
+                    },
+
+                },
+
                 ['OnRolls'] = {
                     ['Enabled'] = true,
 
@@ -1380,6 +1424,16 @@ function BuildInterfaceOptions_Front()
             tooltip = Lokii.GetString('Sounds_Enabled_Tooltip'),
             default = Options['Sounds']['Enabled'],
         })
+
+        --[[
+        InterfaceOptions.AddCheckBox({
+            id      = 'Communication_Enabled',
+            label   = Lokii.GetString('Communication_Enabled_Label'),
+            tooltip = Lokii.GetString('Communication_Enabled_Tooltip'),
+            default = Options['Communication']['Enabled'],
+        })
+        --]]
+
 
     InterfaceOptions.StopGroup()
 

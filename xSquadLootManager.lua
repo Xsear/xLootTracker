@@ -619,6 +619,7 @@ end
     OnAssignItem(args)
     args.assignedTo
     args.item
+    [args.roll]
 ]]--
 function OnAssignItem(args)
     -- Requires Core enabled
@@ -652,8 +653,15 @@ function OnAssignItem(args)
         end
     end
 
-    -- Messages
-    MessageEvent('Distribution', 'OnAssignItem', args)
+    -- Determine which Message to use
+    if args.roll then
+        MessageEvent('Distribution', 'OnAssignItemByRoll', args)
+    elseif args.assignedTo == true then
+        MessageEvent('Distribution', 'OnAssignItemFreeForAll', args)
+    else
+        MessageEvent('Distribution', 'OnAssignItem', args)
+    end
+
 end
 
 --[[

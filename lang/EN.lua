@@ -172,13 +172,6 @@ LANG = {
     Messages_Generic_Channels_Notifications_Format_Label                            =    Generic_Messages_Events_X_Event_Channels_Notifications_Format_Label,
     Messages_Generic_Channels_Notifications_Format_Tooltip                          =    Generic_Messages_Events_X_Event_Channels_Notifications_Format_Tooltip,
 
-
-
-
-    Group_Com_Label                                                                 =    "Communication",
-    Group_Com_Tooltip                                                               =    "Inter-addon communication options",
-
-
     
     Messages_Enabled_Label                                                          =    "Enable Messages",
     Messages_Enabled_Tooltip                                                        =    "The addon will send customizable Messages to the Chat when certain events occur, keeping you and your Squad members in the loop of what is going on with the item drops.",
