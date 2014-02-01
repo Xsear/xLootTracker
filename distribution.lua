@@ -394,6 +394,7 @@ function RollDecision(args)
         local totalRemaining = 0
         local needRemaining = 0
         local didChange = false
+        local someoneHasNeeded = false
 
         -- Go through all the people who can roll
         for num, row in ipairs(item.rollData) do
@@ -422,6 +423,8 @@ function RollDecision(args)
                     needRemaining = needRemaining + 1
                 end
 
+            elseif row.rollType == RollType.Need then
+                someoneHasNeeded = true
             end
 
         end
@@ -429,7 +432,7 @@ function RollDecision(args)
         Debug.Log('RollDecision','NeedRemaining: '..tostring(needRemaining), 'totalRemaining: '..tostring(totalRemaining))
 
         -- If this was the last call needed, do rolls
-        if totalRemaining == 0 or needRemaining == 0 then
+        if totalRemaining == 0 or (needRemaining == 0 and someoneHasNeeded) then
             RollFinish({item=item})
         elseif didChange then
             Communication.SendRollUpdate(item)
@@ -540,8 +543,8 @@ function DistributeNextItem()
         -- Get the first unrolled item from the list of identified loot
         for num, item in ipairs(aIdentifiedLoot) do 
 
-            -- If the item is not assigned and passes our distribution filters
-            if not IsAssigned(item.entityId) and ItemPassesFilter(item, Options['Distribution']) then 
+            -- If the item is not assigned and not currently being rolled, and passes our distribution filters
+            if not IsAssigned(item.entityId) and not RollTracker.IsBeingRolled(item.identityId) and ItemPassesFilter(item, Options['Distribution']) then 
                     
                 local typeKey, stageKey = GetItemOptionsKeys(item, Options['Distribution']) 
                 local distributionMode = Options['Distribution'][typeKey][stageKey]['LootMode']

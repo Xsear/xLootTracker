@@ -1,5 +1,7 @@
 local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
 
+local ciLootGhost = 2 -- Seconds to wait before the onetime ghost check.
+
 local identityCounter = 1
 
 --[[
@@ -14,15 +16,6 @@ function Identify(entityId, targetInfo, itemInfo)
     elseif not targetInfo then
         if not Game.IsTargetAvailable(entityId) then
             Debug.Error('Identify called without targetInfo, and entityId does not reference an available entity.')
-        end
-    end
-
-    if tonumber(entityId) > 100 then
-        if not Game.IsTargetAvailable(entityId) then
-            Debug.Warn('Ghost Item Detected')
-            if Options['Debug']['Enabled'] then
-                SendChatMessage('system', 'Ghost Item Detected')
-            end
         end
     end
 
@@ -41,6 +34,7 @@ function Identify(entityId, targetInfo, itemInfo)
     local loot = {
         entityId       = entityId, 
         identityId     = nil,
+        easyId         = nil,
         itemTypeId     = targetInfo.itemTypeId,
         quality        = targetInfo.quality or 0,
         itemInfo       = itemInfo,
@@ -77,11 +71,18 @@ function Identify(entityId, targetInfo, itemInfo)
     -- Create timer
     loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1) -- TODO: Avoid code dependant on structure of panel as much as possible
         
-    -- Setup despawn timer
+    -- Setup despawn alarm
     loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item = loot})
+
+    -- Setup ghost alarm
+    if tonumber(entityId) > 1000 then -- Note: entityIds given out by the client are never this low, by checking for that we can use fake entityIds for testing purposes below this value.
+        loot.timer:SetAlarm('ghost', ciLootGhost, LootGhost, {item = loot})
+    end
+
+    -- Start timer
     loot.timer:StartTimer()
 
-    -- If squad leader, generate identity
+    -- If squad leader, generate identity and easy ids
     if bIsSquadLeader then
         Debug.Log('Generating identityId')
         local player = Player.GetInfo()
@@ -89,6 +90,25 @@ function Identify(entityId, targetInfo, itemInfo)
         loot.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
         identityCounter = identityCounter + 1
         Communication.SendItemIdentity(loot)
+
+        Debug.Log('Generating easyId')
+
+        local easyId = 0
+        local easyInUse = true
+
+        while easyInUse do
+            easyId = easyId + 1
+
+            easyInUse = false
+
+            for i, item in ipairs(aIdentifiedLoot) do
+                if item.easyId == tostring(easyId) then -- Just work with strings since it is intended to be parsed from chat
+                    easyInUse = true
+                end
+            end
+        end
+
+        loot.easyId = tostring(easyId) -- Just work with strings since it is intended to be parsed from chat
     end
 
     -- Save data
@@ -124,4 +144,19 @@ function LootDespawn(args)
 
     -- Remove item
     RemoveIdentifiedItem(args.item)
+end
+
+--[[
+    LootGhost(args)
+    Triggered by a timer alarm, a bit of a clone of LootDespawn for the purposes of catching "ghost" items.
+    Sometimes the client simply seems to fire OnEntityAvailable events for items that aren't actually available, and the loot despawn check will take 20 seconds to figure that out. The ghost check is only done once.
+]]--
+function LootGhost(args)  
+    if not Game.IsTargetAvailable(entityId) then
+        Debug.Warn('Ghost Item Detected')
+        if Options['Debug']['Enabled'] then
+            SendChatMessage('system', 'Ghost Item Detected')
+        end
+        RemoveIdentifiedItem(args.item)
+    end
 end

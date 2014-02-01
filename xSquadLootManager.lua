@@ -285,7 +285,7 @@ function OnSlash(args)
 
     -- Cancel
     elseif args[1] == 'cancel' then
-        RollCancel({reason=args[2]})
+        RollCancel({identity = RollTracker.GetFirst(), reason = args[2]})
 
     -- List
     elseif args.text == 'list' then
@@ -363,23 +363,58 @@ function OnChatMessage(args)
     if not Options['Core']['Enabled'] or not Options['Distribution']['Enabled'] then return end
 
     -- Filter for only Squad messages
-    if args.channel == 'squad' then
+    if args.channel == 'squad' or (Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy']) then
 
         -- If we are looking for roll decisions
         if RollTracker.IsRolling() and bIsSquadLeader then
+
+            Debug.Log('Listening for roll declarations')
+            Debug.Event(args)
+
+            -- Lowercase this shit
+            local text = unicode.lower(args.text)
+
+            -- Split string on spaces
+            local textPart = splitExplode(' ', text)
+
+            Debug.Table(textPart)
+
+            -- If there are more than 2 parts, this is no what we're looking for
+            if #textPart > 2 then return end
+
+            -- What we're looking for
             local rollType = nil
-            args.text = unicode.lower(args.text)
-            if args.text == 'n' or unicode.find(unicode.lower(args.text), '^nee+d$') ~= nil then
+            local easyId = nil
+
+            -- Try to find a valid rollType in the first part
+            if textPart[1] == 'n' or unicode.find(textPart[1], '^nee+d$') ~= nil then
                 rollType = RollType.Need
-            elseif args.text == 'g' or unicode.find(unicode.lower(args.text), '^gree+d$') ~= nil then
+            elseif textPart[1] == 'g' or unicode.find(textPart[1], '^gree+d$') ~= nil then
                 rollType = RollType.Greed
-            elseif args.text == 'p' or args.text == 'pass' then
+            elseif textPart[1] == 'p' or textPart[1] == 'pass' then
                 rollType = RollType.Pass
             end
 
-            if rollType ~= nil then
-                RollDecision({item = GetItemByIdentity(RollTracker.GetFirst()), author=args.author, rollType=rollType})
+            -- Try to find a valid easyId in the second part
+            if textPart[2] then
+                _, _, easyId = unicode.find(textPart[2], "^[+-]?(%d+)$")
             end
+
+            Debug.Log('Listen Result: rollType: '..tostring(rollType)..'  easyId: '..tostring(easyId))
+
+            -- If it looks like we got two valid results, go for it!
+            if rollType ~= nil then
+
+                local item
+                if easyId ~= nil then
+                    item = GetItemByEasy(easyId)
+                else
+                    item = GetItemByIdentity(RollTracker.GetFirst())
+                end
+
+                RollDecision({item = item, author=args.author, rollType=rollType})
+            end
+
         end
     end
 end
@@ -744,16 +779,34 @@ end
 function GetItemByIdentity(identityId)
     local localItem
     for num, item in ipairs(aIdentifiedLoot) do
-        if tostring(item.identityId) == identityId then
+        if tostring(item.identityId) == tostring(identityId) then
             localItem = item
             break
         end
     end
 
     -- If we don't know about this item we won't get info from it anyway, so just abort
-    if not localItem then Debug.Warn('No matching item for identity id that squad leader is starting a roll for') end
+    if not localItem then Debug.Warn('No matching item for identityId: '..tostring(identityId)) end
     return localItem
 end
+
+--[[
+    Get an item by its easyId
+--]]
+function GetItemByEasy(easyId)
+    local localItem
+    for num, item in ipairs(aIdentifiedLoot) do
+        if tostring(item.easyId) == tostring(easyId) then
+            localItem = item
+            break
+        end
+    end
+
+    -- If we don't know about this item we won't get info from it anyway, so just abort
+    if not localItem then Debug.Warn('No matching item for easyId: '..tostring(easyId)) end
+    return localItem
+end
+
 
 
 
@@ -1120,8 +1173,8 @@ function ListUnAssigned()
         end
 
         if unAssignedLoot ~= nil then
-            for num, item in ipairs(unAssignedLoot) do
-                SendFilteredMessage('system', num..': %i E:('..tostring(item.entityId)..') I:('..tostring(item.identityId)..')', {item=item})
+            for _, item in ipairs(unAssignedLoot) do
+                SendFilteredMessage('system', tostring(item.easyId)..': %i E:('..tostring(item.entityId)..') I:('..tostring(item.identityId)..')', {item=item})
             end
         else
             SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
@@ -1348,7 +1401,7 @@ function Test(args)
             end
 
             -- Location
-            entityId = num
+            entityId = tonumber(tostring(num)..tostring(math.random(0, 10)))
             targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}
             local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
 
@@ -1453,5 +1506,17 @@ function explode(div,str)
         pos = sp + 1
     end
     table.insert(arr,unicode.sub(str,pos))
+    return arr
+end
+
+function explode(div,str) -- credit: http://richard.warburton.it
+    if (div=='') then return false end
+    local pos,arr = 0,{}
+    -- for each divider found
+    for st,sp in function() return string.find(str,div,pos,true) end do
+        table.insert(arr,string.sub(str,pos,st-1)) -- Attach chars left of current divider
+        pos = sp + 1 -- Jump past current divider
+    end
+    table.insert(arr,string.sub(str,pos)) -- Attach chars right of last divider
     return arr
 end
