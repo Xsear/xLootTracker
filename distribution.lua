@@ -38,7 +38,7 @@ function Distribution.DistributeItem(item, distributionMode, weightingMode)
         if distributionMode ~= DistributionMode.RoundRobin then
             members = Distribution.GetEntitled(item, weightingMode)
         else
-            members = aSquadRoster
+            members = aSquadRoster.members
         end
 
         -- If x, do x! \o/ Best code.
@@ -47,11 +47,11 @@ function Distribution.DistributeItem(item, distributionMode, weightingMode)
         elseif distributionMode == DistributionMode.Dice then
             winner, rolls = Private.GetWinnerByDice(members)
         elseif distributionMode == DistributionMode.RoundRobin then
-            winner = Private.GetWinnerByRoundRobin()
+            winner = Private.GetWinnerByRoundRobin(members)
         end
 
         -- Announce that we've distributed an item.
-        OnDistributeItem({item=item, distributionMode=distributionMode, weightingMode = weightingMode, rolls=rolls})
+        OnDistributeItem({item = item, distributionMode = distributionMode, weightingMode = weightingMode, rolls = rolls})
 
         -- If we have a winner (I sure hope we do...), assign him the item! :D
         if winner then
