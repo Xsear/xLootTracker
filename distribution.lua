@@ -410,6 +410,7 @@ function RollDecision(args)
 
                 -- Set the roll type and acknowledge
                 row.rollType = args.rollType
+                row.hasRolled = true
                 didChange = true
                 OnRollAccept({item=item, rollType=args.rollType, playerName=args.author})
             end
