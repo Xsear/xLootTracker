@@ -780,17 +780,17 @@ Options = {
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
-                            ['Format'] = 'Declare need/greed/pass on %i\nEligible for need: %e',
+                            ['Format'] = 'Declare need/greed/pass on %i (%id)\nEligible for need: %e',
                         },
 
                         ['System'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Declare need/greed/pass on %i\nEligible for need: %e',
+                            ['Format'] = 'Declare need/greed/pass on %i (%id)\nEligible for need: %e',
                         },
 
                         ['Notifications'] = {
                             ['Enabled'] = false,
-                            ['Format'] = 'Declare need/greed/pass on %i\nEligible for need: %e',
+                            ['Format'] = 'Declare need/greed/pass on %i (%id)\nEligible for need: %e',
                         },
                     },
 

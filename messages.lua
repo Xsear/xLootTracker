@@ -151,6 +151,7 @@ function RunMessageFilters(message, args)
     args.item.entityId       = args.item.entityId           or undefinedValue
     args.item.itemTypeId     = args.item.itemTypeId         or undefinedValue
     args.item.craftingTypeId = args.item.craftingTypeId     or undefinedValue
+    args.item.craftingTypeId = args.item.easyId             or undefinedValue
     args.playerName          = args.playerName              or undefinedValue
     args.roll                = args.roll                    or undefinedValue
     args.rollType            = args.rollType                or undefinedValue
@@ -176,6 +177,8 @@ function RunMessageFilters(message, args)
     local itemItemTypeId = tostring(args.item.itemTypeId)
     -- Item craftingTypeId
     local itemCraftingTypeId = tostring(args.item.craftingTypeId)
+    -- Item easyId
+    local itemEasyId = tostring(args.item.easyId)
 
 
     -- Player Subject (Link)
@@ -262,14 +265,6 @@ function RunMessageFilters(message, args)
     -- Start building the output
     local output = message
 
-    -- What sort of mode the item was distributed in
-    output = unicode.gsub(output, '%%m', distributionMode)
-
-    -- Item (Text)
-    output = unicode.gsub(output, '%%it', itemAsText)
-
-    -- Item (Linked)
-    output = unicode.gsub(output, '%%i', itemAsLink)
 
     -- Item entityId
     output = unicode.gsub(output, '%%eId', itemEntityId)
@@ -285,6 +280,18 @@ function RunMessageFilters(message, args)
 
     -- Item For Frame
     output = unicode.gsub(output, '%%fF', itemForFrame)
+
+    -- Item easyId
+    output = unicode.gsub(output, '%%id', itemEasyId)
+
+    -- Item (Text)
+    output = unicode.gsub(output, '%%it', itemAsText)
+
+    -- Item (Linked)
+    output = unicode.gsub(output, '%%i', itemAsLink)
+
+    -- What sort of mode the item was distributed in
+    output = unicode.gsub(output, '%%m', distributionMode)
 
     -- Player name
     output = unicode.gsub(output, '%%n', playerAsLink)
