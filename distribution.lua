@@ -191,7 +191,7 @@ function Private.GetWinnerByDice(members)
     local rolls = {}
 
     -- Roll for each member in order to determine winner
-    for num, member in ipairs(weightedRoster) do
+    for num, member in ipairs(members) do
 
         -- Calc roll
         roll = math.random(Options['Distribution']['RollMin'], Options['Distribution']['RollMax'])
@@ -219,16 +219,16 @@ function Private.GetWinnerByRoundRobin(members)
 
         Debug.Log('bInSquad: '..tostring(bInSquad))
         Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
-        Debug.Error('GetWinnerByRoundRobin, but no squad?')
+        Debug.Warn('GetWinnerByRoundRobin, but no squad?')
     end
-    Debug.Log('#aSquadRoster.members: '..tostring(#aSquadRoster.members))
+    Debug.Log('#members: '..tostring(#members))
 
     local winner = ''
 
     -- Determine winner
-    for num, member in ipairs(aSquadRoster.members) do
+    for num, member in ipairs(members) do
         if num == iRoundRobinIndex then
-            winner = aSquadRoster.members[iRoundRobinIndex].name
+            winner = members[iRoundRobinIndex].name
             Debug.Log('Squad Member '..tostring(num)..', '..tostring(winner)..' is the winner.')
             break
         end
@@ -236,7 +236,7 @@ function Private.GetWinnerByRoundRobin(members)
 
     -- Setup for next winner
     Debug.Log('Setting up for next winner, should index be reset?')
-    if iRoundRobinIndex + 1 > #aSquadRoster.members then
+    if iRoundRobinIndex + 1 > #members then
         Debug.Log('true')
         iRoundRobinIndex = 1
         Debug.Log('Reseting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
