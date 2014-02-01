@@ -52,9 +52,23 @@ function Identify(entityId, targetInfo, itemInfo)
         rollData       = nil,
     }
 
-    if not itemInfo.tier then
-        itemInfo.tier = {level = 0}
+    if not loot.itemInfo.tier then
+        loot.itemInfo.tier = {level = 0}
     end
+
+    -- Force stage out of quality -- Fixme:
+    if loot.itemInfo.tier.level == 0 and loot.quality ~= 0 then
+        if loot.quality <= 150 then
+            loot.itemInfo.tier.level = 1
+        elseif loot.quality <= 250 then
+            loot.itemInfo.tier.level = 2
+        elseif loot.quality <= 500 then
+            loot.itemInfo.tier.level = 3
+        elseif loot.quality <= 1000 then
+            loot.itemInfo.tier.level = 4
+        end
+    end
+
 
     -- Optionally create waypoint
     if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
