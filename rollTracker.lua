@@ -40,6 +40,10 @@ function RollTracker.GetFirst()
     return Private.currentlyRolling[1]
 end
 
+function RollTracker.GetAll()
+    return Private.currentlyRolling
+end
+
 function RollTracker.Add(itemIdentity)
     if not RollTracker.IsBeingRolled(itemIdentity) then
         Private.currentlyRolling[#Private.currentlyRolling + 1] = itemIdentity
