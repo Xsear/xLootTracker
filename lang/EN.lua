@@ -39,6 +39,8 @@ end
 
 Generic_MessageFormat = "Specify the format of the message. The following replacement variables exist, please note that they're not always available.\n%i : Subject item\n%eId : Item entityId\n%cId : Item craftingTypeId\n%c : The coordinates to the item, as a link\n%n : Subject player\n%l : Player that looted the item\n%a : Player that the item was assigned to\n%m : Distribution Mode that item was distributed in.\n%fA : Archetype suitable for item\n%fF : Frame suitable for item\n%r : The roll value\n%t : The roll type\n%p : Players that can roll\n%e : Players that can Need roll"
 
+Filter_Generic_SimpleEnabled_Label                                              =    "Simple"
+Filter_Generic_SimpleEnabled_Tooltip                                            =    "If in Simple configuration mode, only these settings are used."
 
 LANG = {
 
@@ -57,10 +59,6 @@ LANG = {
     -- Everything below is used by the Interface Options.
 
     Options_MoveableFrame_Tracker_Label                                             =     "xSLM Loot Tracker",
-
-
-    Filter_Generic_SimpleEnabled_Label                                              =    "Simple",
-    Filter_Generic_SimpleEnabled_Tooltip                                            =    "If in Simple configuraiton mode, only these settings are used.",
 
     Filter_Generic_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode.",
 
