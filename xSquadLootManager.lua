@@ -411,14 +411,14 @@ end
     
 ]]--
 function OnLootHandle(args)
-    Debug.Event(args)
+    --Debug.Event(args)
     -- Requires Core and Detection enabled
     if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
     -- Requires args.itemTypeId, otherwise we can't get item info
     if not args.itemTypeId then 
-        Debug.Event(args)
-        Debug.Error('OnLootCollected requires args.itemTypeId') 
+        --Debug.Event(args)
+        --Debug.Error('OnLootCollected requires args.itemTypeId') 
         return 
     end
 
@@ -1066,25 +1066,15 @@ end
 function RemoveIdentifiedItem(loot)
     if loot == nil then Debug.Error('RemoveIdentifiedItem called without an item') return end
 
-    -- Remove from list of identified items
-    local wasRemoved = false
-    for num, item in ipairs(aIdentifiedLoot) do 
-        if item.entityId == loot.entityId then 
-            table.remove(aIdentifiedLoot, num)
-            wasRemoved = true
-            break
-        end
-    end
-    if not wasRemoved then Debug.Warn('RemoveIdentifiedItem didn\'t find the item in the list of identified items! Item was: '..tostring(loot.name)..' with entityId '..tostring(loot.entityId)) end
-
     -- Kill despawn alarm
     loot.timer:KillAlarm('despawn')
 
+    -- If currently rolling for this item, kill the roll
+    -- Note: The choice to call RollCleanup rather than RollCancel here. RollCancel doesn't actually do any cancelling right now, it just sends a message. Maybe reconsider when the RollCancel message can be turned off?
+    if RollTracker.IsBeingRolled(loot.identityId) then RollCleanup({item=loot}) end
+
     -- Kill timer
     loot.timer:Destroy()
-
-    -- If currently rolling for this item, kill the roll
-    if RollTracker.IsBeingRolled(loot.identityId) then RollCancel({item=loot, reason='The item is no longer being tracked.'}) end
 
     -- Kill the panel object
     if loot.panel ~= nil then
@@ -1097,6 +1087,17 @@ function RemoveIdentifiedItem(loot)
         loot.waypoint:ShowOnWorldMap(false)
         loot.waypoint:Destroy()
     end
+
+    -- Remove from list of identified items
+    local wasRemoved = false
+    for num, item in ipairs(aIdentifiedLoot) do 
+        if item.entityId == loot.entityId then 
+            table.remove(aIdentifiedLoot, num)
+            wasRemoved = true
+            break
+        end
+    end
+    if not wasRemoved then Debug.Warn('RemoveIdentifiedItem didn\'t find the item in the list of identified items! Item was: '..tostring(loot.name)..' with entityId '..tostring(loot.entityId)) end
 
     Tracker.Update()
 end
