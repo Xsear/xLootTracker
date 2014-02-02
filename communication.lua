@@ -446,13 +446,13 @@ function EncodeRollData(rollData)
 
     for i, member in ipairs(rollData) do
 
-        Debug.Log(member)
+        if Options['Debug']['CommunicationExtra'] then Debug.Log(member) end
 
         local tempMemberSubPair = ''
 
         for j, value in pairs(member) do
 
-            Debug.Table({j=j, value=value})
+            if Options['Debug']['CommunicationExtra'] then Debug.Table({j=j, value=value}) end
 
             local valueType = ChatLink.DataBreak
             local linkValue = value

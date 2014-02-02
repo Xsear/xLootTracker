@@ -341,72 +341,6 @@ function OnEntityAvailable(args)
 end
 
 --[[
-    OnChatMessage(args)
-    Callback function for when player receives chat messages
-    Used to handle Roll Decisions from non-SLM members.
-]]--
-function OnChatMessage(args)
-    -- Requires Core and Distribution enabled
-    if not Options['Core']['Enabled'] or not Options['Distribution']['Enabled'] then return end
-
-    -- Filter for only Squad messages
-    if args.channel == 'squad' or (Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy']) then
-
-        -- If we are looking for roll decisions
-        if RollTracker.IsRolling() and bIsSquadLeader then
-
-            Debug.Log('Listening for roll declarations')
-            Debug.Event(args)
-
-            -- Lowercase this shit
-            local text = unicode.lower(args.text)
-
-            -- Split string on spaces
-            local textPart = splitExplode(' ', text)
-
-            Debug.Table(textPart)
-
-            -- If there are more than 2 parts, this is no what we're looking for
-            if #textPart > 2 then return end
-
-            -- What we're looking for
-            local rollType = nil
-            local easyId = nil
-
-            -- Try to find a valid rollType in the first part
-            if textPart[1] == 'n' or unicode.find(textPart[1], '^nee+d$') ~= nil then
-                rollType = RollType.Need
-            elseif textPart[1] == 'g' or unicode.find(textPart[1], '^gree+d$') ~= nil then
-                rollType = RollType.Greed
-            elseif textPart[1] == 'p' or textPart[1] == 'pass' then
-                rollType = RollType.Pass
-            end
-
-            -- Try to find a valid easyId in the second part
-            if textPart[2] then
-                _, _, easyId = unicode.find(textPart[2], "^[+-]?(%d+)$")
-            end
-
-            Debug.Log('Listen Result: rollType: '..tostring(rollType)..'  easyId: '..tostring(easyId))
-
-            -- If it looks like we got two valid results, go for it!
-            if rollType ~= nil then
-
-                local item
-                if easyId ~= nil then
-                    item = GetItemByEasy(easyId)
-                else
-                    item = GetItemByIdentity(RollTracker.GetFirst())
-                end
-
-                RollDecision({item = item, author=args.author, rollType=rollType})
-            end
-
-        end
-    end
-end
-
---[[
     OnLootPickup(args)
 
 ]]--
@@ -436,6 +370,70 @@ function OnLootCollected(args)
     Detection.OnLootEvent(args)
 end
 
+--[[
+    OnChatMessage(args)
+    Callback function for when player receives chat messages
+    Used to handle Roll Decisions from non-SLM members.
+]]--
+function OnChatMessage(args)
+    -- Requires Core and Distribution enabled
+    if not Options['Core']['Enabled'] or not Options['Distribution']['Enabled'] then return end
+
+    -- Filter for only Squad messages
+    if args.channel == 'squad' or (Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy']) then
+
+        -- If we are looking for roll decisions
+        if RollTracker.IsRolling() and bIsSquadLeader then
+
+            -- Debug.Log('Listening for roll declarations')
+
+            -- Lowercase this shit
+            local text = unicode.lower(args.text)
+
+            -- Split string on spaces
+            local textPart = splitExplode(' ', text)
+
+            -- Debug.Table(textPart)
+
+            -- If there are more than 2 parts, this is no what we're looking for
+            if #textPart > 2 then return end
+
+            -- What we're looking for
+            local rollType = nil
+            local easyId = nil
+
+            -- Try to find a valid rollType in the first part
+            if textPart[1] == 'n' or unicode.find(textPart[1], '^nee+d$') ~= nil then
+                rollType = RollType.Need
+            elseif textPart[1] == 'g' or unicode.find(textPart[1], '^gree+d$') ~= nil then
+                rollType = RollType.Greed
+            elseif textPart[1] == 'p' or textPart[1] == 'pass' then
+                rollType = RollType.Pass
+            end
+
+            -- Try to find a valid easyId in the second part
+            if textPart[2] then
+                _, _, easyId = unicode.find(textPart[2], "^[+-]?(%d+)$")
+            end
+
+            -- Debug.Log('Listen Result: rollType: '..tostring(rollType)..'  easyId: '..tostring(easyId))
+
+            -- If it looks like we got two valid results, go for it!
+            if rollType ~= nil then
+
+                local item
+                if easyId ~= nil then
+                    item = GetItemByEasy(easyId)
+                else
+                    item = GetItemByIdentity(RollTracker.GetFirst())
+                end
+
+                RollDecision({item = item, author=args.author, rollType=rollType})
+            end
+
+        end
+    end
+end
 
 
 --[[
