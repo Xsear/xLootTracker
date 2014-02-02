@@ -60,7 +60,7 @@ function Communication.ReceiveItemIdentity(args)
     -- Only listen if author is the master and it's not us
     if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
 
-        Debug.Log('ItemIdentity declaration acknowledged, attempting to decode')
+        Debug.Log('Received an ItemIdentity declaration from the Squad Leader: '..tostring(args.link_data))
 
         -- Generic pattern
         local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
@@ -72,7 +72,7 @@ function Communication.ReceiveItemIdentity(args)
 
         -- Separate data parts
         for a, b in unicode.gmatch(data, dataPattern) do
-            Debug.Table({'ItemIdentity Parts Gmatch', a=a, b=b})
+            if Options['Debug']['CommunicationExtra'] then Debug.Table({'ItemIdentity Parts Gmatch', a=a, b=b}) end
             if not itemDataPart then
                 itemDataPart = a
             else
@@ -83,6 +83,8 @@ function Communication.ReceiveItemIdentity(args)
         -- Decode each part
         local itemTypeId, quality, quantity = DecodeItemReference(itemDataPart)
         local identityId = DecodeItemIdentity(identityDataPart)
+
+        Debug.Log('Decoded ItemIdentity declaration: identityId:'..tostring(identityId)..' identifies itemTypeId:'..tostring(itemTypeId)..', quality:'..tostring(quality)..', quantity:'..tostring(quantity))
 
         -- See if we can assign the identityId
         local success = false
@@ -104,9 +106,9 @@ function Communication.ReceiveItemIdentity(args)
 
         -- Debug the result
         if not success then
-            Debug.Log('Failed to match item identity, but it could have already been assigned or something.')
+            Debug.Log('Failed to set ItemIdentity, either the item is not identified or it already has an identityId') -- Xsear decided not to rewrite so that he could determine which one of these it is, blame him when you have a headache.
         else
-            Debug.Log('Succesfully set the item identity')
+            Debug.Log('Succesfully set the ItemIdentity')
         end
     end
 
@@ -137,6 +139,8 @@ function Communication.ReceiveAssign(args)
     -- Only listen to the master, and don't listen to ourselves
     if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
 
+        Debug.Log('Received Assign from the Squad Leader: '..tostring(args.link_data))
+
         -- Generic data pattern
         local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
 
@@ -146,7 +150,7 @@ function Communication.ReceiveAssign(args)
 
         -- Get parts
         for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
-            Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
+            if Options['Debug']['CommunicationExtra'] then Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator}) end
 
             if not identityPart then 
                 identityPart = contents
@@ -158,6 +162,8 @@ function Communication.ReceiveAssign(args)
         -- Decode parts into data
         local identityId = DecodeItemIdentity(identityPart)
         local assignTarget = DecodeBooleanValue(assignTargetPart) -- Note: Assign Target is not always a boolean value. Sorry. :D
+
+        Debug.Log('Decoded Assign: '..tostring(identityId)..' to '..tostring(assignTarget))
 
         -- Identify item
         local localItem = GetItemByIdentity(identityId)
@@ -173,7 +179,7 @@ function Communication.ReceiveAssign(args)
             -- Assign
             Distribution.AssignItem(localItem.entityId, tostring(assignTarget))
         else
-            Debug.Log('Fail, didnt find the item to assign')
+            Debug.Warn('ReceiveAssign was unable to find any item with identity '..tostring(identityId))
         end
 
     end
@@ -199,9 +205,7 @@ function Communication.ReceiveRollDecision(args)
     -- Requires that we are listening for a roll
     if not RollTracker.IsRolling() then return end
 
-
-    Debug.Event(args)
-
+    Debug.Log('Received RollDecision: '..tostring(args.link_data))
 
     -- Generic pattern
     local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
@@ -213,7 +217,7 @@ function Communication.ReceiveRollDecision(args)
 
     -- Get the parts
     for contents, separator in unicode.gmatch(data, dataPattern) do
-        Debug.Table('ReceiveAssign Part Gmatch', {contents=contents, separator=separator})
+        if Options['Debug']['CommunicationExtra'] then Debug.Table('ReceiveRollDecision Part Gmatch', {contents=contents, separator=separator}) end
 
         if not identityPart then 
             identityPart = contents
@@ -226,6 +230,11 @@ function Communication.ReceiveRollDecision(args)
     local identityId = DecodeItemIdentity(identityPart)
     local rollType = rollTypePart
 
+    -- Additionally, the name of the sender of the message is part of the data
+    local member = args.author
+
+    Debug.Log('Decoded RollDecision: '..tostring(rollType)..' on '..tostring(identityId)..' from '..tostring(member))
+
     -- Figure out which item we are receiving a roll decision for
     local localItem = GetItemByIdentity(identityId)
 
@@ -236,11 +245,11 @@ function Communication.ReceiveRollDecision(args)
         if RollTracker.IsBeingRolled(localItem.identityId) then
             RollDecision({item = localItem, author = args.author, rollType = rollType})
         else
-            Debug.Log('Received a roll declaration, but couldnt find a roll for that item')
+            Debug.Warn('ReceiveRollDecision for '..tostring(identityId)..' ignored because RollTracker says it isnt currently being rolled')
         end
 
     else
-        Debug.Log('Fail, didnt find the item to assign')
+        Debug.Warn('ReceiveRollDecision was unable to find any item with identity '..tostring(identityId))
     end
 end
 
@@ -265,6 +274,8 @@ function Communication.ReceiveRollStart(args)
     -- Only listen to the master, and don't listen to ourselves
     if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
 
+        Debug.Log('Received RollStart from the Squad Leader: '..tostring(args.link_data))
+
         -- Generic pattern to breakup string
         local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
 
@@ -275,7 +286,7 @@ function Communication.ReceiveRollStart(args)
         -- Get parts
         for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
             
-            Debug.Table('Link Part Gmatch', {contents=contents, separator=separator})
+            if Options['Debug']['CommunicationExtra'] then Debug.Table('Link Part Gmatch', {contents=contents, separator=separator}) end
 
             if not identityPart then 
                 identityPart = contents
@@ -289,7 +300,7 @@ function Communication.ReceiveRollStart(args)
         local rollData = DecodeRollData(rollDataPart)
 
         -- Debug
-        Debug.Table({identityId=itentityId, rollData=rollData})
+        Debug.Log('Decoded RollStart: for '..tostring(identityId)..' with '..tostring(rollData))
 
         -- Find the item that we received roll data for
         local localItem = GetItemByIdentity(identityId)
@@ -301,6 +312,8 @@ function Communication.ReceiveRollStart(args)
 
             -- Force a tracker update :)
             Tracker.Update()
+        else
+            Debug.Warn('ReceiveRollStart was unable to find any item with identity '..tostring(identityId))
         end
     end
 end
@@ -321,8 +334,10 @@ function Communication.ReceiveRollUpdate(args)
     -- Verify that we can recieve this link
     if not Private.CanReceive('RollUpdate') then return end
 
-    -- Don't listen to ourselves
-    if not namecompare(args.author, Player.GetInfo()) then
+    --  Only listen to the master, and don't listen to ourselves
+    if IsSquadLeader(args.author) and not namecompare(args.author, Player.GetInfo()) then
+
+        Debug.Log('Received RollUpdate from the Squad Leader: '..tostring(args.link_data))
 
         -- Generic pattern to breakup string
         local dataPattern = '(.-)('..ChatLink.PairBreak..')' -- Todo: Globalize me
@@ -334,7 +349,7 @@ function Communication.ReceiveRollUpdate(args)
         -- Get parts
         for contents, separator in unicode.gmatch(args.link_data, dataPattern) do
             
-            Debug.Table('Link Part Gmatch', {contents=contents, separator=separator})
+            if Options['Debug']['CommunicationExtra'] then Debug.Table('Link Part Gmatch', {contents=contents, separator=separator}) end
 
             if not identityPart then 
                 identityPart = contents
@@ -348,7 +363,7 @@ function Communication.ReceiveRollUpdate(args)
         local rollData = DecodeRollData(rollDataPart)
 
         -- Debug
-        Debug.Table({'Communication.ReceiveRollUpdate', identityId=itentityId, rollData=rollData})
+        Debug.Log('Decoded RollUpdate: for '..tostring(identityId)..' with '..tostring(rollData))
 
         -- Find the item that we received roll data for
         local localItem = GetItemByIdentity(identityId)
@@ -360,6 +375,8 @@ function Communication.ReceiveRollUpdate(args)
 
             -- Force a tracker update :)
             Tracker.Update()
+        else
+            Debug.Warn('ReceiveRollUpdate was unable to find any item with identity '..tostring(identityId))
         end
     end
 end
@@ -374,7 +391,7 @@ end
 function EncodeItemIdentity(item)
     local identityId = item.identityId
     if not identityId then
-        Debug.Warn('Attempted to EncodeItemIdenttiy on an item with no identityId')
+        Debug.Warn('Attempted to EncodeItemIdentity on an item with no identityId')
         return ''
     end
 
@@ -382,7 +399,7 @@ function EncodeItemIdentity(item)
 end
 
 function DecodeItemIdentity(identityDataPart)
-    Debug.Log('DecodeItemIdentity: '..identityDataPart)
+    if Options['Debug']['CommunicationExtra'] then Debug.Log('DecodeItemIdentity: '..identityDataPart) end
     local identityId
     local identityPattern = '(.-)'..ChatLink.DataBreak
 
@@ -390,7 +407,7 @@ function DecodeItemIdentity(identityDataPart)
         identityId = a
     end
 
-    Debug.Log('Decoded itemIdentity result: '..tostring(identityId))
+    if Options['Debug']['CommunicationExtra'] then Debug.Log('Decoded itemIdentity result: '..tostring(identityId)) end
 
     return identityId
 end
@@ -416,7 +433,7 @@ function DecodeItemReference(itemDataPart)
         quantity = tonumber(c)
     end
 
-    Debug.Table({'Decoded itemReference', itemTypeId=itemTypeId, quality=quality, quantity=quantity})
+    if Options['Debug']['CommunicationExtra'] then Debug.Table({'Decoded itemReference', itemTypeId=itemTypeId, quality=quality, quantity=quantity}) end
     return itemTypeId, quality, quantity
 end
 
@@ -455,12 +472,12 @@ function EncodeRollData(rollData)
 
     local membersDataPair = table.concat(tempMembersTable, ChatLink.SubDataBreak)
 
-    Debug.Table('Encoded rollData result', membersDataPair)
+    if Options['Debug']['CommunicationExtra'] then Debug.Table('Encoded rollData result', membersDataPair) end
     return membersDataPair
 end
 
 function DecodeRollData(rollDataPart)
-    Debug.Log('DecodeRollData() called with following part: '..rollDataPart)
+    if Options['Debug']['CommunicationExtra'] then Debug.Log('DecodeRollData() called with following part: '..rollDataPart) end
 
     local rollData = {}
 
@@ -469,7 +486,7 @@ function DecodeRollData(rollDataPart)
 
     -- Break up the data into one segment for each member
     for contents, separator in unicode.gmatch(rollDataPart, membersCrushPattern) do
-        Debug.Table('Members Member Gmatch: ', {contents=contents, separator=separator})
+        if Options['Debug']['CommunicationExtra'] then Debug.Table('Members Member Gmatch: ', {contents=contents, separator=separator}) end
 
         -- Template
         local member = {
@@ -482,7 +499,7 @@ function DecodeRollData(rollDataPart)
 
         -- For each value of this member
         for subcontents, valueType in unicode.gmatch(contents, memberDataPattern) do
-            Debug.Table('Member Value Gmatch: ', {subcontents=subcontents, valueType=valueType})
+            if Options['Debug']['CommunicationExtra'] then Debug.Table('Member Value Gmatch: ', {subcontents=subcontents, valueType=valueType}) end
 
             -- Value is string by default
             local value = subcontents
@@ -507,13 +524,13 @@ function DecodeRollData(rollDataPart)
 
         end
 
-        Debug.Table('Decoded member result', member)
+        if Options['Debug']['CommunicationExtra'] then Debug.Table('Decoded member result', member) end
         
         -- Add decoded member to rollData
         rollData[#rollData + 1] = member
     end
 
-    Debug.Table('Decoded rollData result', rollData)
+    if Options['Debug']['CommunicationExtra'] then Debug.Table('Decoded rollData result', rollData) end
 
     return rollData
 end
@@ -548,6 +565,9 @@ function Private.SendLink(link, linkKey)
             return
         end
     end
+
+    -- Debug
+    Debug.Log('Sending '..tostring(linkKey)..' link: '..tostring(args.link_data))
 
     -- If all is well, send link
     SendMessageToChat('squad', link, false)

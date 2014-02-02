@@ -1105,6 +1105,7 @@ Options = {
         ['LogLootableTargets'] = false, 
         ['LogLootableCollection'] = false,
         ['LogOptionChange'] = false,
+        ['CommunicationExtra'] = false,
     },
 }
 
@@ -1506,6 +1507,15 @@ function BuildInterfaceOptions_Front()
             label   = Lokii.GetString('Debug_LogOptionChange_Label'),
             tooltip = Lokii.GetString('Debug_LogOptionChange_Tooltip'),
         })
+
+        -- CommunicationExtra
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_CommunicationExtra',
+            default = Options['Debug']['CommunicationExtra'],
+            label   = Lokii.GetString('Debug_CommunicationExtra_Label'),
+            tooltip = Lokii.GetString('Debug_CommunicationExtra_Tooltip'),
+        })
+
 
     InterfaceOptions.StopGroup()
 end

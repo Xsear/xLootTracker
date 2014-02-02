@@ -280,6 +280,9 @@ LANG = {
     Debug_LogOptionChange_Label                                                         =    "Log Option Changes",
     Debug_LogOptionChange_Tooltip                                                       =    "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
 
+    Debug_CommunicationExtra_Label                                                      =    "Log Communication Extra",
+    Debug_CommunicationExtra_Tooltip                                                    =    "Extra Communication messages, spammy.\nLogs encoding and decoding of communication links more closely, helpful when errors are occuring in this department.",
+
     Sounds_Enabled_Label                                                                =    "Enable Sounds",
     Sounds_Enabled_Tooltip                                                              =    "The addon will play sounds in order to notify you when certain events occur.",
     
