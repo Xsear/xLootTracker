@@ -346,7 +346,6 @@ function OnEntityAvailable(args)
 
             -- If we're not tracking it already, track it!
             if not IsIdentified(args.entityId) then
-                Debug.Event(args)
                 Identify(args.entityId, targetInfo)
             end
         end
@@ -1462,12 +1461,6 @@ function _table.empty(table)
        return true
     end
     return false
-end
-
-function _table.length(table)
-  local count = 0
-  for _ in pairs(table) do count = count + 1 end
-  return count
 end
 
 function _table.compare(t1,t2,ignore_mt)
