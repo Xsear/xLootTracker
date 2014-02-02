@@ -4,6 +4,127 @@ local ciLootGhost = 2 -- Seconds to wait before the onetime ghost check.
 
 local identityCounter = 1
 
+
+Detection = {}
+local Private = {}
+
+--[[
+    Detection.OnLootableEntity(args)
+    When an OnEntityAvailable with type 'loot' has occured.
+    
+    Determines whether the lootable entity should be tracked or not.
+--]]
+function Detection.OnLootableEntity(args)
+    -- Requires Detection enabled
+    if not Options['Detection']['Enabled'] then return end
+
+    -- Get more info about the entity
+    local targetInfo = Game.GetTargetInfo(args.entityId)
+    local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
+
+    -- Debug
+    if Options['Debug']['Enabled'] and Options['Debug']['LogLootableTargets'] and IsSquadLoot(targetInfo) then
+        Debug.Table({'Lootable Target Available', targetInfo = targetInfo, itemInfo = itemInfo})
+    end
+
+    -- Determine if it is a lootable entity
+    if IsSquadLoot(targetInfo) and IsTrackableItem(itemInfo) then
+
+        -- If we're not tracking it already, track it!
+        if not IsIdentified(args.entityId) then
+            Identify(args.entityId, targetInfo)
+        end
+    end
+end
+
+--[[
+    Detection.OnLootEvent(args)
+    When an OnLootCollected or OnLootPickup has occured.
+
+    Determines whether some form of OnLoot event should occur.    
+]]--
+function Detection.OnLootEvent(args)
+    -- Requires Detection enabled
+    if not Options['Detection']['Enabled'] then return end
+
+    -- Requires args.itemTypeId, otherwise we can't get item info
+    if not args.itemTypeId then return end
+
+    -- Fix quality argument if nonexistant
+    if not args.quality then
+        args.quality = 0
+    end
+
+    -- Get itemInfo
+    local itemInfo = Game.GetItemInfoByType(args.itemTypeId, Game.GetItemAttributeModifiers(args.itemTypeId, args.quality))
+
+    -- Is it loot that we care about?
+    if itemInfo and IsTrackableItem(itemInfo) then
+
+        -- Debug
+        if Options['Debug']['LogLootableCollection'] then Debug.Table('Detection.OnLootEvent', {itemInfo = itemInfo}) end
+
+        -- Okay, do we have any identified loot?
+        if not _table.empty(aIdentifiedLoot) then
+
+            -- Grab the first identified item that this item could be, checking that the entity is no longer available
+            local loot = nil
+            for num, item in ipairs(aIdentifiedLoot) do 
+                if item.itemTypeId == args.itemTypeId and item.quality == args.quality then
+                    loot = item
+                    break
+                end
+            end
+
+            -- If we found the item, we will return from this function within this block after firing the appropriate event function.
+            if loot ~= nil then
+
+                if Game.IsTargetAvailable(loot.entityId) then
+                    Debug.Log('Detecting OnLootEvent for '..loot.name..' but it is still an available Target')
+                    
+                end
+
+                -- If we care about this item, trigger relevant event
+                local eventArgs = {
+                    lootedTo   = args.lootedTo,
+                    assignedTo = loot.assignedTo,
+                    item       = loot
+                }
+
+                -- If the item had not been assigned
+                if loot.assignedTo == nil then
+                    OnLootSnatched(eventArgs)
+
+                -- Else if the item was looted by the person it was assigned to
+                elseif namecompare(loot.assignedTo, args.lootedTo) then
+                    OnLootReceived(eventArgs)
+
+                -- Else it was a ninja
+                else
+                    OnLootStolen(eventArgs)
+                end
+
+                -- End the function, we're done here.
+                RemoveIdentifiedItem(loot)
+                return
+
+            end
+        end
+
+        -- This item wasn't being tracked.
+        OnLootClaimed({
+            lootedTo = args.lootedTo,
+            item     = {
+                name = itemInfo.name,
+                itemTypeId = itemInfo.itemTypeId,
+                quality = args.quality,
+                itemInfo = itemInfo
+            }
+        })
+    end
+end
+
+
 --[[
     Identify(entityId, [targetInfo], [itemInfo])
     Identifies entity, adding it to a list of items that have been seen

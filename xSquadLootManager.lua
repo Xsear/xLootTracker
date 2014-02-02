@@ -336,23 +336,7 @@ function OnEntityAvailable(args)
 
     -- Filter away any entities that are not loot
     if args.type == 'loot' then
-        -- Get more info about the entity
-        local targetInfo = Game.GetTargetInfo(args.entityId)
-        local itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
-
-        -- Debug
-        if Options['Debug']['Enabled'] and Options['Debug']['LogLootableTargets'] and IsSquadLoot(targetInfo) then
-            Debug.Table({'Lootable Target Available', targetInfo = targetInfo, itemInfo = itemInfo})
-        end
-
-        -- Determine if it is a lootable entity
-        if IsSquadLoot(targetInfo) and IsTrackableItem(itemInfo) then
-
-            -- If we're not tracking it already, track it!
-            if not IsIdentified(args.entityId) then
-                Identify(args.entityId, targetInfo)
-            end
-        end
+        Detection.OnLootableEntity(args)
     end
 end
 
@@ -424,124 +408,35 @@ end
 
 --[[
     OnLootPickup(args)
-    This event is called when other players loot things.
-    Currently just redirecting to OnLootCollected should be fine.
+
 ]]--
 function OnLootPickup(args)
-    -- Handled in OnLootHandle
-    OnLootHandle(args)
+    -- Requires Core Enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Forward to detection
+    Detection.OnLootEvent(args)
 end
 
+--[[
+    OnLootCollected(args)
+
+--]]
 function OnLootCollected(args)
+    -- Requires Core Enabled
+    if not Options['Core']['Enabled'] then return end
+
+    -- Ignore the event if it is for the local player, since then OnLootPickup should have occured.
     if namecompare(args.lootedTo, Player.GetInfo()) and namecompare(args.lootedBy, Player.GetInfo()) then 
         --Debug.Log('Skipping OnLootCollected event for '..tostring(args.itemTypeId)..' under the assumption that OnLootPickup occurs.')
         return 
     end
 
-    -- Handled in OnLootHandle
-    OnLootHandle(args)
+    -- Forward to detection
+    Detection.OnLootEvent(args)
 end
 
---[[
-    OnLootHandle(args)
-    Callback for when someone loots something.
-    Used to detect ninja lootaz!
-    
-]]--
-function OnLootHandle(args)
-    --Debug.Event(args)
-    -- Requires Core and Detection enabled
-    if not (Options['Core']['Enabled'] and Options['Detection']['Enabled']) then return end
 
-    -- Requires args.itemTypeId, otherwise we can't get item info
-    if not args.itemTypeId then 
-        --Debug.Event(args)
-        --Debug.Error('OnLootCollected requires args.itemTypeId') 
-        return 
-    end
-
-    -- Fix quality argument if nonexistant
-    if not args.quality then
-        args.quality = 0
-    end
-
-
-    -- Get item info
-    local itemInfo = Game.GetItemInfoByType(args.itemTypeId, Game.GetItemAttributeModifiers(args.itemTypeId, args.quality))
-
-    -- Is it loot that we care about?
-    if itemInfo and IsTrackableItem(itemInfo) then
-
-        -- Debug Log
-        if Options['Debug']['Enabled'] and Options['Debug']['LogLootableCollection'] then
-            Debug.Table({'OnLootCollected', itemInfo = itemInfo})
-        end
-
-
-        -- Todo: Check if we have assigned any items, if not just skip to Claimed ?
-
-        -- Okay, do we have any identified loot?
-        if not _table.empty(aIdentifiedLoot) then
-
-            -- Grab the first identified item that this item could be, checking that the entity is no longer available
-            local loot = nil
-            for num, item in ipairs(aIdentifiedLoot) do 
-                Debug.Table({'Is it this item?', item})
-                Debug.Log('item.itemTypeId == args.itemTypeId : '..tostring(item.itemTypeId == args.itemTypeId))
-                Debug.Log('item.quality ('..tostring(item.quality)..') == args.quality ('..tostring(args.quality)..') : '..tostring(item.quality == args.quality))
-                if item.itemTypeId == args.itemTypeId and item.quality == args.quality then
-                    if Game.IsTargetAvailable(item.entityId) then
-                        Debug.Log('Found looted item but target is still available ')
-                        Debug.Table(Game.GetTargetInfo(item.entityId))
-                    end
-                    loot = item
-                    break
-                end
-            end
-
-            -- If we found the item, we will return from this function within this block after firing the appropriate event function.
-            if loot ~= nil then
-                Debug.Event(args)
-
-                -- If we care about this item, trigger relevant event
-                local eventArgs = {
-                    lootedTo   = args.lootedTo,
-                    assignedTo = loot.assignedTo,
-                    item       = loot
-                }
-
-                -- If the item had not been assigned
-                if loot.assignedTo == nil then
-                    OnLootSnatched(eventArgs)
-
-                -- Else if the item was looted by the person it was assigned to
-                elseif namecompare(loot.assignedTo, args.lootedTo) then
-                    OnLootReceived(eventArgs)
-
-                -- Else it was a ninja
-                else
-                    OnLootStolen(eventArgs)
-                end
-
-                -- End the function, we're done here.
-                RemoveIdentifiedItem(loot)
-                return
-
-            end
-        end
-
-        -- This item wasn't being tracked.
-        OnLootClaimed({
-            lootedTo = args.lootedTo,
-            item     = {
-                name = itemInfo.name,
-                itemTypeId = itemInfo.itemTypeId,
-                quality = args.quality,
-                itemInfo = itemInfo
-            }
-        })
-    end
-end
 
 --[[
     OnIdentify(args)
