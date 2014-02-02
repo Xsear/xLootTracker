@@ -19,6 +19,12 @@ function Identify(entityId, targetInfo, itemInfo)
         end
     end
 
+    -- Be sure we haven't already identified this
+    if IsIdentified(entityId) then
+        Debug.Warn('Attempted to identify an already identified item.')
+        return
+    end
+
     -- Setup targetInfo and itemInfo
     targetInfo = targetInfo or Game.GetTargetInfo(entityId)
     itemInfo = itemInfo or Game.GetItemInfoByType(targetInfo.itemTypeId, Game.GetItemAttributeModifiers(targetInfo.itemTypeId, targetInfo.quality))
@@ -69,33 +75,6 @@ function Identify(entityId, targetInfo, itemInfo)
         end
     end
 
-
-    -- Optionally create waypoint
-    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
-        loot.waypoint = CreateWaypoint(loot)
-    end
-
-    Debug.Log(tostring(ItemPassesFilter(loot, Options['Panels'])))
-
-    -- Optionally create panel
-    if (Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels'])) then
-        loot.panel = CreatePanel(targetInfo, itemInfo)
-    end
-
-    -- Create timer
-    loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1) -- TODO: Avoid code dependant on structure of panel as much as possible
-        
-    -- Setup despawn alarm
-    loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item = loot})
-
-    -- Setup ghost alarm
-    if tonumber(entityId) > 1000 then -- Note: entityIds given out by the client are never this low, by checking for that we can use fake entityIds for testing purposes below this value.
-        loot.timer:SetAlarm('ghost', ciLootGhost, LootGhost, {item = loot})
-    end
-
-    -- Start timer
-    loot.timer:StartTimer()
-
     -- If squad leader, generate identity and easy ids
     if bIsSquadLeader then
         Debug.Log('Generating identityId')
@@ -124,6 +103,32 @@ function Identify(entityId, targetInfo, itemInfo)
 
         loot.easyId = tostring(easyId) -- Just work with strings since it is intended to be parsed from chat
     end
+
+    -- Optionally create waypoint
+    if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
+        loot.waypoint = CreateWaypoint(loot)
+    end
+
+    Debug.Log(tostring(ItemPassesFilter(loot, Options['Panels'])))
+
+    -- Optionally create panel
+    if (Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels'])) then
+        loot.panel = CreatePanel(targetInfo, itemInfo)
+    end
+
+    -- Create timer
+    loot.timer = GTimer.Create(function(time) if loot.panel ~= nil then loot.panel.panel_rt:GetChild('Panel'):GetChild('Content'):GetChild('IconBar'):GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1) -- TODO: Avoid code dependant on structure of panel as much as possible
+        
+    -- Setup despawn alarm
+    loot.timer:SetAlarm('despawn', ciLootDespawn, LootDespawn, {item = loot})
+
+    -- Setup ghost alarm
+    if tonumber(entityId) > 1000 then -- Note: entityIds given out by the client are never this low, by checking for that we can use fake entityIds for testing purposes below this value.
+        loot.timer:SetAlarm('ghost', ciLootGhost, LootGhost, {item = loot})
+    end
+
+    -- Start timer
+    loot.timer:StartTimer()
 
     -- Save data
     table.insert(aIdentifiedLoot, loot)

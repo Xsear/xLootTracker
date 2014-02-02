@@ -1064,10 +1064,9 @@ end
     Whether or not an entity has been found and identified before
 ]]--
 function IsIdentified(entityId)
-    local stringType = (type(entityId) == 'string')
     if not _table.empty(aIdentifiedLoot) then
-        for num, item in ipairs(aIdentifiedLoot) do 
-            if (stringType and tostring(item.entityId) == entityId) or (item.entityId == entityId) then
+        for _, item in ipairs(aIdentifiedLoot) do 
+            if tostring(item.entityId) == tostring(entityId) then
                 return true
             end
         end
