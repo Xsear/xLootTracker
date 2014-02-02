@@ -269,6 +269,8 @@ function OnSlash(args)
         if Options['Debug']['Enabled'] then
             SendChatMessage('system', 'Debug Commands')
             SendChatMessage('system', '/slm test [filter|any] [number|any] : Fake detection of items.')
+            SendChatMessage('system', '/slm fake : Fake roll declarations.')
+            SendChatMessage('system', '/slm stat : Log variables.')
             SendChatMessage('system', '/slm assign <entityId> <playerName> : Assign an item to a player.')
             SendChatMessage('system', '/slm <stfu|silence|no> : Forcefully disables Messages and Distribution.')
             SendChatMessage('system', '/slm ut : Force Tracker.Update()')
@@ -299,6 +301,12 @@ function OnSlash(args)
     elseif args[1] == 'test' then
         Test({args[2], args[3]})
 
+    elseif args.text == 'fake' then
+        Fake(args)    
+
+    elseif args.text == 'stat' then
+        Stat(args)
+
     elseif (args[1] == 'assign' or args[1] == 'a') and args[2] and args[3] then
         Distribution.AssignItem(args[2], args[3])
 
@@ -313,11 +321,7 @@ function OnSlash(args)
     elseif args.text == 'us' then
         OnSquadRosterUpdate()
     
-    elseif args.text == 'fake' then
-        Fake()    
-
     end
-
 
 end
 
@@ -1299,22 +1303,8 @@ function Test(args)
     SendChatMessage('system', 'Test')
 
     Debug.Log('Test')
-
-    Debug.Log('Core_Enabled: '..tostring(Options['Core']['Enabled']))
-    Debug.Log('Debug_SquadToArmy: '..tostring(Options['Debug']['SquadToArmy']))
-    Debug.Log('Debug_FakeSquadRoster: '..tostring(Options['Debug']['FakeOnSquadRoster']))
-    Debug.Log('Debug_AlwaysSquadLeader: '..tostring(Options['Debug']['AlwaysSquadLeader']))
-
-    Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
-    Debug.Log('bInSquad: '..tostring(bInSquad))
-
     Debug.Log('args[1]: '..tostring(args[1]))
     Debug.Log('args[2]: '..tostring(args[1]))
-
-    Debug.Table('numeric', Game.GetItemAttributeModifiers(85974, 1000))
-    Debug.Table('stringType', Game.GetItemAttributeModifiers('85974', 1000))
-    Debug.Table('stringQuality', Game.GetItemAttributeModifiers(85974, '1000'))
-    Debug.Table('string', Game.GetItemAttributeModifiers('85974', '1000'))
 
     if true then
         -- First parameter sets filters
@@ -1423,7 +1413,9 @@ function Test(args)
 end
 
 function Fake(args)
+    SendChatMessage('system', 'Fake')
 
+    Debug.Log('Fake')
 
     for _, item in ipairs(aIdentifiedLoot) do
 
@@ -1452,7 +1444,24 @@ function Fake(args)
     
 end
 
+function Stat(args)
+    SendChatMessage('system', 'Stat')
 
+    Debug.Log('Stat')
+
+    Debug.Log('Core_Enabled: '..tostring(Options['Core']['Enabled']))
+    Debug.Log('Debug_Enabled: '..tostring(Options['Debug']['Enabled']))
+    Debug.Log('Debug_SquadToArmy: '..tostring(Options['Debug']['SquadToArmy']))
+    Debug.Log('Debug_FakeSquadRoster: '..tostring(Options['Debug']['FakeOnSquadRoster']))
+    Debug.Log('Debug_AlwaysSquadLeader: '..tostring(Options['Debug']['AlwaysSquadLeader']))
+
+    Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
+    Debug.Log('bInSquad: '..tostring(bInSquad))
+
+    --Debug.Log('#aSquadRoster.members: '..tostring(#aSquadRoster.members))
+
+    Debug.Log('#aIdentifiedLoot: '..tostring(#aIdentifiedLoot))
+end
 
 
 -- Why the fucking fuck are these not standard functions
