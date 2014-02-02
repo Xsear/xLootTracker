@@ -1200,7 +1200,7 @@ function digOptions(table, args, refs, depth, key)
 
                 -- If the value of the option we are updating is a table - and the option id we are working with ends at this depth, that's all right too.
                 elseif type(args.val) == 'table' and #refs == depth then
-                    Debug.Log('Option with Id: '..args.id..' has its value updated as a table.')
+                    if Options['Debug']['LogOptionChange'] then Debug.Log('Option with Id: '..args.id..' has its value updated as a table.') end
                     table[tableKey] = args.val
 
                 -- Otherwise, we still have some more digging to do.

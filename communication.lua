@@ -567,7 +567,7 @@ function Private.SendLink(link, linkKey)
     end
 
     -- Debug
-    Debug.Log('Sending '..tostring(linkKey)..' link: '..tostring(args.link_data))
+    Debug.Log('Sending '..tostring(linkKey)..' link: '..tostring(link))
 
     -- If all is well, send link
     SendMessageToChat('squad', link, false)
