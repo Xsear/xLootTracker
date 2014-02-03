@@ -30,6 +30,8 @@ function Detection.OnLootableEntity(args)
     -- Determine if it is a lootable entity
     if IsSquadLoot(targetInfo) and IsTrackableItem(itemInfo) then
 
+        Debug.Log('Detecting OnLootableEntity for '..tostring(itemInfo.name))
+
         -- If we're not tracking it already, track it!
         if not IsIdentified(args.entityId) then
             Identify(args.entityId, targetInfo)
@@ -79,9 +81,11 @@ function Detection.OnLootEvent(args)
             -- If we found the item, we will return from this function within this block after firing the appropriate event function.
             if loot ~= nil then
 
+                Debug.Log('Detecting OnLootEvent for '..loot.name..', '..tostring(loot.entityId)..', '..tostring(loot.identityId))
+                Debug.Log('It was assigned to '..tostring(loot.assignedTo)..' and is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
+
                 if Game.IsTargetAvailable(loot.entityId) then
-                    Debug.Log('Detecting OnLootEvent for '..loot.name..' but it is still an available Target')
-                    
+                    Debug.Log('OnLootEvent for '..loot.name..', '..tostring(loot.entityId)..' detected through '..tostring(args.event)..' but it is still an available Target')
                 end
 
                 -- If we care about this item, trigger relevant event
@@ -152,7 +156,7 @@ function Identify(entityId, targetInfo, itemInfo)
     targetInfo.name = targetInfo.name or itemInfo.name -- This reduces the amount of data needed to be stored in the test function.
 
     -- Test our data before we get started
-    Debug.Table({'Identify', entityId = entityId, targetInfo = targetInfo, itemInfo = itemInfo})
+    --Debug.Table('Identify', {entityId = entityId, targetInfo = targetInfo, itemInfo = itemInfo})
     if not targetInfo or not itemInfo then
         Debug.Error('Identify was unable to acquire the neccessary data')
     end
@@ -203,6 +207,7 @@ function Identify(entityId, targetInfo, itemInfo)
         local time = tonumber(System.GetLocalUnixTime())
         loot.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
         identityCounter = identityCounter + 1
+        Debug.Log('Identifying '..tostring(loot.name)..', '..tostring(loot.entityId)..', '..tostring(loot.identityId))
         Communication.SendItemIdentity(loot)
 
         Debug.Log('Generating easyId')
@@ -229,8 +234,6 @@ function Identify(entityId, targetInfo, itemInfo)
     if (Options['Waypoints']['Enabled'] and ItemPassesFilter(loot, Options['Waypoints'])) then
         loot.waypoint = CreateWaypoint(loot)
     end
-
-    Debug.Log(tostring(ItemPassesFilter(loot, Options['Panels'])))
 
     -- Optionally create panel
     if (Options['Panels']['Enabled'] and ItemPassesFilter(loot, Options['Panels'])) then

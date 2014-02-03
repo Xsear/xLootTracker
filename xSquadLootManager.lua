@@ -177,7 +177,7 @@ function OnSquadRosterUpdate()
         -- Reset Round Robin if members changed
         if previousRosterMemberCount ~= #aSquadRoster.members then
             iRoundRobinIndex = 1
-            Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+            if Options['Debug']['RoundRobin'] then Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex)) end
         end
 
 
@@ -443,7 +443,6 @@ end
     We use this to start automatic item distribution
 ]]--
 function OnIdentify(args)
-    Debug.Table(args)
     -- Require Core enabled
     if not Options['Core']['Enabled'] then return end
 

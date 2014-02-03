@@ -15,6 +15,9 @@ function Distribution.DistributeItem(item, distributionMode, weightingMode)
         Debug.Warn('DistributeItem but bInSquad is false.')
         SendFilteredMessage('system', 'Unable to distribute %i. We are not in a squad at the moment.', {item=item})
         return
+    elseif not aSquadRoster or not aSquadRoster.members then
+        Debug.Warn('DistributeItem but no squad members.')
+        return
     end
 
     -- If not specified, default distribution and weighting modes.
@@ -154,8 +157,6 @@ function Distribution.GetEntitled(item, weightingMode)
         end
     end
 
-    Debug.Table({eligibleArchetypes=eligibleArchetypes, eligibleFrames=eligibleFrames})
-
     -- Weigh by Archetype
     if weightingMode == WeightingOptions.Archetype then
         for num, member in ipairs(aSquadRoster.members) do
@@ -213,15 +214,16 @@ function Private.GetWinnerByDice(members)
 end
 
 function Private.GetWinnerByRoundRobin(members)
-    Debug.Log('Round Robin')
-    Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex))
+
+    if Options['Debug']['RoundRobin'] then Debug.Log('Round Robin') end
+    if Options['Debug']['RoundRobin'] then Debug.Log('iRoundRobinIndex: '..tostring(iRoundRobinIndex)) end
     if not aSquadRoster or not aSquadRoster.members then
 
-        Debug.Log('bInSquad: '..tostring(bInSquad))
-        Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader))
-        Debug.Warn('GetWinnerByRoundRobin, but no squad?')
+        if Options['Debug']['RoundRobin'] then Debug.Log('bInSquad: '..tostring(bInSquad)) end
+        if Options['Debug']['RoundRobin'] then Debug.Log('bIsSquadLeader: '..tostring(bIsSquadLeader)) end
+        if Options['Debug']['RoundRobin'] then Debug.Warn('GetWinnerByRoundRobin, but no squad?') end
     end
-    Debug.Log('#members: '..tostring(#members))
+    if Options['Debug']['RoundRobin'] then Debug.Log('#members: '..tostring(#members)) end
 
     local winner = ''
 
@@ -229,29 +231,27 @@ function Private.GetWinnerByRoundRobin(members)
     for num, member in ipairs(members) do
         if num == iRoundRobinIndex then
             winner = members[iRoundRobinIndex].name
-            Debug.Log('Squad Member '..tostring(num)..', '..tostring(winner)..' is the winner.')
+            if Options['Debug']['RoundRobin'] then Debug.Log('Squad Member '..tostring(num)..', '..tostring(winner)..' is the winner.') end
             break
         end
     end
 
     -- Setup for next winner
-    Debug.Log('Setting up for next winner, should index be reset?')
+    if Options['Debug']['RoundRobin'] then Debug.Log('Setting up for next winner, should index be reset?') end
     if iRoundRobinIndex + 1 > #members then
-        Debug.Log('true')
+        if Options['Debug']['RoundRobin'] then Debug.Log('true') end
         iRoundRobinIndex = 1
-        Debug.Log('Reseting iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+        if Options['Debug']['RoundRobin'] then Debug.Log('Reseting iRoundRobinIndex to '..tostring(iRoundRobinIndex)) end
     else
-        Debug.Log('false')
+        if Options['Debug']['RoundRobin'] then Debug.Log('false') end
         iRoundRobinIndex = iRoundRobinIndex + 1
-        Debug.Log('Increasing iRoundRobinIndex to '..tostring(iRoundRobinIndex))
+        if Options['Debug']['RoundRobin'] then Debug.Log('Increasing iRoundRobinIndex to '..tostring(iRoundRobinIndex)) end
     end
 
     return winner
 end
 
 function Private.NeedBeforeGreed(item, members, eligible)
-    Debug.Log('Need Before Greed')
-    Debug.Table({item=item, members=members, eligible=eligible})
 
     -- If there is already rolls data for this item, that's probably not good.
     if item.rollData then

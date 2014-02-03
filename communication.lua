@@ -264,7 +264,7 @@ function Communication.SendRollStart(item)
     local link = ChatLink.Endcap..ChatLinkId.RollStart..ChatLink.PairBreak..EncodeItemIdentity(item)..ChatLink.PairBreak..EncodeRollData(item.rollData)..ChatLink.PairBreak..ChatLink.Endcap
 
     -- Send
-    Private.SendLink(link)
+    Private.SendLink(link, 'RollStart')
 end
 
 function Communication.ReceiveRollStart(args)

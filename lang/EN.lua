@@ -283,6 +283,10 @@ LANG = {
     Debug_CommunicationExtra_Label                                                      =    "Log Communication Extra",
     Debug_CommunicationExtra_Tooltip                                                    =    "Extra Communication messages, spammy.\nLogs encoding and decoding of communication links more closely, helpful when errors are occuring in this department.",
 
+    Debug_RoundRobin_Label                                                      =    "Log Round Robin",
+    Debug_RoundRobin_Tooltip                                                    =    "Extra logging for Round Robin, spammy.\nDetailed logging of Round Robin logic, helpful if its giving out unexpected results.",
+
+
     Sounds_Enabled_Label                                                                =    "Enable Sounds",
     Sounds_Enabled_Tooltip                                                              =    "The addon will play sounds in order to notify you when certain events occur.",
     

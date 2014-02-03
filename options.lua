@@ -1106,6 +1106,7 @@ Options = {
         ['LogLootableCollection'] = false,
         ['LogOptionChange'] = false,
         ['CommunicationExtra'] = false,
+        ['RoundRobin'] = false,
     },
 }
 
@@ -1515,6 +1516,15 @@ function BuildInterfaceOptions_Front()
             label   = Lokii.GetString('Debug_CommunicationExtra_Label'),
             tooltip = Lokii.GetString('Debug_CommunicationExtra_Tooltip'),
         })
+
+        -- RoundRobin
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_RoundRobin',
+            default = Options['Debug']['RoundRobin'],
+            label   = Lokii.GetString('Debug_RoundRobin_Label'),
+            tooltip = Lokii.GetString('Debug_RoundRobin_Tooltip'),
+        })
+
 
 
     InterfaceOptions.StopGroup()
