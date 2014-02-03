@@ -298,6 +298,14 @@ function Tracker.Update()
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
             FRAME:Show(true)
+
+            -- Show/hide the Slider depending on the number of rows shown - hardcoded.
+            if SCROLLER:GetRowCount() > 3 then
+                SLIDER:Show(true)
+            else
+                SLIDER:Show(false)
+            end
+
         else
             --Debug.Log('No, hide the tracker')
             -- No, hide the tracker
