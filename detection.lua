@@ -30,7 +30,7 @@ function Detection.OnLootableEntity(args)
     -- Determine if it is a lootable entity
     if IsSquadLoot(targetInfo) and IsTrackableItem(itemInfo) then
 
-        Debug.Log('Detecting OnLootableEntity for '..tostring(itemInfo.name))
+        Debug.Log('Detecting OnLootableEntity for '..tostring(itemInfo.name)..' with entityId '..tostring(targetInfo.entityId)..' and position '..tostring(targetInfo.lootPos))
 
         -- If we're not tracking it already, track it!
         if not IsIdentified(args.entityId) then
@@ -82,11 +82,7 @@ function Detection.OnLootEvent(args)
             if loot ~= nil then
 
                 Debug.Log('Detecting OnLootEvent for '..loot.name..', '..tostring(loot.entityId)..', '..tostring(loot.identityId))
-                Debug.Log('It was assigned to '..tostring(loot.assignedTo)..' and is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
-
-                if Game.IsTargetAvailable(loot.entityId) then
-                    Debug.Log('OnLootEvent for '..loot.name..', '..tostring(loot.entityId)..' detected through '..tostring(args.event)..' but it is still an available Target')
-                end
+                Debug.Log('It was assigned to '..tostring(loot.assignedTo)..' and is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event)..'.\nGame.IsTargetAvailable('..tostring(loot.entityId)..') : '..tostring(Game.IsTargetAvailable(loot.entityId)))
 
                 -- If we care about this item, trigger relevant event
                 local eventArgs = {
