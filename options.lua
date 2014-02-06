@@ -6,6 +6,8 @@ Options = {
 
     ['Detection'] = {
         ['Enabled'] = true,
+        ['IdentifyDelay'] = 1,
+        ['DespawnCheckInterval'] = 20,
     },
 
     ['Distribution'] = {
@@ -1345,6 +1347,8 @@ function BuildInterfaceOptions()
 
     BuildInterfaceOptions_Front()
 
+    BuildInterfaceOptions_Detection()
+
     BuildInterfaceOptions_Distribution()
     
     BuildInterfaceOptions_Panels()
@@ -1528,6 +1532,39 @@ function BuildInterfaceOptions_Front()
 
 
     InterfaceOptions.StopGroup()
+end
+
+function BuildInterfaceOptions_Detection()
+
+    -- Identify Delay
+    InterfaceOptions.AddSlider({
+        id      = 'Detection_IdentifyDelay',
+        min     = 0,
+        max     = 10,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['Detection']['IdentifyDelay'],
+        label   = Lokii.GetString('Detection_IdentifyDelay_Label'),
+        tooltip = Lokii.GetString('Detection_IdentifyDelay_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Detection')
+        },
+    })
+
+    -- Despawn Check Interval
+    InterfaceOptions.AddSlider({
+        id      = 'Detection_DespawnCheckInterval',
+        min     = 0.5,
+        max     = 120,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['Detection']['DespawnCheckInterval'],
+        label   = Lokii.GetString('Detection_DespawnCheckInterval_Label'),
+        tooltip = Lokii.GetString('Detection_DespawnCheckInterval_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Detection')
+        },
+    })
 end
 
 function BuildInterfaceOptions_Distribution()

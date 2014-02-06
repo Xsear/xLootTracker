@@ -1290,8 +1290,7 @@ function Test(args)
 
             -- Identify Hack
             if not IsIdentified(entityId) then
-
-                Identify(entityId, targetInfo, itemInfo)
+                Identify({entityId = entityId, targetInfo = targetInfo, itemInfo = itemInfo})
             end
 
         end

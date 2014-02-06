@@ -244,6 +244,15 @@ LANG = {
     Core_VersionMessage_Label                                                           =    "Version Message",
     Core_VersionMessage_Tooltip                                                         =    "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
 
+
+    Detection_IdentifyDelay_Label                                                       =    "Tracking Delay",
+    Detection_IdentifyDelay_Tooltip                                                     =    "The number of seconds the addon should wait after detecting a new lootable item before it begins to track it. Lower values feel better, but make the addon more prone to glitches caused by unexpected behavior from the game client.",
+
+    Detection_DespawnCheckInterval_Label                                                =    "Despawn Check Interval",
+    Detection_DespawnCheckInterval_Tooltip                                              =    "How often the addon should check that a tracked item is still in the game world. This is only used to discover that an item has dissappeared through some other means than being looted. Lower values  will lead to speedier removal of incorrectly detected items, but are for correctly detected items fairly wasteful.",
+
+    Subtab_Detection                                                                    =    "Detection",
+
     Waypoints_Enabled_Label                                                             =    "Enable Waypoints",
     Waypoints_Enabled_Tooltip                                                           =    "The addon will attach Waypoints to tracked items, helping you quickly locate drops over larger distances.",
 
