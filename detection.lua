@@ -94,8 +94,8 @@ function Detection.OnLootEvent(args)
                 if loot.assignedTo == nil then
                     OnLootSnatched(eventArgs)
 
-                -- Else if the item was looted by the person it was assigned to
-                elseif namecompare(loot.assignedTo, args.lootedTo) then
+                -- Else if the item was looted by the person it was assigned to (or if item was assigned to anybody)
+                elseif loot.assignedTo == true or namecompare(loot.assignedTo, args.lootedTo) then
                     OnLootReceived(eventArgs)
 
                 -- Else it was a ninja
