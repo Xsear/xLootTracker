@@ -187,6 +187,7 @@ function OnSquadRosterUpdate()
         if Options['Debug']['Enabled'] and Options['Debug']['FakeOnSquadRoster'] then
             bInSquad = true
             Debug.Log('OnSquadRosterUpdate faking a squad roster')
+            local userInfo = Chat.GetLocalUserInfo() or {player_id = 'temp'}
             aSquadRoster = {
                 members = {
                     {
@@ -195,7 +196,7 @@ function OnSquadRosterUpdate()
                         entityId = Player.GetTargetId(),
                         battleframe = 'medic',
                         isTalking = false,
-                        chatId = Chat.GetLocalUserInfo().player_id,
+                        chatId = userInfo.player_id,
                         name=Player.GetInfo(),
                         tier = 2,
                         gender = 'male',
