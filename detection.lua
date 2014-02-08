@@ -29,7 +29,7 @@ function Detection.OnLootableEntity(args)
     -- Determine if it is a lootable entity
     if IsSquadLoot(targetInfo) and IsTrackableItem(itemInfo) then
 
-        Debug.Log('Detecting OnLootableEntity for '..tostring(itemInfo.name)..' with entityId '..tostring(targetInfo.entityId)..' and position '..tostring(targetInfo.lootPos))
+        Debug.Log('Detecting OnLootableEntity for '..tostring(itemInfo.name)..' with entityId '..tostring(args.entityId)..' and position '..tostring(targetInfo.lootPos))
 
         -- If we're not tracking it already, fire a callback with a 1 second delay to identify it, in order to ensure this is a valid entity.
         if not IsIdentified(args.entityId) then
@@ -151,6 +151,7 @@ function Identify(args)
         return
     end
 
+    -- Be sure it exists
     if tonumber(entityId) > 1000 and not Game.IsTargetAvailable(entityId) then 
         Debug.Warn('Identify called, but target is not available')
         return
