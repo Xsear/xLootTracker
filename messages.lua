@@ -1,10 +1,15 @@
-local ciSquadMessageLengthLimit = 255 -- Character limit of Squad chat messages. Used to split too long messages into multiple. One character reserved for alerts.
+
+Messages = {}
+
+local Private = {
+    ci_MessageLengthLimit = 255 -- Character limit of chat messages. Used to split too long messages into multiple. One character reserved for alerts.
+}
 
 --[[
-    SendChatMessage(channel, message, [alert])
+    Messages.SendChatMessage(channel, message, [alert])
     For normal chat messages.
 ]]--
-function SendChatMessage(channel, message, alert)
+function Messages.SendChatMessage(channel, message, alert)
     -- Requires that Core and Messages are Enabled
     if not (Options['Core']['Enabled'] and Options['Messages']['Enabled']) then return end
 
@@ -18,7 +23,7 @@ function SendChatMessage(channel, message, alert)
     local prefix = Options['Messages']['Prefix']
 
     -- Calculate message content length limit
-    local messageContentLengthLimit = ciSquadMessageLengthLimit - unicode.len(Options['Messages']['Prefix'])
+    local messageContentLengthLimit = Private.ci_MessageLengthLimit - unicode.len(Options['Messages']['Prefix'])
 
     -- If the message is to long to send in one go, attempt to split lines into multiple messages
     if unicode.len(message) > messageContentLengthLimit then
@@ -45,7 +50,7 @@ function SendChatMessage(channel, message, alert)
                 -- If adding the next line exceeds the character limit
                 if unicode.len(currentMessage..'\n'..line) > messageContentLengthLimit then
                     -- Send the current line and start a new message for the next line
-                    SendMessageToChat(channel, prefix..currentMessage, alert)
+                    Messages.SendMessageToChat(channel, prefix..currentMessage, alert)
                     currentMessage = line
 
                 -- Otherwise
@@ -56,22 +61,22 @@ function SendChatMessage(channel, message, alert)
             end
         end
         -- Make sure we send the last message
-        if currentMessage ~= '' then SendMessageToChat(channel, prefix..currentMessage, alert) end
+        if currentMessage ~= '' then Messages.SendMessageToChat(channel, prefix..currentMessage, alert) end
 
     -- Otherwise, send message normally
     else
-        SendMessageToChat(channel, prefix..message, alert)
+        Messages.SendMessageToChat(channel, prefix..message, alert)
     end
 end
 
 
-function SendFilteredMessage(channel, message, args)
-    message = RunMessageFilters(message, args)
-    SendChatMessage(channel, message)
+function Messages.SendFilteredMessage(channel, message, args)
+    message = Private.RunMessageFilters(message, args)
+    Messages.SendChatMessage(channel, message)
 end
 
 -- Function to handle the actual sending of messages
-function SendMessageToChat(channel, message, alert)
+function Messages.SendMessageToChat(channel, message, alert)
     channel = unicode.lower(channel)
     if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
     local alertprefix = ''
@@ -86,11 +91,11 @@ function SendMessageToChat(channel, message, alert)
 end
 
 --[[
-    MessageEvent(eventClass, eventName, eventArgs, [canSend])
+    Messages.MessageEvent(eventClass, eventName, eventArgs, [canSend])
     Generic function used to handle the process of sending messages in response to events, based on specific options.
     Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.
 --]]
-function MessageEvent(eventClass, eventName, eventArgs, canSend)
+function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
     canSend = canSend or bIsSquadLeader
     if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
@@ -99,13 +104,13 @@ function MessageEvent(eventClass, eventName, eventArgs, canSend)
 
             -- Add event message
             if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                message = RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
+                message = Private.RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
             end
 
             -- If we have rolls data, and OnRolls message is enabled, add
             if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] and Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Enabled'] then
 
-                local rollsMessage = RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Format'], eventArgs.rolls, eventArgs.item)
+                local rollsMessage = Private.RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Format'], eventArgs.rolls, eventArgs.item)
                 
                 if message == '' then
                     message = rollsMessage
@@ -116,7 +121,7 @@ function MessageEvent(eventClass, eventName, eventArgs, canSend)
 
             -- Send message if we have one
             if message ~= '' then
-                SendChatMessage(channelKey, message, eventArgs)
+                Messages.SendChatMessage(channelKey, message, eventArgs)
             end
         end
     end
@@ -126,20 +131,20 @@ end
     RollFormater
     Helper function to generate the proper format for multi-line roll messages
 ]]--
-function RollsFormater(format, rolls, item)
+function Private.RollsFormater(format, rolls, item)
     local t = {}
     for num, row in ipairs(rolls) do
-        t[#t+1] = RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
+        t[#t+1] = Private.RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
     end
     return table.concat(t, '\n')
 end
 
 --[[
-    RunMessageFilters(message, args)
+    Private.RunMessageFilters(message, args)
     Runs gsub filters for message formats.
     Pretty poorly implemented at the moment.
 ]]--
-function RunMessageFilters(message, args)
+function Private.RunMessageFilters(message, args)
 
     local undefinedValue = ''
     if Options['Debug']['Enabled'] and Options['Debug']['UndefinedFilterArguments'] then undefinedValue = 'NOT_SET' end

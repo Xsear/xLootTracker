@@ -111,7 +111,7 @@ function OnComponentLoad()
 
     -- Print version message
     if Component.GetSetting('Core_VersionMessage') then
-        SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion..' Loaded')
+        Messages.SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion..' Loaded')
     end
 end
 
@@ -258,24 +258,24 @@ end
 function OnSlash(args)
     -- Help / command list
     if args.text == '' or args.text == 'help' or args.text == '?' then
-        SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion)
-        SendChatMessage('system', 'Slash Commands')
-        SendChatMessage('system', '/slm [help|?]: Version message and command list.')
-        SendChatMessage('system', '/slm <enable|disable|toggle> : Turn addon on or off.')
-        SendChatMessage('system', '/slm <distribute|roll|next> : Distribute first rollable item.')
-        SendChatMessage('system', '/slm cancel : Cancel an ongoing roll.')
-        SendChatMessage('system', '/slm list : List rollable items.')
-        SendChatMessage('system', '/slm clear : Clear tracked items.')
+        Messages.SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion)
+        Messages.SendChatMessage('system', 'Slash Commands')
+        Messages.SendChatMessage('system', '/slm [help|?]: Version message and command list.')
+        Messages.SendChatMessage('system', '/slm <enable|disable|toggle> : Turn addon on or off.')
+        Messages.SendChatMessage('system', '/slm <distribute|roll|next> : Distribute first rollable item.')
+        Messages.SendChatMessage('system', '/slm cancel : Cancel an ongoing roll.')
+        Messages.SendChatMessage('system', '/slm list : List rollable items.')
+        Messages.SendChatMessage('system', '/slm clear : Clear tracked items.')
 
         if Options['Debug']['Enabled'] then
-            SendChatMessage('system', 'Debug Commands')
-            SendChatMessage('system', '/slm test [filter|any] [number|any] : Fake detection of items.')
-            SendChatMessage('system', '/slm fake : Fake roll declarations.')
-            SendChatMessage('system', '/slm stat : Log variables.')
-            SendChatMessage('system', '/slm assign <entityId> <playerName> : Assign an item to a player.')
-            SendChatMessage('system', '/slm <stfu|silence|no> : Forcefully disables Messages and Distribution.')
-            SendChatMessage('system', '/slm ut : Force Tracker.Update()')
-            SendChatMessage('system', '/slm us : Force OnSquadRosterUpdate()')
+            Messages.SendChatMessage('system', 'Debug Commands')
+            Messages.SendChatMessage('system', '/slm test [filter|any] [number|any] : Fake detection of items.')
+            Messages.SendChatMessage('system', '/slm fake : Fake roll declarations.')
+            Messages.SendChatMessage('system', '/slm stat : Log variables.')
+            Messages.SendChatMessage('system', '/slm assign <entityId> <playerName> : Assign an item to a player.')
+            Messages.SendChatMessage('system', '/slm <stfu|silence|no> : Forcefully disables Messages and Distribution.')
+            Messages.SendChatMessage('system', '/slm ut : Force Tracker.Update()')
+            Messages.SendChatMessage('system', '/slm us : Force OnSquadRosterUpdate()')
         end
 
     -- Toggle
@@ -314,7 +314,7 @@ function OnSlash(args)
     elseif args.text == 'no' or args.text == 'stfu' or args.text == 'silence' then
         Options['Messages']['Enabled'] = false
         Options['Distribution']['Enabled'] = false
-        SendChatMessage('system', 'Forcefully disabled Messages and Distribution. Reload the UI to reset.')
+        Messages.SendChatMessage('system', 'Forcefully disabled Messages and Distribution. Reload the UI to reset.')
 
     elseif args.text == 'ut' then
         Tracker.Update()
@@ -460,7 +460,7 @@ function OnIdentify(args)
     end
 
     -- Messages
-    MessageEvent('Detection', 'OnIdentify', args)
+    Messages.MessageEvent('Detection', 'OnIdentify', args)
 
     -- Squad Leader only stuff
     if bIsSquadLeader then
@@ -506,7 +506,7 @@ function OnLootDespawn(args)
     Tracker.Update() -- Fixme: Is this call needed
 
     -- Messages
-    MessageEvent('Detection', 'OnLootDespawn', args)
+    Messages.MessageEvent('Detection', 'OnLootDespawn', args)
 end
 
 --[[
@@ -517,7 +517,7 @@ function OnLootReceived(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Detection', 'OnLootReceived', args)
+    Messages.MessageEvent('Detection', 'OnLootReceived', args)
 end
 
 --[[
@@ -528,7 +528,7 @@ function OnLootStolen(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Detection', 'OnLootStolen', args)
+    Messages.MessageEvent('Detection', 'OnLootStolen', args)
 end
 
 --[[
@@ -539,7 +539,7 @@ function OnLootSnatched(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Detection', 'OnLootSnatched', args)
+    Messages.MessageEvent('Detection', 'OnLootSnatched', args)
 end
 
 --[[
@@ -550,7 +550,7 @@ function OnLootClaimed(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Detection', 'OnLootClaimed', args)
+    Messages.MessageEvent('Detection', 'OnLootClaimed', args)
 end
 
 --[[
@@ -561,7 +561,7 @@ function OnDistributeItem(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnDistributeItem', args)
+    Messages.MessageEvent('Distribution', 'OnDistributeItem', args)
 end
 
 --[[
@@ -604,11 +604,11 @@ function OnAssignItem(args)
 
     -- Determine which Message to use
     if args.roll then
-        MessageEvent('Distribution', 'OnAssignItemByRoll', args)
+        Messages.MessageEvent('Distribution', 'OnAssignItemByRoll', args)
     elseif args.assignedTo == true then
-        MessageEvent('Distribution', 'OnAssignItemFreeForAll', args)
+        Messages.MessageEvent('Distribution', 'OnAssignItemFreeForAll', args)
     else
-        MessageEvent('Distribution', 'OnAssignItem', args)
+        Messages.MessageEvent('Distribution', 'OnAssignItem', args)
     end
 
 end
@@ -621,7 +621,7 @@ function OnAcceptingRolls(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnAcceptingRolls', args)
+    Messages.MessageEvent('Distribution', 'OnAcceptingRolls', args)
 end
 
 --[[
@@ -632,7 +632,7 @@ function OnRollAccept(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnRollAccept', args)
+    Messages.MessageEvent('Distribution', 'OnRollAccept', args)
 end
 
 --[[
@@ -643,7 +643,7 @@ function OnRollChange(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnRollChange', args)
+    Messages.MessageEvent('Distribution', 'OnRollChange', args)
 end
 
 --[[
@@ -654,7 +654,7 @@ function OnRollBusy(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnRollBusy', args)
+    Messages.MessageEvent('Distribution', 'OnRollBusy', args)
 end
 
 --[[
@@ -665,7 +665,7 @@ function OnRollNobody(args)
     if not Options['Core']['Enabled'] then return end
 
     -- Messages
-    MessageEvent('Distribution', 'OnRollNobody', args)
+    Messages.MessageEvent('Distribution', 'OnRollNobody', args)
 end
 
 
@@ -1069,13 +1069,13 @@ function ListUnAssigned()
 
         if unAssignedLoot ~= nil then
             for _, item in ipairs(unAssignedLoot) do
-                SendFilteredMessage('system', tostring(item.easyId)..': %i E:('..tostring(item.entityId)..') I:('..tostring(item.identityId)..')', {item=item})
+                Messages.SendFilteredMessage('system', tostring(item.easyId)..': %i E:('..tostring(item.entityId)..') I:('..tostring(item.identityId)..')', {item=item})
             end
         else
-            SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
+            Messages.SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoRollableForDistribute'))
         end
     else
-        SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
+        Messages.SendChatMessage('system', Lokii.GetString('UI_Messages_System_NoIdentifiedForDistribute'))
     end
 end
 
@@ -1125,7 +1125,7 @@ end
     Any other value sets Enabled to true
 ]]--
 function ToggleEnabled(cmd)
-    SendChatMessage('system', 'Toggle')
+    Messages.SendChatMessage('system', 'Toggle')
     local newStatus = true
 
     if cmd == 'disable' then
@@ -1142,7 +1142,7 @@ end
     Clears the aIdentifiedLoot list.
 ]]--
 function ClearIdentified()
-    SendChatMessage('system', 'Clear')
+    Messages.SendChatMessage('system', 'Clear')
 
     local itemsToRemove = {}
     for num, item in ipairs(aIdentifiedLoot) do 
@@ -1166,7 +1166,7 @@ end
 
 function ActionRollDecision(args)
     System.PlaySound('Play_UI_Beep_06')
-    SendFilteredMessage('system', 'Declaring %t on %i', args)
+    Messages.SendFilteredMessage('system', 'Declaring %t on %i', args)
 
     -- If we are the squad leader, then we must manually call RollDecision since we ignore our own communication messages
     if bIsSquadLeader then
@@ -1193,7 +1193,7 @@ end
 ]]--
 function Test(args)
 
-    SendChatMessage('system', 'Test')
+    Messages.SendChatMessage('system', 'Test')
 
     Debug.Log('Test')
     Debug.Log('args[1]: '..tostring(args[1]))
@@ -1305,7 +1305,7 @@ function Test(args)
 end
 
 function Fake(args)
-    SendChatMessage('system', 'Fake')
+    Messages.SendChatMessage('system', 'Fake')
 
     Debug.Log('Fake')
 
@@ -1337,7 +1337,7 @@ function Fake(args)
 end
 
 function Stat(args)
-    SendChatMessage('system', 'Stat')
+    Messages.SendChatMessage('system', 'Stat')
 
     Debug.Log('Stat')
 

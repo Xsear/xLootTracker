@@ -173,7 +173,7 @@ function Communication.ReceiveAssign(args)
 
             -- Because it matters yo
             if IsAssigned(localItem.entityId) then
-                SendFilteredMessage('system', 'Squad Leader is reassigning %i from %a to %n', {item=localItem, assignedTo = localItem.assignedTo, playerName = tostring(assignTarget)})
+                Messages.SendFilteredMessage('system', 'Squad Leader is reassigning %i from %a to %n', {item=localItem, assignedTo = localItem.assignedTo, playerName = tostring(assignTarget)})
             end
 
             -- Assign
@@ -570,7 +570,7 @@ function Private.SendLink(link, linkKey)
     Debug.Log('Sending '..tostring(linkKey)..' link: '..tostring(link))
 
     -- If all is well, send link
-    SendMessageToChat('squad', link, false)
+    Messages.SendMessageToChat('squad', link, false)
 end
 
 function Private.CanReceive(linkKey)

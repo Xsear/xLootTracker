@@ -13,7 +13,7 @@ function Distribution.DistributeItem(item, distributionMode, weightingMode)
         return
     elseif not bInSquad then
         Debug.Warn('DistributeItem but bInSquad is false.')
-        SendFilteredMessage('system', 'Unable to distribute %i. We are not in a squad at the moment.', {item=item})
+        Messages.SendFilteredMessage('system', 'Unable to distribute %i. We are not in a squad at the moment.', {item=item})
         return
     elseif not aSquadRoster or not aSquadRoster.members then
         Debug.Warn('DistributeItem but no squad members.')
@@ -310,7 +310,7 @@ end
 ]]--
 function RollTimeout(args)
     if args.item.identityId and RollTracker.IsBeingRolled(args.item.identityId) then
-        SendFilteredMessage('system', 'RollTimeout for %i', {item=args.item})
+        Messages.SendFilteredMessage('system', 'RollTimeout for %i', {item=args.item})
         RollFinish({item=args.item})
     end
 end
@@ -322,7 +322,7 @@ end
 
     args.item.identityId
     [args.reason]
-    args.item > SendFilteredMessage
+    args.item > Messages.SendFilteredMessage
     args > RollCleanup
 ]]--
 function RollCancel(args)
@@ -344,7 +344,7 @@ function RollCancel(args)
             message = message..'\nReason: '..args.reason
         end
 
-        SendFilteredMessage('system', message, {item=args.item})
+        Messages.SendFilteredMessage('system', message, {item=args.item})
         RollCleanup(args)
     end
 end
