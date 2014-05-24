@@ -1,10 +1,13 @@
-
-
-
 Distribution = {}
-local Private = {}
 
+local Private = {
+    i_RoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
+}
 
+function Distribution.SquadMemberCountChanged()
+    Private.i_RoundRobinIndex = 1
+    if Options['Debug']['RoundRobin'] then Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex)) end
+end
 
 function Distribution.DistributeItem(item, distributionMode, weightingMode)
     -- We must have an item to distribute!

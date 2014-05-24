@@ -39,7 +39,6 @@ bTooltipActive = false -- Whether addon is currently utilizing the Tooltip. Upda
 
 mCurrentlyRolling = false -- Reference to an item in the aIdentifiedLoot table when that item is being rolled, false when no item is being rolled.
 
-iRoundRobinIndex = 1 -- Used to traverse the squad roster when distributing loot in round-robin mode
 
 -- LK Objects
 require './object/lootpanel' -- Loot Panel
@@ -174,10 +173,9 @@ function OnSquadRosterUpdate()
             bIsSquadLeader = IsSquadLeader(Player.GetInfo())
         end
 
-        -- Reset Round Robin if members changed
+        -- Update Distribution if number of members in squad changed
         if previousRosterMemberCount ~= #aSquadRoster.members then
-            iRoundRobinIndex = 1
-            if Options['Debug']['RoundRobin'] then Debug.Log('OnSquadRosterUpdate resetting iRoundRobinIndex to '..tostring(iRoundRobinIndex)) end
+            Distribution.SquadMemberCountChanged()
         end
 
 

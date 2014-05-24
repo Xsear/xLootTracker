@@ -1,4 +1,3 @@
-
 Messages = {}
 
 local Private = {
