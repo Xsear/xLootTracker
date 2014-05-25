@@ -1,10 +1,8 @@
-local ciLootDespawn = 20 -- Seconds into the future that the callback that checks if an item entity is still around is set to. Used to remove despawned or otherwise glitched out items
-
-local identityCounter = 1
-
-
 Detection = {}
-local Private = {}
+
+local Private = {
+    identityCounter = 1
+}
 
 
 --[[
@@ -217,8 +215,8 @@ function Identify(args)
         Debug.Log('Generating identityId')
         local player = Player.GetInfo()
         local time = tonumber(System.GetLocalUnixTime())
-        loot.identityId = tostring(player)..tostring(time)..tostring(identityCounter)
-        identityCounter = identityCounter + 1
+        loot.identityId = tostring(player)..tostring(time)..tostring(Private.identityCounter)
+        Private.identityCounter = Private.identityCounter + 1
         Debug.Log('Identifying '..tostring(loot.name)..', '..tostring(loot.entityId)..', '..tostring(loot.identityId))
         Communication.SendItemIdentity(loot)
 
