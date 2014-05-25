@@ -1,3 +1,8 @@
+
+-- Fixme: Some of these don't need to be global, though some do. >_<
+-- do this better
+
+
 uiSounds = xSounds.GetSounds()
 
 TriggerModeOptions = {
