@@ -1,5 +1,5 @@
 \Ignore
 \Makefile
 \.git\
-*.sublime-project
-*.sublime-workspace
+\xslm.sublime-project
+\xslm.sublime-workspace
