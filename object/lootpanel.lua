@@ -1,6 +1,7 @@
 LOOTPANEL = 
 {
-	{	Name 		= "pos",
+	{	
+		Name 		= "pos",
 		Id			= "Anchor",
 		Scale		= 1,
 		Translation	= {x=0,y=0,z=0},
