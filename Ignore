@@ -1,3 +1,5 @@
 \Ignore
 \Makefile
 \.git\
+*.sublime-project
+*.sublime-workspace
