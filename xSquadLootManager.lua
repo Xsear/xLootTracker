@@ -339,6 +339,12 @@ function OnEntityAvailable(args)
     end
 end
 
+function OnEntityLost(args)
+    if IsIdentified(args.entityId) then
+        Debug.Warn('OnEntityLost fired on an identified entity')
+    end
+end
+
 --[[
     OnLootPickup(args)
 

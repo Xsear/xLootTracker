@@ -19,6 +19,7 @@
         <Event name="MY_HIDE_HUD_REQUEST"          bind="OnHideHudRequest"    />
         <Event name="ON_INPUT_MODE_CHANGED"        bind="OnInputModeChanged"  />
         <Event name="ON_UI_ENTITY_AVAILABLE"       bind="OnEntityAvailable"   />
+        <Event name="ON_UI_ENTITY_LOST"            bind="OnEntityLost"   />
         <Event name="ON_SQUAD_ROSTER_UPDATE"       bind="OnSquadRosterUpdate" />
         <Event name="ON_LOOT_COLLECTED"            bind="OnLootCollected"     />
         <Event name="ON_LOOT_PICKUP"               bind="OnLootPickup"        />
