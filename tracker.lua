@@ -1,425 +1,535 @@
-
-
 Tracker = {}
 
+local Private = {
+    trackedLoot = {},
+    identityByEntity = {},
 
--- Frames
-local FRAME = Component.GetFrame('Tracker')
-local SLIDER = FRAME:GetChild('Slider')
-local LIST = FRAME:GetChild('List')
-local SCROLLER = RowScroller.Create(LIST)
+    lootEventHistory = {},
 
-local TOOLTIP_PROG = FRAME:GetChild('TooltipProg')
-local TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
+    CYCLE_Refresh = nil,
+    CYCLE_LootEventHistory = nil,
+}
 
--- Constants
-local cTrackerButtonSize = 25 -- Height and Width of the Need/Greed/Pass buttons in the Tracker.
+-- Todo: Make option
+TrackerRefreshInterval = 10
+TrackerLootEventHistoryInterval = 2
+TrackerLootEventHistoryLife = 3 * 1000
+TrackerTrackDelay = 0.5
+TrackerRemoveDelay = 3
 
 
-function Tracker.GetFrame()
-    return FRAME
-end
-
+--[[
+    Tracker.Setup()
+    Performs OnComponentLoad tasks.
+    Initiates the Tracker.Refresh callback cycle.
+--]]
 function Tracker.Setup()
-    -- Scroller
-    SCROLLER:SetSlider(SLIDER)
-    SCROLLER:SetSliderMargin(5, 5)
-    SCROLLER:SetSpacing(8)
-    SCROLLER:ShowSlider(true)
-
-    -- Tooltip
-    TOOLTIP_ITEM.GROUP:Show(false)
-
-    -- Force Update
-    Tracker.Update()
+    --Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
+    --Private.CYCLE_Refresh:Run(TrackerRefreshInterval)
+    Private.CYCLE_LootEventHistory = Callback2.CreateCycle(Private.LootEventHistoryCleanup)
+    Private.CYCLE_LootEventHistory:Run(TrackerLootEventHistoryInterval)
 end
 
-function Tracker.Update()
-    -- Debug.Log('UpdateTracker')
+function Private.LootEventHistoryCleanup()
 
-    -- Only update and show tracker if enabled
-    if Options['Tracker']['Enabled'] then
-       
-        -- Hide tooltip if is currently being displayed
-        -- Fixme: What...?
-        if bTooltipActive then
-            Tooltip.Show(false)
-            TOOLTIP_PROG:Show(false) -- No need to display tooltip info now.
-            TOOLTIP_ITEM.GROUP:Show(false)
-        end
+    if not _table.empty(Private.lootEventHistory) then
+        
+        local currentTime = tonumber(System.GetClientTime())
+        
+        for itemTypeId, events in pairs(Private.lootEventHistory) do
+            -- Go trough events if not empty
+            if not _table.empty(events) then
 
-        -- Clear
-        SCROLLER:Reset() 
+                local i=1
+                while i <= #events do
+                    local event = events[i]
 
-        -- Populate
-        if not _table.empty(aIdentifiedLoot) then
-
-            for num, item in ipairs(aIdentifiedLoot) do
-
-                if ItemPassesFilter(item, Options['Tracker']) then
-
-                    -- Create widget
-                    local ENTRY = Component.CreateWidget('Tracker_List_Entry', LIST)
-                    local ENTRY_PLATE = ENTRY:GetChild('plate')
-                    local ENTRY_ITEM = ENTRY:GetChild('item')
-
-                    -- Set dimensions
-                    ENTRY:SetDims('top:0; left:0; width:100%; height:32');
-
-                    -- Set the plate tag
-                    ENTRY_PLATE:SetTag(tostring(item.entityId))
-                    
-                    -- Tooltip
-                    if Options['Tracker']['Tooltip']['Enabled'] then
-                        ENTRY_PLATE:BindEvent('OnMouseEnter', function(args)
-
-                            if Options['Tracker']['Tooltip']['Mode'] == TrackerTooltipModes.ProgressionStyle then
-                                TOOLTIP_PROG:Show(true)
-                            else
-                                TOOLTIP_ITEM.GROUP:Show(true)
-                            end
-                            Tooltip.Show(Tracker.UpdateTooltip(args.widget:GetTag()))
-                            bTooltipActive = true
-                        end)
-                        ENTRY_PLATE:BindEvent('OnMouseLeave', function(args)
-                            TOOLTIP_PROG:Show(false)
-                            TOOLTIP_ITEM.GROUP:Show(false)
-                            Tooltip.Show(false)
-                            bTooltipActive = false
-                        end)
-                    end
-                        
-                    -- Colours
-                    ENTRY_PLATE:GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY_PLATE:GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY_ITEM:GetChild('outer'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-                    ENTRY_ITEM:GetChild('shade'):SetParam('tint', LIB_ITEMS.GetResourceQualityColor(item.quality))
-
-                    -- Item Backplate
-                    ENTRY_ITEM:GetChild('backplate'):SetRegion(tostring(item.itemInfo.rarity))
-
-                    -- Item Icon
-                    ENTRY_ITEM:GetChild('itemIcon'):SetUrl(item.itemInfo.web_icon)
-
-                    -- Left
-                    if item.rollData then 
-
-                        -- If Ongoing roll then Setup Buttons
-                        if item.assignedTo == nil then
-
-                            -- Need
-                            BUTTON_NEED = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
-                            BUTTON_NEED:AddHandler('OnMouseEnter', function() Tooltip.Show('Need') bTooltipActive = true end)
-                            BUTTON_NEED:AddHandler('OnMouseLeave', function() Tooltip.Show(false) bTooltipActive = false end)
-
-                            BUTTON_NEED_ICON = MultiArt.Create(BUTTON_NEED:GetWidget())
-                            --BUTTON_NEED_ICON:SetTexture('TrackerIcons')
-                            --BUTTON_NEED_ICON:SetRegion('Need')
-
-                            BUTTON_NEED_ICON:SetTexture('icons')
-                            BUTTON_NEED_ICON:SetRegion('battleframe')
-
-
-                            BUTTON_NEED:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-
-
-                            -- Greed
-                            BUTTON_GREED = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
-                            BUTTON_GREED:AddHandler('OnMouseEnter', function() Tooltip.Show('Greed') bTooltipActive = true end)
-                            BUTTON_GREED:AddHandler('OnMouseLeave', function() Tooltip.Show(false) bTooltipActive = false end)
-
-                            BUTTON_GREED_ICON = MultiArt.Create(BUTTON_GREED:GetWidget())
-                            --BUTTON_GREED_ICON:SetTexture('TrackerIcons')
-                            --BUTTON_GREED_ICON:SetRegion('Greed')
-
-                            BUTTON_GREED_ICON:SetTexture('icons')
-                            BUTTON_GREED_ICON:SetRegion('crystite')
-
-                            BUTTON_GREED:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-
-                            -- Pass
-                            BUTTON_PASS = Button.Create(ENTRY:GetChild('leftBar'):GetChild('buttons'))
-                            BUTTON_PASS:AddHandler('OnMouseEnter', function() Tooltip.Show('Pass') bTooltipActive = true end)
-                            BUTTON_PASS:AddHandler('OnMouseLeave', function() Tooltip.Show(false) bTooltipActive = false end)
-
-                            BUTTON_PASS_ICON = MultiArt.Create(BUTTON_PASS:GetWidget())
-                            --BUTTON_PASS_ICON:SetTexture('TrackerIcons')
-                            --BUTTON_PASS_ICON:SetRegion('Pass')
-
-                            BUTTON_PASS_ICON:SetTexture('icons')
-                            BUTTON_PASS_ICON:SetRegion('security')
-
-                            BUTTON_PASS:GetWidget():SetDims('width:'..cTrackerButtonSize..'; height:'..cTrackerButtonSize..';')
-                            
-
-                            local haveRolled = false
-                            for _, member in ipairs(item.rollData) do
-                                if namecompare(Player.GetInfo(), member.name) then
-                                    if member.rollType then
-                                        Debug.Log('member.rollType == '..tostring(member.rollType))
-                                        haveRolled = true
-                                    end
-                                end
-                            end
-
-                            if  haveRolled then
-                                BUTTON_NEED:Disable(true)
-                                BUTTON_GREED:Disable(true)
-                                BUTTON_PASS:Disable(true)
-                            else
-                                BUTTON_NEED:Bind(function(args) 
-                                    ActionRollDecision({
-                                                       item = item,
-                                                       rollType = RollType.Need,
-                                                       })
-
-                                end, {button = "Need", item = item})
-
-                                BUTTON_GREED:Bind(function(args) 
-                                    ActionRollDecision({
-                                                       item = item,
-                                                       rollType = RollType.Greed,
-                                                       })
-                                end, {button = "Greed", item = item})
-
-                                BUTTON_PASS:Bind(function(args) 
-                                    ActionRollDecision({
-                                                       item = item,
-                                                       rollType = RollType.Pass,
-                                                       })
-                                end, {button = "Pass", item = item})
-                            end
-                            
-                        end
-
-                    end
-
-                    
-                    -- Setup Assigned To text
-                    if item.assignedTo == nil then
-                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
-                    elseif item.assignedTo == AssignedTo.FreeForAll then
-                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
+                    -- If has lived longer than life, remove
+                    if (currentTime - event.occuredAt > TrackerLootEventHistoryLife) then
+                        table.remove(events, i)
                     else
-                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(tostring(item.assignedTo))
+                        i = i + 1
                     end
+                end
 
-                    -- Right
-                    -- Item Name text
-                    ENTRY:GetChild('itemName'):SetText(itemPrefixShortener(FixItemNameTag(item.name, item.quality)))
-
-                    -- Determine what to display
-                    -- State Dependant Stuff
-                    -- Left Side
-                    if item.assignedTo == nil then
-                        ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(true)
-                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(false)
-                    else
-                        ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(false)
-                        ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(true)
-                    end
-
-                    -- Right Side
-                    ENTRY:GetChild('itemName'):Show(true)
-
-
-                    -- Options Dependant Stuff
-                    if Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.Decorated then
-                        ENTRY_PLATE:GetChild('bg'):Show(true)
-                        ENTRY_PLATE:GetChild('outer'):Show(true)
-                        ENTRY_PLATE:GetChild('shade'):Show(true)
-
-                    elseif Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.Simple then
-                        ENTRY_PLATE:GetChild('bg'):Show(true)
-                        ENTRY_PLATE:GetChild('outer'):Show(false)
-                        ENTRY_PLATE:GetChild('shade'):Show(false)
-                    
-                    elseif Options['Tracker']['PlateMode'] == TrackerPlateModeOptions.None then
-                        ENTRY_PLATE:GetChild('bg'):Show(false)
-                        ENTRY_PLATE:GetChild('outer'):Show(false)
-                        ENTRY_PLATE:GetChild('shade'):Show(false)
-                    end
-
-                    if Options['Tracker']['IconMode'] == TrackerIconModeOptions.Decorated then
-                        
-                        ENTRY_ITEM:GetChild('bg'):Show(true)
-                        ENTRY_ITEM:GetChild('backplate'):Show(true)
-                        ENTRY_ITEM:GetChild('outer'):Show(true)
-                        ENTRY_ITEM:GetChild('shade'):Show(true)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
-
-
-                    elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.Simple then
-                        
-                        ENTRY_ITEM:GetChild('bg'):Show(true)
-                        ENTRY_ITEM:GetChild('backplate'):Show(true)
-                        ENTRY_ITEM:GetChild('outer'):Show(false)
-                        ENTRY_ITEM:GetChild('shade'):Show(false)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
-                    
-                    elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.IconOnly then                   
-
-                        ENTRY_ITEM:GetChild('bg'):Show(false)
-                        ENTRY_ITEM:GetChild('backplate'):Show(false)
-                        ENTRY_ITEM:GetChild('outer'):Show(false)
-                        ENTRY_ITEM:GetChild('shade'):Show(false)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
-
-                    elseif Options['Tracker']['IconMode'] == TrackerIconModeOptions.None then
-
-                        ENTRY_ITEM:GetChild('bg'):Show(false)
-                        ENTRY_ITEM:GetChild('backplate'):Show(false)
-                        ENTRY_ITEM:GetChild('outer'):Show(false)
-                        ENTRY_ITEM:GetChild('shade'):Show(false)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(false)
-                        
-                        --ENTRY_PLATE:SetDims('left:0')
-                    end
-
-                    local ROW = SCROLLER:AddRow(ENTRY)
-                end -- item passes filter
-            end -- for loop
-        else -- no identified items
-            -- Clear?
-        end
-
-
-        -- Should we display the tracker?
-        --Debug.Log('Should we display the Tracker?')
-        --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
-        --Debug.Log('bHUD == '..tostring(bHUD))
-        --Debug.Log('bCursor == '..tostring(bCursor))
-        if SCROLLER:GetRowCount() > 0 and (
-               (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.Always)
-            or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.HUD and bHUD)
-            or (Options['Tracker']['Visibility'] == TrackerVisibilityOptions.MouseMode and bCursor and bHUD)
-            )
-        then
-            --Debug.Log('Yes, display the tracker')
-            -- Yes, display tracker
-            FRAME:Show(true)
-
-            -- Show/hide the Slider depending on the number of rows shown - hardcoded.
-            if SCROLLER:GetRowCount() > 3 then
-                SLIDER:Show(true)
+            -- Remove table if empty
             else
-                SLIDER:Show(false)
+                Private.lootEventHistory[itemTypeId] = nil
             end
 
-        else
-            --Debug.Log('No, hide the tracker')
-            -- No, hide the tracker
-            FRAME:Show(false)
-
-            -- Ensure no tooltip is displayed
-            TOOLTIP_PROG:Show(false)
-            TOOLTIP_ITEM.GROUP:Show(false)
-            Tooltip.Show(false)
-            bTooltipActive = false
         end
-
-    -- Tracker not enabled, so do nothing but make sure it's hidden.
-    else
-        --Debug.Log('Tracker not enabled, hide')
-        -- Hide tracker
-        FRAME:Show(false)
-
-        -- Ensure no tooltip is displayed
-        TOOLTIP_PROG:Show(false)
-        TOOLTIP_ITEM.GROUP:Show(false)
-        Tooltip.Show(false)
-        bTooltipActive = false
     end
 end
 
-function Tracker.UpdateTooltip(entityId)
-    -- Get info
-    Debug.Log('UpdateTrackerTooltip called with entityId'..tostring(entityId), 'Calling GetIdentifiedItem with '..tostring(entityId))
-    local item = GetIdentifiedItem(entityId)
-    if item == nil or item == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
 
-    -- Progression Style Tooltip
-    if Options['Tracker']['Tooltip']['Mode'] == TrackerTooltipModes.ProgressionStyle then
-        -- Refs
-        local TOOLTIP_PROG_HEADER = TOOLTIP_PROG:GetChild("header")
-        local TOOLTIP_PROG_ICON = TOOLTIP_PROG:GetChild("header.icon")
-        local TOOLTIP_PROG_NAME = TOOLTIP_PROG:GetChild("header.name")
-        local TOOLTIP_PROG_SUBNAME = TOOLTIP_PROG:GetChild("header.subname")
-        local TOOLTIP_PROG_YIELDS = TOOLTIP_PROG:GetChild("yields")
-        local TOOLTIP_PROG_REQS = TOOLTIP_PROG:GetChild("requirements")
-        local TOOLTIP_PROG_DESC = TOOLTIP_PROG:GetChild("desc")
 
-        -- Icon
-        if item.itemInfo.web_icon then
-            TOOLTIP_PROG_ICON:SetUrl(item.itemInfo.web_icon)
-            TOOLTIP_PROG_ICON:Show(true)
-        else
-            TOOLTIP_PROG_ICON:Show(false)
+--[[
+    Tracker.GetLoot()
+    Gives out the table of tracked loot. Please don't change it, everyone else D':
+--]]
+function Tracker.GetLoot()
+    return Private.trackedLoot
+end
+
+function Tracker.GetAvailableLoot()
+    local result = {}
+    for id, loot in pairs(Private.trackedLoot) do
+        if loot:GetState() == LootState.Available then
+            result[#result + 1] = loot
         end
-        
-        -- Name
-        TOOLTIP_PROG_NAME:SetText(FixItemNameTag(item.itemInfo.name, item.quality))
-        TOOLTIP_PROG_NAME:SetTextColor(LIB_ITEMS.GetResourceQualityColor(item.quality))
+    end
+    return result
+end
 
 
-        -- Fixme: This should be "if itemtype == equipment items" or something.
-        -- Equipment Items
-        if item.itemInfo.type ~= 'crafting_component' then
+--[[
+    Tracker.Refresh()
+    Updates all tracked items.
+--]]
+function Tracker.Refresh()
+    if not _table.empty(Private.trackedLoot) then
+        local refresh = Tracker.Update
+        for id, loot in pairs(Private.trackedLoot) do
+            refresh(loot)
+        end
+    end
+end
 
-            -- Stats
-            xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TOOLTIP_PROG_YIELDS)
+--[[
+    Tracker.OnLootableEntity(args)
+    Checks if the entity should be added to Tracker, and does so if deemed appropriate.
+    Call when an OnEntityAvailable with type 'loot' has occured.
+--]]
+function Tracker.OnEntityAvailable(args)
+    -- Do we have an entityId?
+    if not args.entityId then
+        return -- You were useless!
+    -- Is it loot?
+    elseif args.type ~= "loot" then
+        return -- Nobody cares!
+    -- Are we tracking this?
+    elseif Tracker.IsTrackedEntity(args.entityId) then
+        return -- This is old news!
+    end
 
-            -- Requirements
-            xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TOOLTIP_PROG_REQS)
+    -- Sweet, a new entity. Track it!
+    Callback2.FireAndForget(Tracker.Track, args, Options['Tracker']['TrackDelay'])
+end
 
-            -- Description
-            TOOLTIP_PROG_DESC:SetText(item.itemInfo.description)
 
-        -- Crafting Components
-        else
-            -- Stats
-            xItemFormatting.PrintLines(xItemFormatting.getStatLines(item.itemInfo), TOOLTIP_PROG_YIELDS)
+function Tracker.OnEntityLost(args)
+    --Debug.Log("Tracker.OnEntityLost on entityId " .. tostring(args.entityId))
+    -- Do we have an entityId?
+    if not args.entityId then
+        return -- Nothing we could do!
 
-            -- Requirements
-            xItemFormatting.PrintLines(xItemFormatting.getRequirementLines(item.itemInfo), TOOLTIP_PROG_REQS)
+    -- Are we tracking this?
+    elseif not Tracker.IsTrackedEntity(args.entityId) then
+        return -- Not one of ours  
+    end
 
-            -- Description
-            for key, value in pairs(data_CraftingComponents) do
-                if value.itemTypeId == item.itemInfo.itemTypeId then
-                    TOOLTIP_PROG_DESC:SetText(value.description)
-                    break
+
+    -- Okay, let's see what we know about this
+    local loot = Tracker.GetLootByEntityId(args.entityId)
+    
+    Debug.Log('Tracker.OnEntityLost for '..loot:ToString())
+
+    -- Do we have any loot events for this kinda item?
+    if Private.lootEventHistory[loot:GetTypeId()] and #Private.lootEventHistory[loot:GetTypeId()] > 0 then
+
+        -- Ooh I like this. We'll assume they picked up the oldest one we've got.
+        local event = nil
+        for i, e in ipairs(Private.lootEventHistory[loot:GetTypeId()]) do
+            if not event or e.occuredAt < event.occuredAt then
+                event = e
+            end
+        end
+
+        if event == nil then
+            Debug.Error('Tracker.OnEntityLost somehow failed to find an event after counting a positive number of events')
+        end
+
+        -- Get that shit.
+        Debug.Log('Tracker.OnEntityLost found a previous loot event that matches! Assuming looted by '..tostring(event.lootedBy)..' and to '..tostring(event.lootedTo)..', detected through '..tostring(event.event))
+        Private.SetLooted({loot = loot, lootedTo = event.lootedTo, lootedBy = event.lootedBy})
+    end
+
+    -- Since we've lost the entity, we gotta update.
+    Callback2.FireAndForget(Tracker.Update, loot:GetId(), 0)
+end
+
+
+
+
+
+--[[
+    Tracker.OnLootEvent(args)
+    When an OnLootCollected or OnLootPickup has occured.
+
+    Determines whether some form of OnLoot event should occur.    
+]]--
+function Tracker.OnLootEvent(args)
+    -- Requires args.itemTypeId, otherwise we can't get item info
+    if not args.itemTypeId then return end
+
+    -- Get itemInfo
+    local itemInfo = Game.GetItemInfoByType(args.itemTypeId)
+
+    -- Is it loot that we care about?
+    if itemInfo and IsTrackableItem(itemInfo) then
+
+        -- Debug
+        if Options['Debug']['LogLootableCollection'] then Debug.Table('Tracker.OnLootEvent', {itemInfo = itemInfo}) end
+
+        -- Okay, do we have any identified loot?
+        if not _table.empty(Private.trackedLoot) then
+
+            -- So we should try to find a match.
+            local loot = nil
+            local matches = {}
+            -- So, are we tracking anything like this?
+            Debug.Log("Scanning for match: Available and typeId " .. tostring(args.itemTypeId))
+            for id, item in pairs(Private.trackedLoot) do
+                if item.state == LootState.Available and tostring(item:GetTypeId()) == tostring(args.itemTypeId) then
+                    loot = item
+                    matches[#matches + 1] = item
                 end
             end
 
+            Debug.Log("Scan Result: " .. tostring(#matches))
 
+            -- Do we have more than one matches?
+            if #matches > 1 then
+                -- Shit.
+                Debug.Log("Tracker.OnLootEvent Multiple potential matches (" .. tostring(count) .. ") for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+                
+                if not Private.lootEventHistory[args.itemTypeId] then
+                    Private.lootEventHistory[args.itemTypeId] = {}
+                end
+
+                table.insert(Private.lootEventHistory[args.itemTypeId], {occuredAt = tonumber(System.GetClientTime()), lootedBy = args.lootedBy, lootedTo = args.lootedTo})
+
+                for i, item in ipairs(matches) do
+                    Callback2.FireAndForget(Tracker.Update, item:GetId(), i)
+                end
+
+            elseif #matches == 1 then
+                -- Aww yeah! Get that shit.
+                Debug.Log('Tracker.OnLootEvent for '..loot:GetName()..', '..tostring(loot:GetEntityId())..', '..loot:GetId())
+                Debug.Log('It is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
+
+                -- Set the looted status
+                Callback2.FireAndForget(Private.SetLooted, {loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy}, 0)
+
+                -- Force update.
+                Callback2.FireAndForget(Tracker.Update, loot:GetId(), 0)
+            else
+                -- Hmm, so we weren't tracking this item
+                Debug.Log("Tracker.OnLootEvent found no matches for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+            end
         end
-        
-        AutosizeText(TOOLTIP_PROG_YIELDS)
-        AutosizeText(TOOLTIP_PROG_REQS)
-        AutosizeText(TOOLTIP_PROG_DESC)
-
-        -- Return Tooltip
-        local tip_args = {height=0}
-        tip_args.height = TOOLTIP_PROG:GetLength()
-        tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
-        
-        return TOOLTIP_PROG, tip_args
-
-    -- Item Style Tooltip
-    else
-        -- Setup Tooltip
-        TOOLTIP_ITEM:DisplayInfo(item.itemInfo)
-        TOOLTIP_ITEM.GROUP:SetDims("top:0; left:0; width:200; height:200")
-
-        -- Return Tooltip
-        local tip_args = TOOLTIP_ITEM:GetBounds()
-        tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
-
-        return TOOLTIP_ITEM.GROUP, tip_args
     end
 end
 
--- Fix text size
-function AutosizeText(TEXT)
-    TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
+
+--[[
+    Tracker.Track(entityId, [targetInfo], [itemInfo])
+    Identifies entity, adding it to a list of items that have been seen
+]]--
+function Tracker.Track(args)
+
+    -- Setup vars from args
+    local entityId     = args.entityId
+    local targetInfo   = args.targetInfo
+    local itemInfo     = args.itemInfo
+
+    -- Check entityId
+    if not entityId then
+        -- We should have an entityId
+        Debug.Warn("Loot.Create called without an entityId")
+    end
+
+    -- Be sure it still exists
+    if not Game.IsTargetAvailable(entityId) then
+        return
+    end
+
+    -- Setup targetInfo
+    if not targetInfo then
+        -- Do we have a valid entityId?
+        if Game.IsTargetAvailable(entityId) then
+
+            -- Get targetInfo by entityId
+            targetInfo = Game.GetTargetInfo(entityId)
+
+            -- Verify success
+            if not targetInfo then
+                Debug.Error('Loot.Create unable to acquire targetInfo for entityId '..tostring(entityId))
+                return
+            end
+
+        -- If we don't have targetInfo, we must have an entityId that references a valid target, so that we can retrieve information.
+        else
+            Debug.Error('Loot.Create called without targetInfo, and lacks available entity.')
+            return
+        end
+    end
+
+    -- Setup itemInfo
+    if not itemInfo then
+
+        -- Do we have a valid itemTypeId?
+        if targetInfo.itemTypeId then
+
+            -- Get itemInfo by itemTypeId
+            itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
+
+            -- Verify success
+            if not itemInfo then
+                Debug.Error('Loot.Create was unable to acquire itemInfo for itemTypeId '..tostring(targetInfo.itemTypeId))
+                return
+            end
+
+        -- We don't have a valid itemTypeId? Then what do we do...
+        else
+            Debug.Log("Loot.Create called without itemInfo, and lacks target with itemTypeId")
+            Debug.Table({entityId, targetInfo, itemInfo})
+            return
+        end
+    end
+
+    -- Simplify testing a little -- Note: Still?
+    targetInfo.name = targetInfo.name or itemInfo.name
+
+    -- Be sure we haven't already identified this
+    if Tracker.IsTrackedEntity(entityId) then
+        Debug.Warn('Attempted to identify an already identified item.')
+        return
+    end
+
+    -- Be sure we want this
+    if not IsTrackableItem(itemInfo) then
+        return
+    end
+
+    -- Prep data
+    args.entityId = entityId
+    args.targetInfo = targetInfo
+    args.itemInfo = itemInfo
+
+    -- Create loot
+    local loot = Loot.Create(args)
+
+    -- Setup update cycle
+    loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
+
+    -- Save loot
+    Private.trackedLoot[loot:GetId()] = loot
+    Private.identityByEntity[loot:GetEntityId()] = loot:GetId()
+
+    -- Fire event
+    Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
+
+    -- Start update cycle
+    loot.CYCLE_Update:Run(Options['Tracker']['UpdateInterval'])
 end
+
+
+
+function Tracker.Update(lootArg)
+    local loot = nil
+    if type(lootArg) == "table" then
+        loot = lootArg
+    else
+        loot = Tracker.GetLootById(lootArg)
+    end
+
+    if not loot then
+        Debug.Warn("Tracker.Update called with invalid loot argument " .. tostring(lootArg))
+        return
+    end
+
+    local previousState = loot:GetState()
+
+    loot:Update()
+
+    local newState = loot:GetState()
+
+    if newState ~= previousState then
+        Component.GenerateEvent("XLT_ON_TRACKER_UPDATE", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+        
+        if previousState == LootState.Available and not loot.markedForDeletion then
+            loot.markedForDeletion = true
+            Callback2.FireAndForget(Tracker.Remove, loot, TrackerRemoveDelay)
+        end
+    end
+
+end
+
+function Tracker.Remove(lootArg)
+    local loot = nil
+    if type(lootArg) == "table" then
+        loot = lootArg
+    else
+        loot = Tracker.GetLootById(lootId)
+    end
+
+    if not loot then
+        Debug.Warn("Tracker.Remove called with invalid loot argument " .. tostring(lootArg))
+        return
+    end
+
+    Debug.Log("Tracker.Remove called for " ..loot:GetId().. " "..loot:GetName())
+
+    local lootId = loot:GetId()
+
+    -- Clear update cycle
+    loot.CYCLE_Update:Stop()
+    loot.CYCLE_Update:Release()
+
+    -- Clear ent to id reference
+    if loot:GetState() == LootState.Available then
+        Private.identityByEntity[loot:GetEntityId()] = nil
+    end
+
+    -- Clear tracker reference
+    Private.trackedLoot[loot:GetId()] = nil
+
+    -- Self destruct
+    loot:Destroy()
+
+    -- Fire Event
+    Component.GenerateEvent("XLT_ON_TRACKER_REMOVE", {lootId = lootId})
+end
+
+
+
+
+
+
+
+function Tracker.IsTrackedEntity(entityId) 
+    local id = Private.identityByEntity[entityId]
+
+    if id then
+        return (Private.trackedLoot[id] ~= nil)
+    end
+
+    return false
+end
+
+
+
+function Tracker.GetLootById(id)
+    local loot = Private.trackedLoot[id]
+
+    if not loot then
+        Debug.Log("Tracker.GetLootById returning nil because it did not find any matching loot")
+    end
+
+    return loot
+end
+
+function Tracker.GetLootByEntityId(entityId)
+    local loot = Private.trackedLoot[Private.identityByEntity[entityId]]
+
+    if not loot then
+        Debug.Log("Tracker.GetLootByEntityId returning nil because it did not find any matching loot")
+    end
+
+    return loot
+end
+
+
+
+function Tracker.Stat()
+    Debug.Table("trackedLoot", Private.trackedLoot)
+    Debug.Table("lootEventHistory", Private.lootEventHistory)
+end
+
+function Tracker.Clear()
+    for i, loot in pairs(Private.trackedLoot) do
+        loot:Destroy()
+    end
+
+    for i, array in pairs(Private.lootEventHistory) do
+        array = nil
+    end
+
+    for i, id in pairs(Private.identityByEntity) do
+        id = nil
+    end
+
+    Private.trackedLoot = {}
+    Private.lootEventHistory = {}
+    Private.identityByEntity = {}
+end
+
+
+
+
+function Private.SetLooted(args)
+    args.loot:SetLootedBy(tostring(args.lootedBy))
+    args.loot:SetLootedTo(tostring(args.lootedTo))
+end
+
+
+
+
+
+
+
+
+--[[
+    IsTrackableItem(itemInfo)
+    Whether or not an item (post pickup) was a lootable target (ish)
+]]--
+function IsTrackableItem(itemInfo)
+    -- Verify that the looted item is of a type that we care about
+    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsComponent(itemInfo))
+end
+
+
+
+function IsEquipment(itemInfo)
+    local EquipmentItemTypes = {
+        'frame_module',
+        'ability_module',
+        'weapon',
+    }
+
+    for i, v in ipairs(EquipmentItemTypes) do
+        if itemInfo.type == v then
+            return true
+        end
+    end
+
+    return false
+end
+
+
+
+function IsComponent(itemInfo)
+    local old = (itemInfo.type == "crafting_component")
+    local new = (itemInfo.type == "resource_item" and not itemInfo.flags.is_salvageable) -- Note: Uncertain, might be too broad
+
+    return (new or old)
+end
+
+
+
+function IsSalvage(itemInfo)
+    local cond1 = (itemInfo.type == "basic" or itemInfo.type == "resource_item")
+    local cond2 = (itemInfo.rarity == "salvage")
+    local cond3 = (itemInfo.flags.is_salvageable)
+
+    return ((cond1 or cond2) and cond3)
+end
+
+
+function IsModule(itemInfo)
+    return (itemInfo.type == "item_module")
+end
+
+
+

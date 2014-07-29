@@ -1,3 +1,5 @@
+-- Rename chat!
+
 Messages = {}
 
 local Private = {
@@ -106,18 +108,6 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
                 message = Private.RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
             end
 
-            -- If we have rolls data, and OnRolls message is enabled, add
-            if eventArgs.rolls and eventArgs.item and Options['Messages']['Events']['Distribution']['OnRolls']['Enabled'] and Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Enabled'] then
-
-                local rollsMessage = Private.RollsFormater(Options['Messages']['Events']['Distribution']['OnRolls']['Channels'][channelKey]['Format'], eventArgs.rolls, eventArgs.item)
-                
-                if message == '' then
-                    message = rollsMessage
-                else
-                    message = message..'\n'..rollsMessage
-                end
-            end
-
             -- Send message if we have one
             if message ~= '' then
                 Messages.SendChatMessage(channelKey, message, eventArgs)
@@ -157,8 +147,7 @@ function Private.RunMessageFilters(message, args)
     args.item.craftingTypeId = args.item.craftingTypeId     or undefinedValue
     args.item.craftingTypeId = args.item.easyId             or undefinedValue
     args.playerName          = args.playerName              or undefinedValue
-    args.roll                = args.roll                    or undefinedValue
-    args.rollType            = args.rollType                or undefinedValue
+
     args.lootedTo            = args.lootedTo                or undefinedValue
     args.assignedTo          = args.assignedTo              or undefinedValue
     args.distributionMode    = args.distributionMode        or undefinedValue

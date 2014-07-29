@@ -1,219 +1,82 @@
---[[
-    CreatePanel(targetInfo, itemInfo)
-    Setsup and returns a panel object reference for loot from the info given
-]]--
-function CreatePanel(targetInfo, itemInfo)
-    -- Create object
-    local panel = LKObjects.Create(LOOTPANEL)
-
-    panel.pos:SetParam('Translation', Vec3.New(targetInfo.lootPos.x, targetInfo.lootPos.y, targetInfo.lootPos.z+2))
-    panel.pos:SetParam('Rotation', {axis={x=0,y=0,z=1},angle=0})
 
 
-    local RenderTarget = panel.panel_rt
-    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
-    local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
-    local LOOT_PANEL_ICONBAR = LOOT_PANEL_CONTENT:GetChild('IconBar')
-
-
-    -- Header
-    LOOT_PANEL_HEADER:GetChild('itemName'):SetText(FixItemNameTag(targetInfo.name, targetInfo.quality))
-
-    -- Header Colours
-    local qualityColor, headerBarColor, itemNameColor
-
-    -- Get appropriate colour for item
-    if targetInfo.quality then
-        qualityColor = LIB_ITEMS.GetResourceQualityColor(targetInfo.quality)
-    else
-        qualityColor = LIB_ITEMS.GetItemColor(itemInfo)
-    end
-
-    -- Determine which colour to use for the bar
-    if Options['Panels']['ColorMode']['HeaderBar'] == ColorModes.MatchItem then
-        headerBarColor = qualityColor
-    else -- ColorMode.Custom
-        headerBarColor = Options['Panels']['ColorMode']['HeaderBarCustomValue'].tint
-    end
-
-    -- Determine which colour to use for the item name
-    if Options['Panels']['ColorMode']['ItemName'] == ColorModes.MatchItem then
-        itemNameColor = qualityColor
-    else -- ColorMode.Custom
-        itemNameColor = Options['Panels']['ColorMode']['ItemNameCustomValue'].tint
-    end
-
-    Debug.Log('qualityColor', qualityColor, 'headerBarColor', headerBarColor, 'itemNameColor', itemNameColor)
-
-
-    headerBarColor = Colors.Create(headerBarColor)
-    itemNameColor = Colors.Create(itemNameColor)
-
-    if _table.compare(headerBarColor, itemNameColor) then
-        Debug.Log('HeaderBar and ItemName colors are equal')
-    end
+WaypointManager = {
     
-    -- Set the colours
-    LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
-    LOOT_PANEL_HEADER:GetChild('itemName'):SetTextColor(itemNameColor)
+}
 
-
-
-
-    -- Iconbar
-    LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetUrl(itemInfo.web_icon)
-
-   
-    -- Battleframe icon
-    if itemInfo.craftingTypeId then
-        local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(itemInfo.craftingTypeId))
-        if itemFrame == nil then
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
-        else
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
-
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
-                Tooltip.Show(args.widget:GetTag())
-            end);
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
-                Tooltip.Show(false)
-            end);
-        end
-    else
-        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
-    end
+PanelManager = {
     
-    -- Timer text
-    LOOT_PANEL_ICONBAR:GetChild('timer'):SetText('00:00')
+}
 
-    -- Stat list
-    for num, stat in ipairs(xItemFormatting.getStats(itemInfo)) do
-        ENTRY = Component.CreateWidget('LootPanel_Stat', LOOT_PANEL_CONTENT:GetChild('ItemStats'))
-        ENTRY:SetDims('top:0; left:0; width:100%; height:32;');
-        ENTRY:GetChild('statName'):SetText(tostring(stat.displayName))
-        ENTRY:GetChild('statValue'):SetText(tostring(stat.value))
-    end
-    LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(true)
+local Private = {
+    waypointList = {},
+    panelList = {}
+}
 
+MarkerType = {
+    Loot = "loot",
+    Group = "group",
+}
 
---[[
-
-    BUTTON1 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
-    BUTTON1:SetText('Need')
-    BUTTON1:Autosize('left')
-    BUTTON1:Bind(function() 
-            --System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
-        end)
-
-    BUTTON2 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
-    BUTTON2:SetText('Greed')
-    BUTTON2:Autosize('center')
-    BUTTON2:Bind(function() 
-            --System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
-        end)
-
-    BUTTON3 = Button.Create(RenderTarget:GetChild('content'):GetChild('ButtonRow'))
-    BUTTON3:SetText('Pass')
-    BUTTON3:Autosize('right')
-    BUTTON3:Bind(function() 
-            --System.PlaySound(Options['Sounds']['OnAssignItem_ToMe'])
-        end)
-
---]]
-
-    -- We spent all this time building, best make sure it shows
-    LOOT_PANEL_CONTENT:Show(true)
-
-    return panel
+function WaypointManager.Stat()
+    Debug.Table("WaypointManager Private.waypointList", Private.waypointList)
 end
 
---[[
-    UpdatePanel(loot)
-    Updates the state of a loot panel
-]]--
-function UpdatePanel(loot)
-
-    if loot.panel == nil then return end
-
-    local RenderTarget = loot.panel.panel_rt
-    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
-    local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
-
-    if not ItemPassesFilter(loot, Options['Panels']) then 
-        RenderTarget:Show(false)
-    end
-
-
-    -- Overall mode
-    if Options['Panels']['Mode'] == LootPanelModes.Small then
-        -- Small mode display settings
-        LOOT_PANEL_CONTENT:GetChild('contentBackground'):Show(false)
-        LOOT_PANEL_CONTENT:GetChild('IconBar'):Show(false)
-        LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(false)
-
-    else -- LootPanelModes.Standard
-        -- Large/Normal mode display settings
-        LOOT_PANEL_CONTENT:GetChild('contentBackground'):Show(true)
-        LOOT_PANEL_CONTENT:GetChild('IconBar'):Show(true)
-        LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(true)
-
-        -- Asigned To text
-        if Options['Panels']['Display']['AssignedTo'] then
-            Debug.Log('Item that Panel is displaying is assigned to '..tostring(loot.assignedTo))
-
-            -- Debug.Log(RenderTarget:GetChild('content'):GetChild('Header'):GetChild('itemName'):GetTextDims()) -- To be used to detect when title wraps
-            if loot.assignedTo == nil then
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_nil'))
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Nil'].tint)
-
-            elseif loot.assignedTo == AssignedTo.FreeForAll then
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_true'))
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Free'].tint)
-            else
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetText(Lokii.GetString('UI_AssignedTo_Prefix')..tostring(loot.assignedTo))
-
-                if namecompare(loot.assignedTo, Player.GetInfo()) then
-                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Player'].tint)
-                else
-                    LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):SetTextColor(Options['Panels']['Color']['AssignedTo']['Other'].tint)
-                end
-
-            end
-
-            if Options['Panels']['Display']['AssignedToHideNil'] and loot.assignedTo == nil then
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(false)
-            else
-                LOOT_PANEL_HEADER:GetChild('itemAssignedTo'):Show(true)
-            end
-
-        end
-    end
+function WaypointManager.OnTrackerNew(args)
+    if not Options['Waypoints']['Enabled'] then return end
+    local loot = Tracker.GetLootById(args.lootId)
+    WaypointManager.Create(loot)
 end
 
---[[
-    CreateWaypoint(loot)
-    Setsup and returns a waypoint marker reference for loot
-]]--
-function CreateWaypoint(loot)
-    Debug.Log('Creating a waypoint for '..loot.name)
-    MARKER = MapMarker.Create('xslm_'..tostring(loot.entityId)..'_waypoint')
+function WaypointManager.OnTrackerUpdate(args)
+    if not Options['Waypoints']['Enabled'] then return end
+    WaypointManager.OnLootStateChange(args)
+end
+
+function WaypointManager.OnTrackerRemove(args)
+    if not Options['Waypoints']['Enabled'] then return end
+    Debug.Log("WaypointManager on Tracker Remove!")
+    args.newState = "silly"
+    WaypointManager.OnLootStateChange(args)
+end
+
+
+function WaypointManager.Create(loot)
+    -- Check Args
+    if not loot or type(loot) ~= "table" then
+        Debug.Log("WaypointManager.Create called with invalid argument: " .. tostring(loot))
+        return
+    end
+
+    -- Check Loot State
+    if loot:GetState() ~= LootState.Available then
+        Debug.Log("Cannot create waypoint for unavailable " .. Loot:ToString())
+        return
+    end
+
+    -- Check Entity
+    if not loot:GetEntityId() or not Game.IsTargetAvailable(loot:GetEntityId()) then
+        Debug.Warn("Attempt to create waypoint for loot with state available but no available entity")
+        return
+    end
+
+    -- Create Marker
+    local markerId = "xlt_"..tostring(loot:GetEntityId()).."_waypoint"
+    local MARKER = MapMarker.Create(markerId)
 
     -- Bind to loot entity
-    MARKER:BindToEntity(loot.entityId)
+    MARKER:BindToEntity(loot:GetEntityId())
 
     -- Text
-    MARKER:SetTitle(FixItemNameTag(loot.name, loot.quality))
+    MARKER:SetTitle(GetWaypointTitle(loot))
     MARKER:SetSubtitle(Lokii.GetString('UI_Waypoints_Subtitle'))
 
     -- Color ?
-    MARKER:SetThemeColor(LIB_ITEMS.GetItemColor(loot.itemInfo))
+    MARKER:SetThemeColor(loot:GetColor())
 
     -- Icon
     local MULTIART = MARKER:GetIcon()
-    MULTIART:SetUrl(loot.itemInfo.web_icon)
-
+    MULTIART:SetUrl(loot:GetWebIcon())
 
     -- Visibility
     MARKER:ShowOnHud(Options['Waypoints']['ShowOnHud'])
@@ -222,5 +85,243 @@ function CreateWaypoint(loot)
     MARKER:ShowOnRadar(Options['Waypoints']['ShowOnRadar']) 
     MARKER:SetRadarEdgeMode(Options['Waypoints']['RadarEdgeMode'])
 
-    return MARKER
+    -- Insert
+    Private.waypointList[#Private.waypointList + 1] = {MARKER = MARKER, markerType = MarkerType.Loot, lootId = loot:GetId()}
 end
+
+
+function WaypointManager.OnLootStateChange(args)
+    if args.newState ~= LootState.Available then
+        Debug.Log("Looking for waypoint to remove")
+        for i, waypoint in ipairs(Private.waypointList) do
+            if waypoint.markerType == MarkerType.Loot then
+                if type(waypoint.lootId) ~= type(args.lootId) then
+                    Debug.Warn("lootId Types do not match! D: Waypoint: "..tostring(type(waypoint.lootId))..", Args: "..tostring(type(args.lootId)))
+                end
+                if waypoint.lootId == args.lootId then
+                    Debug.Table("Found waypoint that should be removed: ", waypoint)
+                    waypoint.MARKER:Destroy()
+                    table.remove(Private.waypointList, i)
+                    break
+                end
+            
+            elseif args.markerType == MarkerType.Group then
+                -- Todo:
+            end 
+        end
+
+    end
+end
+
+function WaypointManager.GetYourShitTogether()
+    Debug.Log("Sorry :(")
+    Private.waypointList = {}
+end
+
+function GetWaypointTitle(loot)
+
+    local title = {}
+
+
+    local rarity = loot:GetRarity()
+
+    
+    if loot:GetCategory() == LootCategory.Equipment or Loot:GetCategory() == LootCategory.Modules then
+
+        if Loot.GetRarityIndex(rarity) >= Loot.GetRarityIndex(LootRarity.Rare) then
+            table.insert(title, "["..Loot.GetDisplayNameOfRarity(rarity).."]")
+        end 
+
+        if loot:GetItemLevel() > 0 then
+            table.insert(title, "["..loot:GetItemLevel().."]")
+        end
+
+    end
+
+   
+    table.insert(title, loot:GetName())
+
+    return table.concat(title, " ")
+end
+
+
+
+
+
+
+
+
+
+
+
+function PanelManager.Stat()
+    Debug.Table("PanelManager Private.panelList", Private.panelList)
+end
+
+function PanelManager.OnTrackerNew(args)
+    if not Options['Panels']['Enabled'] then return end
+
+    PanelManager.Create(args.lootId)
+end
+
+function PanelManager.OnTrackerUpdate(args)
+    if not Options['Panels']['Enabled'] then return end
+
+    PanelManager.Update(args.lootId)
+end
+
+function PanelManager.OnTrackerRemove(args)
+    if not Options['Panels']['Enabled'] then return end
+
+    PanelManager.Remove(args.lootId)
+end
+
+
+
+
+function PanelManager.Create(loot)
+    -- Get loot
+    local loot = Tracker.GetLootById(args.lootId)
+
+    -- Verify available
+    if loot:GetState() ~= LootState.Available then
+        Debug.Warn("PanelManager.Create called for unavailable loot!")
+        return
+    end
+
+    -- Create object
+    local panel = LKObjects.Create(LOOTPANEL)
+
+    -- Setup position and orientation
+    local lootPos = loot:GetPos()
+    local translationVector = Vec3.New(lootPos.x, lootPos.y, lootPos.z + 2)
+    panel.pos:SetParam('Translation', translationVector)
+    panel.pos:SetParam('Rotation', {axis={x=0,y=0,z=1},angle=0})
+
+    -- Get some handles
+    local RenderTarget = panel.panel_rt
+    local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
+    local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
+    local LOOT_PANEL_ICONBAR = LOOT_PANEL_CONTENT:GetChild('IconBar')
+
+    -- Build Header
+        -- Item Name
+        LOOT_PANEL_HEADER:GetChild('itemName'):SetText(loot:GetName())
+
+        -- Headerbar and Item Name colors
+
+            -- Find header colors
+            local qualityColor, headerBarColor, itemNameColor
+
+            -- Get appropriate colors for item
+            qualityColor = loot:GetColor()
+
+            -- Determine which colors to use for the bar
+            if Options['Panels']['ColorMode']['HeaderBar'] == ColorModes.MatchItem then
+                headerBarColor = qualityColor
+            else -- ColorMode.Custom
+                headerBarColor = Options['Panels']['ColorMode']['HeaderBarCustomValue'].tint
+            end
+
+            -- Determine which colors to use for the item name
+            if Options['Panels']['ColorMode']['ItemName'] == ColorModes.MatchItem then
+                itemNameColor = qualityColor
+            else -- ColorMode.Custom
+                itemNameColor = Options['Panels']['ColorMode']['ItemNameCustomValue'].tint
+            end
+
+            Debug.Log('qualityColor', qualityColor, 'headerBarColor', headerBarColor, 'itemNameColor', itemNameColor)
+
+
+            headerBarColor = Colors.Create(headerBarColor)
+            itemNameColor = Colors.Create(itemNameColor)
+
+            if _table.compare(headerBarColor, itemNameColor) then
+                Debug.Log('HeaderBar and ItemName colors are equal')
+            end
+
+            -- Set header color
+            LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
+            LOOT_PANEL_HEADER:GetChild('itemName'):SetTextColor(itemNameColor)
+
+
+    -- Build Iconbar
+        LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetUrl(loot:GetWebIcon())
+
+   
+        -- Battleframe icon
+        --[[
+        if itemInfo.craftingTypeId then
+            local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(itemInfo.craftingTypeId))
+            if itemFrame == nil then
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
+            else
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
+
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
+                    Tooltip.Show(args.widget:GetTag())
+                end);
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
+                    Tooltip.Show(false)
+                end);
+            end
+        else
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
+        end
+        --]]
+
+    -- Timer text
+        LOOT_PANEL_ICONBAR:GetChild('timer'):SetText('00:00')
+
+    -- Build Stat list
+        --[[
+        for num, stat in ipairs(xItemFormatting.getStats(itemInfo)) do
+            ENTRY = Component.CreateWidget('LootPanel_Stat', LOOT_PANEL_CONTENT:GetChild('ItemStats'))
+            ENTRY:SetDims('top:0; left:0; width:100%; height:32;');
+            ENTRY:GetChild('statName'):SetText(tostring(stat.displayName))
+            ENTRY:GetChild('statValue'):SetText(tostring(stat.value))
+        end
+        LOOT_PANEL_CONTENT:GetChild('ItemStats'):Show(true)
+        --]]
+
+
+    -- We spent all this time building, best make sure it shows
+    LOOT_PANEL_CONTENT:Show(true)
+
+    -- Insert
+    Private.panelList[loot:GetId()] = panel
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+function PanelManager.Update(lootId)
+    if Private.panelList[lootId] then
+        local panel = Private.panelList[lootId]
+
+        -- Todo: Update
+
+    end
+end
+
+function PanelManager.Remove(lootId)
+    if Private.panelList[lootId] then
+        local panel = Private.panelList[lootId]
+        
+        LKObjects.Destroy(panel)
+    end
+end
+
+
+

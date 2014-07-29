@@ -28,28 +28,6 @@ QualityOptions = {
     Custom = 'custom',
 }
 
-WeightingOptions = {
-    None = 'none',
-    Archetype = 'archetype',
---    Battleframe = 'battleframe',
-}
-
-DistributionMode = {
-    Random = 'random',
-    Dice = 'dice',
-    RoundRobin = 'round-robin',
---    YayNay = 'yaynay',
-    NeedBeforeGreed = 'need-before-greed',
---    LootMaster = 'lootmaster',
-}
-
-RollType = {
-    --None = false,
-    Pass = 'pass',
-    Greed = 'greed',
-    Need = 'need',
-}
-
 LootPanelModes = {
     Standard = 'standard',
     Small = 'small',
@@ -66,31 +44,60 @@ RadarEdgeModes = {
     Icon = MapMarker.EDGE_ICON,
 }
 
-TrackerVisibilityOptions = {
+HUDTrackerVisibilityOptions = {
     Always = 'always',
     HUD = 'hud',
     MouseMode = 'mousemode',
 }
 
-TrackerTooltipModes = {
-    ItemStyle = 'item',
-    ProgressionStyle = 'progression',
-}
 
-TrackerPlateModeOptions = {
+HUDTrackerPlateModeOptions = {
     Decorated = 'decorated',
     Simple = 'simple',
     None = 'none',
 }
 
-TrackerIconModeOptions = {
+HUDTrackerIconModeOptions = {
     Decorated = 'decorated',
     Simple = 'simple',
     --IconOnly = 'icon-only',
     None = 'none',
 }
 
-AssignedTo = {
-    Unassigned = -1,
-    FreeForAll = 1,
+
+
+LootCategory = {
+    Equipment  = 'equipment',
+    Modules    = 'modules',
+    Salvage    = 'salvage',
+    Components = 'components',
+    Currency   = 'currency',
+    Unknown    = 'unknown',
+}
+
+LootState = {
+    Available  = "available", -- Has a valid entityId
+    Looted     = "looted",    -- Was Available, then looted
+    Lost       = "lost",      -- Was Available, then hit by OnEntityLost
+    Unknown    = "unknown",
+}
+
+LootRarity = {
+    Salvage = "salvage",
+    Common = "common",
+    Uncommon = "uncommon",
+    Rare = "rare",
+    Epic = "epic",
+    Prototype = "prototype",
+    Legendary = "legendary",
+}
+
+LootRarityIndex = {
+    ["salvage"] = 1,
+    ["common"] = 2,
+    ["uncommon"] = 3,
+    ["rare"] = 4,
+    ["epic"] = 5,
+    ["prototype"] = 6,
+    ["legendary"] = 7,
 }

@@ -5,9 +5,9 @@
     xsi:schemaLocation="http://www.red5studios.com/ ../../../schemas/component.xsd"
     >
     <Info
-        title="SquadLootManager"
+        title="LootTracker"
         author="Xsear"
-        description="Helps the user with keeping an eye on item drops, and can assist with distributing that loot within a squad."
+        description="Tracks loot drops."
         url="http://forums.firefallthegame.com/community/threads/addon-xsears-squad-loot-manager.1914241/"
         uiVersion="1000"
     />
@@ -19,11 +19,15 @@
         <Event name="MY_HIDE_HUD_REQUEST"          bind="OnHideHudRequest"    />
         <Event name="ON_INPUT_MODE_CHANGED"        bind="OnInputModeChanged"  />
         <Event name="ON_UI_ENTITY_AVAILABLE"       bind="OnEntityAvailable"   />
-        <Event name="ON_UI_ENTITY_LOST"            bind="OnEntityLost"   />
+        <Event name="ON_UI_ENTITY_LOST"            bind="OnEntityLost"        />
         <Event name="ON_SQUAD_ROSTER_UPDATE"       bind="OnSquadRosterUpdate" />
         <Event name="ON_LOOT_COLLECTED"            bind="OnLootCollected"     />
         <Event name="ON_LOOT_PICKUP"               bind="OnLootPickup"        />
-        <Event name="ON_CHAT_MESSAGE"              bind="OnChatMessage"       />
+
+        <!-- Custom -->
+        <Event name="XLT_ON_TRACKER_NEW"           bind="OnTrackerNew"        />
+        <Event name="XLT_ON_TRACKER_UPDATE"        bind="OnTrackerUpdate"     />
+        <Event name="XLT_ON_TRACKER_REMOVE"        bind="OnTrackerRemove"     />
     </Events>
     
     <Styles>
@@ -168,20 +172,6 @@
 
                     <!-- Slider -->
                     <Slider name='Slider' dimensions="width:3; right:100%; top:0; bottom:100%" class="Tracker_Slider"/>
-
-                    <!-- Tooltip -->
-                    <ListLayout name="TooltipProg" dimensions="width:400; height:400; top:0; left:0" style="visible:false">
-                        <Group name="header" dimensions="left:0; top:0; width:100%; height:50">
-                            <WebImage name="icon" dimensions="left:0; top:0; height:50; width:50;"/>
-                            <Text name="name" dimensions="left:50; right:100%; height:100%" style="font:Demi_15; halign:left; valign:top; wrap:true;"/>
-                            <Text name="subname" dimensions="left:50; right:100%; height:100%" style="font:Demi_13; halign:left; valign:bottom; wrap:true;"/>
-                        </Group>
-                        <Text name="yields" dimensions="dock:fill" style="font:Demi_11; halign:left; valign:center"/>
-                        <StillArt dimensions="left:0; right:100%; height:1; top:100" style="texture:colors; region:white; alpha:0.6"/>
-                        <Text name="requirements" dimensions="dock:fill" style="font:Demi_11; leading-mult:1.5; halign:left; valign:center"/>
-                        <StillArt dimensions="left:0; right:100%; height:1; top:100" style="texture:colors; region:white; alpha:0.6"/>
-                        <Text name="desc" dimensions="top:45; bottom:100%; width:100%" style="font:Demi_10; leading-mult:1.5; alpha:0.6; halign:left; valign:center; wrap:true;"/>
-                    </ListLayout>
             </Children>
         </PanelFrame>
     </Frames>
