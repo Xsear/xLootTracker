@@ -96,7 +96,7 @@ end
 function WaypointManager.ToggleVisibility(show)
     Private.visibility = show or not Private.visibility
     for i, waypoint in ipairs(Private.waypointList) do
-        waypoint.MARKER::ShowOnHud(Private.visibility)
+        waypoint.MARKER:ShowOnHud(Private.visibility)
     end
 end
 

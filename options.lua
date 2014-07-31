@@ -91,6 +91,54 @@ Options = {
 
             },
 
+            [LootCategory.Consumable] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = false,
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+            },
+
             [LootCategory.Modules] = {
                 ['Enabled'] = true,
 
@@ -302,6 +350,54 @@ Options = {
                     ['ItemLevelThreshold'] = false,
                     ['RequiredLevelThreshold'] = false,
                     ['WaypointTitle'] = "",
+                },
+
+            },
+
+            [LootCategory.Consumable] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = false,
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = false,
+                    ['RequiredLevelThreshold'] = false,
                 },
 
             },
@@ -619,6 +715,8 @@ Options = {
         ['IconMode'] = HUDTrackerIconModeOptions.Decorated,
 
         ['UpdateInterval'] = 1,
+    
+
     },
 
     ['Sounds'] = {
@@ -645,9 +743,252 @@ Options = {
         ['CommunicationExtra'] = true,
         ['RoundRobin'] = true,
     },
+
 }
 
 
+Options['HUDTracker']['Filtering'] = {
+    [LootCategory.Equipment] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = false,
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+    },
+
+    [LootCategory.Consumable] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = false,
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+    },
+
+    [LootCategory.Modules] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = false,
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+    },
+
+    [LootCategory.Salvage] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = false,
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+    },
+
+    [LootCategory.Components] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = false,
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = false,
+            ['RequiredLevelThreshold'] = false,
+        },
+    },
+    
+    [LootCategory.Currency] = {
+        ['Enabled'] = false,
+    },
+}
 
 
 
@@ -720,6 +1061,7 @@ function OnOptionChange(args)
         -- For Tracker options, update the tracker
         if explodedId[1] == 'HUDTracker' then
             HUDTracker.OnOptionChange(args.id, args.val)
+
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
             -- Note: This could behave poorly if other sound options are added
@@ -727,10 +1069,11 @@ function OnOptionChange(args)
                 System.PlaySound(args.val)
             end
         end
+
+        -- Update Options Visibility
+        SetOptionsAvailability()
     end
 
-    -- Update Options Visibility
-    SetOptionsAvailability()
 end
 
 --[[
@@ -779,6 +1122,56 @@ end
 function SetOptionsAvailability()
 
 
+    -- If simple disable advanced options
+    for i, moduleKey in pairs({'HUDTracker', 'Panels', 'Waypoints'}) do
+
+        for id, categoryKey in pairs(FilterableLootCategories) do
+
+
+            -- Mode selection only available when type enabled
+            InterfaceOptions.EnableOption(moduleKey..'_Filtering_'..categoryKey..'_Mode', Options[moduleKey]['Filtering'][categoryKey]['Enabled'])
+
+            -- Don't wanna hardcode this shit
+            local rarityKeys = _table.copy(OptionsLootRarityDropdown)
+            rarityKeys[#rarityKeys + 1] = 'Simple'
+
+            -- For each rarity (and simple)
+            for i, rarityKey in ipairs(rarityKeys) do
+                --Debug.Log(moduleKey..'_'..categoryKey)
+
+                -- Disable/Enable logic
+                -- Fixme: bluuuuuurgh
+                local disable = false
+
+                -- If type not enabled, disable everything
+                if Options[moduleKey]['Filtering'][categoryKey]['Enabled'] == false then
+                    disable = true 
+
+                -- If type is enabled, disable stuff not relevant to current mode
+                else
+                    -- Tired Xsear reading this got confused, so he expanded the comments. Stick with me here.
+                    -- We want to disable all the other groups if we're in simple mode, and only the simple group otherwise.
+
+                    -- So. If we are currently in Simple Mode, disable = true.
+                    disable = (Options[moduleKey]['Filtering'][categoryKey]['Mode'] == TriggerModeOptions.Simple)
+
+                    -- But in order to keep Simple enabled, if the current rarityKey is Simple, disable = false (but I decided to be fancy and just invert it)
+                    if rarityKey == 'Simple' then disable = not disable end
+                end
+
+                -- Do our job
+                for optionKey, optionValue in pairs(Options[moduleKey]['Filtering'][categoryKey][rarityKey]) do
+                    InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey, disable)
+                end
+
+  
+            end
+
+        end
+
+    end
+
+
 end
 
 
@@ -818,15 +1211,10 @@ end
     Separate everything
 ]]--
 function BuildInterfaceOptions()
-
     BuildInterfaceOptions_Front()
-    
     BuildInterfaceOptions_Tracker()
-
     BuildInterfaceOptions_Waypoints()
-
-    --BuildInterfaceOptions_Panels()
-
+    BuildInterfaceOptions_Panels()
     BuildInterfaceOptions_HUDTracker()
     BuildInterfaceOptions_Sounds()
     BuildInterfaceOptions_Messages()
@@ -1059,12 +1447,6 @@ function BuildInterfaceOptions_Tracker()
 end
 
 function BuildInterfaceOptions_Panels()
-    -- Filters
-    --UIHELPER_DetectDistributeMarkX('Panels', 'EquipmentItems')
-    --UIHELPER_DetectDistributeMarkX('Panels', 'CraftingComponents')
-    --UIHELPER_DetectDistributeMarkX('Panels', 'SalvageModules')
-    
-
     -- Display Assigned To
     InterfaceOptions.AddCheckBox({
         id      = 'Panels_Display_AssignedTo',
@@ -1143,14 +1525,12 @@ function BuildInterfaceOptions_Panels()
         tooltip = Lokii.GetString('Panels_Color_AssignedTo_Other_Tooltip'),
         subtab  = Lokii.GetString('Subtab_Panels'),
     })
+
+    UIHELPER_Filtering('Panels')
 end
 
 
 function BuildInterfaceOptions_Waypoints()
-    --UIHELPER_DetectDistributeMarkX('Waypoints', 'EquipmentItems')
-    --UIHELPER_DetectDistributeMarkX('Waypoints', 'CraftingComponents')
-    --UIHELPER_DetectDistributeMarkX('Waypoints', 'SalvageModules')
-
     InterfaceOptions.AddCheckBox({
         id      = 'Waypoints_ShowOnHud',
         default = Options['Waypoints']['ShowOnHud'],
@@ -1193,6 +1573,7 @@ function BuildInterfaceOptions_Waypoints()
         subtab  = {Lokii.GetString('Subtab_Waypoints')}
     })
 
+    UIHELPER_Filtering('Waypoints')
 end
 
 
@@ -1258,10 +1639,7 @@ function BuildInterfaceOptions_HUDTracker()
     -- IconMode
     UIHELPER_DropdownFromTable('HUDTracker_IconMode', 'HUDTracker_IconMode', Options['HUDTracker']['IconMode'], HUDTrackerIconModeOptions, 'HUDTrackerIconModeOptions',  Lokii.GetString('Subtab_HUDTracker'))
 
-    -- Filters
-    --UIHELPER_DetectDistributeMarkX('HUDTracker', 'EquipmentItems')
-    --UIHELPER_DetectDistributeMarkX('HUDTracker', 'CraftingComponents')
-    --UIHELPER_DetectDistributeMarkX('HUDTracker', 'SalvageModules')
+    UIHELPER_Filtering('HUDTracker')
 end
 
 function BuildInterfaceOptions_Sounds()
@@ -1275,87 +1653,94 @@ function BuildInterfaceOptions_Sounds()
 end
 
 
-function UIHELPER_DetectDistributeMarkX(rootKey, x)
+function UIHELPER_Filtering(moduleKey)
+    for id, category in pairs(FilterableLootCategories) do
+        UIHELPER_FilterCategory(moduleKey, category)
+    end
+end
 
+function UIHELPER_FilterCategory(moduleKey, x)
+    Debug.Log("UIHELPER_FilterCategory", tostring(moduleKey), tostring(x))
     -- Checkbox Group X
     --[[
     -- Maybe one day we'll have nested groups...
     InterfaceOptions.StartGroup({
-        id       = rootKey..'_'..x..'_Enabled',
+        id       = moduleKey..'_'..x..'_Enabled',
         checkbox = true,
-        default  = Options[rootKey][x]['Enabled'],
-        label    = Lokii.GetString(rootKey..'_'..x..'_Enabled_Label'),
-        tooltip  = Lokii.GetString(rootKey..'_'..x..'_Enabled_Tooltip'),
+        default  = Options[moduleKey][x]['Enabled'],
+        label    = Lokii.GetString(moduleKey..'_'..x..'_Enabled_Label'),
+        tooltip  = Lokii.GetString(moduleKey..'_'..x..'_Enabled_Tooltip'),
         subtab   = {
-            Lokii.GetString('Subtab_'..rootKey)
+            Lokii.GetString('Subtab_'..moduleKey)
         },
     })
     ]]--
-        -- rootKey x Enabled
+        -- moduleKey x Enabled
         InterfaceOptions.AddCheckBox({
-            id      = rootKey..'_'..x..'_Enabled',
-            default = Options[rootKey][x]['Enabled'],
+            id      = moduleKey..'_Filtering_'..x..'_Enabled',
+            default = Options[moduleKey]['Filtering'][x]['Enabled'],
             label   = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Label'),
             tooltip = Lokii.GetString('Filter_Generic_'..x..'_Enabled_Tooltip'),
-            subtab  = {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')}
+            subtab  = {Lokii.GetString('Subtab_'..moduleKey), Lokii.GetString('Subtab_Filtering')}
         })
 
         -- Mode dropdown
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[rootKey][x]['Mode'], TriggerModeOptions, 'Mode', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..x..'_Mode', 'Filter_Generic_'..x..'_Mode', Options[moduleKey]['Filtering'][x]['Mode'], OptionsTriggerModeDropdown, 'Mode', {Lokii.GetString('Subtab_'..moduleKey), Lokii.GetString('Subtab_Filtering'), Lokii.GetString('Subtab_'..x)})
 
         -- Simple mode options
-        UIHELPER_StageX(rootKey, x, 'Simple', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        UIHELPER_FilterRarity(moduleKey, x, 'Simple', {Lokii.GetString('Subtab_'..moduleKey), Lokii.GetString('Subtab_Filtering'), Lokii.GetString('Subtab_'..x)})
 
         -- Advanced mode options
-        UIHELPER_StageX(rootKey, x, 'Unstaged', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage1', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage2', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage3', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
-        UIHELPER_StageX(rootKey, x, 'Stage4', {Lokii.GetString('Subtab_'..rootKey), Lokii.GetString('Subtab_Filtering')})
+        for id, rarity in pairs(LootRarity) do
+            UIHELPER_FilterRarity(moduleKey, x, rarity, {Lokii.GetString('Subtab_'..moduleKey), Lokii.GetString('Subtab_Filtering'), Lokii.GetString('Subtab_'..x)})
+        end
 
     --[[
     InterfaceOptions.StopGroup({
         subtab = {
-            Lokii.GetString('Subtab_'..rootKey)
+            Lokii.GetString('Subtab_'..moduleKey)
         },
     })
     ]]--
 end
 
-function UIHELPER_StageX(rootKey, x, stage, subtab)
+function UIHELPER_FilterRarity(moduleKey, x, rarity, subtab)
     -- Vars
-    local checkbox = (stage ~= 'Simple')
-    local tierdropdown = (stage == 'Simple')
+    local checkbox = (rarity ~= 'Simple')
+    local raritydropdown = (rarity == 'Simple')
 
-    -- rootKey x stage Enabled group
+    -- moduleKey x rarity Enabled group
     InterfaceOptions.StartGroup({
-        id       = rootKey..'_'..x..'_'..stage..'_Enabled',
+        id       = moduleKey..'_Filtering_'..x..'_'..rarity..'_Enabled',
         checkbox = checkbox,
-        default  = Options[rootKey][x]['Enabled'],
-        label    = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_Label'),
-        tooltip  = Lokii.GetString('Filter_Generic_'..x..'_'..stage..'_Enabled_Tooltip'),
+        default  = Options[moduleKey]['Filtering'][x]['Enabled'],
+        label    = Lokii.GetString('Filter_Generic_'..x..'_'..rarity..'_Enabled_Label'),
+        tooltip  = Lokii.GetString('Filter_Generic_'..x..'_'..rarity..'_Enabled_Tooltip'),
         subtab   = subtab
     })
 
-        -- Distribution extras
-        if rootKey == 'Distribution' then
-            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_LootMode', 'Filter_Generic_LootMode', Options[rootKey][x][stage]['LootMode'], DistributionMode, 'LootMode', subtab)
-            UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_Weighting', 'Filter_Generic_Weighting', Options[rootKey][x][stage]['Weighting'], WeightingOptions, 'Weighting', subtab)
+        -- Rarity Threshold
+        if raritydropdown then
+        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..x..'_'..rarity..'_RarityThreshold', 'Filter_Generic_TierThreshold', Options[moduleKey]['Filtering'][x][rarity]['RarityThreshold'], OptionsLootRarityDropdown, 'RarityThreshold', subtab)
         end
 
-        -- Tier and Quality threshold dropdowns
-        if tierdropdown then
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_TierThreshold', 'Filter_Generic_TierThreshold', Options[rootKey][x][stage]['TierThreshold'], TierOptions, 'TierThreshold', subtab)
-        end
-        UIHELPER_DropdownFromTable(rootKey..'_'..x..'_'..stage..'_QualityThreshold', 'Filter_Generic_QualityThreshold', Options[rootKey][x][stage]['QualityThreshold'], QualityOptions, 'QualityThreshold', subtab)
-
-        -- Custom Quality input
+        -- Item Level Threshold
         InterfaceOptions.AddTextInput({
-            id      = rootKey..'_'..x..'_'..stage..'_QualityThresholdCustomValue',
+            id      = moduleKey..'_Filtering_'..x..'_'..rarity..'_ItemLevelThreshold',
             numeric = true,
             label   = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Label'),
             tooltip = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Tooltip'),
-            default = Options[rootKey][x][stage]['QualityThresholdCustomValue'],
+            default = Options[moduleKey]['Filtering'][x][rarity]['QualityThresholdCustomValue'],
+            subtab  = subtab
+        })
+
+        -- Required Level Threshold
+        InterfaceOptions.AddTextInput({
+            id      = moduleKey..'_Filtering_'..x..'_'..rarity..'_RequiredLevelThreshold',
+            numeric = true,
+            label   = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Label'),
+            tooltip = Lokii.GetString('Filter_Generic_QualityThresholdCustomValue_Tooltip'),
+            default = Options[moduleKey]['Filtering'][x][rarity]['QualityThresholdCustomValue'],
             subtab  = subtab
         })
 
@@ -1383,16 +1768,14 @@ function UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
         subtab  = subtab,
     })
 
-        for tableKey, tableValue in pairs(table) do
+        for tableKey, tableValue in ipairs(table) do
             InterfaceOptions.AddChoiceEntry({
                 menuId  = id,
                 val     = tableValue,
-                label   = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'),
-                tooltip = Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Tooltip'),
+                label   = Lokii.GetString(optionKey..'_Choice_'..tableValue..'_Label'),
+                tooltip = Lokii.GetString(optionKey..'_Choice_'..tableValue..'_Tooltip'),
                 subtab  = subtab,
             })
-            --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Label'))
-            --Debug.Log(Lokii.GetString(optionKey..'_Choice_'..tableKey..'_Tooltip'))
         end
 end
 

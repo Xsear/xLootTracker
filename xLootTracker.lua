@@ -399,6 +399,7 @@ function LootFiltering(loot, moduleOptions)
     -- Vars
     local typeKey = nil
     local rarityKey = nil
+    moduleOptions = moduleOptions['Filtering'] -- Note: this is gonna bite me in the ass someday
 
     -- Determine keys
     typeKey, rarityKey = GetLootFilteringOptionsKeys(loot, moduleOptions)

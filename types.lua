@@ -5,10 +5,7 @@
 
 uiSounds = xSounds.GetSounds()
 
-TriggerModeOptions = {
-    Simple = 'simple',
-    Advanced = 'advanced',
-}
+
 
 TierOptions = {
     Any = 'any',
@@ -76,6 +73,14 @@ LootCategory = {
     Unknown    = 'unknown',
 }
 
+FilterableLootCategories = { -- Used by options to generate filtering options
+    Equipment  = LootCategory.Equipment,
+    Modules    = LootCategory.Modules,
+    Salvage    = LootCategory.Salvage,
+    Components = LootCategory.Components,
+    Consumable = LootCategory.Consumable,
+}
+
 LootState = {
     Available  = "available", -- Has a valid entityId
     Looted     = "looted",    -- Was Available, then looted
@@ -102,3 +107,29 @@ LootRarityIndex = {
     ["prototype"] = 6,
     ["legendary"] = 7,
 }
+
+OptionsLootRarityDropdown = {
+    [1] = LootRarity.Salvage,
+    [2] = LootRarity.Common,
+    [3] = LootRarity.Uncommon,
+    [4] = LootRarity.Rare,
+    [5] = LootRarity.Epic,
+    [6] = LootRarity.Prototype,
+    [7] = LootRarity.Legendary,
+}
+
+
+TriggerModeOptions = {
+    Simple = 'simple',
+    Advanced = 'advanced',
+}
+
+OptionsTriggerModeDropdown = {
+    [1] = TriggerModeOptions.Simple,
+    [2] = TriggerModeOptions.Advanced,
+}
+
+
+
+
+
