@@ -212,7 +212,7 @@ function Tracker.OnLootEvent(args)
                 --Debug.Log('It is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
 
                 -- Set the looted status
-                Private.SetLooted({loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy)
+                Private.SetLooted({loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy})
 
                 -- Force update.
                 Callback2.FireAndForget(Tracker.Update, loot:GetId(), Options['Tracker']['UpdateDelay'])

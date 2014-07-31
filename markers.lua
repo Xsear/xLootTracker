@@ -10,7 +10,8 @@ PanelManager = {
 
 local Private = {
     waypointList = {},
-    panelList = {}
+    panelList = {},
+    visibility = true,
 }
 
 MarkerType = {
@@ -24,8 +25,12 @@ end
 
 function WaypointManager.OnTrackerNew(args)
     if not Options['Waypoints']['Enabled'] then return end
+    
     local loot = Tracker.GetLootById(args.lootId)
-    WaypointManager.Create(loot)
+
+    if LootFiltering(loot, Options['Waypoints']) then
+        WaypointManager.Create(loot)
+    end
 end
 
 function WaypointManager.OnTrackerUpdate(args)
@@ -78,7 +83,7 @@ function WaypointManager.Create(loot)
     MULTIART:SetUrl(loot:GetWebIcon())
 
     -- Visibility
-    MARKER:ShowOnHud(Options['Waypoints']['ShowOnHud'])
+    MARKER:ShowOnHud(Options['Waypoints']['ShowOnHud'] and Private.visibility)
     --MARKER:SetHudPriority(Options['Waypoints']['HudPriority'])
     MARKER:ShowOnWorldMap(Options['Waypoints']['ShowOnWorldMap'])
     MARKER:ShowOnRadar(Options['Waypoints']['ShowOnRadar']) 
@@ -86,6 +91,13 @@ function WaypointManager.Create(loot)
 
     -- Insert
     Private.waypointList[#Private.waypointList + 1] = {MARKER = MARKER, markerType = MarkerType.Loot, lootId = loot:GetId()}
+end
+
+function WaypointManager.ToggleVisibility(show)
+    Private.visibility = show or not Private.visibility
+    for i, waypoint in ipairs(Private.waypointList) do
+        waypoint.MARKER::ShowOnHud(Private.visibility)
+    end
 end
 
 
@@ -155,7 +167,11 @@ end
 function PanelManager.OnTrackerNew(args)
     if not Options['Panels']['Enabled'] then return end
 
-    PanelManager.Create(args.lootId)
+    local loot = Tracker.GetLootById(args.lootId)
+
+    if LootFiltering(loot, Options['Panels']) then
+        PanelManager.Create(loot)
+    end
 end
 
 function PanelManager.OnTrackerUpdate(args)
@@ -173,10 +189,7 @@ end
 
 
 
-function PanelManager.Create(lootId)
-    -- Get loot
-    local loot = Tracker.GetLootById(lootId)
-
+function PanelManager.Create(loot)
     -- Verify available
     if loot:GetState() ~= LootState.Available then
         Debug.Warn("PanelManager.Create called for unavailable loot!")

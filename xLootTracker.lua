@@ -175,6 +175,9 @@ function OnSlash(args)
     elseif args.text == 'waymanpls' then
         WaypointManager.GetYourShitTogether()
 
+    elseif args.text == 'wayman' then
+        WaypointManager.ToggleVisibility()
+
     elseif args.text == 'no' or args.text == 'stfu' or args.text == 'silence' then
         Options['Messages']['Enabled'] = false
         Messages.SendChatMessage('system', 'Forcefully disabled Messages and Distribution. Reload the UI to reset.')
@@ -383,4 +386,68 @@ end
 function Slash_Refresh(args)
     Debug.Log("Refresh")
     Tracker.Refresh()
+end
+
+
+
+
+
+
+
+
+function LootFiltering(loot, moduleOptions)
+    -- Vars
+    local typeKey = nil
+    local rarityKey = nil
+
+    -- Determine keys
+    typeKey, rarityKey = GetLootFilteringOptionsKeys(loot, moduleOptions)
+
+    -- Verify that type passes filter
+    if moduleOptions[typeKey]['Enabled'] then
+        
+        -- Verify that rarity passes filter
+        -- Simple Mode: Rarity of Loot must be at or above Rarity Threshold
+        if (rarityKey == 'Simple' and Loot.GetRarityIndex(loot:GetRarity()) >= Loot.GetRarityIndex(moduleOptions[typeKey][rarityKey]['RarityThreshold']))
+        -- Advanced Mode: The specific Rarity of the Loot must be Enabled
+        or (rarityKey ~= 'Simple' and moduleOptions[typeKey][rarityKey]['Enabled']) then
+
+            -- Determine ItemLevel Threshold
+            local itemLevelThreshold = tonumber(moduleOptions[typeKey][rarityKey]['ItemLevelThreshold'])
+
+            -- Determine RequiredLevel Threshold
+            local requiredLevelThreshold = tonumber(moduleOptions[typeKey][rarityKey]['RequiredLevelThreshold'])
+
+            -- Verify that loot passes level thresholds
+            if loot:GetItemLevel() >= itemLevelThreshold and loot:GetRequiredLevel() >= requiredLevelThreshold then
+                -- Passed all filters
+                return true
+            end
+        end
+
+    elseif not moduleOptions[typeKey] then
+        Debug.Table('LootFiltering for ' .. loot:ToString() .. ' ran aground because there weren\'t any options for its typekey ' .. tostring(typeKey) .. ' in the module options that were provided (no name to log here, so dumping table.): ', moduleOptions)
+    end
+    return false
+end
+
+
+
+function GetLootFilteringOptionsKeys(loot, moduleOptions) 
+    -- Vars
+    local typeKey = nil
+    local rarityKey = nil
+
+    -- Determine typeKey
+    typekey = loot:GetCategory()
+
+    -- Determine rarityKey
+    if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
+        rarityKey = 'Simple'
+    else -- TriggerModeOptions.Advanced
+        rarityKey = loot:GetRarity()
+    end
+    
+    -- Return
+    return typeKey, rarityKey
 end
