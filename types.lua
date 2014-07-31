@@ -71,6 +71,7 @@ LootCategory = {
     Modules    = 'modules',
     Salvage    = 'salvage',
     Components = 'components',
+    Consumable = 'consumable',
     Currency   = 'currency',
     Unknown    = 'unknown',
 }

@@ -126,7 +126,7 @@ function GetWaypointTitle(loot)
     local rarity = loot:GetRarity()
 
     
-    if loot:GetCategory() == LootCategory.Equipment or Loot:GetCategory() == LootCategory.Modules then
+    if loot:GetCategory() == LootCategory.Equipment or loot:GetCategory() == LootCategory.Modules then
 
         if Loot.GetRarityIndex(rarity) >= Loot.GetRarityIndex(LootRarity.Rare) then
             table.insert(title, "["..Loot.GetDisplayNameOfRarity(rarity).."]")
@@ -179,9 +179,9 @@ end
 
 
 
-function PanelManager.Create(loot)
+function PanelManager.Create(lootId)
     -- Get loot
-    local loot = Tracker.GetLootById(args.lootId)
+    local loot = Tracker.GetLootById(lootId)
 
     -- Verify available
     if loot:GetState() ~= LootState.Available then

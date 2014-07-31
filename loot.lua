@@ -62,6 +62,9 @@ function Loot.DetermineCategory(targetInfo, itemInfo)
     elseif IsComponent(itemInfo) then
         category = LootCategory.Components
 
+    elseif IsConsumable(itemInfo) then
+        category = LootCategory.Consumable
+
     end
 
     if category == LootCategory.Unknown then

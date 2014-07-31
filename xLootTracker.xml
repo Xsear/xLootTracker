@@ -27,6 +27,7 @@
         <!-- Custom -->
         <Event name="XLT_ON_TRACKER_NEW"           bind="OnTrackerNew"        />
         <Event name="XLT_ON_TRACKER_UPDATE"        bind="OnTrackerUpdate"     />
+        <Event name="XLT_ON_TRACKER_LOOTED"        bind="OnTrackerLooted"     />
         <Event name="XLT_ON_TRACKER_REMOVE"        bind="OnTrackerRemove"     />
     </Events>
     

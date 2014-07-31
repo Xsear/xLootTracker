@@ -6,6 +6,27 @@ local Private = {
     ci_MessageLengthLimit = 255 -- Character limit of chat messages. Used to split too long messages into multiple. One character reserved for alerts.
 }
 
+
+
+
+
+function Messages.OnTrackerNew(args)
+    Messages.MessageEvent('Tracker', 'OnLootNew', args)
+end
+
+function Messages.OnTrackerUpdate(args)
+    if args.previousState == LootState.Available then
+        if args.newState == LootState.Looted then
+            Messages.MessageEvent('Tracker', 'OnLootLooted', args)
+        elseif args.newState == LootState.Lost then
+            Messages.MessageEvent('Tracker', 'OnLootLost', args)
+        end
+    end
+end
+
+
+
+
 --[[
     Messages.SendChatMessage(channel, message, [alert])
     For normal chat messages.
@@ -15,10 +36,10 @@ function Messages.SendChatMessage(channel, message, alert)
     if not (Options['Core']['Enabled'] and Options['Messages']['Enabled']) then return end
 
     -- Requires that you are the squad leader in order to send messages on squad channel
-    if channel == 'squad' and not bIsSquadLeader then return end
+    if channel == 'squad' and not State.isSquadLeader then return end
 
     -- Handle optional arguments
-    alert = false -- Fixme: Deprecate
+    alert = alert or false
 
     -- Setup prefix
     local prefix = Options['Messages']['Prefix']
@@ -97,7 +118,7 @@ end
     Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.
 --]]
 function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
-    canSend = canSend or bIsSquadLeader
+    canSend = canSend or State.isSquadLeader
     if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
             -- Var

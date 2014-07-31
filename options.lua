@@ -2,15 +2,23 @@ Options = {
     ['Core'] = {
         ['Enabled'] = true,
         ['VersionMessage'] = true,
+        ['SlashHandles'] = 'xlt,lt',
     },
 
     ['Tracker'] = {
         ['Enabled'] = true,
         ['TrackDelay'] = 1,
-        ['UpdateInterval'] = 2,
+        ['UpdateDelay'] = 0,
+        ['RemoveDelay'] = 0,
+        ['RefreshInterval'] = 2,
+        ['LootUpdateInterval'] = 2,
+        ['LootEventHistoryCleanupInterval'] = 2,
+        ['LootEventHistoryLifetime'] = 3 * 1000,
     },
 
     ['Panels'] = {
+        ['Enabled'] = true,
+
         ['Mode'] = LootPanelModes.Standard,
 
         ['Display'] = {
@@ -288,10 +296,10 @@ Options = {
         ['Prefix'] = '',
 
         ['Events'] = {
-            
-            ['Detection'] = {
 
-                ['OnTrackerTrack'] = {
+            ['Tracker'] = {
+
+                ['OnLootNew'] = {
                     ['Enabled'] = true,
 
                     ['Channels'] = {
@@ -318,7 +326,7 @@ Options = {
 
                 },
 
-                ['OnLooted'] = {
+                ['OnLootLooted'] = {
                     ['Enabled'] = true,
 
                     ['Channels'] = {
@@ -412,6 +420,8 @@ Options = {
         },
         ['PlateMode'] = HUDTrackerPlateModeOptions.Decorated,
         ['IconMode'] = HUDTrackerIconModeOptions.Decorated,
+
+        ['UpdateInterval'] = 1,
     },
 
     ['Sounds'] = {
@@ -453,7 +463,7 @@ function OnOptionChange(args)
 
     -- InterfaceOptions Special Values
     if args.id == "__LOADED" then
-        bLoaded = true
+        State.loaded = true
 
     elseif args.id == '__DEFAULT' then
         -- Todo: Fixme:
@@ -487,10 +497,10 @@ function OnOptionChange(args)
     end
 
     -- Perform extra actions when loaded
-    if bLoaded then
+    if State.loaded then
         -- For Tracker options, update the tracker
-        if explodedId[1] == 'Tracker' then
-            Tracker.Update()
+        if explodedId[1] == 'HUDTracker' then
+            HUDTracker.OnOptionChange(args.id, args.val)
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
             -- Note: This could behave poorly if other sound options are added

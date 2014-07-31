@@ -7,18 +7,11 @@ HUDTracker = {}
 local FRAME = Component.GetFrame('Tracker')
 local SLIDER = FRAME:GetChild('Slider')
 local LIST = FRAME:GetChild('List')
-local SCROLLER = RowScroller.Create(LIST)
+local SCROLLER = nil
 
-local TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
+local TOOLTIP_ITEM = nil
 
-
-
--- Constants
-local cTrackerButtonSize = 25 -- Height and Width of the Need/Greed/Pass buttons in the HUDTracker.
-local HUDTrackerUpdateInterval = 0.5
-
-
-CYCLE_HUDTrackerUpdate = nil
+local CYCLE_HUDTrackerUpdate = nil
    
 
 
@@ -41,28 +34,67 @@ end
 
 function HUDTracker.Setup()
     -- Scroller
+    SCROLLER = RowScroller.Create(LIST)
     SCROLLER:SetSlider(SLIDER)
     SCROLLER:SetSliderMargin(5, 5)
     SCROLLER:SetSpacing(8)
     SCROLLER:ShowSlider(true)
 
     -- Tooltip
+    TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
     TOOLTIP_ITEM.GROUP:Show(false)
 
-    -- Update cycle
-    CYCLE_HUDTrackerUpdate = Callback2.CreateCycle(HUDTracker.Update)
-    CYCLE_HUDTrackerUpdate:Run(HUDTrackerUpdateInterval)
+    -- Start
+    HUDTracker.Enable()
+end
 
+function HUDTracker.Enable()
+    -- Start update cycle
+    if Options['HUDTracker']['Enabled'] then
+        if not CYCLE_HUDTrackerUpdate then
+            CYCLE_HUDTrackerUpdate = Callback2.CreateCycle(HUDTracker.Update)
+            CYCLE_HUDTrackerUpdate:Run(Options['HUDTracker']['UpdateInterval'])
+        end
+    end
+end
+
+function HUDTracker.Disable()
+    -- Stop update cycle
+    if CYCLE_HUDTrackerUpdate then
+        CYCLE_HUDTrackerUpdate:Stop()
+        CYCLE_HUDTrackerUpdate:Release()
+        CYCLE_HUDTrackerUpdate = nil
+    end
+
+    -- Hide tooltip if is currently being displayed
+    if State.tooltipActive then
+        Tooltip.Show(false)
+        TOOLTIP_ITEM.GROUP:Show(false)
+    end
+
+    -- Clear
+    SCROLLER:Reset() 
+end
+
+function HUDTracker.OnOptionChange(id, value)
+    if id == "HUDTracker_Enabled" then
+        -- Enabled
+        if value then
+            HUDTracker.Enable()
+        -- Disabled
+        else
+            HUDTracker.Disable()
+        end
+    else
+        Debug.Log("Unhandled Option Id "..tostring(id))
+    end
 end
 
 function HUDTracker.Update()
-    -- Debug.Log('UpdateTracker')
-
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
        
-        -- Hide tooltip if is currently being displayed
-        -- Fixme: What...?
+        -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
         if State.tooltipActive then
             Tooltip.Show(false)
             TOOLTIP_ITEM.GROUP:Show(false)
@@ -73,30 +105,9 @@ function HUDTracker.Update()
 
         -- Get loot
         local trackedLoot = Tracker.GetLoot()
-            
-        -- Return true if lootA should come before lootB
-        local function trackerSort(lootA, lootB)
-
-            -- Rarer items first
-            if Loot.GetRarityIndex(lootA:GetRarity()) > Loot.GetRarityIndex(lootB:GetRarity()) then
-                return true
-            
-            -- Better items second
-            elseif lootA:GetItemLevel() > lootB:GetItemLevel() then
-                return true
-
-            -- Alphabetic third
-            elseif lootA:GetName() < lootB:GetName() then
-                return true
-
-            end
-
-            -- This part is important for sorting to work!
-            return false
-        end
 
         -- Order it by rarity
-        table.sort(trackedLoot, trackerSort)
+        table.sort(trackedLoot, HUDTrackerSort)
 
         -- Populate
         if not _table.empty(trackedLoot) then
@@ -237,8 +248,8 @@ function HUDTracker.UpdateVisibility()
      -- Should we display the tracker?
         --Debug.Log('Should we display the Tracker?')
         --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
-        --Debug.Log('bHUD == '..tostring(bHUD))
-        --Debug.Log('bCursor == '..tostring(bCursor))
+        --Debug.Log('State.hud == '..tostring(State.hud))
+        --Debug.Log('State.cursor == '..tostring(State.cursor))
         if SCROLLER:GetRowCount() > 0 and (
                (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
@@ -283,26 +294,43 @@ end
 
 function HUDTracker.UpdateTooltip(lootId)
     -- Get info
-    Debug.Log('UpdateTrackerTooltip called with entityId'..tostring(lootId))
+    Debug.Log('UpdateTrackerTooltip called for lootId '..tostring(lootId))
     local loot = Tracker.GetLootById(lootId)
     if loot == nil or loot == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
 
+    -- Setup Tooltip
+    TOOLTIP_ITEM:DisplayInfo(loot.itemInfo)
+    TOOLTIP_ITEM.GROUP:SetDims("top:0; left:0; width:200; height:200")
 
-    -- Item Style Tooltip
-   
-        -- Setup Tooltip
-        TOOLTIP_ITEM:DisplayInfo(loot.itemInfo)
-        TOOLTIP_ITEM.GROUP:SetDims("top:0; left:0; width:200; height:200")
+    -- Return Tooltip
+    local tip_args = TOOLTIP_ITEM:GetBounds()
+    tip_args.frame_color = loot:GetColor()
 
-        -- Return Tooltip
-        local tip_args = TOOLTIP_ITEM:GetBounds()
-        --tip_args.frame_color = LIB_ITEMS.GetResourceQualityColor(item.quality)
-
-        return TOOLTIP_ITEM.GROUP, tip_args
-
+    return TOOLTIP_ITEM.GROUP, tip_args
 end
 
 -- Fix text size
 function AutosizeText(TEXT)
     TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
+end
+
+
+-- Return true if lootA should come before lootB
+function HUDTrackerSort(lootA, lootB)
+    -- Rarer items first
+    if Loot.GetRarityIndex(lootA:GetRarity()) > Loot.GetRarityIndex(lootB:GetRarity()) then
+        return true
+    
+    -- Better items second
+    elseif lootA:GetItemLevel() > lootB:GetItemLevel() then
+        return true
+
+    -- Alphabetic third
+    elseif lootA:GetName() < lootB:GetName() then
+        return true
+
+    end
+
+    -- This part is important for sorting to work!
+    return false
 end

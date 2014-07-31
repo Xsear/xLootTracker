@@ -25,6 +25,8 @@ require './lib/lib_LKObjects' -- Trivialize objects
 -- Custom Utils
 require './util/xSounds' -- Soundfiles for options
 
+require './lootpanel'
+
 -- Addon Meta
 AddonInfo = {
     release  = "ALPHA 2014-07-28",
@@ -54,7 +56,7 @@ require './util' -- To be deprecated
 require './types'   -- Types
 require './options' -- Options
 
-require './loot'
+require './loot'-- Loot
 
 require './messages' -- Messages
 require './tracker' -- Tracker
@@ -70,28 +72,34 @@ require './hudtracker' -- HUdTracker
     Sets up Interace options, slash commands and prints a version message
 ]]--
 function OnComponentLoad()
+    -- Install
+    if not Component.GetSetting('INSTALLED') then
+        Component.SaveSetting('INSTALLED', true)
+        Component.SaveSetting('Core_VersionMessage', true)
+    end
+
     -- Setup Debug
     Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
+
+    -- Setup Slash
+    LIB_SLASH.BindCallback({slash_list=Component.GetSetting('Core_SlashHandles'), description='Xsear\'s Loot Tracker', func=OnSlash})
 
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
     Lokii.SetBaseLang('en');
     Lokii.SetToLocale();
 
+    -- Setup LKObjects
+    --LKObjects.SetMemoryWarning(20)
+    
     -- Setup Options
     Options.Setup()
-
-    -- Setup Slash Commands
-    LIB_SLASH.BindCallback({slash_list='xslm,slm,xlt,lt', description='Xsear\'s Loot Tracker', func=OnSlash})
 
     -- Setup Tracker
     Tracker.Setup()
 
     -- Setup HUDTracker
     HUDTracker.Setup()
-
-    -- Setup LKObjects
-    LKObjects.SetMemoryWarning(20)
 
     -- Print version message
     if Component.GetSetting('Core_VersionMessage') then
@@ -257,30 +265,40 @@ function OnTrackerNew(args)
     -- Waypoints
     WaypointManager.OnTrackerNew(args)
 
+    -- Panels
+    PanelManager.OnTrackerNew(args)
+
     -- HUDTracker
     HUDTracker.OnTrackerNew(args)
 
     -- Messages
-    local loot = Tracker.GetLootById(args.lootId)
-    local rarity = loot:GetRarity()
-    if rarity == LootRarity.Epic then
-        Chat.SendChannelText("squad", "Epic: "..tostring(loot:GetName()))
+    if Options['Messages']['Enabled'] then
+        local loot = Tracker.GetLootById(args.lootId)
+        local rarity = loot:GetRarity()
+        if rarity == LootRarity.Epic then
+            Chat.SendChannelText("squad", "Epic: "..tostring(loot:GetName()))
+        end
     end
-    --Messages.MessageEvent('Detection', 'OnIdentify', args)
 end
 
 function OnTrackerUpdate(args)
     Debug.Event(args)
 
-    -- Waypoints
-    WaypointManager.OnTrackerUpdate(args)
-
     -- HUDTracker
     HUDTracker.OnTrackerUpdate(args)
 
     -- Messages
-    --Messages.MessageEvent('Detection', 'OnLootDespawn', args)
+    Messages.OnTrackerUpdate(args)
+end
 
+function OnTrackerLooted(args)
+    Debug.Event(args)
+
+    -- Waypoints
+    WaypointManager.OnTrackerLooted(args)
+
+    -- Panels
+    PanelManager.OnTrackerLooted(args)
 end
 
 function OnTrackerRemove(args)
@@ -289,11 +307,11 @@ function OnTrackerRemove(args)
     -- Waypoints
     WaypointManager.OnTrackerRemove(args)
 
+    -- Panels
+    PanelManager.OnTrackerRemove(args)
+
     -- HUDTracker
     HUDTracker.OnTrackerRemove(args)
-
-    -- Messages
-    --Messages.MessageEvent('Detection', 'OnLootReceived', args)
 end
 
 

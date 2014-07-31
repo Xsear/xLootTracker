@@ -7,15 +7,8 @@ local Private = {
     lootEventHistory = {},
 
     CYCLE_Refresh = nil,
-    CYCLE_LootEventHistory = nil,
+    CYCLE_LootEventHistoryCleanup = nil,
 }
-
--- Todo: Make option
-TrackerRefreshInterval = 10
-TrackerLootEventHistoryInterval = 2
-TrackerLootEventHistoryLife = 3 * 1000
-TrackerTrackDelay = 0.5
-TrackerRemoveDelay = 3
 
 
 --[[
@@ -26,8 +19,8 @@ TrackerRemoveDelay = 3
 function Tracker.Setup()
     --Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
     --Private.CYCLE_Refresh:Run(TrackerRefreshInterval)
-    Private.CYCLE_LootEventHistory = Callback2.CreateCycle(Private.LootEventHistoryCleanup)
-    Private.CYCLE_LootEventHistory:Run(TrackerLootEventHistoryInterval)
+    Private.CYCLE_LootEventHistoryCleanup = Callback2.CreateCycle(Private.LootEventHistoryCleanup)
+    Private.CYCLE_LootEventHistoryCleanup:Run(Options['Tracker']['LootEventHistoryCleanupInterval'])
 end
 
 function Private.LootEventHistoryCleanup()
@@ -45,7 +38,7 @@ function Private.LootEventHistoryCleanup()
                     local event = events[i]
 
                     -- If has lived longer than life, remove
-                    if (currentTime - event.occuredAt > TrackerLootEventHistoryLife) then
+                    if (currentTime - event.occuredAt > Options['Tracker']['LootEventHistoryLifetime']) then
                         table.remove(events, i)
                     else
                         i = i + 1
@@ -155,7 +148,7 @@ function Tracker.OnEntityLost(args)
     end
 
     -- Since we've lost the entity, we gotta update.
-    Callback2.FireAndForget(Tracker.Update, loot:GetId(), 0)
+    Callback2.FireAndForget(Tracker.Update, loot:GetId(), Options['Tracker']['UpdateDelay'])
 end
 
 
@@ -222,7 +215,7 @@ function Tracker.OnLootEvent(args)
                 Callback2.FireAndForget(Private.SetLooted, {loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy}, 0)
 
                 -- Force update.
-                Callback2.FireAndForget(Tracker.Update, loot:GetId(), 0)
+                Callback2.FireAndForget(Tracker.Update, loot:GetId(), Options['Tracker']['UpdateDelay'])
             else
                 -- Hmm, so we weren't tracking this item
                 Debug.Log("Tracker.OnLootEvent found no matches for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
@@ -331,7 +324,7 @@ function Tracker.Track(args)
     Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
 
     -- Start update cycle
-    loot.CYCLE_Update:Run(Options['Tracker']['UpdateInterval'])
+    loot.CYCLE_Update:Run(Options['Tracker']['LootUpdateInterval'])
 end
 
 
@@ -358,9 +351,15 @@ function Tracker.Update(lootArg)
     if newState ~= previousState then
         Component.GenerateEvent("XLT_ON_TRACKER_UPDATE", {lootId = loot:GetId(), previousState = previousState, newState = newState})
         
+
+        if previousState == LootState.Available and newState == LootState.Looted then
+            Component.GenerateEvent("XLT_ON_TRACKER_LOOTED", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+        end
+
+        -- Trigger removal from Tracker
         if previousState == LootState.Available and not loot.markedForDeletion then
             loot.markedForDeletion = true
-            Callback2.FireAndForget(Tracker.Remove, loot, TrackerRemoveDelay)
+            Callback2.FireAndForget(Tracker.Remove, loot, Options['Tracker']['RemoveDelay'])
         end
     end
 
@@ -486,7 +485,7 @@ end
 ]]--
 function IsTrackableItem(itemInfo)
     -- Verify that the looted item is of a type that we care about
-    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsComponent(itemInfo))
+    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsComponent(itemInfo) or IsConsumable(itemInfo))
 end
 
 
@@ -513,7 +512,9 @@ function IsComponent(itemInfo)
     local old = (itemInfo.type == "crafting_component")
     local new = (itemInfo.type == "resource_item" and not itemInfo.flags.is_salvageable) -- Note: Uncertain, might be too broad
 
-    return (new or old)
+    local cc = (itemInfo.type == "basic" and itemInfo.flags.resource and itemInfo.flags.is_tradable)
+
+    return (new or old or cc)
 end
 
 
@@ -529,6 +530,10 @@ end
 
 function IsModule(itemInfo)
     return (itemInfo.type == "item_module")
+end
+
+function IsConsumable(itemInfo)
+    return (itemInfo.type == "consumable")
 end
 
 
