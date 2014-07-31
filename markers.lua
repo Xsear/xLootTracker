@@ -35,7 +35,6 @@ end
 
 function WaypointManager.OnTrackerRemove(args)
     if not Options['Waypoints']['Enabled'] then return end
-    Debug.Log("WaypointManager on Tracker Remove!")
     args.newState = "silly"
     WaypointManager.OnLootStateChange(args)
 end
@@ -92,14 +91,9 @@ end
 
 function WaypointManager.OnLootStateChange(args)
     if args.newState ~= LootState.Available then
-        Debug.Log("Looking for waypoint to remove")
         for i, waypoint in ipairs(Private.waypointList) do
             if waypoint.markerType == MarkerType.Loot then
-                if type(waypoint.lootId) ~= type(args.lootId) then
-                    Debug.Warn("lootId Types do not match! D: Waypoint: "..tostring(type(waypoint.lootId))..", Args: "..tostring(type(args.lootId)))
-                end
                 if waypoint.lootId == args.lootId then
-                    Debug.Table("Found waypoint that should be removed: ", waypoint)
                     waypoint.MARKER:Destroy()
                     table.remove(Private.waypointList, i)
                     break

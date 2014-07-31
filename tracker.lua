@@ -125,7 +125,7 @@ function Tracker.OnEntityLost(args)
     -- Okay, let's see what we know about this
     local loot = Tracker.GetLootByEntityId(args.entityId)
     
-    Debug.Log('Tracker.OnEntityLost for '..loot:ToString())
+    --Debug.Log('Tracker.OnEntityLost for '..loot:ToString())
 
     -- Do we have any loot events for this kinda item?
     if Private.lootEventHistory[loot:GetTypeId()] and #Private.lootEventHistory[loot:GetTypeId()] > 0 then
@@ -143,7 +143,7 @@ function Tracker.OnEntityLost(args)
         end
 
         -- Get that shit.
-        Debug.Log('Tracker.OnEntityLost found a previous loot event that matches! Assuming looted by '..tostring(event.lootedBy)..' and to '..tostring(event.lootedTo)..', detected through '..tostring(event.event))
+        --Debug.Log('Tracker.OnEntityLost found a previous loot event that matches! Assuming looted by '..tostring(event.lootedBy)..' and to '..tostring(event.lootedTo)..', detected through '..tostring(event.event))
         Private.SetLooted({loot = loot, lootedTo = event.lootedTo, lootedBy = event.lootedBy})
     end
 
@@ -181,7 +181,7 @@ function Tracker.OnLootEvent(args)
             local loot = nil
             local matches = {}
             -- So, are we tracking anything like this?
-            Debug.Log("Scanning for match: Available and typeId " .. tostring(args.itemTypeId))
+            --Debug.Log("Scanning for match: Available and typeId " .. tostring(args.itemTypeId))
             for id, item in pairs(Private.trackedLoot) do
                 if item.state == LootState.Available and tostring(item:GetTypeId()) == tostring(args.itemTypeId) then
                     loot = item
@@ -189,12 +189,12 @@ function Tracker.OnLootEvent(args)
                 end
             end
 
-            Debug.Log("Scan Result: " .. tostring(#matches))
+            --Debug.Log("Scan Result: " .. tostring(#matches))
 
             -- Do we have more than one matches?
             if #matches > 1 then
                 -- Shit.
-                Debug.Log("Tracker.OnLootEvent Multiple potential matches (" .. tostring(count) .. ") for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+                --Debug.Log("Tracker.OnLootEvent Multiple potential matches (" .. tostring(count) .. ") for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
                 
                 if not Private.lootEventHistory[args.itemTypeId] then
                     Private.lootEventHistory[args.itemTypeId] = {}
@@ -208,11 +208,11 @@ function Tracker.OnLootEvent(args)
 
             elseif #matches == 1 then
                 -- Aww yeah! Get that shit.
-                Debug.Log('Tracker.OnLootEvent for '..loot:GetName()..', '..tostring(loot:GetEntityId())..', '..loot:GetId())
-                Debug.Log('It is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
+                --Debug.Log('Tracker.OnLootEvent for '..loot:GetName()..', '..tostring(loot:GetEntityId())..', '..loot:GetId())
+                --Debug.Log('It is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
 
                 -- Set the looted status
-                Callback2.FireAndForget(Private.SetLooted, {loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy}, 0)
+                Private.SetLooted({loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy)
 
                 -- Force update.
                 Callback2.FireAndForget(Tracker.Update, loot:GetId(), Options['Tracker']['UpdateDelay'])
@@ -377,8 +377,6 @@ function Tracker.Remove(lootArg)
         Debug.Warn("Tracker.Remove called with invalid loot argument " .. tostring(lootArg))
         return
     end
-
-    Debug.Log("Tracker.Remove called for " ..loot:GetId().. " "..loot:GetName())
 
     local lootId = loot:GetId()
 

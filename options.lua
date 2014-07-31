@@ -619,7 +619,7 @@ function BuildInterfaceOptions_Front()
     -- Core
     InterfaceOptions.StartGroup({
         id    = 'Group_Core',
-        label = 'Xsear\'s Squad Loot Manager',
+        label = 'Xsear\'s Loot Tracker',
     })
         
         InterfaceOptions.AddCheckBox({
@@ -634,6 +634,13 @@ function BuildInterfaceOptions_Front()
             label   = Lokii.GetString('Core_VersionMessage_Label'),
             tooltip = Lokii.GetString('Core_VersionMessage_Tooltip'),
             default = Options['Core']['VersionMessage'],
+        })
+
+        InterfaceOptions.AddTextInput({
+            id      = 'Core_SlashHandles',
+            label   = Lokii.GetString('Core_SlashHandles_Label'),
+            tooltip = Lokii.GetString('Core_SlashHandles_Tooltip'),
+            default = Options['Core']['SlashHandles'],
         })
 
     InterfaceOptions.StopGroup()
@@ -651,14 +658,12 @@ function BuildInterfaceOptions_Front()
             default = Options['Messages']['Enabled'],
         })
 
-        --[[
         InterfaceOptions.AddCheckBox({
             id      = 'Panels_Enabled',
             label   = Lokii.GetString('Panels_Enabled_Label'),
             tooltip = Lokii.GetString('Panels_Enabled_Tooltip'),
             default = Options['Panels']['Enabled'],
         })
-        --]]
 
         InterfaceOptions.AddCheckBox({
             id      = 'Waypoints_Enabled',
@@ -733,34 +738,104 @@ end
 
 function BuildInterfaceOptions_Tracker()
 
-    -- Identify Delay
+    -- Track Delay
     InterfaceOptions.AddSlider({
         id      = 'Tracker_TrackDelay',
-        min     = 0.5,
-        max     = 5,
+        min     = 0.0,
+        max     = 5.0,
         inc     = 0.5,
         suffix  = 's',
         default = Options['Tracker']['TrackDelay'],
-        label   = Lokii.GetString('Detection_IdentifyDelay_Label'),
-        tooltip = Lokii.GetString('Detection_IdentifyDelay_Tooltip'),
+        label   = Lokii.GetString('Tracker_TrackDelay_Label'),
+        tooltip = Lokii.GetString('Tracker_TrackDelay_Tooltip'),
         subtab  = {
             Lokii.GetString('Subtab_Tracker')
         },
     })
 
-    -- Despawn Check Interval
+    -- Update Delay
     InterfaceOptions.AddSlider({
-        id      = 'Tracker_UpdateInterval',
+        id      = 'Tracker_UpdateDelay',
+        min     = 0.0,
+        max     = 5.0,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['Tracker']['UpdateDelay'],
+        label   = Lokii.GetString('Tracker_UpdateDelay_Label'),
+        tooltip = Lokii.GetString('Tracker_UpdateDelay_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Tracker')
+        },
+    })
+
+    -- Remove Delay
+    InterfaceOptions.AddSlider({
+        id      = 'Tracker_RemoveDelay',
+        min     = 0.0,
+        max     = 5.0,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['Tracker']['RemoveDelay'],
+        label   = Lokii.GetString('Tracker_RemoveDelay_Label'),
+        tooltip = Lokii.GetString('Tracker_RemoveDelay_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Tracker')
+        },
+    })
+
+    -- Refresh Interval
+    InterfaceOptions.AddSlider({
+        id      = 'Tracker_RefreshInterval',
+        min     = 0.5,
+        max     = 5.0,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['Tracker']['RefreshInterval'],
+        label   = Lokii.GetString('Tracker_RefreshInterval_Label'),
+        tooltip = Lokii.GetString('Tracker_RefreshInterval_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Tracker')
+        },
+    })
+
+    -- Loot Update Interval
+    InterfaceOptions.AddSlider({
+        id      = 'Tracker_LootUpdateInterval',
         min     = 0.5,
         max     = 120,
         inc     = 0.5,
         suffix  = 's',
-        default = Options['Tracker']['UpdateInterval'],
-        label   = Lokii.GetString('Detection_DespawnCheckInterval_Label'),
-        tooltip = Lokii.GetString('Detection_DespawnCheckInterval_Tooltip'),
+        default = Options['Tracker']['LootUpdateInterval'],
+        label   = Lokii.GetString('Tracker_LootUpdateInterval_Label'),
+        tooltip = Lokii.GetString('Tracker_LootUpdateInterval_Tooltip'),
         subtab  = {
             Lokii.GetString('Subtab_Tracker')
         },
+    })
+
+    -- LootEvent History Cleanup Interval
+    InterfaceOptions.AddSlider({
+        id      = 'Tracker_LootEventHistoryCleanupInterval',
+        min     = 0.5,
+        max     = 120,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['Tracker']['LootEventHistoryCleanupInterval'],
+        label   = Lokii.GetString('Tracker_LootEventHistoryCleanupInterval_Label'),
+        tooltip = Lokii.GetString('Tracker_LootEventHistoryCleanupInterval_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Subtab_Tracker')
+        },
+    })
+
+    -- LootEvent History Lifetime
+    InterfaceOptions.AddTextInput({
+        id      = 'Tracker_LootEventHistoryLifetime',
+        numeric = true,
+        default = Options['Tracker']['LootEventHistoryLifetime'],
+        label   = Lokii.GetString('Tracker_LootEventHistoryLifetime_Label'),
+        tooltip = Lokii.GetString('Tracker_LootEventHistoryLifetime_Tooltip'),
+        subtab  = subtab
     })
 end
 
