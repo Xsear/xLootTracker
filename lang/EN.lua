@@ -6,18 +6,39 @@
 
 
 -- Parameters used for the functions below
-Detect             =    "Detect"
-Distribute         =    "Distribute"
-Mark               =    "Mark"
+
+
+
 Simple             =    "Simple"
-Unstaged           =    "Unstaged"
-Stage1             =    "Stage 1"
-Stage2             =    "Stage 2"
-Stage3             =    "Stage 3"
-Stage4             =    "Stage 4"
-EquipmentItems     =    "Equipment Items"
-CraftingComponents =    "Crafting Components"
-SalvageModules     =    "Salvage Modules"
+
+
+
+
+--[[
+LootCategory
+    Equipment
+    Modules
+    Salvage
+    Components
+    Consumable
+    Currency
+    Unknown
+
+
+
+LootRarity
+    Salvage
+    Common
+    Uncommon
+    Rare
+    Epic
+    Prototype
+    Legendary
+
+--]]
+
+
+
 
 function DetectDistributeMarkX_Label(type, stage, x)
     return type.." "..stage.." "..x
@@ -39,8 +60,6 @@ end
 
 Generic_MessageFormat = "Specify the format of the message. The following replacement variables exist, please note that they're not always available.\n%i : Subject item\n%eId : Item entityId\n%cId : Item craftingTypeId\n%c : The coordinates to the item, as a link\n%n : Subject player\n%l : Player that looted the item\n%a : Player that the item was assigned to\n%m : Distribution Mode that item was distributed in.\n%fA : Archetype suitable for item\n%fF : Frame suitable for item\n%r : The roll value\n%t : The roll type\n%p : Players that can roll\n%e : Players that can Need roll"
 
-Filter_Generic_SimpleEnabled_Label                                              =    "Simple"
-Filter_Generic_SimpleEnabled_Tooltip                                            =    "If in Simple configuration mode, only these settings are used."
 
 LANG = {
 
@@ -56,290 +75,265 @@ LANG = {
 
 
 
-    -- Everything below is used by the Interface Options.
-
     Options_MoveableFrame_Tracker_Label                                             =     "xSLM Loot Tracker",
 
-    Filter_Generic_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode.",
+    Options_Group_Core_Label                                                                    =    "Xsear\'s Loot Tracker",
+    Options_Core_Enabled_Label                                                                  =    "Enabled",
+    Options_Core_Enabled_Tooltip                                                                =    "The addon will be enabled. This option is mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. If you are suspecting compatability issues with other addons, it would be better to tempoarily remove the addon in order to verify whether or not it is part of the issue.",
+    Options_Core_VersionMessage_Label                                                           =    "Version Message",
+    Options_Core_VersionMessage_Tooltip                                                         =    "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
+    Options_Core_SlashHandles_Label                                                             = "Slash Handles",
+    Options_Core_SlashHandles_Tooltip                                                           = "<<WRITE ME>>",
 
-    Filter_Generic_LootMode_Label                                                   =    "Ruleset",
-    Filter_Generic_LootMode_Tooltip                                                 =    "Set the active ruleset/mode for how loot is distributed. This is affected by the weighting and threshold settings as well.\nRandom: Assigns the item to a random eligible group member\nDice: Rolls for each eligible member and assigns the item to the highest roller\nRound-robin: Awards items to each group member in order. Loot weighting doesn't work in this mode.\nNeed before Greed: Accepts need, greed or pass call from each eligible group member",
-    Filter_Generic_Weighting_Label                                                  =    "Weighting",
-    Filter_Generic_Weighting_Tooltip                                                =    "Sets the active loot weighting criteria, which can be used to disallow users from rolling on loot drops that their currently active frame cannot use.\nDisabled: No loot weighting.\nArchetype: Only players in the same Battleframe Archetype as the item are eligible.",
-    Filter_Generic_TierThreshold_Label                                              =    "Tier Threshold",
-    Filter_Generic_TierThreshold_Tooltip                                            =    "Loot below this tier will not be distributed.",
-    Filter_Generic_QualityThreshold_Label                                           =    "Quality Threshold",
-    Filter_Generic_QualityThreshold_Tooltip                                         =    "Loot below this quality threshold will not be distributed.",
-    Filter_Generic_QualityThresholdCustomValue_Label                                =    "Custom Quality Threshold",
-    Filter_Generic_QualityThresholdCustomValue_Tooltip                              =    "If Quality Threshold is set to Custom, loot below this quality threshold will not be distributed.",
-
-
-
-    Filter_Generic_EquipmentItems_Enabled_Label                                     =    "Equipment Items Enabled",
-    Filter_Generic_EquipmentItems_Enabled_Tooltip                                   =    "Toggle",
-    Filter_Generic_EquipmentItems_Mode_Label                                        =    "Equipment Items Mode",
-    Filter_Generic_EquipmentItems_Mode_Tooltip                                      =    "Simple or Advanced configuration mode.",
-
-    Filter_Generic_CraftingComponents_Enabled_Label                                 =    "Crafting Components Enabled",
-    Filter_Generic_CraftingComponents_Enabled_Tooltip                               =    "Toggle",
-    Filter_Generic_CraftingComponents_Mode_Label                                    =    "Crafting Components Mode",
-    Filter_Generic_CraftingComponents_Mode_Tooltip                                  =    "Simple or Advanced configuration mode.",
-
-    Filter_Generic_SalvageModules_Enabled_Label                                 =    "Salvage Modules Enabled",
-    Filter_Generic_SalvageModules_Enabled_Tooltip                               =    "Toggle",
-    Filter_Generic_SalvageModules_Mode_Label                                    =    "Salvage Modules Mode",
-    Filter_Generic_SalvageModules_Mode_Tooltip                                  =    "Simple or Advanced configuration mode.",
-
-
-    Filter_Generic_CraftingComponents_Simple_Enabled_Label                          =    Filter_Generic_SimpleEnabled_Label,
-    Filter_Generic_CraftingComponents_Simple_Enabled_Tooltip                        =    Filter_Generic_SimpleEnabled_Tooltip,  
-    Filter_Generic_CraftingComponents_Unstaged_Enabled_Label                        =    FilterGenericX_Label(Unstaged, CraftingComponents),
-    Filter_Generic_CraftingComponents_Unstaged_Enabled_Tooltip                      =    FilterGenericX_Tooltip(Unstaged, CraftingComponents), 
-    Filter_Generic_CraftingComponents_Stage1_Enabled_Label                          =    FilterGenericX_Label(Stage1, CraftingComponents),
-    Filter_Generic_CraftingComponents_Stage1_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage1, CraftingComponents), 
-    Filter_Generic_CraftingComponents_Stage2_Enabled_Label                          =    FilterGenericX_Label(Stage2, CraftingComponents),
-    Filter_Generic_CraftingComponents_Stage2_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage2, CraftingComponents), 
-    Filter_Generic_CraftingComponents_Stage3_Enabled_Label                          =    FilterGenericX_Label(Stage3, CraftingComponents),
-    Filter_Generic_CraftingComponents_Stage3_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage3, CraftingComponents), 
-    Filter_Generic_CraftingComponents_Stage4_Enabled_Label                          =    FilterGenericX_Label(Stage4, CraftingComponents),
-    Filter_Generic_CraftingComponents_Stage4_Enabled_Tooltip                        =    FilterGenericX_Tooltip(Stage4, CraftingComponents),
-
-    Filter_Generic_EquipmentItems_Simple_Enabled_Label                              =    Filter_Generic_SimpleEnabled_Label,
-    Filter_Generic_EquipmentItems_Simple_Enabled_Tooltip                            =    Filter_Generic_SimpleEnabled_Tooltip,  
-    Filter_Generic_EquipmentItems_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, EquipmentItems),
-    Filter_Generic_EquipmentItems_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, EquipmentItems), 
-    Filter_Generic_EquipmentItems_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, EquipmentItems),
-    Filter_Generic_EquipmentItems_Stage1_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage1, EquipmentItems), 
-    Filter_Generic_EquipmentItems_Stage2_Enabled_Label                              =    FilterGenericX_Label(Stage2, EquipmentItems),
-    Filter_Generic_EquipmentItems_Stage2_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage2, EquipmentItems), 
-    Filter_Generic_EquipmentItems_Stage3_Enabled_Label                              =    FilterGenericX_Label(Stage3, EquipmentItems),
-    Filter_Generic_EquipmentItems_Stage3_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage3, EquipmentItems), 
-    Filter_Generic_EquipmentItems_Stage4_Enabled_Label                              =    FilterGenericX_Label(Stage4, EquipmentItems),
-    Filter_Generic_EquipmentItems_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, EquipmentItems),
-
-    Filter_Generic_SalvageModules_Simple_Enabled_Label                              =    Filter_Generic_SimpleEnabled_Label,
-    Filter_Generic_SalvageModules_Simple_Enabled_Tooltip                            =    Filter_Generic_SimpleEnabled_Tooltip,  
-    Filter_Generic_SalvageModules_Unstaged_Enabled_Label                            =    FilterGenericX_Label(Unstaged, SalvageModules),
-    Filter_Generic_SalvageModules_Unstaged_Enabled_Tooltip                          =    FilterGenericX_Tooltip(Unstaged, SalvageModules), 
-    Filter_Generic_SalvageModules_Stage1_Enabled_Label                              =    FilterGenericX_Label(Stage1, SalvageModules),
-    Filter_Generic_SalvageModules_Stage1_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage1, SalvageModules), 
-    Filter_Generic_SalvageModules_Stage2_Enabled_Label                              =    FilterGenericX_Label(Stage2, SalvageModules),
-    Filter_Generic_SalvageModules_Stage2_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage2, SalvageModules), 
-    Filter_Generic_SalvageModules_Stage3_Enabled_Label                              =    FilterGenericX_Label(Stage3, SalvageModules),
-    Filter_Generic_SalvageModules_Stage3_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage3, SalvageModules), 
-    Filter_Generic_SalvageModules_Stage4_Enabled_Label                              =    FilterGenericX_Label(Stage4, SalvageModules),
-    Filter_Generic_SalvageModules_Stage4_Enabled_Tooltip                            =    FilterGenericX_Tooltip(Stage4, SalvageModules),
-
-
-
-    Messages_Generic_Channels_Squad_Enabled_Label                                   =    "Send Squad Message",
-    Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    "Send message to Squad on this event",
-    Messages_Generic_Channels_Squad_Format_Label                                    =    "Squad Message Format",
-    Messages_Generic_Channels_Squad_Format_Tooltip                                  =    Generic_MessageFormat,
-
-    Messages_Generic_Channels_System_Enabled_Label                                  =    "Send System Message",
-    Messages_Generic_Channels_System_Enabled_Tooltip                                =    "Send message to System on this event",
-    Messages_Generic_Channels_System_Format_Label                                   =    "System Message Format",
-
-    Messages_Generic_Channels_System_Format_Tooltip                                 =    Generic_MessageFormat,
-
-    Messages_Generic_Channels_Notifications_Enabled_Label                           =    "Send Notifications Message",
-    Messages_Generic_Channels_Notifications_Enabled_Tooltip                         =    "Send message to Notifications on this event",
-    Messages_Generic_Channels_Notifications_Format_Label                            =    "Notifications Message Format",
-
-    Messages_Generic_Channels_Notifications_Format_Tooltip                          =    Generic_MessageFormat,
 
     
-    Messages_Enabled_Label                                                          =    "Enable Messages",
-    Messages_Enabled_Tooltip                                                        =    "The addon will send customizable Messages to the Chat when certain events occur, keeping you and your Squad members in the loop of what is going on with the item drops.",
-    Messages_Prefix_Label                                                           =    "Generic Prefix",
-    Messages_Prefix_Tooltip                                                         =    "Set the prefix for all public facing messages.",
-    Messages_Channels_Squad_Label                                                   =    "Send on Squad Channel",
-    Messages_Channels_Squad_Tooltip                                                 =    "Master switch for Squad messages. The addon will not send ANY squad messages if this is checked, regardless of other settings.",
-    Messages_Channels_Notifications_Label                                           =    "Send on Notifications Channel",
-    Messages_Channels_Notifications_Tooltip                                         =    "Master switch for Notification messages. The addon will not send ANY notification messages if this is checked, regardless of other settings.",
-    Messages_Channels_System_Label                                                  =    "Send on System Channel",
-    Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send ANY system messages if this is checked, regardless of other settings.",
+    Options_Group_Features_Label                                                        =    "Features",
 
-    Messages_Events_Distribution_OnRollNobody_Enabled_Label                             =    "On Roll Nobody",
-    Messages_Events_Distribution_OnRollNobody_Enabled_Tooltip                           =    "When a roll ends without anyone rolling",
 
-    Messages_Events_Distribution_OnAssignItem_Enabled_Label                             =    "On Assign Item",
-    Messages_Events_Distribution_OnAssignItem_Enabled_Tooltip                           =    "When somebody is assigned an item",
+    Options_Tracker_TrackDelay_Label  = "Track Delay",
+    Options_Tracker_TrackDelay_Toolip = "<<WRITE ME>>",
+    Options_Tracker_UpdateDelay_Label  = "Update Delay",
+    Options_Tracker_UpdateDelay_Toolip = "<<WRITE ME>>",
+    Options_Tracker_RemoveDelay_Label  = "Remove Delay",
+    Options_Tracker_RemoveDelay_Toolip = "<<WRITE ME>>",
+    Options_Tracker_RefreshInterval_Label  = "Refresh Interval",
+    Options_Tracker_RefreshInterval_Toolip = "<<WRITE ME>>",
+    Options_Tracker_LootUpdateInterval_Label  = "Loot Update Interval",
+    Options_Tracker_LootUpdateInterval_Toolip = "<<WRITE ME>>",
+    Options_Tracker_LootEventHistoryCleanupInterval_Label  = "LootEvent History Cleanup Interval",
+    Options_Tracker_LootEventHistoryCleanupInterval_Toolip = "<<WRITE ME>>",
+    Options_Tracker_LootEventHistoryLifetime_Label  = "LootEvent History Lifetime",
+    Options_Tracker_LootEventHistoryLifetime_Toolip = "<<WRITE ME>>",
 
-    Messages_Events_Distribution_OnAssignItemByRoll_Enabled_Label                             =    "On Assign Item By Roll",
-    Messages_Events_Distribution_OnAssignItemByRoll_Enabled_Tooltip                           =    "When somebody is assigned an item, having won it through a roll",
 
-    Messages_Events_Distribution_OnAssignItemFreeForAll_Enabled_Label                             =    "On Assign Item Free For All",
-    Messages_Events_Distribution_OnAssignItemFreeForAll_Enabled_Tooltip                           =    "When an item is assigned to the public domain",
+    Options_Filtering_Simple_Enabled_Label                                              =    "Simple",
+    Options_Filtering_Simple_Enabled_Tooltip                                            =    "If in Simple configuration mode, only these settings are used.",
 
-    Messages_Events_Distribution_OnDistributeItem_Enabled_Label                         =    "On Distribute Item",
-    Messages_Events_Distribution_OnDistributeItem_Enabled_Tooltip                       =    "When an item is about to distribute an item",
+    Options_Filtering_Mode_Label                                                       =    "Configuration Mode",
+    Options_Filtering_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode.",
+
+
+
+
+    Options_Filtering_equipment_Enabled_Label               = "Equipment Enabled",
+    Options_Filtering_equipment_Enabled_Tooltip             = "Equipment Enabled",
+    Options_Filtering_modules_Enabled_Label                 = "Modules Enabled",
+    Options_Filtering_modules_Enabled_Tooltip               = "Modules Enabled",
+    Options_Filtering_salvage_Enabled_Label                 = "Salvage Enabled",
+    Options_Filtering_salvage_Enabled_Tooltip               = "Salvage Enabled",
+    Options_Filtering_components_Enabled_Label              = "Components Enabled",
+    Options_Filtering_components_Enabled_Tooltip            = "Components Enabled",
+    Options_Filtering_consumable_Enabled_Label              = "Consumable Enabled",
+    Options_Filtering_consumable_Enabled_Tooltip            = "Consumable Enabled",
+    Options_Filtering_currency_Enabled_Label                = "Currency Enabled",
+    Options_Filtering_currency_Enabled_Tooltip              = "Currency Enabled",
+    Options_Filtering_unknown_Enabled_Label                 = "Unknown Enabled",
+    Options_Filtering_unknown_Enabled_Tooltip               = "Unknown Enabled",
+    Options_Filtering_salvage_Enabled_Label                 = "Salvage Enabled",
+    Options_Filtering_salvage_Enabled_Tooltip               = "Salvage Enabled",
+    Options_Filtering_common_Enabled_Label                  = "Common Enabled",
+    Options_Filtering_common_Enabled_Tooltip                = "Common Enabled",
+    Options_Filtering_uncommon_Enabled_Label                = "Uncommon Enabled",
+    Options_Filtering_uncommon_Enabled_Tooltip              = "Uncommon Enabled",
+    Options_Filtering_rare_Enabled_Label                    = "Rare Enabled",
+    Options_Filtering_rare_Enabled_Tooltip                  = "Rare Enabled",
+    Options_Filtering_epic_Enabled_Label                    = "Epic Enabled",
+    Options_Filtering_epic_Enabled_Tooltip                  = "Epic Enabled",
+    Options_Filtering_prototype_Enabled_Label               = "Prototype Enabled",
+    Options_Filtering_prototype_Enabled_Tooltip             = "Prototype Enabled",
+    Options_Filtering_legendary_Enabled_Label               = "Legendary Enabled",
+    Options_Filtering_legendary_Enabled_Tooltip             = "Legendary Enabled",
+
+
+    Options_Filtering_RarityThreshold_Label             = "Rarity Threshold",
+    Options_Filtering_RarityThreshold_Dropdpown         = "<<WRITE ME>>",
+    Options_Filtering_ItemLevelThreshold_Label          = "Item Level Threshold",
+    Options_Filtering_ItemLevelThreshold_Dropdpown      = "<<WRITE ME>>",
+    Options_Filtering_RequiredLevelThreshold_Label      = "Required Level Threshold",
+    Options_Filtering_RequiredLevelThreshold_Dropdpown  = "<<WRITE ME>>",
+
+
+    Options_Messages_Generic_Channels_Squad_Enabled_Label                                   =    "Send Squad Message",
+    Options_Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    "Send message to Squad on this event",
+    Options_Messages_Generic_Channels_Squad_Format_Label                                    =    "Squad Message Format",
+    Options_Messages_Generic_Channels_Squad_Format_Tooltip                                  =    Generic_MessageFormat,
+
+    Options_Messages_Generic_Channels_System_Enabled_Label                                  =    "Send System Message",
+    Options_Messages_Generic_Channels_System_Enabled_Tooltip                                =    "Send message to System on this event",
+    Options_Messages_Generic_Channels_System_Format_Label                                   =    "System Message Format",
+
+    Options_Messages_Generic_Channels_System_Format_Tooltip                                 =    Generic_MessageFormat,
+
+    Options_Messages_Generic_Channels_Notifications_Enabled_Label                           =    "Send Notifications Message",
+    Options_Messages_Generic_Channels_Notifications_Enabled_Tooltip                         =    "Send message to Notifications on this event",
+    Options_Messages_Generic_Channels_Notifications_Format_Label                            =    "Notifications Message Format",
+
+    Options_Messages_Generic_Channels_Notifications_Format_Tooltip                          =    Generic_MessageFormat,
+
     
-    Messages_Events_Distribution_OnRolls_Enabled_Label                                  =    "On Rolls",
-    Messages_Events_Distribution_OnRolls_Enabled_Tooltip                                =    "When a roll is calculated",
+    Options_Messages_Enabled_Label                                                          =    "Enable Messages",
+    Options_Messages_Enabled_Tooltip                                                        =    "The addon will send customizable Messages to the Chat when certain events occur, keeping you and your Squad members in the loop of what is going on with the item drops.",
+    Options_Messages_Prefix_Label                                                           =    "Generic Prefix",
+    Options_Messages_Prefix_Tooltip                                                         =    "Set the prefix for all public facing messages.",
+    Options_Messages_Channels_Squad_Label                                                   =    "Send on Squad Channel",
+    Options_Messages_Channels_Squad_Tooltip                                                 =    "Master switch for Squad messages. The addon will not send ANY squad messages if this is checked, regardless of other settings.",
+    Options_Messages_Channels_Notifications_Label                                           =    "Send on Notifications Channel",
+    Options_Messages_Channels_Notifications_Tooltip                                         =    "Master switch for Notification messages. The addon will not send ANY notification messages if this is checked, regardless of other settings.",
+    Options_Messages_Channels_System_Label                                                  =    "Send on System Channel",
+    Options_Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send ANY system messages if this is checked, regardless of other settings.",
 
-    Messages_Events_Distribution_OnRollAccept_Enabled_Label                             =    "On Roll Accept",
-    Messages_Events_Distribution_OnRollAccept_Enabled_Tooltip                           =    "When a roll gets accepted",
+    Options_Messages_Events_Distribution_OnRollNobody_Enabled_Label                             =    "On Roll Nobody",
+    Options_Messages_Events_Distribution_OnRollNobody_Enabled_Tooltip                           =    "When a roll ends without anyone rolling",
 
-    Messages_Events_Distribution_OnRollBusy_Enabled_Label                               =    "On Roll Busy",
-    Messages_Events_Distribution_OnRollBusy_Enabled_Tooltip                             =    "When there is an attempt to start a new roll, but we're already busy rolling for something else",
+    Options_Messages_Events_Distribution_OnAssignItem_Enabled_Label                             =    "On Assign Item",
+    Options_Messages_Events_Distribution_OnAssignItem_Enabled_Tooltip                           =    "When somebody is assigned an item",
 
-    Messages_Events_Distribution_OnRollChange_Enabled_Label                             =    "On Roll Change",
-    Messages_Events_Distribution_OnRollChange_Enabled_Tooltip                           =    "When a roll gets changed",
+    Options_Messages_Events_Distribution_OnAssignItemByRoll_Enabled_Label                             =    "On Assign Item By Roll",
+    Options_Messages_Events_Distribution_OnAssignItemByRoll_Enabled_Tooltip                           =    "When somebody is assigned an item, having won it through a roll",
 
-    Messages_Events_Distribution_OnAcceptingRolls_Enabled_Label                         =    "On Accepting Rolls",
-    Messages_Events_Distribution_OnAcceptingRolls_Enabled_Tooltip                       =    "When the addon is listening for roll declarations",
+    Options_Messages_Events_Distribution_OnAssignItemFreeForAll_Enabled_Label                             =    "On Assign Item Free For All",
+    Options_Messages_Events_Distribution_OnAssignItemFreeForAll_Enabled_Tooltip                           =    "When an item is assigned to the public domain",
 
-    Messages_Events_Detection_OnLootStolen_Enabled_Label                                =    "On Loot Stolen",
-    Messages_Events_Detection_OnLootStolen_Enabled_Tooltip                              =    "When somebody loots an item that was assigned to someone else",
-
-    Messages_Events_Detection_OnLootClaimed_Enabled_Label                               =    "On Loot Claimed",
-    Messages_Events_Detection_OnLootClaimed_Enabled_Tooltip                             =    "When somebody loots an item that the addon had not found",
-
-    Messages_Events_Detection_OnLootDespawn_Enabled_Label                               =    "On Loot Despawn",
-    Messages_Events_Detection_OnLootDespawn_Enabled_Tooltip                             =    "When a tracked item despawns",
-
-    Messages_Events_Detection_OnLootReceived_Enabled_Label                              =    "On Loot Received",
-    Messages_Events_Detection_OnLootReceived_Enabled_Tooltip                            =    "When someone who won an item loots that item",
-
-    Messages_Events_Detection_OnLootSnatched_Enabled_Label                              =    "On Loot Snatched",
-    Messages_Events_Detection_OnLootSnatched_Enabled_Tooltip                            =    "When somebody loots an item that the addon had not yet assigned",
-
-    Messages_Events_Detection_OnIdentify_Enabled_Label                                  =    "On Identify",
-    Messages_Events_Detection_OnIdentify_Enabled_Tooltip                                =    "When the addon has discovered a new item",
-
-
-
-
-    Panels_Enabled_Label                                                                =    "Enable Panels",
-    Panels_Enabled_Tooltip                                                              =    "The addon will attach Panels onto item drops, allowing you to inspect the item in detail when up close.",
-
-
-    Panels_Display_AssignedTo_Label                                                     =    "Display AssignedTo",
-    Panels_Display_AssignedTo_Tooltip                                                   =    "Display who the item has been assigned to on the panel header.",
-    Panels_Display_AssignedToHideNil_Label                                              =    "Hide AssignedTo Not assigned",
-    Panels_Display_AssignedToHideNil_Tooltip                                            =    "Only show AssignedTo text when item has been assigned - don\'t display \"Not assigned\".",
-
-    Panels_Mode_Label                               =    "Mode",
-    Panels_Mode_Tooltip                             =    "Overall Panel display mode\nStandard: Full view\nSmall: Only header is shown", Panels_ColorMode_ItemName_Label                                                      =    "Item Name Color",
-    Panels_ColorMode_ItemName_Tooltip                                                    =    "Set the color of the item name text on the panel header.",
-    Panels_ColorMode_ItemNameCustomValue_Label                                           =    "Custom Item Name Color",    Panels_ColorMode_ItemNameCustomValue_Tooltip                                         =    "Set the color of the item name text on the panel header for the Custom option.",    Panels_ColorMode_HeaderBar_Label                                                     =    "Header Color",
-    Panels_ColorMode_HeaderBar_Tooltip                                                   =    "Set the color of the background of the panel header.",
-    Panels_ColorMode_HeaderBarCustomValue_Label                                          =    "Custom Header Color",
-    Panels_ColorMode_HeaderBarCustomValue_Tooltip                                        =    "Set the color of the background of the panel header for the Custom option.",
-
-
-    Panels_Color_AssignedTo_Nil_Label                                             =    "AssignedTo Color Not assigned",
-    Panels_Color_AssignedTo_Nil_Tooltip                                           =    "Set the color of the Assigned To text when the item has not been assigned.",
-    Panels_Color_AssignedTo_Free_Label                                            =    "AssignedTo Color Free for all",
-    Panels_Color_AssignedTo_Free_Tooltip                                          =    "Set the color of the Assigned To text when the item has been declared free for all.",
-    Panels_Color_AssignedTo_Player_Label                                          =    "AssignedTo Color For you",
-    Panels_Color_AssignedTo_Player_Tooltip                                        =    "Set the color of the Assigned To text when the item has been assigned to you.",
-    Panels_Color_AssignedTo_Other_Label                                           =    "AssignedTo Color For other",
-    Panels_Color_AssignedTo_Other_Tooltip                                         =    "Set the color of the Assigned To text when the item has been assigned to someone else.",
-
-    Core_Enabled_Label                                                                  =    "Enabled",
-    Core_Enabled_Tooltip                                                                =    "The addon will be enabled. This option is mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. If you are suspecting compatability issues with other addons, it would be better to tempoarily remove the addon in order to verify whether or not it is part of the issue.",
-    Core_VersionMessage_Label                                                           =    "Version Message",
-    Core_VersionMessage_Tooltip                                                         =    "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
-
-
-    Detection_IdentifyDelay_Label                                                       =    "Tracking Delay",
-    Detection_IdentifyDelay_Tooltip                                                     =    "The number of seconds the addon should wait after detecting a new lootable item before it begins to track it. Lower values feel better, but make the addon more prone to glitches caused by unexpected behavior from the game client.",
-
-    Detection_DespawnCheckInterval_Label                                                =    "Despawn Check Interval",
-    Detection_DespawnCheckInterval_Tooltip                                              =    "How often the addon should check that a tracked item is still in the game world. This is only used to discover that an item has dissappeared through some other means than being looted. Lower values  will lead to speedier removal of incorrectly detected items, but are for correctly detected items fairly wasteful.",
-
-    Subtab_Detection                                                                    =    "Detection",
-
-    Waypoints_Enabled_Label                                                             =    "Enable Waypoints",
-    Waypoints_Enabled_Tooltip                                                           =    "The addon will attach Waypoints to tracked items, helping you quickly locate drops over larger distances.",
-
-    Waypoints_ShowOnHud_Label                       =    "Show On Hud",
-    Waypoints_ShowOnHud_Tooltip                     =    "Show Waypoints on the HUD",
-    Waypoints_ShowOnWorldMap_Label                  =    "Show On WorldMap",
-    Waypoints_ShowOnWorldMap_Tooltip                =    "Show Waypoints on the World Map",
-    Waypoints_ShowOnRadar_Label                     =    "Show On Radar",
-    Waypoints_ShowOnRadar_Tooltip                   =    "Show Waypoints on the Radar",
-    Waypoints_TrailAssigned_Label                   =    "Trail when loot is assigned to me",
-    Waypoints_TrailAssigned_Tooltip                 =    "When an item is assigned to you, the navigation trail is set to its waypoint. Requires 'Display Navigation' setting in 'Gameplay' options checked.",
-    Waypoints_PingAssigned_Label                    =    "Ping when loot is assigned to me",
-    Waypoints_PingAssigned_Tooltip                  =    "When an item is assigned to you, its waypoint will be pinged - drawing attention to it.",                          
-
-
-    Waypoints_RadarEdgeMode_Label                   =    "Radar Edge Mode",
-    Waypoints_RadarEdgeMode_Tooltip                 =    "Behavior for Waypoint icons on the radar when outside range and the icon attaches to the radar edge\nNone : Hidden \nArrow: Nonspecific arrow icon \nIcon : Keep showing the same icon",
-
-
-
-    Debug_Enabled_Label                                                                 =    "Debug",
-    Debug_Enabled_Tooltip                                                               =    "The addon will enter Debug mode, logging messages in the console that are helpful for the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
-
-    Debug_FakeOnSquadRoster_Label                                                       =    "Fake Squad Roster",
-    Debug_FakeOnSquadRoster_Tooltip                                                     =    "If not in a squad but override squad leader, put fake squad members in the roster",
-    Debug_SquadToArmy_Label                                                             =    "Squad To Army",
-    Debug_SquadToArmy_Tooltip                                                           =    "Redirect messages on Squad channel to Army",
-    Debug_UndefinedFilterArguments_Label                                                =    "Undefined Filter Arguments",
-    Debug_UndefinedFilterArguments_Tooltip                                              =    "Output NOT_SET when filter arguments are undefined, rather than an empty string.",
-    Debug_LogLootableTargets_Label                                                      =    "Log Loot Detected",
-    Debug_LogLootableTargets_Tooltip                                                    =    "Extra debug messages, spammy.\nLogs info on detected items, helpful when errors are occuring during item detection.",
-    Debug_LogLootableCollection_Label                                                   =    "Log Loot Collected",
-    Debug_LogLootableCollection_Tooltip                                                 =    "Extra debug messages, spammy.\nLogs info on looted items, helpful when errors are occuring during item removal.",
-    Debug_LogOptionChange_Label                                                         =    "Log Option Changes",
-    Debug_LogOptionChange_Tooltip                                                       =    "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
-
-    Debug_CommunicationExtra_Label                                                      =    "Log Communication Extra",
-    Debug_CommunicationExtra_Tooltip                                                    =    "Extra Communication messages, spammy.\nLogs encoding and decoding of communication links more closely, helpful when errors are occuring in this department.",
-
-    Debug_RoundRobin_Label                                                      =    "Log Round Robin",
-    Debug_RoundRobin_Tooltip                                                    =    "Extra logging for Round Robin, spammy.\nDetailed logging of Round Robin logic, helpful if its giving out unexpected results.",
-
-
-    Sounds_Enabled_Label                                                                =    "Enable Sounds",
-    Sounds_Enabled_Tooltip                                                              =    "The addon will play sounds in order to notify you when certain events occur.",
+    Options_Messages_Events_Distribution_OnDistributeItem_Enabled_Label                         =    "On Distribute Item",
+    Options_Messages_Events_Distribution_OnDistributeItem_Enabled_Tooltip                       =    "When an item is about to distribute an item",
     
-    Sounds_Mute_Label                               =    "Mute",
-    Sounds_Mute_Tooltip                             =    "If checked, no sounds will play",
-    Sounds_OnIdentify_Label                         =    "Item Detected",
-    Sounds_OnIdentifyRollable_Label                 =    "NYI?",
-    Sounds_OnAssignItemToMe_Label                   =    "Item Assigned To You",
-    Sounds_OnAssignItemToOther_Label                =    "Item Assigned To Other",
+    Options_Messages_Events_Distribution_OnRolls_Enabled_Label                                  =    "On Rolls",
+    Options_Messages_Events_Distribution_OnRolls_Enabled_Tooltip                                =    "When a roll is calculated",
 
-    Tracker_Enabled_Label                           =    "Enable Tracker",
-    Tracker_Enabled_Tooltip                         =    "The addon will display information about currently tracked item drops, allowing you to keep track of things at a glance, as well as to perform actions with ease, or inspect the items in more detail, when in mousemode.",
+    Options_Messages_Events_Distribution_OnRollAccept_Enabled_Label                             =    "On Roll Accept",
+    Options_Messages_Events_Distribution_OnRollAccept_Enabled_Tooltip                           =    "When a roll gets accepted",
 
-    Tracker_Visibility_Label                        =    "Visibility",
-    Tracker_Visibility_Tooltip                      =    "When to display the tracker.\nAlways - I wanna be with you~\nHUD - Follow suit with rest of HUD\nMousemode - Only when in Mousemode",
+    Options_Messages_Events_Distribution_OnRollBusy_Enabled_Label                               =    "On Roll Busy",
+    Options_Messages_Events_Distribution_OnRollBusy_Enabled_Tooltip                             =    "When there is an attempt to start a new roll, but we're already busy rolling for something else",
+
+    Options_Messages_Events_Distribution_OnRollChange_Enabled_Label                             =    "On Roll Change",
+    Options_Messages_Events_Distribution_OnRollChange_Enabled_Tooltip                           =    "When a roll gets changed",
+
+    Options_Messages_Events_Distribution_OnAcceptingRolls_Enabled_Label                         =    "On Accepting Rolls",
+    Options_Messages_Events_Distribution_OnAcceptingRolls_Enabled_Tooltip                       =    "When the addon is listening for roll declarations",
+
+    Options_Messages_Events_Detection_OnLootStolen_Enabled_Label                                =    "On Loot Stolen",
+    Options_Messages_Events_Detection_OnLootStolen_Enabled_Tooltip                              =    "When somebody loots an item that was assigned to someone else",
+
+    Options_Messages_Events_Detection_OnLootClaimed_Enabled_Label                               =    "On Loot Claimed",
+    Options_Messages_Events_Detection_OnLootClaimed_Enabled_Tooltip                             =    "When somebody loots an item that the addon had not found",
+
+    Options_Messages_Events_Detection_OnLootDespawn_Enabled_Label                               =    "On Loot Despawn",
+    Options_Messages_Events_Detection_OnLootDespawn_Enabled_Tooltip                             =    "When a tracked item despawns",
+
+    Options_Messages_Events_Detection_OnLootReceived_Enabled_Label                              =    "On Loot Received",
+    Options_Messages_Events_Detection_OnLootReceived_Enabled_Tooltip                            =    "When someone who won an item loots that item",
+
+    Options_Messages_Events_Detection_OnLootSnatched_Enabled_Label                              =    "On Loot Snatched",
+    Options_Messages_Events_Detection_OnLootSnatched_Enabled_Tooltip                            =    "When somebody loots an item that the addon had not yet assigned",
+
+    Options_Messages_Events_Detection_OnIdentify_Enabled_Label                                  =    "On Identify",
+    Options_Messages_Events_Detection_OnIdentify_Enabled_Tooltip                                =    "When the addon has discovered a new item",
 
 
-    Tracker_Tooltip_Enabled_Label           =  "Enable Tooltips",
-    Tracker_Tooltip_Enabled_Tooltip         =  "When hovering over an entry in the Tracker list, a tooltip representation of the item will be displayed on the cursor.",
-    Tracker_Tooltip_Mode_Label              =  "Tooltip Style",
-    Tracker_Tooltip_Mode_Tooltip            =  "Tooltips in Firefall look different everywhere. This option will hopefully let you choose between the most common ones.",
-    Tracker_PlateMode_Label                 =  "Plate Style",
-    Tracker_PlateMode_Tooltip               =  "Changes the look of the plate of entries in the Tracker.",
-    Tracker_IconMode_Label                  =  "Icon Style ",
-    Tracker_IconMode_Tooltip                =  "Changes the look of the item icon of entries in the Tracker. ",
 
 
-    Distribution_Enabled_Label                                                          =    "Enable Distribution",
-    Distribution_Enabled_Tooltip                                                        =    "When you are in a Squad as the Squad Leader, the addon will assist you with distributing the items you find between the members of your Squad. This feature heavily relies on the Messages feature, as otherwise the addon can not comunicate with your Squad.",
-                                                                                                             
-    Distribution_AutoDistribute_Label                                                   =    "Auto distribute",
-    Distribution_AutoDistribute_Tooltip                                                 =    "If checked the addon will automatically distribute/roll items according to the current ruleset as soon as they are identified",
+    Options_Panels_Enabled_Label                                                                =    "Enable Panels",
+    Options_Panels_Enabled_Tooltip                                                              =    "The addon will attach Panels onto item drops, allowing you to inspect the item in detail when up close.",
 
-    Distribution_RollMin_Label                                                          =    "Roll range minimum",
-    Distribution_RollMin_Tooltip                                                        =    "Minimum roll value",           
-    Distribution_RollMax_Label                                                          =    "Roll range maximum",
-    Distribution_RollMax_Tooltip                                                        =    "Maximum roll value",   
-    Debug_AlwaysSquadLeader_Label                                                =    "Always Squad Leader",
-    Debug_AlwaysSquadLeader_Tooltip                                              =    "The addon will ignore what the game says about your status, as you are in fact the undeniable Squad Leader. This allows the addon to perform Distribution even if you are not the Squad Leader. Unfortunately, the addon cannot always convince other players of your greatness on its own.",    
-    Distribution_RollTypeDefault_Label                                                  =    "Default Roll Type",
-    Distribution_RollTypeDefault_Tooltip                                                =    "This roll type is selected for any users who do not declare a roll type before the timeout.",
-    Distribution_RollTimeout_Label                                                      =    "Roll timeout",
-    Distribution_RollTimeout_Tooltip                                                    =    "Time limit in seconds for people to declare their roll type in Need before Greed.",
 
+    Options_Panels_Display_AssignedTo_Label                                                     =    "Display AssignedTo",
+    Options_Panels_Display_AssignedTo_Tooltip                                                   =    "Display who the item has been assigned to on the panel header.",
+    Options_Panels_Display_AssignedToHideNil_Label                                              =    "Hide AssignedTo Not assigned",
+    Options_Panels_Display_AssignedToHideNil_Tooltip                                            =    "Only show AssignedTo text when item has been assigned - don\'t display \"Not assigned\".",
+
+    Options_Panels_Mode_Label                               =    "Mode",
+    Options_Panels_Mode_Tooltip                             =    "Overall Panel display mode\nStandard: Full view\nSmall: Only header is shown", Panels_ColorMode_ItemName_Label                                                      =    "Item Name Color",
+    Options_Panels_ColorMode_ItemName_Tooltip                                                    =    "Set the color of the item name text on the panel header.",
+    Options_Panels_ColorMode_ItemNameCustomValue_Label                                           =    "Custom Item Name Color",    Panels_ColorMode_ItemNameCustomValue_Tooltip                                         =    "Set the color of the item name text on the panel header for the Custom option.",    Panels_ColorMode_HeaderBar_Label                                                     =    "Header Color",
+    Options_Panels_ColorMode_HeaderBar_Tooltip                                                   =    "Set the color of the background of the panel header.",
+    Options_Panels_ColorMode_HeaderBarCustomValue_Label                                          =    "Custom Header Color",
+    Options_Panels_ColorMode_HeaderBarCustomValue_Tooltip                                        =    "Set the color of the background of the panel header for the Custom option.",
+
+
+    Options_Panels_Color_AssignedTo_Nil_Label                                             =    "AssignedTo Color Not assigned",
+    Options_Panels_Color_AssignedTo_Nil_Tooltip                                           =    "Set the color of the Assigned To text when the item has not been assigned.",
+    Options_Panels_Color_AssignedTo_Free_Label                                            =    "AssignedTo Color Free for all",
+    Options_Panels_Color_AssignedTo_Free_Tooltip                                          =    "Set the color of the Assigned To text when the item has been declared free for all.",
+    Options_Panels_Color_AssignedTo_Player_Label                                          =    "AssignedTo Color For you",
+    Options_Panels_Color_AssignedTo_Player_Tooltip                                        =    "Set the color of the Assigned To text when the item has been assigned to you.",
+    Options_Panels_Color_AssignedTo_Other_Label                                           =    "AssignedTo Color For other",
+    Options_Panels_Color_AssignedTo_Other_Tooltip                                         =    "Set the color of the Assigned To text when the item has been assigned to someone else.",
+
+
+    Options_Detection_IdentifyDelay_Label                                                       =    "Tracking Delay",
+    Options_Detection_IdentifyDelay_Tooltip                                                     =    "The number of seconds the addon should wait after detecting a new lootable item before it begins to track it. Lower values feel better, but make the addon more prone to glitches caused by unexpected behavior from the game client.",
+
+    Options_Detection_DespawnCheckInterval_Label                                                =    "Despawn Check Interval",
+    Options_Detection_DespawnCheckInterval_Tooltip                                              =    "How often the addon should check that a tracked item is still in the game world. This is only used to discover that an item has dissappeared through some other means than being looted. Lower values  will lead to speedier removal of incorrectly detected items, but are for correctly detected items fairly wasteful.",
+
+
+    Options_Waypoints_Enabled_Label                                                             =    "Enable Waypoints",
+    Options_Waypoints_Enabled_Tooltip                                                           =    "The addon will attach Waypoints to tracked items, helping you quickly locate drops over larger distances.",
+
+    Options_Waypoints_ShowOnHud_Label                       =    "Show On Hud",
+    Options_Waypoints_ShowOnHud_Tooltip                     =    "Show Waypoints on the HUD",
+    Options_Waypoints_ShowOnWorldMap_Label                  =    "Show On WorldMap",
+    Options_Waypoints_ShowOnWorldMap_Tooltip                =    "Show Waypoints on the World Map",
+    Options_Waypoints_ShowOnRadar_Label                     =    "Show On Radar",
+    Options_Waypoints_ShowOnRadar_Tooltip                   =    "Show Waypoints on the Radar",
+    Options_Waypoints_TrailAssigned_Label                   =    "Trail when loot is assigned to me",
+    Options_Waypoints_TrailAssigned_Tooltip                 =    "When an item is assigned to you, the navigation trail is set to its waypoint. Requires 'Display Navigation' setting in 'Gameplay' options checked.",
+    Options_Waypoints_PingAssigned_Label                    =    "Ping when loot is assigned to me",
+    Options_Waypoints_PingAssigned_Tooltip                  =    "When an item is assigned to you, its waypoint will be pinged - drawing attention to it.",                          
+
+
+    Options_Waypoints_RadarEdgeMode_Label                   =    "Radar Edge Mode",
+    Options_Waypoints_RadarEdgeMode_Tooltip                 =    "Behavior for Waypoint icons on the radar when outside range and the icon attaches to the radar edge\nNone : Hidden \nArrow: Nonspecific arrow icon \nIcon : Keep showing the same icon",
+
+
+
+    Options_Debug_Enabled_Label                                                                 =    "Debug",
+    Options_Debug_Enabled_Tooltip                                                               =    "The addon will enter Debug mode, logging messages in the console that are helpful for the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
+
+    Options_Debug_FakeOnSquadRoster_Label                                                       =    "Fake Squad Roster",
+    Options_Debug_FakeOnSquadRoster_Tooltip                                                     =    "If not in a squad but override squad leader, put fake squad members in the roster",
+    Options_Debug_SquadToArmy_Label                                                             =    "Squad To Army",
+    Options_Debug_SquadToArmy_Tooltip                                                           =    "Redirect messages on Squad channel to Army",
+    Options_Debug_UndefinedFilterArguments_Label                                                =    "Undefined Filter Arguments",
+    Options_Debug_UndefinedFilterArguments_Tooltip                                              =    "Output NOT_SET when filter arguments are undefined, rather than an empty string.",
+    Options_Debug_LogLootableTargets_Label                                                      =    "Log Loot Detected",
+    Options_Debug_LogLootableTargets_Tooltip                                                    =    "Extra debug messages, spammy.\nLogs info on detected items, helpful when errors are occuring during item detection.",
+    Options_Debug_LogLootableCollection_Label                                                   =    "Log Loot Collected",
+    Options_Debug_LogLootableCollection_Tooltip                                                 =    "Extra debug messages, spammy.\nLogs info on looted items, helpful when errors are occuring during item removal.",
+    Options_Debug_LogOptionChange_Label                                                         =    "Log Option Changes",
+    Options_Debug_LogOptionChange_Tooltip                                                       =    "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
+
+    Options_Debug_CommunicationExtra_Label                                                      =    "Log Communication Extra",
+    Options_Debug_CommunicationExtra_Tooltip                                                    =    "Extra Communication messages, spammy.\nLogs encoding and decoding of communication links more closely, helpful when errors are occuring in this department.",
+
+    Options_Debug_RoundRobin_Label                                                      =    "Log Round Robin",
+    Options_Debug_RoundRobin_Tooltip                                                    =    "Extra logging for Round Robin, spammy.\nDetailed logging of Round Robin logic, helpful if its giving out unexpected results.",
+
+
+    Options_Sounds_Enabled_Label                                                                =    "Enable Sounds",
+    Options_Sounds_Enabled_Tooltip                                                              =    "The addon will play sounds in order to notify you when certain events occur.",
+    
+    Options_Sounds_Mute_Label                               =    "Mute",
+    Options_Sounds_Mute_Tooltip                             =    "If checked, no sounds will play",
+    Options_Sounds_OnIdentify_Label                         =    "Item Detected",
+    Options_Sounds_OnIdentifyRollable_Label                 =    "NYI?",
+    Options_Sounds_OnAssignItemToMe_Label                   =    "Item Assigned To You",
+    Options_Sounds_OnAssignItemToOther_Label                =    "Item Assigned To Other",
+
+    Options_HUDTracker_Enabled_Label                           =    "Enable Tracker",
+    Options_HUDTracker_Enabled_Tooltip                         =    "The addon will display information about currently tracked item drops, allowing you to keep track of things at a glance, as well as to perform actions with ease, or inspect the items in more detail, when in mousemode.",
+
+    Options_HUDTracker_Visibility_Label                        =    "Visibility",
+    Options_HUDTracker_Visibility_Tooltip                      =    "When to display the tracker.\nAlways - I wanna be with you~\nHUD - Follow suit with rest of HUD\nMousemode - Only when in Mousemode",
+
+
+    Options_HUDTracker_Tooltip_Enabled_Label           =  "Enable Tooltips",
+    Options_HUDTracker_Tooltip_Enabled_Tooltip         =  "When hovering over an entry in the Tracker list, a tooltip representation of the item will be displayed on the cursor.",
+    Options_HUDTracker_PlateMode_Label                 =  "Plate Style",
+    Options_HUDTracker_PlateMode_Tooltip               =  "Changes the look of the plate of entries in the Tracker.",
+    Options_HUDTracker_IconMode_Label                  =  "Icon Style ",
+    Options_HUDTracker_IconMode_Tooltip                =  "Changes the look of the item icon of entries in the Tracker. ",
 
 
 
@@ -347,6 +341,9 @@ LANG = {
     Mode_Choice_Simple_Tooltip                              =    "",
     Mode_Choice_Advanced_Label                              =    "Advanced",
     Mode_Choice_Advanced_Tooltip                            =    "",
+
+
+
     TierThreshold_Choice_Tier2_Label                        =    "Tier 2",
     TierThreshold_Choice_Tier2_Tooltip                      =    "",
     TierThreshold_Choice_Tier1_Label                        =    "Tier 1",
@@ -371,30 +368,6 @@ LANG = {
     QualityThreshold_Choice_Any_Tooltip                     =    "",
     QualityThreshold_Choice_Rare_Label                      =    "Rare",
     QualityThreshold_Choice_Rare_Tooltip                    =    "",
-    LootMode_Choice_Dice_Label                              =    "Dice",
-    LootMode_Choice_Dice_Tooltip                            =    "",
-    LootMode_Choice_NeedBeforeGreed_Label                   =    "Need before Greed",
-    LootMode_Choice_NeedBeforeGreed_Tooltip                 =    "",
-    LootMode_Choice_LootMaster_Label                        =    "Loot Master",
-    LootMode_Choice_LootMaster_Tooltip                      =    "",
-    LootMode_Choice_YayNay_Label                            =    "Yay/Nay",
-    LootMode_Choice_YayNay_Tooltip                          =    "",
-    LootMode_Choice_Random_Label                            =    "Random",
-    LootMode_Choice_Random_Tooltip                          =    "",
-    LootMode_Choice_RoundRobin_Label                        =    "Round-robin",
-    LootMode_Choice_RoundRobin_Tooltip                      =    "",
-    Weighting_Choice_Battleframe_Label                      =    "Battleframe",
-    Weighting_Choice_Battleframe_Tooltip                    =    "",
-    Weighting_Choice_Archetype_Label                        =    "Archetype",
-    Weighting_Choice_Archetype_Tooltip                      =    "",
-    Weighting_Choice_None_Label                             =    "None",
-    Weighting_Choice_None_Tooltip                           =    "",
-    RollType_Choice_Greed_Label                             =    "Greed",
-    RollType_Choice_Greed_Tooltip                           =    "",
-    RollType_Choice_Pass_Label                              =    "Pass",
-    RollType_Choice_Pass_Tooltip                            =    "",
-    RollType_Choice_Need_Label                              =    "Need",
-    RollType_Choice_Need_Tooltip                            =    "",
     ColorModes_Choice_Custom_Label                          =    "Custom",
     ColorModes_Choice_Custom_Tooltip                        =    "",
     ColorModes_Choice_MatchItem_Label                       =    "Match Item",
@@ -414,11 +387,6 @@ LANG = {
     RadarEdgeModes_Choice_Icon_Tooltip                      =    "Icon",
 
 
-    TrackerTooltipModes_Choice_ProgressionStyle_Label       =    "Progression Style",
-    TrackerTooltipModes_Choice_ProgressionStyle_Tooltip     =    "Progression Style",
-    TrackerTooltipModes_Choice_ItemStyle_Label              =    "Items Style",
-    TrackerTooltipModes_Choice_ItemStyle_Tooltip            =    "Items Style",
-
     TrackerPlateModeOptions_Choice_None_Label               =    "None",
     TrackerPlateModeOptions_Choice_None_Tooltip             =    "None",
     TrackerPlateModeOptions_Choice_Decorated_Label          =    "Decorated",
@@ -437,48 +405,16 @@ LANG = {
 
 
     -- Subtabs
-    Subtab_Distribution                                     =    "Distribution",
-    Subtab_LootingRules                                     =    "Distribution",
-    Subtab_Detection                                        =    "Detection",
-    Subtab_Messages                                         =    "Messages",
-    Subtab_Messages_Distribution                            =    "Distribution",
-    Subtab_Messages_Detection                               =    "Detection",
-    Subtab_Messages_Communication                           =    "Communication",
-    Subtab_Markers                                          =    "Markers",
-    Subtab_Panels                                           =    "Panels",
-    Subtab_Waypoints                                        =    "Waypoints",
-    Subtab_Tracker                                          =    "Tracker",
-    Subtab_Sounds                                           =    "Sounds",
-    Subtab_Communication                                    =    "Communication",
-    Subtab_Filtering                                        =    "Filtering",
+    Options_Subtab_Messages                                         =    "Messages",
+    Options_Subtab_Messages_Tracker                                 =    "Tracker",
+    Options_Subtab_Markers                                          =    "Markers",
+    Options_Subtab_Panels                                           =    "Panels",
+    Options_Subtab_Waypoints                                        =    "Waypoints",
+    Options_Subtab_Tracker                                          =    "Tracker",
+    Options_Subtab_HUDTracker                                       =    "HUDTracker",
+    Options_Subtab_Sounds                                           =    "Sounds",
+    Options_Subtab_Filtering                                        =    "Filtering",
 
-
-    -- Communication Options
-
-    Group_Communication_Label                           = "Communication",
-    Group_Communication_Tooltip                         = "Data communication between other players that use this addon",
-
-    Communication_Custom_Label                          = "Enable Custom Communication Settings",
-    Communication_Custom_Tooltip                        = "Warning: Changing these settings will prevent the addon from communicating with other players properly. Under normal circumstances, you shouldn't be touching them. You've been warned.",
-    Communication_Send_Label                            = "Send",
-    Communication_Send_Tooltip                          = "Master switch for Sending communication messages.",
-    Communication_Receive_Label                         = "Receive",
-    Communication_Receive_Tooltip                       = "Master switch for Receiveing communication messages.",
-
-    Communication_Assign_Enabled_Label                  = "Assign",
-    Communication_Assign_Enabled_Tooltip                = "Enable/Disable Assign",
-
-    Communication_ItemIdentity_Enabled_Label            = "ItemIdentity",
-    Communication_ItemIdentity_Enabled_Tooltip          = "Enable/Disable ItemIdentity",
-
-    Communication_RollStart_Enabled_Label               = "RollStart",
-    Communication_RollStart_Enabled_Tooltip             = "Enable/Disable RollStart",
-
-    Communication_RollDecision_Enabled_Label            = "RollDecision",
-    Communication_RollDecision_Enabled_Tooltip          = "Enable/Disable RollDecision",
-
-    Communication_RollUpdate_Enabled_Label              = "RollUpdate",
-    Communication_RollUpdate_Enabled_Tooltip            = "Enable/Disable RollUpdate",
 
 
 

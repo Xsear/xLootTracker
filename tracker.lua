@@ -14,7 +14,6 @@ local Private = {
 --[[
     Tracker.Setup()
     Performs OnComponentLoad tasks.
-    Initiates the Tracker.Refresh callback cycle.
 --]]
 function Tracker.Setup()
     --Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
@@ -44,9 +43,10 @@ function Private.LootEventHistoryCleanup()
                         i = i + 1
                     end
                 end
+            end
 
-            -- Remove table if empty
-            else
+            -- Remove table if empty (second check, in case events have been removed)
+            if _table.empty(events) then
                 Private.lootEventHistory[itemTypeId] = nil
             end
 
@@ -202,9 +202,13 @@ function Tracker.OnLootEvent(args)
 
                 table.insert(Private.lootEventHistory[args.itemTypeId], {occuredAt = tonumber(System.GetClientTime()), lootedBy = args.lootedBy, lootedTo = args.lootedTo})
 
+                --[[
+
                 for i, item in ipairs(matches) do
                     Callback2.FireAndForget(Tracker.Update, item:GetId(), i)
                 end
+
+                    --]]
 
             elseif #matches == 1 then
                 -- Aww yeah! Get that shit.

@@ -397,27 +397,27 @@ end
 
 function LootFiltering(loot, moduleOptions)
     -- Vars
-    local typeKey = nil
+    local categoryKey = nil
     local rarityKey = nil
     moduleOptions = moduleOptions['Filtering'] -- Note: this is gonna bite me in the ass someday
 
     -- Determine keys
-    typeKey, rarityKey = GetLootFilteringOptionsKeys(loot, moduleOptions)
+    categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, moduleOptions)
 
     -- Verify that type passes filter
-    if moduleOptions[typeKey]['Enabled'] then
+    if moduleOptions[categoryKey]['Enabled'] then
         
         -- Verify that rarity passes filter
         -- Simple Mode: Rarity of Loot must be at or above Rarity Threshold
-        if (rarityKey == 'Simple' and Loot.GetRarityIndex(loot:GetRarity()) >= Loot.GetRarityIndex(moduleOptions[typeKey][rarityKey]['RarityThreshold']))
+        if (rarityKey == 'Simple' and Loot.GetRarityIndex(loot:GetRarity()) >= Loot.GetRarityIndex(moduleOptions[categoryKey][rarityKey]['RarityThreshold']))
         -- Advanced Mode: The specific Rarity of the Loot must be Enabled
-        or (rarityKey ~= 'Simple' and moduleOptions[typeKey][rarityKey]['Enabled']) then
+        or (rarityKey ~= 'Simple' and moduleOptions[categoryKey][rarityKey]['Enabled']) then
 
             -- Determine ItemLevel Threshold
-            local itemLevelThreshold = tonumber(moduleOptions[typeKey][rarityKey]['ItemLevelThreshold'])
+            local itemLevelThreshold = tonumber(moduleOptions[categoryKey][rarityKey]['ItemLevelThreshold'])
 
             -- Determine RequiredLevel Threshold
-            local requiredLevelThreshold = tonumber(moduleOptions[typeKey][rarityKey]['RequiredLevelThreshold'])
+            local requiredLevelThreshold = tonumber(moduleOptions[categoryKey][rarityKey]['RequiredLevelThreshold'])
 
             -- Verify that loot passes level thresholds
             if loot:GetItemLevel() >= itemLevelThreshold and loot:GetRequiredLevel() >= requiredLevelThreshold then
@@ -426,8 +426,8 @@ function LootFiltering(loot, moduleOptions)
             end
         end
 
-    elseif not moduleOptions[typeKey] then
-        Debug.Table('LootFiltering for ' .. loot:ToString() .. ' ran aground because there weren\'t any options for its typekey ' .. tostring(typeKey) .. ' in the module options that were provided (no name to log here, so dumping table.): ', moduleOptions)
+    elseif not moduleOptions[categoryKey] then
+        Debug.Table('LootFiltering for ' .. loot:ToString() .. ' ran aground because there weren\'t any options for its categoryKey ' .. tostring(categoryKey) .. ' in the module options that were provided (no name to log here, so dumping table.): ', moduleOptions)
     end
     return false
 end
@@ -436,19 +436,19 @@ end
 
 function GetLootFilteringOptionsKeys(loot, moduleOptions) 
     -- Vars
-    local typeKey = nil
+    local categoryKey = nil
     local rarityKey = nil
 
     -- Determine typeKey
-    typekey = loot:GetCategory()
+    categoryKey = loot:GetCategory()
 
     -- Determine rarityKey
-    if moduleOptions[typeKey]['Mode'] == TriggerModeOptions.Simple then
+    if moduleOptions[categoryKey]['Mode'] == TriggerModeOptions.Simple then
         rarityKey = 'Simple'
     else -- TriggerModeOptions.Advanced
         rarityKey = loot:GetRarity()
     end
     
     -- Return
-    return typeKey, rarityKey
+    return categoryKey, rarityKey
 end

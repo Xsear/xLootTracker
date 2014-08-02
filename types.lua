@@ -132,4 +132,10 @@ OptionsTriggerModeDropdown = {
 
 
 
+OptionsRadarEdgeModesDropdown = {
+    [1] = RadarEdgeModes.None,
+    [2] = RadarEdgeModes.Arrow,
+    [3] = RadarEdgeModes.Icon,
+}
+
 

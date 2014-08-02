@@ -33,10 +33,11 @@ function WaypointManager.OnTrackerNew(args)
     end
 end
 
-function WaypointManager.OnTrackerUpdate(args)
+function WaypointManager.OnTrackerLooted(args)
     if not Options['Waypoints']['Enabled'] then return end
     WaypointManager.OnLootStateChange(args)
 end
+
 
 function WaypointManager.OnTrackerRemove(args)
     if not Options['Waypoints']['Enabled'] then return end
@@ -174,15 +175,15 @@ function PanelManager.OnTrackerNew(args)
     end
 end
 
-function PanelManager.OnTrackerUpdate(args)
+function PanelManager.OnTrackerLooted(args)
     if not Options['Panels']['Enabled'] then return end
-
-    PanelManager.Update(args.lootId)
+    Debug.Log("PanelManager.OnTrackerLooted calling Remove")
+    PanelManager.Remove(args.lootId)
 end
 
 function PanelManager.OnTrackerRemove(args)
     if not Options['Panels']['Enabled'] then return end
-
+    Debug.Log("PanelManager.OnTrackerRemove calling Remove")
     PanelManager.Remove(args.lootId)
 end
 
@@ -324,9 +325,8 @@ end
 
 function PanelManager.Remove(lootId)
     if Private.panelList[lootId] then
-        local panel = Private.panelList[lootId]
-        
-        LKObjects.Destroy(panel)
+        LKObjects.Destroy(Private.panelList[lootId])
+        Private.panelList[lootId] = nil
     end
 end
 

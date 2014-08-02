@@ -56,6 +56,9 @@ function HUDTracker.Enable()
             CYCLE_HUDTrackerUpdate:Run(Options['HUDTracker']['UpdateInterval'])
         end
     end
+
+    -- Update
+    HUDTracker.UpdateVisibility()
 end
 
 function HUDTracker.Disable()
@@ -73,7 +76,10 @@ function HUDTracker.Disable()
     end
 
     -- Clear
-    SCROLLER:Reset() 
+    SCROLLER:Reset()
+
+    -- Update
+    HUDTracker.UpdateVisibility()
 end
 
 function HUDTracker.OnOptionChange(id, value)
