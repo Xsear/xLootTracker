@@ -92,7 +92,7 @@ Options = {
             },
 
             [LootCategory.Consumable] = {
-                ['Enabled'] = true,
+                ['Enabled'] = false,
 
                 ['Mode'] = TriggerModeOptions.Simple,
 
@@ -140,7 +140,7 @@ Options = {
             },
 
             [LootCategory.Modules] = {
-                ['Enabled'] = true,
+                ['Enabled'] = false,
 
                 ['Mode'] = TriggerModeOptions.Simple,
 
@@ -187,7 +187,7 @@ Options = {
             },
 
             [LootCategory.Salvage] = {
-                ['Enabled'] = true,
+                ['Enabled'] = false,
 
                 ['Mode'] = TriggerModeOptions.Simple,
 
@@ -234,7 +234,7 @@ Options = {
             },
 
             [LootCategory.Components] = {
-                ['Enabled'] = true,
+                ['Enabled'] = false,
 
                 ['Mode'] = TriggerModeOptions.Simple,
 
@@ -706,7 +706,7 @@ Options = {
     },
 
     ['HUDTracker'] = {
-        ['Enabled'] = true,
+        ['Enabled'] = false,
         ['Visibility'] = HUDTrackerVisibilityOptions.HUD,
         ['Tooltip'] = {
             ['Enabled'] = true,
@@ -733,15 +733,11 @@ Options = {
 
     ['Debug'] = {
         ['Enabled'] = true,
-        ['AlwaysSquadLeader'] = true,
-        ['FakeOnSquadRoster'] = true,
         ['SquadToArmy'] = true,
         ['UndefinedFilterArguments'] = true,
-        ['LogLootableTargets'] = true, 
-        ['LogLootableCollection'] = true,
+        ['LogLootableTargets'] = false, 
+        ['LogLootableCollection'] = false,
         ['LogOptionChange'] = true,
-        ['CommunicationExtra'] = true,
-        ['RoundRobin'] = true,
     },
 
 }
@@ -1047,6 +1043,8 @@ function OnOptionChange(args)
         Component.SaveSetting('Debug_Enabled', args.val)
     elseif args.id == 'Core_VersionMessage' then
         Component.SaveSetting('Core_VersionMessage', args.val)
+    elseif args.id == 'Core_SlashHandles' then
+        Component.SaveSetting('Core_SlashHandles', args.val)
     end
 
     -- Perform extra actions
@@ -1687,7 +1685,7 @@ function UIHELPER_FilterCategory(moduleKey, x)
         })
 
         -- Mode dropdown
-        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..x..'_Mode', 'Options_Filtering_'..x..'_Mode', Options[moduleKey]['Filtering'][x]['Mode'], OptionsTriggerModeDropdown, 'Mode', {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering'), Lokii.GetString('Options_Subtab_'..x)})
+        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..x..'_Mode', 'Options_Filtering_Mode', Options[moduleKey]['Filtering'][x]['Mode'], OptionsTriggerModeDropdown, 'Mode', {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering'), Lokii.GetString('Options_Subtab_'..x)})
 
         -- Simple mode options
         UIHELPER_FilterRarity(moduleKey, x, 'Simple', {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering'), Lokii.GetString('Options_Subtab_'..x)})

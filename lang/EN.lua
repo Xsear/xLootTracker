@@ -113,7 +113,10 @@ LANG = {
     Options_Filtering_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode.",
 
 
-
+    Options_Dropdown_Mode_Choice_simple_Label       = "Simple",
+    Options_Dropdown_Mode_Choice_simple_Tooltip     = "<<WRITE ME>>",
+    Options_Dropdown_Mode_Choice_advanced_Label     = "Advanced",
+    Options_Dropdown_Mode_Choice_advanced_Tooltip   = "<<WRITE ME>>",
 
     Options_Filtering_equipment_Enabled_Label               = "Equipment Enabled",
     Options_Filtering_equipment_Enabled_Tooltip             = "Equipment Enabled",
@@ -146,11 +149,31 @@ LANG = {
 
 
     Options_Filtering_RarityThreshold_Label             = "Rarity Threshold",
-    Options_Filtering_RarityThreshold_Dropdpown         = "<<WRITE ME>>",
+    Options_Filtering_RarityThreshold_Tooltip         = "<<WRITE ME>>",
     Options_Filtering_ItemLevelThreshold_Label          = "Item Level Threshold",
-    Options_Filtering_ItemLevelThreshold_Dropdpown      = "<<WRITE ME>>",
+    Options_Filtering_ItemLevelThreshold_Tooltip      = "<<WRITE ME>>",
     Options_Filtering_RequiredLevelThreshold_Label      = "Required Level Threshold",
-    Options_Filtering_RequiredLevelThreshold_Dropdpown  = "<<WRITE ME>>",
+    Options_Filtering_RequiredLevelThreshold_Tooltip  = "<<WRITE ME>>",
+
+
+    
+
+    Options_Dropdown_RarityThreshold_Choice_salvage_Label             = "Salvage",
+    Options_Dropdown_RarityThreshold_Choice_salvage_Tooltip           = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_common_Label              = "Common",
+    Options_Dropdown_RarityThreshold_Choice_common_Tooltip            = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_uncommon_Label            = "Uncommon",
+    Options_Dropdown_RarityThreshold_Choice_uncommon_Tooltip          = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_rare_Label                = "Rare",
+    Options_Dropdown_RarityThreshold_Choice_rare_Tooltip              = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_epic_Label                = "Epic",
+    Options_Dropdown_RarityThreshold_Choice_epic_Tooltip              = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_prototype_Label           = "Prototype",
+    Options_Dropdown_RarityThreshold_Choice_prototype_Tooltip         = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_legendary_Label           = "Legendary",
+    Options_Dropdown_RarityThreshold_Choice_legendary_Tooltip         = "<<WRITE ME>>",
+
+
 
 
     Options_Messages_Generic_Channels_Squad_Enabled_Label                                   =    "Send Squad Message",
@@ -415,6 +438,13 @@ LANG = {
     Options_Subtab_Sounds                                           =    "Sounds",
     Options_Subtab_Filtering                                        =    "Filtering",
 
+    Options_Subtab_equipment    = "Equipment",
+    Options_Subtab_modules      = "Modules",
+    Options_Subtab_salvage      = "Salvage",
+    Options_Subtab_components   = "Components",
+    Options_Subtab_consumable   = "Consumable",
+    Options_Subtab_currency     = "Currency",
+    Options_Subtab_unknown      = "Unknown",
 
 
 

@@ -80,10 +80,7 @@ function OnComponentLoad()
 
     -- Setup Debug
     Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
-
-    -- Setup Slash
-    LIB_SLASH.BindCallback({slash_list=Component.GetSetting('Core_SlashHandles'), description='Xsear\'s Loot Tracker', func=OnSlash})
-
+    
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
     Lokii.SetBaseLang('en');
@@ -94,6 +91,9 @@ function OnComponentLoad()
     
     -- Setup Options
     Options.Setup()
+
+    -- Setup Slash
+    LIB_SLASH.BindCallback({slash_list=Component.GetSetting('Core_SlashHandles'), description='Xsear\'s Loot Tracker', func=OnSlash})
 
     -- Setup Tracker
     Tracker.Setup()
@@ -149,7 +149,7 @@ end
 function OnSlash(args)
     -- Help / command list
     if args.text == '' or args.text == 'help' or args.text == '?' then
-        Messages.SendChatMessage('system', 'Xsear\'s Squad Loot Manager v'..csVersion)
+        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker r'..AddonInfo.release)
         Messages.SendChatMessage('system', 'Slash Commands')
         Messages.SendChatMessage('system', '/slm [help|?]: Version message and command list.')
 

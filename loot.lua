@@ -277,8 +277,7 @@ function Loot:GetItemLevel()
 end
 
 function Loot:GetRequiredLevel()
-    Debug.Log("! Loot:GetRequiredLevel is not implemented")
-    return 1
+    return self.itemInfo.required_level or 0
 end
 
 function Loot:GetRarity()
