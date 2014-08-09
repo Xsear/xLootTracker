@@ -19,7 +19,7 @@ function Tracker.Setup()
     --Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
     --Private.CYCLE_Refresh:Run(TrackerRefreshInterval)
     Private.CYCLE_LootEventHistoryCleanup = Callback2.CreateCycle(Private.LootEventHistoryCleanup)
-    Private.CYCLE_LootEventHistoryCleanup:Run(Options['Tracker']['LootEventHistoryCleanupInterval'])
+    Private.CYCLE_LootEventHistoryCleanup:Run(tonumber(Options['Tracker']['LootEventHistoryCleanupInterval']))
 end
 
 function Private.LootEventHistoryCleanup()
@@ -37,7 +37,7 @@ function Private.LootEventHistoryCleanup()
                     local event = events[i]
 
                     -- If has lived longer than life, remove
-                    if (currentTime - event.occuredAt > Options['Tracker']['LootEventHistoryLifetime']) then
+                    if (tonumber(currentTime) - tonumber(event.occuredAt) > tonumber(Options['Tracker']['LootEventHistoryLifetime'])) then
                         table.remove(events, i)
                     else
                         i = i + 1
@@ -103,8 +103,10 @@ function Tracker.OnEntityAvailable(args)
     -- Are we tracking this?
     elseif Tracker.IsTrackedEntity(args.entityId) then
         return -- This is old news!
+    -- Do we have room for it?
+    elseif #trackedLoot >= tonumber(Options['Tracker']['Limit']) then
+        return -- Fire second thruster! Full ahead!
     end
-
     -- Sweet, a new entity. Track it!
     Callback2.FireAndForget(Tracker.Track, args, Options['Tracker']['TrackDelay'])
 end
@@ -234,6 +236,8 @@ end
     Identifies entity, adding it to a list of items that have been seen
 ]]--
 function Tracker.Track(args)
+    args.event = "Tracker.Track"
+    Debug.Event(args)
 
     -- Setup vars from args
     local entityId     = args.entityId
@@ -247,7 +251,7 @@ function Tracker.Track(args)
     end
 
     -- Be sure it still exists
-    if not Game.IsTargetAvailable(entityId) then
+    if not Game.IsTargetAvailable(entityId) and not (Options['Debug']['Enabled'] and tonumber(entityId) <= 2000) then
         return
     end
 
@@ -315,7 +319,10 @@ function Tracker.Track(args)
     args.itemInfo = itemInfo
 
     -- Create loot
+    Debug.Log("About to create loot")
     local loot = Loot.Create(args)
+
+    Debug.Log("Created new loot!" .. loot:ToString())
 
     -- Setup update cycle
     loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())

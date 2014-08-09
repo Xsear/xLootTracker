@@ -126,29 +126,9 @@ function WaypointManager.GetYourShitTogether()
 end
 
 function GetWaypointTitle(loot)
-
-    local title = {}
-
-
-    local rarity = loot:GetRarity()
-
-    
-    if loot:GetCategory() == LootCategory.Equipment or loot:GetCategory() == LootCategory.Modules then
-
-        if Loot.GetRarityIndex(rarity) >= Loot.GetRarityIndex(LootRarity.Rare) then
-            table.insert(title, "["..Loot.GetDisplayNameOfRarity(rarity).."]")
-        end 
-
-        if loot:GetItemLevel() > 0 then
-            table.insert(title, "["..loot:GetItemLevel().."]")
-        end
-
-    end
-
-   
-    table.insert(title, loot:GetName())
-
-    return table.concat(title, " ")
+    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Waypoints']['Filtering'])
+    local formatString = Options['Waypoints']['Filtering'][categoryKey][rarityKey]['WaypointTitle']
+    return Messages.TextFilters(formatString, {loot=loot})
 end
 
 

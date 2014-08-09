@@ -12,6 +12,17 @@ local Private = {
 
 function Messages.OnTrackerNew(args)
     Messages.MessageEvent('Tracker', 'OnLootNew', args)
+
+    --[[
+    -- Messages
+    if Options['Messages']['Enabled'] then
+        local loot = Tracker.GetLootById(args.lootId)
+        local rarity = loot:GetRarity()
+        if rarity == LootRarity.Epic then
+            Chat.SendChannelText("squad", "Epic: "..tostring(loot:GetName()))
+        end
+    end
+    --]]
 end
 
 function Messages.OnTrackerUpdate(args)
@@ -55,8 +66,8 @@ function Messages.SendChatMessage(channel, message, alert)
 
         -- For each line in the message
         for num, line in ipairs(messages) do
-            Debug.Log(tostring(num)..' : Length: '..unicode.len(message)..'/'..tostring(messageContentLengthLimit)..' : Line: '..line)
-            Debug.Log('Message: '..currentMessage)
+            --Debug.Log(tostring(num)..' : Length: '..unicode.len(message)..'/'..tostring(messageContentLengthLimit)..' : Line: '..line)
+            --Debug.Log('Message: '..currentMessage)
 
             -- Warn if line is too long
             if unicode.len(line) > messageContentLengthLimit then 
@@ -93,7 +104,7 @@ end
 
 
 function Messages.SendFilteredMessage(channel, message, args)
-    message = Private.RunMessageFilters(message, args)
+    message = Messages.TextFilters(message, args)
     Messages.SendChatMessage(channel, message)
 end
 
@@ -102,7 +113,7 @@ function Messages.SendMessageToChat(channel, message, alert)
     channel = unicode.lower(channel)
     if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
     local alertprefix = ''
-    if alert then alertprefix = '!' end
+    if alert and (channel == "squad" or channel == "platoon") then alertprefix = '!' end
     if channel == 'system' then
         ChatLib.SystemMessage({text=message})
     elseif channel == 'notification' or channel == 'notifications' then
@@ -118,15 +129,17 @@ end
     Use the optional canSend argument to override bIsSquadLeader when determining whether or not to do anything.
 --]]
 function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
-    canSend = canSend or State.isSquadLeader
-    if canSend and Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
+    --canSend = canSend or State.isSquadLeader
+    --canSend and
+    --Debug.Table({event="MessageEvent", eventClass=eventClass, eventName=eventName, eventArgs=eventArgs, canSend=canSend})
+    if Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
             -- Var
             local message = ''
 
             -- Add event message
             if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                message = Private.RunMessageFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
+                message = Messages.TextFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
             end
 
             -- Send message if we have one
@@ -144,192 +157,57 @@ end
 function Private.RollsFormater(format, rolls, item)
     local t = {}
     for num, row in ipairs(rolls) do
-        t[#t+1] = Private.RunMessageFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
+        t[#t+1] = Messages.TextFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
     end
     return table.concat(t, '\n')
 end
 
 --[[
-    Private.RunMessageFilters(message, args)
+    Messages.TextFilters(formatString, args)
     Runs gsub filters for message formats.
     Pretty poorly implemented at the moment.
 ]]--
-function Private.RunMessageFilters(message, args)
-
-    local undefinedValue = ''
-    if Options['Debug']['Enabled'] and Options['Debug']['UndefinedFilterArguments'] then undefinedValue = 'NOT_SET' end
-
-    -- Fix undefined arguments
-    args.item                = args.item or {}
-    args.item.name           = args.item.name               or undefinedValue
-    args.item.quality        = args.item.quality            or undefinedValue
-    args.item.entityId       = args.item.entityId           or undefinedValue
-    args.item.itemTypeId     = args.item.itemTypeId         or undefinedValue
-    args.item.craftingTypeId = args.item.craftingTypeId     or undefinedValue
-    args.item.craftingTypeId = args.item.easyId             or undefinedValue
-    args.playerName          = args.playerName              or undefinedValue
-
-    args.lootedTo            = args.lootedTo                or undefinedValue
-    args.assignedTo          = args.assignedTo              or undefinedValue
-    args.distributionMode    = args.distributionMode        or undefinedValue
-
-    args.members             = args.members                 or undefinedValue
-    args.eligible            = args.eligible                or undefinedValue
-
-    -- Item (Text)
-    local itemAsText = ChatLib.CreateItemText({name = args.item.name}, args.item.quality)
-
-    -- Item (Linked)
-    local itemAsLink = ChatLib.EncodeItemLink(args.item.itemTypeId, args.item.quality, Game.GetItemAttributeModifiers(args.item.itemTypeId, args.item.quality))
-
-    -- Item coordinates (Link)
-    local itemCoordLink = ChatLib.EncodeCoordLink(args.item.pos)
-
-    -- Item entityId
-    local itemEntityId = tostring(args.item.entityId)
-    -- Item itemTypeId
-    local itemItemTypeId = tostring(args.item.itemTypeId)
-    -- Item craftingTypeId
-    local itemCraftingTypeId = tostring(args.item.craftingTypeId)
-    -- Item easyId
-    local itemEasyId = tostring(args.item.easyId)
-
-
-    -- Player Subject (Link)
-    local playerAsLink = undefinedValue
-    if args.playerName ~= undefinedValue then
-        playerAsLink = ChatLib.EncodePlayerLink(args.playerName)
-    end
-    -- Player Looted To (Link)
-    local playerLootedToAsLink = undefinedValue
-    if args.lootedTo ~= undefinedValue then
-        playerLootedToAsLink = ChatLib.EncodePlayerLink(args.lootedTo)
-    end
-    -- Player Assigned To (Link)
-    local playerAssignedToAsLink = undefinedValue
-    if args.assignedTo ~= undefinedValue then
-        playerAssignedToAsLink = ChatLib.EncodePlayerLink(args.assignedTo)
+function Messages.TextFilters(formatString, args)
+    --Debug.Table("Messages.TextFilters called on string "..tostring(formatString) .. " with args: ", args)
+    local loot = args.loot or Tracker.GetLootById(args.lootId)
+    if not loot then
+        Debug.Warn("Messages.TextFilters NODATAERROR")
+        return "NODATAERROR"
     end
 
-    -- Members (Links)
-    local membersAsLinks = {}
-    if args.members ~= undefinedValue then
-        for _, player in ipairs(args.members) do
-            membersAsLinks[#membersAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
+    local replacementVars = {
+        itemName = loot:GetName(),
+        itemRarity = Loot.GetDisplayNameOfRarity(loot:GetRarity()),
+        itemLevel = tostring(loot:GetItemLevel()),
+        itemReqLevel = tostring(loot:GetRequiredLevel()),
+        itemAsLink = loot:GetAsLink(),
+        itemAsText = loot:GetAsText(),
+        itemCoordLink = loot:GetCoordLink(),
+        lootedBy = loot:GetLootedBy(),
+        lootedTo = loot:GetLootedTo(),
+        state = loot:GetState(),
+        entity = loot:GetEntityId(),
+    }
+
+    for key, value in pairs(replacementVars) do
+        if type(value) == "table" then
+            Debug.Warn("Replacement key " .. tostring(key) .. " has table value : " .. tostring(value))
         end
     end
-    membersAsLinks = table.concat(membersAsLinks, ', ')
 
-    -- Eligible (Links)
-    local eligibleAsLinks = {}
-    if args.eligible ~= undefinedValue then
-        for _, player in ipairs(args.eligible) do
-            eligibleAsLinks[#eligibleAsLinks+1] = ChatLib.EncodePlayerLink(player.name)
-        end
-    end
-    eligibleAsLinks = table.concat(eligibleAsLinks, ', ')
-
-    -- Distribution Mode
-    local distributionMode = args.distributionMode -- Might need a formatter here
-
-    -- Archetype/Frame replacements
-    local itemForArchetype = undefinedValue
-    local itemForFrame = undefinedValue
-
-
-        local eligibleArchetypes = {}
-        local eligibleFrames = {}
-
-        if args.item.itemInfo then
-
-            -- If it's an equipment item, check local data
-            if IsEquipmentItem(args.item.itemInfo) and args.item.craftingTypeId then
-                local itemArchetype, itemFrame = xBattleframes.GetInfoByCraftingTypeId(tostring(args.item.craftingTypeId))
-                if itemArchetype then
-                    eligibleArchetypes[#eligibleArchetypes + 1] = itemArchetype
-                end
-                if itemFrame then
-                    eligibleFrames[#eligibleFrames + 1] = itemFrame
-                end
-            -- Else If it's a crafting component, check local data
-            elseif IsCraftingComponent(args.item.itemInfo) and args.item.itemTypeId then
-                for k, v in pairs(data_CraftingComponents) do
-                    if v.itemTypeId == tostring(args.item.itemTypeId) and v.classes then
-                        for i, class in ipairs(v.classes) do
-                            eligibleArchetypes[#eligibleArchetypes + 1] = class
-                        end
-                    end
-                end
-            -- Else If itemInfo has classes, use those
-            elseif args.item.itemInfo.classes then
-                for i, class in ipairs(args.item.itemInfo.classes) do
-                    eligibleArchetypes[#eligibleArchetypes + 1] = class
-                end
-            end
-        end
-
-    if #eligibleArchetypes == 1 then
-        itemForArchetype = xBattleframes.GetDisplayNameOfArchetype(eligibleArchetypes[1])
-    end
-    if #eligibleFrames == 1 then
-        itemForFrame = eligibleFrames[1]
-    end
-
-
-    -- Start building the output
-    local output = message
-
-
-    -- Item entityId
-    output = unicode.gsub(output, '%%eId', itemEntityId)
-
-    -- Item itemTypeId
-    output = unicode.gsub(output, '%%tId', itemItemTypeId)
-
-    -- Item craftingTypeId
-    output = unicode.gsub(output, '%%cId', itemCraftingTypeId)
-
-    -- Item For Archetype
-    output = unicode.gsub(output, '%%fA', itemForArchetype)
-
-    -- Item For Frame
-    output = unicode.gsub(output, '%%fF', itemForFrame)
-
-    -- Item easyId
-    output = unicode.gsub(output, '%%id', itemEasyId)
-
-    -- Item (Text)
-    output = unicode.gsub(output, '%%it', itemAsText)
-
-    -- Item (Linked)
-    output = unicode.gsub(output, '%%i', itemAsLink)
-
-    -- What sort of mode the item was distributed in
-    output = unicode.gsub(output, '%%m', distributionMode)
-
-    -- Player name
-    output = unicode.gsub(output, '%%n', playerAsLink)
-
-    -- Looted To
-    output = unicode.gsub(output, '%%l', playerLootedToAsLink) 
-
-    -- Assigned To
-    output = unicode.gsub(output, '%%a', playerAssignedToAsLink)
-
-    -- Roll
-    output = unicode.gsub(output, '%%r', args.roll) 
-
-    -- Roll type
-    output = unicode.gsub(output, '%%t', args.rollType) 
-
-    -- Members
-    output = unicode.gsub(output, '%%p', membersAsLinks)
-
-    -- Eligible
-    output = unicode.gsub(output, '%%e', eligibleAsLinks)
-
-    -- Item coordinates (Linked)
-    output = unicode.gsub(output, '%%c', itemCoordLink)
-
-   return output
+    return Private.replace_vars(formatString, replacementVars)
 end
+
+
+function Private.replace_vars(str, vars)
+  -- Allow replace_vars{str, vars} syntax as well as replace_vars(str, {vars})
+  if not vars then
+    vars = str
+    str = vars[1]
+  end
+  return (string.gsub(str, "({([^}]+)})",
+    function(whole,i)
+      return vars[i] or whole
+    end))
+end
+

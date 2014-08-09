@@ -83,6 +83,8 @@ function Private.DetermineState(loot)
     if loot:GetEntityId() then
         if Game.IsTargetAvailable(loot:GetEntityId()) then
             state = LootState.Available
+        elseif Options['Debug']['Enabled'] and tonumber(loot:GetEntityId()) <= 2000 and tonumber(System.GetElapsedTime(loot.createdAt)) < 30 then
+            state = LootState.Available -- Debug
         else
             if loot.lootedBy then
                 state = LootState.Looted
@@ -102,6 +104,11 @@ function Loot:Update()
 end
 
 function Loot.Create(args)
+
+
+    args.event = "Loot.Create"
+    Debug.Event(args)
+
     -- Setup vars from args
     local entityId     = args.entityId
     local targetInfo   = args.targetInfo
@@ -166,7 +173,7 @@ function Loot.Create(args)
     setmetatable(instance, Loot)
 
     instance.id              = Private.GenerateId()
-    instance.createdAt       = System.GetLocalUnixTime()
+    instance.createdAt       = System.GetClientTime()
 
     instance.entityId        = entityId
     instance.targetInfo      = targetInfo
@@ -281,15 +288,44 @@ function Loot:GetRequiredLevel()
 end
 
 function Loot:GetRarity()
-    return self.itemInfo.rarity or LootRarity.Common
+    return self.itemInfo.rarity or -1
 end
 
-function Loot.GetRarityIndex(rarity)
-    return LootRarityIndex[rarity] or 0
+function Loot:GetRarityValue()
+    return LIB_ITEMS.GetRarityValue(self:GetRarity()) or 0
 end
 
+
+
+function Loot:GetAsLink()
+    return ChatLib.EncodeItemLink(self:GetTypeId()) or self:GetName()
+end
 
 function Loot.GetDisplayNameOfRarity(rarity)
     return ucfirst(rarity) or "ukwn"
+end
+
+
+
+function Loot:GetCoordLink()
+    return ChatLib.EncodeCoordLink(self:GetPos()) or tostring(self:GetPos())
+end
+
+
+
+
+
+
+
+
+function Loot:GetAsText()
+    --Debug.Log("Loot:GetAsText not yet implemented")
+    -- Todo: Fixme: Remove?
+    return self:GetName()
+end
+
+
+function Loot.GetRarityIndex(rarity) -- Deprecated
+    return LIB_ITEMS.GetRarityValue(rarity) or 0
 end
 

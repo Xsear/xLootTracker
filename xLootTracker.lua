@@ -25,15 +25,18 @@ require './lib/lib_LKObjects' -- Trivialize objects
 -- Custom Utils
 require './util/xSounds' -- Soundfiles for options
 
+-- Custom Objects
 require './lootpanel'
 
 -- Addon Meta
 AddonInfo = {
-    release  = "ALPHA 2014-07-28",
-    revision = 0.99,
+    release  = "2014-08-04",
+    version = "1.05",
+    patch = "1.0.1788",
     save = 1.0,
 }
 
+-- Global state
 State = {
     loaded        = false, -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
     hud           = false, -- Whether game wants HUD to be displayed or not, updated by OnHudShow
@@ -41,29 +44,18 @@ State = {
     tooltipActive = false, -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.
     inSquad       = false, -- Whether we are currently in a squad or not
     isSquadLeader = false, -- Whether we are currently the squad leader or not
+    zoneId        = -1,
 }
-
-
-
-
--- Util
-
--- Data
-
 
 -- Addon
 require './util' -- To be deprecated
 require './types'   -- Types
 require './options' -- Options
-
 require './loot'-- Loot
-
 require './messages' -- Messages
 require './tracker' -- Tracker
-
 require './markers' -- Markers (Panels / Waypoints)
-
-require './hudtracker' -- HUdTracker
+require './hudtracker' -- HUDTracker
 
 -- Functions
 --[[
@@ -72,28 +64,24 @@ require './hudtracker' -- HUdTracker
     Sets up Interace options, slash commands and prints a version message
 ]]--
 function OnComponentLoad()
-    -- Install
-    if not Component.GetSetting('INSTALLED') then
-        Component.SaveSetting('INSTALLED', true)
-        Component.SaveSetting('Core_VersionMessage', true)
-    end
-
-    -- Setup Debug
-    Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
-    
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
     Lokii.SetBaseLang('en');
     Lokii.SetToLocale();
 
     -- Setup LKObjects
-    --LKObjects.SetMemoryWarning(20)
-    
-    -- Setup Options
-    Options.Setup()
+    --LKObjects.SetMemoryWarning(20) -- Ehh, the amount of panels is too high now!
+        
+    -- Setup Debug
+    Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
 
+    -- Setup Options
+    Options.Setup()    
+end
+
+function OnOptionsLoaded()
     -- Setup Slash
-    LIB_SLASH.BindCallback({slash_list=Component.GetSetting('Core_SlashHandles'), description='Xsear\'s Loot Tracker', func=OnSlash})
+    LIB_SLASH.BindCallback({slash_list=Options['Core']['SlashHandles'], description='Xsear\'s Loot Tracker', func=OnSlash})
 
     -- Setup Tracker
     Tracker.Setup()
@@ -102,9 +90,13 @@ function OnComponentLoad()
     HUDTracker.Setup()
 
     -- Print version message
-    if Component.GetSetting('Core_VersionMessage') then
-        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker r'..AddonInfo.release..' Loaded')
+    if Options['Core']['VersionMessage'] then
+        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker v'..AddonInfo.version..' p'..AddonInfo.patch..' r'..AddonInfo.release..' Loaded')
     end
+end
+
+function OnEnterZone(args)
+    State.zoneId = tonumber(args.zoneId)
 end
 
 --[[
@@ -275,13 +267,7 @@ function OnTrackerNew(args)
     HUDTracker.OnTrackerNew(args)
 
     -- Messages
-    if Options['Messages']['Enabled'] then
-        local loot = Tracker.GetLootById(args.lootId)
-        local rarity = loot:GetRarity()
-        if rarity == LootRarity.Epic then
-            Chat.SendChannelText("squad", "Epic: "..tostring(loot:GetName()))
-        end
-    end
+    Messages.OnTrackerNew(args)
 end
 
 function OnTrackerUpdate(args)
@@ -368,17 +354,197 @@ function Test(args)
     Debug.Log('Test')
     Debug.Log('args[1]: '..tostring(args[1]))
     Debug.Log('args[2]: '..tostring(args[1]))
+
+    Messages.SendChatMessage('system', 'Test')
+
+
+    if false then
+
+        -- 86682 Bone Fragments (Uncommon)
+        -- 98622 (BioRifle) Valerian Two (Common)
+        -- 99979 Charging Module (Common)
+
+
+        local idsOfInterest = {
+            86695,
+            99979,
+        }
+
+        for i, typeId in ipairs(idsOfInterest) do
+
+            local itemInfo = Game.GetItemInfoByType(typeId)
+
+            Debug.Log(tostring(itemInfo.name) .. " is of rarity " .. tostring(itemInfo.rarity) .. " which has the value " .. tostring(LIB_ITEMS.GetRarityValue(itemInfo.rarity)))
+
+        end
+
+
+
+
+    elseif true then
+
+
+        local numberOfItems = 3
+
+        local targetInfoData = {
+            {itemTypeId = 86682},
+            {itemTypeId = 86682},
+            {itemTypeId = 100061},
+            {itemTypeId = 100061},
+            {itemTypeId = 86698},
+            {itemTypeId = 86698},
+            {itemTypeId = 77344},
+            {itemTypeId = 77344},
+            {itemTypeId = 30408},
+            {itemTypeId = 30408},
+            {itemTypeId = 86695},
+            {itemTypeId = 86695},
+            {itemTypeId = 86681},
+            {itemTypeId = 86681},
+            {itemTypeId = 114314},
+            {itemTypeId = 114314},
+            {itemTypeId = 106163},
+            {itemTypeId = 106163},
+            {itemTypeId = 52206},
+            {itemTypeId = 52206},
+            {itemTypeId = 114020},
+            {itemTypeId = 114020},
+            {itemTypeId = 105253},
+            {itemTypeId = 105253},
+            {itemTypeId = 103075},
+            {itemTypeId = 103075},
+            {itemTypeId = 99899},
+            {itemTypeId = 99899},
+            {itemTypeId = 99979},
+            {itemTypeId = 99979},
+            {itemTypeId = 114176},
+            {itemTypeId = 114176},
+            {itemTypeId = 100479},
+            {itemTypeId = 100479},
+            {itemTypeId = 98622},
+            {itemTypeId = 98622},
+            {itemTypeId = 113722},
+            {itemTypeId = 113722},
+            {itemTypeId = 95088},
+            {itemTypeId = 95088},
+            {itemTypeId = 99659},
+            {itemTypeId = 99659},
+            {itemTypeId = 92088},
+            {itemTypeId = 92088},
+        }
+
+
+        for num = 1, tonumber(numberOfItems) do
+
+            -- Setup args
+            local args = {}
+
+            -- Get random targetInfo
+            args.targetInfo = targetInfoData[math.random(#targetInfoData)]
+
+            -- Generate fake entityId
+            args.entityId = tonumber(tostring(num)..tostring(math.random(0, 10)))
+
+            -- Set location
+            args.targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}
+            local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
+            args.targetInfo.lootPos.x = args.targetInfo.lootPos.x - posMod
+
+            -- Set loot property
+            args.type = "loot"
+            args.targetInfo.type = "loot"
+
+            -- Call
+            OnEntityAvailable(args)
+        end
+
+        
+
+
+    end
+
+
+  
+
+--[[
+
+
+
+"targetInfo" : {
+            "damageable" : false, 
+            "type" : "loot", 
+            "lootPos" : {
+                "y" : -1778.966919, 
+                "x" : 113.551292, 
+                "z" : 518.921387
+            }, 
+            "quantity" : 1, 
+            "itemTypeId" : 86682, 
+            "bounds" : {
+                "height" : 0.614168, 
+                "length" : 0.441926, 
+                "width" : 0.353914
+            }, 
+            "hostile" : false, 
+            "faction" : "unknown", 
+            "interactToLoot" : false, 
+            "level" : 0, 
+            "modules" : [], 
+            "name" : "Bone Fragments"
+        }, 
+"itemInfo" : {
+            "flags" : {
+                "resource" : true, 
+                "is_tradable" : true
+            }, 
+            "stack_size" : 5, 
+            "rarity" : "uncommon", 
+            "certifications" : [], 
+            "web_icon_stem" : "BoneFragments", 
+            "constraints" : {
+                "cpu" : 0, 
+                "mass" : 0, 
+                "power" : 0
+            }, 
+            "character_scalars" : [], 
+            "tier" : {
+                "level" : 2, 
+                "description" : "Tier 2", 
+                "name" : "Tier 2"
+            }, 
+            "itemTypeId" : "86682", 
+            "type" : "resource_item", 
+            "name" : "Bone Fragments", 
+            "required_level" : 0, 
+            "item_level" : 1, 
+            "subTypeId" : "3291", 
+            "description" : "Bones and other Carbon-based materials. Gathered from creatures levels 20-29.", 
+            "web_icon" : "http://d2ja7bjtwj8eb0.cloudfront.net/assets/items/64/BoneFragments.png"
+        }, 
+
+
+
+
+--]]
+
 end
 
 
 function Stat(args)
     Debug.Log('Stat')
     Debug.Table(State)
+    Debug.Table('Features', {
+                panels = Options['Panels']['Enabled'],
+                waypoints = Options['Waypoints']['Enabled'],
+                hudtracker = Options['HUDTracker']['Enabled'],
+                messages = Options['Messages']['Enabled'],
+                })
     Tracker.Stat()
     WaypointManager.Stat()
 end
 
 function Clear(args)
+    -- Fixme: This command does not work properly.
     Debug.Log('Clear')
     Tracker.Clear()
 end

@@ -12,19 +12,23 @@ local SCROLLER = nil
 local TOOLTIP_ITEM = nil
 
 local CYCLE_HUDTrackerUpdate = nil
-   
+
+local Private = {
+    lastUpdate = 0,
+    minUpdateCB = nil,
+}   
 
 
 function HUDTracker.OnTrackerNew(args)
-    --HUDTracker.Update()
+    HUDTracker.Update()
 end
 
 function HUDTracker.OnTrackerUpdate(args)
-    --HUDTracker.Update()
+    HUDTracker.Update()
 end
 
 function HUDTracker.OnTrackerRemove(args)
-    --HUDTracker.Update()
+    HUDTracker.Update()
 end
 
 
@@ -52,9 +56,12 @@ function HUDTracker.Enable()
     -- Start update cycle
     if Options['HUDTracker']['Enabled'] then
         if not CYCLE_HUDTrackerUpdate then
+            Debug.Log('Starting HUDTrackerUpdate cycle with interval (s): ' .. tostring(tonumber(Options['HUDTracker']['UpdateInterval'])))
             CYCLE_HUDTrackerUpdate = Callback2.CreateCycle(HUDTracker.Update)
-            CYCLE_HUDTrackerUpdate:Run(Options['HUDTracker']['UpdateInterval'])
+            CYCLE_HUDTrackerUpdate:Run(tonumber(Options['HUDTracker']['UpdateInterval']))
         end
+    else
+        --
     end
 
     -- Update
@@ -64,6 +71,7 @@ end
 function HUDTracker.Disable()
     -- Stop update cycle
     if CYCLE_HUDTrackerUpdate then
+        Debug.Log('Stopping HUDTrackerUpdate cycle')
         CYCLE_HUDTrackerUpdate:Stop()
         CYCLE_HUDTrackerUpdate:Release()
         CYCLE_HUDTrackerUpdate = nil
@@ -96,29 +104,59 @@ function HUDTracker.OnOptionChange(id, value)
     end
 end
 
-function HUDTracker.Update()
+function HUDTracker.Update(args)
+    args = args or {}
+    args.event = "HUDTracker.Update"
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
-       
+        
+        -- Minimum update limiter
+        local currentTime = tonumber(System.GetClientTime())
+        if args.triggeredByCB then -- Ensure that the callback is cleaned up
+            Private.minUpdateCB:Release()
+            Private.minUpdateCB = nil
+        else
+            local timeSinceLastUpdate = System.GetElapsedTime(Private.lastUpdate)
+            local minimumUpdateDelay = tonumber(Options['HUDTracker']['MinimumUpdateDelay'])
+            -- If this is too early to update
+            if timeSinceLastUpdate < minimumUpdateDelay then
+                -- Schedule one if we haven't already.
+                if not Private.minUpdateCB then
+                    Private.minUpdateCB = Callback2.Create()
+                    Private.minUpdateCB:Bind(HUDTracker.Update, {triggeredByCB = true})
+                    Private.minUpdateCB:Schedule(timeSinceLastUpdate - minimumUpdateDelay)
+                end
+                return
+            end
+        end
+
+        -- Update is actually happening!
+        Debug.Event(args)
+
         -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
         if State.tooltipActive then
             Tooltip.Show(false)
             TOOLTIP_ITEM.GROUP:Show(false)
         end
 
+        -- Stop scroller updates whilst we update
+        SCROLLER:LockUpdates()  
+
         -- Clear
         SCROLLER:Reset() 
 
         -- Get loot
-        local trackedLoot = Tracker.GetLoot()
-
-        -- Order it by rarity
-        table.sort(trackedLoot, HUDTrackerSort)
+        local trackedLoot = Tracker.GetAvailableLoot()
 
         -- Populate
         if not _table.empty(trackedLoot) then
 
-            for id, loot in pairs(trackedLoot) do
+            -- Order it by rarity
+            table.sort(trackedLoot, HUDTrackerSort)
+
+
+            -- Add rows
+            for id, loot in ipairs(trackedLoot) do
 
                     -- Create widget
                     local ENTRY = Component.CreateWidget('Tracker_List_Entry', LIST)
@@ -240,12 +278,15 @@ function HUDTracker.Update()
                     local ROW = SCROLLER:AddRow(ENTRY)
                 
             end -- for loop
+
         else -- no identified items
             -- Clear?
         end
 
-
-       HUDTracker.UpdateVisibility()
+        -- Unlock Scroller
+        Private.lastUpdate = tonumber(System.GetClientTime())
+        SCROLLER:UnlockUpdates()
+        HUDTracker.UpdateVisibility()
     end
 end
 
@@ -253,7 +294,7 @@ function HUDTracker.UpdateVisibility()
     if Options['HUDTracker']['Enabled'] then
      -- Should we display the tracker?
         --Debug.Log('Should we display the Tracker?')
-        --Debug.Log('Options Tracker Visibility == '..Options['Tracker']['Visibility'])
+        --Debug.Log('Options Tracker Visibility == '..Options['HUDTracker']['Visibility'])
         --Debug.Log('State.hud == '..tostring(State.hud))
         --Debug.Log('State.cursor == '..tostring(State.cursor))
         if SCROLLER:GetRowCount() > 0 and (
@@ -322,21 +363,53 @@ end
 
 
 -- Return true if lootA should come before lootB
+-- Todo: Ehh pretty sure I fucked it up
 function HUDTrackerSort(lootA, lootB)
-    -- Rarer items first
-    if Loot.GetRarityIndex(lootA:GetRarity()) > Loot.GetRarityIndex(lootB:GetRarity()) then
-        return true
-    
-    -- Better items second
-    elseif lootA:GetItemLevel() > lootB:GetItemLevel() then
-        return true
 
-    -- Alphabetic third
-    elseif lootA:GetName() < lootB:GetName() then
-        return true
 
+    Debug.Log("************** HUDTrackerSort *********** ")
+    -- Handle nil values
+    if lootA == nil and lootB == nil then
+        Debug.Log("A and B are nil, result: false")
+        return false
+    end
+    if lootA == nil then
+        Debug.Log("A is nil, result: false")
+        return false
+    end
+    if lootB == nil then
+        Debug.Log("B is nil, result: true")
+        return true
     end
 
-    -- This part is important for sorting to work!
-    return false
+    -- Non Nil Results
+    Debug.Log("A: "..tostring(lootA:ToString()).." | Rarity:"..tostring(lootA:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootA:GetItemLevel()))
+    Debug.Log("B: "..tostring(lootB:ToString()).." | Rarity:"..tostring(lootB:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootB:GetItemLevel()))
+    
+    -- Rarer items first
+    local rarityA = lootA:GetRarityValue()
+    local rarityB = lootB:GetRarityValue()
+
+    if rarityA ~= rarityB then
+        Debug.Log("Prioritizing rarity")
+        Debug.Log("A: Rarity " .. tostring(rarityA))
+        Debug.Log("B: Rarity " .. tostring(rarityB))
+        Debug.Log("A before B? : " .. tostring((rarityA > rarityB)))
+        return (rarityA > rarityB)
+    end
+
+    -- Better items second
+    local ilvlA = lootA:GetItemLevel()
+    local ilvlB = lootB:GetItemLevel()
+    if ilvlA ~= ilvlB then
+        Debug.Log("Prioritizing ItemLevel")
+        Debug.Log("A: ItemLevel " .. tostring(ilvlA))
+        Debug.Log("B: ItemLevel " .. tostring(ilvlB))
+        Debug.Log("A before B? : " .. tostring((ilvlA > ilvlB)))
+        return (ilvlA > ilvlB)
+    end
+
+    -- Alphabetic third
+    Debug.Log("Prioritizing alphabetic")
+    return (lootA:GetName() < lootB:GetName())
 end

@@ -40,26 +40,20 @@ LootRarity
 
 
 
-function DetectDistributeMarkX_Label(type, stage, x)
-    return type.." "..stage.." "..x
-end
-
-function DetectDistributeMarkX_Tooltip(type, stage, x)
-    return "Toggle whether "..stage.." "..x.." should be "..type.."ed."
-end
-
-
-function FilterGenericX_Label(stage, x)
-    return 'Enable '..stage.." "..x
-end
-
-function FilterGenericX_Tooltip(stage, x)
-    return "Toggle whether this action should be active for "..stage.." "..x.."s."
-end
-
-
-Generic_MessageFormat = "Specify the format of the message. The following replacement variables exist, please note that they're not always available.\n%i : Subject item\n%eId : Item entityId\n%cId : Item craftingTypeId\n%c : The coordinates to the item, as a link\n%n : Subject player\n%l : Player that looted the item\n%a : Player that the item was assigned to\n%m : Distribution Mode that item was distributed in.\n%fA : Archetype suitable for item\n%fF : Frame suitable for item\n%r : The roll value\n%t : The roll type\n%p : Players that can roll\n%e : Players that can Need roll"
-
+Generic_MessageFormat = [[
+Specify the format of the message. The following replacement variables exist, please note that they're not always available.
+\nGeneral:
+\n{itemName}
+\n{itemRarity}
+\n{itemLevel}
+\n{itemReqLevel}
+\nChat Only:
+\n{itemAsLink}
+\n{itemCoordLink}
+\nLooted Items Only:
+\n{lootedBy}
+\n{lootedTo}
+]]
 
 LANG = {
 
@@ -73,9 +67,8 @@ LANG = {
     UI_Waypoints_Subtitle                                                           =    "Loot",
 
 
-
-
-    Options_MoveableFrame_Tracker_Label                                             =     "xSLM Loot Tracker",
+    -- Options
+    Options_MoveableFrame_Tracker_Label                                                         =     "Xsear\'s Loot Tracker",
 
     Options_Group_Core_Label                                                                    =    "Xsear\'s Loot Tracker",
     Options_Core_Enabled_Label                                                                  =    "Enabled",
@@ -158,21 +151,6 @@ LANG = {
 
     
 
-    Options_Dropdown_RarityThreshold_Choice_salvage_Label             = "Salvage",
-    Options_Dropdown_RarityThreshold_Choice_salvage_Tooltip           = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_common_Label              = "Common",
-    Options_Dropdown_RarityThreshold_Choice_common_Tooltip            = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_uncommon_Label            = "Uncommon",
-    Options_Dropdown_RarityThreshold_Choice_uncommon_Tooltip          = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_rare_Label                = "Rare",
-    Options_Dropdown_RarityThreshold_Choice_rare_Tooltip              = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_epic_Label                = "Epic",
-    Options_Dropdown_RarityThreshold_Choice_epic_Tooltip              = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_prototype_Label           = "Prototype",
-    Options_Dropdown_RarityThreshold_Choice_prototype_Tooltip         = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_legendary_Label           = "Legendary",
-    Options_Dropdown_RarityThreshold_Choice_legendary_Tooltip         = "<<WRITE ME>>",
-
 
 
 
@@ -180,6 +158,11 @@ LANG = {
     Options_Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    "Send message to Squad on this event",
     Options_Messages_Generic_Channels_Squad_Format_Label                                    =    "Squad Message Format",
     Options_Messages_Generic_Channels_Squad_Format_Tooltip                                  =    Generic_MessageFormat,
+
+    Options_Messages_Generic_Channels_Platoon_Enabled_Label                                   =    "Send Platoon Message",
+    Options_Messages_Generic_Channels_Platoon_Enabled_Tooltip                                 =    "Send message to Platoon on this event",
+    Options_Messages_Generic_Channels_Platoon_Format_Label                                    =    "Platoon Message Format",
+    Options_Messages_Generic_Channels_Platoon_Format_Tooltip                                  =    Generic_MessageFormat,
 
     Options_Messages_Generic_Channels_System_Enabled_Label                                  =    "Send System Message",
     Options_Messages_Generic_Channels_System_Enabled_Tooltip                                =    "Send message to System on this event",
@@ -200,58 +183,28 @@ LANG = {
     Options_Messages_Prefix_Tooltip                                                         =    "Set the prefix for all public facing messages.",
     Options_Messages_Channels_Squad_Label                                                   =    "Send on Squad Channel",
     Options_Messages_Channels_Squad_Tooltip                                                 =    "Master switch for Squad messages. The addon will not send ANY squad messages if this is checked, regardless of other settings.",
+
+    Options_Messages_Channels_Platoon_Label                                                 =  "Send on Platoon Channel",
+    Options_Messages_Channels_Platoon_Tooltip                                               =  "Master switch for Squad messages. The addon will not send ANY platoon messages if this is checked, regardless of other settings.",
+
     Options_Messages_Channels_Notifications_Label                                           =    "Send on Notifications Channel",
     Options_Messages_Channels_Notifications_Tooltip                                         =    "Master switch for Notification messages. The addon will not send ANY notification messages if this is checked, regardless of other settings.",
     Options_Messages_Channels_System_Label                                                  =    "Send on System Channel",
     Options_Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send ANY system messages if this is checked, regardless of other settings.",
 
-    Options_Messages_Events_Distribution_OnRollNobody_Enabled_Label                             =    "On Roll Nobody",
-    Options_Messages_Events_Distribution_OnRollNobody_Enabled_Tooltip                           =    "When a roll ends without anyone rolling",
 
-    Options_Messages_Events_Distribution_OnAssignItem_Enabled_Label                             =    "On Assign Item",
-    Options_Messages_Events_Distribution_OnAssignItem_Enabled_Tooltip                           =    "When somebody is assigned an item",
 
-    Options_Messages_Events_Distribution_OnAssignItemByRoll_Enabled_Label                             =    "On Assign Item By Roll",
-    Options_Messages_Events_Distribution_OnAssignItemByRoll_Enabled_Tooltip                           =    "When somebody is assigned an item, having won it through a roll",
+    Options_Messages_Events_Tracker_OnLootClaimed_Enabled_Label                               =    "Loot Claimed",
+    Options_Messages_Events_Tracker_OnLootClaimed_Enabled_Tooltip                             =    "When somebody loots an item that the addon had not found",
 
-    Options_Messages_Events_Distribution_OnAssignItemFreeForAll_Enabled_Label                             =    "On Assign Item Free For All",
-    Options_Messages_Events_Distribution_OnAssignItemFreeForAll_Enabled_Tooltip                           =    "When an item is assigned to the public domain",
+    Options_Messages_Events_Tracker_OnLootLost_Enabled_Label                               =    "Loot Lost",
+    Options_Messages_Events_Tracker_OnLootLost_Enabled_Tooltip                             =    "When a tracked item disappears without being looted / despawns",
 
-    Options_Messages_Events_Distribution_OnDistributeItem_Enabled_Label                         =    "On Distribute Item",
-    Options_Messages_Events_Distribution_OnDistributeItem_Enabled_Tooltip                       =    "When an item is about to distribute an item",
-    
-    Options_Messages_Events_Distribution_OnRolls_Enabled_Label                                  =    "On Rolls",
-    Options_Messages_Events_Distribution_OnRolls_Enabled_Tooltip                                =    "When a roll is calculated",
+    Options_Messages_Events_Tracker_OnLootLooted_Enabled_Label                              =    "Loot Looted",
+    Options_Messages_Events_Tracker_OnLootLooted_Enabled_Tooltip                            =    "When someone who won an item loots that item",
 
-    Options_Messages_Events_Distribution_OnRollAccept_Enabled_Label                             =    "On Roll Accept",
-    Options_Messages_Events_Distribution_OnRollAccept_Enabled_Tooltip                           =    "When a roll gets accepted",
-
-    Options_Messages_Events_Distribution_OnRollBusy_Enabled_Label                               =    "On Roll Busy",
-    Options_Messages_Events_Distribution_OnRollBusy_Enabled_Tooltip                             =    "When there is an attempt to start a new roll, but we're already busy rolling for something else",
-
-    Options_Messages_Events_Distribution_OnRollChange_Enabled_Label                             =    "On Roll Change",
-    Options_Messages_Events_Distribution_OnRollChange_Enabled_Tooltip                           =    "When a roll gets changed",
-
-    Options_Messages_Events_Distribution_OnAcceptingRolls_Enabled_Label                         =    "On Accepting Rolls",
-    Options_Messages_Events_Distribution_OnAcceptingRolls_Enabled_Tooltip                       =    "When the addon is listening for roll declarations",
-
-    Options_Messages_Events_Detection_OnLootStolen_Enabled_Label                                =    "On Loot Stolen",
-    Options_Messages_Events_Detection_OnLootStolen_Enabled_Tooltip                              =    "When somebody loots an item that was assigned to someone else",
-
-    Options_Messages_Events_Detection_OnLootClaimed_Enabled_Label                               =    "On Loot Claimed",
-    Options_Messages_Events_Detection_OnLootClaimed_Enabled_Tooltip                             =    "When somebody loots an item that the addon had not found",
-
-    Options_Messages_Events_Detection_OnLootDespawn_Enabled_Label                               =    "On Loot Despawn",
-    Options_Messages_Events_Detection_OnLootDespawn_Enabled_Tooltip                             =    "When a tracked item despawns",
-
-    Options_Messages_Events_Detection_OnLootReceived_Enabled_Label                              =    "On Loot Received",
-    Options_Messages_Events_Detection_OnLootReceived_Enabled_Tooltip                            =    "When someone who won an item loots that item",
-
-    Options_Messages_Events_Detection_OnLootSnatched_Enabled_Label                              =    "On Loot Snatched",
-    Options_Messages_Events_Detection_OnLootSnatched_Enabled_Tooltip                            =    "When somebody loots an item that the addon had not yet assigned",
-
-    Options_Messages_Events_Detection_OnIdentify_Enabled_Label                                  =    "On Identify",
-    Options_Messages_Events_Detection_OnIdentify_Enabled_Tooltip                                =    "When the addon has discovered a new item",
+    Options_Messages_Events_Tracker_OnLootNew_Enabled_Label                                  =    "Loot Detected",
+    Options_Messages_Events_Tracker_OnLootNew_Enabled_Tooltip                                =    "When the addon has discovered a new item",
 
 
 
@@ -360,73 +313,6 @@ LANG = {
 
 
 
-    Mode_Choice_Simple_Label                                =    "Simple",
-    Mode_Choice_Simple_Tooltip                              =    "",
-    Mode_Choice_Advanced_Label                              =    "Advanced",
-    Mode_Choice_Advanced_Tooltip                            =    "",
-
-
-
-    TierThreshold_Choice_Tier2_Label                        =    "Tier 2",
-    TierThreshold_Choice_Tier2_Tooltip                      =    "",
-    TierThreshold_Choice_Tier1_Label                        =    "Tier 1",
-    TierThreshold_Choice_Tier1_Tooltip                      =    "",
-    TierThreshold_Choice_Tier4_Label                        =    "Tier 4",
-    TierThreshold_Choice_Tier4_Tooltip                      =    "",
-    TierThreshold_Choice_Any_Label                          =    "Any",
-    TierThreshold_Choice_Any_Tooltip                        =    "",
-    TierThreshold_Choice_Tier3_Label                        =    "Tier 3",
-    TierThreshold_Choice_Tier3_Tooltip                      =    "",
-    QualityThreshold_Choice_Legendary_Label                 =    "Legendary",
-    QualityThreshold_Choice_Legendary_Tooltip               =    "",
-    QualityThreshold_Choice_Custom_Label                    =    "Custom",
-    QualityThreshold_Choice_Custom_Tooltip                  =    "",
-    QualityThreshold_Choice_Common_Label                    =    "Common",
-    QualityThreshold_Choice_Common_Tooltip                  =    "",
-    QualityThreshold_Choice_Epic_Label                      =    "Epic",
-    QualityThreshold_Choice_Epic_Tooltip                    =    "",
-    QualityThreshold_Choice_Uncommon_Label                  =    "Uncommon",
-    QualityThreshold_Choice_Uncommon_Tooltip                =    "",
-    QualityThreshold_Choice_Any_Label                       =    "Any",
-    QualityThreshold_Choice_Any_Tooltip                     =    "",
-    QualityThreshold_Choice_Rare_Label                      =    "Rare",
-    QualityThreshold_Choice_Rare_Tooltip                    =    "",
-    ColorModes_Choice_Custom_Label                          =    "Custom",
-    ColorModes_Choice_Custom_Tooltip                        =    "",
-    ColorModes_Choice_MatchItem_Label                       =    "Match Item",
-    ColorModes_Choice_MatchItem_Tooltip                     =    "",
-    TrackerVisibility_Choice_Always_Label                   =    "Always",
-    TrackerVisibility_Choice_Always_Tooltip                 =    "",
-    TrackerVisibility_Choice_MouseMode_Label                =    "Mousemode",
-    TrackerVisibility_Choice_MouseMode_Tooltip              =    "",
-    TrackerVisibility_Choice_HUD_Label                      =    "HUD",
-    TrackerVisibility_Choice_HUD_Tooltip                    =    "",
-
-    RadarEdgeModes_Choice_None_Label                        =    "None",
-    RadarEdgeModes_Choice_None_Tooltip                      =    "None",
-    RadarEdgeModes_Choice_Arrow_Label                       =    "Arrow",
-    RadarEdgeModes_Choice_Arrow_Tooltip                     =    "Arrow",
-    RadarEdgeModes_Choice_Icon_Label                        =    "Icon",
-    RadarEdgeModes_Choice_Icon_Tooltip                      =    "Icon",
-
-
-    TrackerPlateModeOptions_Choice_None_Label               =    "None",
-    TrackerPlateModeOptions_Choice_None_Tooltip             =    "None",
-    TrackerPlateModeOptions_Choice_Decorated_Label          =    "Decorated",
-    TrackerPlateModeOptions_Choice_Decorated_Tooltip        =    "Decorated",
-    TrackerPlateModeOptions_Choice_Simple_Label             =    "Simple",
-    TrackerPlateModeOptions_Choice_Simple_Tooltip           =    "Simple",
-
-    TrackerIconModeOptions_Choice_None_Label                =    "None",
-    TrackerIconModeOptions_Choice_None_Tooltip              =    "None",
-    TrackerIconModeOptions_Choice_Decorated_Label           =    "Decorated",
-    TrackerIconModeOptions_Choice_Decorated_Tooltip         =    "Decorated",
-    TrackerIconModeOptions_Choice_Simple_Label              =    "Simple",
-    TrackerIconModeOptions_Choice_Simple_Tooltip            =    "Simple",
-    TrackerIconModeOptions_Choice_IconOnly_Label            =    "IconOnly",
-    TrackerIconModeOptions_Choice_IconOnly_Tooltip          =    "IconOnly",
-
-
     -- Subtabs
     Options_Subtab_Messages                                         =    "Messages",
     Options_Subtab_Messages_Tracker                                 =    "Tracker",
@@ -448,7 +334,79 @@ LANG = {
 
 
 
-    -- Sound choices
+
+
+
+
+
+
+
+
+
+
+
+    -- Dropdown Choices
+    -- Due to some issues these have really bad names that I hope to correct at some point.
+
+
+
+    Options_Dropdown_RarityThreshold_Choice_salvage_Label             = "Salvage",
+    Options_Dropdown_RarityThreshold_Choice_salvage_Tooltip           = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_common_Label              = "Common",
+    Options_Dropdown_RarityThreshold_Choice_common_Tooltip            = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_uncommon_Label            = "Uncommon",
+    Options_Dropdown_RarityThreshold_Choice_uncommon_Tooltip          = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_rare_Label                = "Rare",
+    Options_Dropdown_RarityThreshold_Choice_rare_Tooltip              = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_epic_Label                = "Epic",
+    Options_Dropdown_RarityThreshold_Choice_epic_Tooltip              = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_prototype_Label           = "Prototype",
+    Options_Dropdown_RarityThreshold_Choice_prototype_Tooltip         = "<<WRITE ME>>",
+    Options_Dropdown_RarityThreshold_Choice_legendary_Label           = "Legendary",
+    Options_Dropdown_RarityThreshold_Choice_legendary_Tooltip         = "<<WRITE ME>>",
+
+
+
+    Mode_Choice_Simple_Label                                =    "Simple",
+    Mode_Choice_Simple_Tooltip                              =    "",
+    Mode_Choice_Advanced_Label                              =    "Advanced",
+    Mode_Choice_Advanced_Tooltip                            =    "",
+
+    Options_Dropdown_ColorModes_Choice_custom_Label                          =    "Custom",
+    Options_Dropdown_ColorModes_Choice_custom_Tooltip                        =    "",
+    Options_Dropdown_ColorModes_Choice_matchitem_Label                       =    "Match Item",
+    Options_Dropdown_ColorModes_Choice_matchitem_Tooltip                     =    "",
+
+    Options_Dropdown_RadarEdgeModes_Choice_0_Label                        =    "None", -- none
+    Options_Dropdown_RadarEdgeModes_Choice_0_Tooltip                      =    "None", -- none
+    Options_Dropdown_RadarEdgeModes_Choice_1_Label                       =    "Arrow", -- arrow
+    Options_Dropdown_RadarEdgeModes_Choice_1_Tooltip                     =    "Arrow", -- arrow
+    Options_Dropdown_RadarEdgeModes_Choice_2_Label                        =    "Icon", -- icon
+    Options_Dropdown_RadarEdgeModes_Choice_2_Tooltip                      =    "Icon", -- icon
+
+    Options_Dropdown_HUDTrackerVisibility_Choice_always_Label                   =    "Always",
+    Options_Dropdown_HUDTrackerVisibility_Choice_always_Tooltip                 =    "",
+    Options_Dropdown_HUDTrackerVisibility_Choice_mousemode_Label                =    "Mousemode",
+    Options_Dropdown_HUDTrackerVisibility_Choice_mousemode_Tooltip              =    "",
+    Options_Dropdown_HUDTrackerVisibility_Choice_hud_Label                      =    "HUD",
+    Options_Dropdown_HUDTrackerVisibility_Choice_hud_Tooltip                    =    "",
+
+    Options_Dropdown_HUDTrackerPlateModeOptions_Choice_none_Label               =    "None",
+    Options_Dropdown_HUDTrackerPlateModeOptions_Choice_none_Tooltip             =    "None",
+    Options_Dropdown_HUDTrackerPlateModeOptions_Choice_decorated_Label          =    "Decorated",
+    Options_Dropdown_HUDTrackerPlateModeOptions_Choice_decorated_Tooltip        =    "Decorated",
+    Options_Dropdown_HUDTrackerPlateModeOptions_Choice_simple_Label             =    "Simple",
+    Options_Dropdown_HUDTrackerPlateModeOptions_Choice_simple_Tooltip           =    "Simple",
+
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_none_Label                =    "None",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_none_Tooltip              =    "None",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_decorated_Label           =    "Decorated",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_decorated_Tooltip         =    "Decorated",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_simple_Label              =    "Simple",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_simple_Tooltip            =    "Simple",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_iconOnly_Label            =    "IconOnly",
+    Options_Dropdown_HUDTrackerIconModeOptions_Choice_iconOnly_Tooltip          =    "IconOnly",
+
     Sounds_Option_none                                  =    "None",
     Sounds_Option_UI_Beep_06                            =    "Beep 06",
     Sounds_Option_UI_Beep_08                            =    "Beep 08",

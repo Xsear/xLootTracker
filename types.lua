@@ -6,61 +6,25 @@
 uiSounds = xSounds.GetSounds()
 
 
-
-TierOptions = {
-    Any = 'any',
---    Tier1 = '1',
-    Tier2 = '2',
-    Tier3 = '3',
-    Tier4 = '4',
-}
-
-QualityOptions = {
-    Any = 'any',
---    Common = 'common',
-    Uncommon = 'uncommon',
-    Rare = 'rare',
-    Epic = 'epic',
---    Legendary = 'legendary',
-    Custom = 'custom',
-}
-
 LootPanelModes = {
     Standard = 'standard',
     Small = 'small',
 }
 
+OptionsLootPanelModes = {
+    [1] = LootPanelModes.Standard,
+    [2] = LootPanelModes.Small,
+}
+
 ColorModes = {
-    MatchItem = 'match-quality',
+    MatchItem = 'matchitem',
     Custom = 'custom',
 }
 
-RadarEdgeModes = {
-    None = MapMarker.EDGE_NONE,
-    Arrow = MapMarker.EDGE_ARROW,
-    Icon = MapMarker.EDGE_ICON,
+OptionsColorModesDropdown = {
+    [1] = ColorModes.MatchItem,
+    [2] = ColorModes.Custom,
 }
-
-HUDTrackerVisibilityOptions = {
-    Always = 'always',
-    HUD = 'hud',
-    MouseMode = 'mousemode',
-}
-
-
-HUDTrackerPlateModeOptions = {
-    Decorated = 'decorated',
-    Simple = 'simple',
-    None = 'none',
-}
-
-HUDTrackerIconModeOptions = {
-    Decorated = 'decorated',
-    Simple = 'simple',
-    --IconOnly = 'icon-only',
-    None = 'none',
-}
-
 
 
 LootCategory = {
@@ -98,16 +62,6 @@ LootRarity = {
     Legendary = "legendary",
 }
 
-LootRarityIndex = {
-    ["salvage"] = 1,
-    ["common"] = 2,
-    ["uncommon"] = 3,
-    ["rare"] = 4,
-    ["epic"] = 5,
-    ["prototype"] = 6,
-    ["legendary"] = 7,
-}
-
 OptionsLootRarityDropdown = {
     [1] = LootRarity.Salvage,
     [2] = LootRarity.Common,
@@ -116,6 +70,16 @@ OptionsLootRarityDropdown = {
     [5] = LootRarity.Epic,
     [6] = LootRarity.Prototype,
     [7] = LootRarity.Legendary,
+}
+
+LootRarityIndex = {
+    [LootRarity.Salvage] = 1,
+    [LootRarity.Common] = 2,
+    [LootRarity.Uncommon] = 3,
+    [LootRarity.Rare] = 4,
+    [LootRarity.Epic] = 5,
+    [LootRarity.Prototype] = 6,
+    [LootRarity.Legendary] = 7,
 }
 
 
@@ -129,8 +93,49 @@ OptionsTriggerModeDropdown = {
     [2] = TriggerModeOptions.Advanced,
 }
 
+HUDTrackerVisibilityOptions = {
+    Always = 'always',
+    HUD = 'hud',
+    Mousemode = 'mousemode',
+}
+
+OptionsHUDTrackerVisibilityDropdown = {
+    [1] = HUDTrackerVisibilityOptions.HUD,
+    [2] = HUDTrackerVisibilityOptions.Mousemode,
+    [3] = HUDTrackerVisibilityOptions.Always,
+}
+
+HUDTrackerPlateModeOptions = {
+    Decorated = 'decorated',
+    Simple = 'simple',
+    None = 'none',
+}
+
+OptionsHUDTrackerPlateModeDropdown = {
+    [1] = HUDTrackerPlateModeOptions.Decorated,
+    [2] = HUDTrackerPlateModeOptions.Simple,
+    [3] = HUDTrackerPlateModeOptions.None,
+}
+
+HUDTrackerIconModeOptions = {
+    Decorated = 'decorated',
+    Simple = 'simple',
+    --IconOnly = 'icon-only',
+    None = 'none',
+}
+
+OptionsHUDTrackerIconModeDropdown = {
+    [1] = HUDTrackerIconModeOptions.Decorated,
+    [2] = HUDTrackerIconModeOptions.Simple,
+    [3] = HUDTrackerIconModeOptions.None,
+}
 
 
+RadarEdgeModes = {
+    None = MapMarker.EDGE_NONE,
+    Arrow = MapMarker.EDGE_ARROW,
+    Icon = MapMarker.EDGE_ICON,
+}
 
 OptionsRadarEdgeModesDropdown = {
     [1] = RadarEdgeModes.None,
