@@ -138,17 +138,19 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
     --Debug.Table({event="MessageEvent", eventClass=eventClass, eventName=eventName, eventArgs=eventArgs, canSend=canSend})
     if Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
         for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
-            -- Var
-            local message = ''
+            if Options['Messages']['Channels'][channelKey] then
+                -- Var
+                local message = ''
 
-            -- Add event message
-            if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                message = Messages.TextFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
-            end
+                -- Add event message
+                if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
+                    message = Messages.TextFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
+                end
 
-            -- Send message if we have one
-            if message ~= '' then
-                Messages.SendChatMessage(channelKey, message, eventArgs)
+                -- Send message if we have one
+                if message ~= '' then
+                    Messages.SendChatMessage(channelKey, message, eventArgs)
+                end
             end
         end
     end
