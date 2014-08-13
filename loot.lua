@@ -194,6 +194,11 @@ function Loot:GetId()
     return self.id
 end
 
+function Loot:GetTypeId()
+    return self.targetInfo.itemTypeId
+end
+
+
 function Loot:GetName()
     if not self.targetInfo then
         Debug.Warn("Loot Get Name called but no targetInfo!?")
