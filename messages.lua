@@ -108,6 +108,10 @@ function Messages.SendFilteredMessage(channel, message, args)
     Messages.SendChatMessage(channel, message)
 end
 
+function Messages.SendSystemMessage(message)
+    Messages.SendMessageToChat("system", message)
+end
+
 -- Function to handle the actual sending of messages
 function Messages.SendMessageToChat(channel, message, alert)
     channel = unicode.lower(channel)
@@ -150,17 +154,8 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
     end
 end
 
---[[
-    RollFormater
-    Helper function to generate the proper format for multi-line roll messages
-]]--
-function Private.RollsFormater(format, rolls, item)
-    local t = {}
-    for num, row in ipairs(rolls) do
-        t[#t+1] = Messages.TextFilters(format, {roll=row.roll, playerName=row.rolledBy, item=item})
-    end
-    return table.concat(t, '\n')
-end
+
+
 
 --[[
     Messages.TextFilters(formatString, args)
@@ -169,6 +164,10 @@ end
 ]]--
 function Messages.TextFilters(formatString, args)
     --Debug.Table("Messages.TextFilters called on string "..tostring(formatString) .. " with args: ", args)
+    if not formatString then
+        Debug.Log("Messages.TextFilters did not receive a formatString")
+        return
+    end
     local loot = args.loot or Tracker.GetLootById(args.lootId)
     if not loot then
         Debug.Warn("Messages.TextFilters NODATAERROR")
@@ -199,6 +198,9 @@ function Messages.TextFilters(formatString, args)
 end
 
 
+
+-- Source: http://lua-users.org/wiki/StringInterpolation
+-- Credit: http://lua-users.org/wiki/MarkEdgar
 function Private.replace_vars(str, vars)
   -- Allow replace_vars{str, vars} syntax as well as replace_vars(str, {vars})
   if not vars then

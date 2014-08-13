@@ -41,29 +41,31 @@ LootRarity
 
 
 Generic_MessageFormat = [[
-Specify the format of the message. The following replacement variables exist, please note that they're not always available.
-\nGeneral:
-\n{itemName}
-\n{itemRarity}
-\n{itemLevel}
-\n{itemReqLevel}
-\nChat Only:
-\n{itemAsLink}
-\n{itemCoordLink}
-\nLooted Items Only:
-\n{lootedBy}
-\n{lootedTo}
+The following replacement variables exist, please note that some may only apply under certain conditions.
+General:
+  {itemName}
+  {itemRarity}
+  {itemLevel}
+  {itemReqLevel}
+Chat Only:
+  {itemAsLink}
+  {itemCoordLink}
+Looted Items Only:
+  {lootedBy}
+  {lootedTo}
 ]]
+
+
+
+SystemMessagePrefix = "[xLT]: "
 
 LANG = {
 
-    UI_AssignedTo_nil                                                               =    "Not yet assigned",
-    UI_AssignedTo_false                                                             =    "Free for all",
-    UI_AssignedTo_true                                                              =    "Free for all",
-    UI_AssignedTo_Prefix                                                            =    "Assigned To: ",
-    UI_Messages_System_NoRollableForDistribute                                      =    "No Rollable Loot to distribute",
-    UI_Messages_System_NoIdentifiedForDistribute                                    =    "No Identified Loot to distribute",
-    UI_Messages_Distribution_NobodyEligible                                         =    "No one",
+    -- System Messages
+    SystemMessage_Tracker_HitLimit = SystemMessagePrefix.."Hit the limit on number of tracked items!",
+
+
+    -- UI
     UI_Waypoints_Subtitle                                                           =    "Loot",
 
 
@@ -76,7 +78,7 @@ LANG = {
     Options_Core_VersionMessage_Label                                                           =    "Version Message",
     Options_Core_VersionMessage_Tooltip                                                         =    "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
     Options_Core_SlashHandles_Label                                                             = "Slash Handles",
-    Options_Core_SlashHandles_Tooltip                                                           = "<<WRITE ME>>",
+    Options_Core_SlashHandles_Tooltip                                                           = "The slash handles that the addon will register for. Requires that you reload the UI to update.",
 
 
     
@@ -84,26 +86,30 @@ LANG = {
 
 
     Options_Tracker_TrackDelay_Label  = "Track Delay",
-    Options_Tracker_TrackDelay_Toolip = "<<WRITE ME>>",
+    Options_Tracker_TrackDelay_Tooltip = "Upon detecting a new item, how long to wait before starting the procedure to begin tracking it. A delay is recommended because the game sometimes gives out incorrect information, and by waiting a little before taking action those can be weeded out. However, the delay is quite noticeable when playing, so a lower value feels better.",
     Options_Tracker_UpdateDelay_Label  = "Update Delay",
-    Options_Tracker_UpdateDelay_Toolip = "<<WRITE ME>>",
+    Options_Tracker_UpdateDelay_Tooltip = "Serves little purpose. Keep it low.",
     Options_Tracker_RemoveDelay_Label  = "Remove Delay",
-    Options_Tracker_RemoveDelay_Toolip = "<<WRITE ME>>",
+    Options_Tracker_RemoveDelay_Tooltip = "How long to wait before removing an item after it has been looted or has despawned. A short delay is neccessary for other parts of the addon to work properly. A long delay serves no real purpose at this point.",
+    Options_Tracker_Limit_Label = "Limit",
+    Options_Tracker_Limit_Tooltip = "The maximum number of loot drops to be tracking at once.", 
+
     Options_Tracker_RefreshInterval_Label  = "Refresh Interval",
-    Options_Tracker_RefreshInterval_Toolip = "<<WRITE ME>>",
+    Options_Tracker_RefreshInterval_Tooltip = "<<WRITE ME>>",
+
     Options_Tracker_LootUpdateInterval_Label  = "Loot Update Interval",
-    Options_Tracker_LootUpdateInterval_Toolip = "<<WRITE ME>>",
+    Options_Tracker_LootUpdateInterval_Tooltip = "How often to verify the continued availability of a tracked loot drop individually. If everything is working properly, a short delay serves little purpose and a longer delay could be used. However, with a shorter delay, potential missdetections will be cleared up more swiftly.",
     Options_Tracker_LootEventHistoryCleanupInterval_Label  = "LootEvent History Cleanup Interval",
-    Options_Tracker_LootEventHistoryCleanupInterval_Toolip = "<<WRITE ME>>",
+    Options_Tracker_LootEventHistoryCleanupInterval_Tooltip = "How often to check the history of lootevents and cleanup those that have expired. A longer interval might be more performance efficient, but it could cause issues with the tracking of items.",
     Options_Tracker_LootEventHistoryLifetime_Label  = "LootEvent History Lifetime",
-    Options_Tracker_LootEventHistoryLifetime_Toolip = "<<WRITE ME>>",
+    Options_Tracker_LootEventHistoryLifetime_Tooltip = "How long a lootevent should be valid for. A shorter lifetime should result in better accuracy when multiple items of the same kind are picked up in a short timespan, but too short may cause the addon to think items have despawned when they were looted. Longer timespans prevent the aforementioned issue, but may result in reduced accuracy in the aforementioned scenario.",
 
 
     Options_Filtering_Simple_Enabled_Label                                              =    "Simple",
     Options_Filtering_Simple_Enabled_Tooltip                                            =    "If in Simple configuration mode, only these settings are used.",
 
     Options_Filtering_Mode_Label                                                       =    "Configuration Mode",
-    Options_Filtering_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode.",
+    Options_Filtering_Mode_Tooltip                                                     =    "Simple or Advanced configuration mode. In Simple mode, only the options in the Simple group apply. In Advanced mode, you can disable different rarities individually or set different level thresholds or text formats for them.",
 
 
     Options_Dropdown_Mode_Choice_simple_Label       = "Simple",
@@ -142,39 +148,41 @@ LANG = {
 
 
     Options_Filtering_RarityThreshold_Label             = "Rarity Threshold",
-    Options_Filtering_RarityThreshold_Tooltip         = "<<WRITE ME>>",
+    Options_Filtering_RarityThreshold_Tooltip         = "The minimum Rarity that an item must have in order for this to apply.",
     Options_Filtering_ItemLevelThreshold_Label          = "Item Level Threshold",
-    Options_Filtering_ItemLevelThreshold_Tooltip      = "<<WRITE ME>>",
+    Options_Filtering_ItemLevelThreshold_Tooltip      = "The minimum Item Level that an item must have in order for this to apply.",
     Options_Filtering_RequiredLevelThreshold_Label      = "Required Level Threshold",
-    Options_Filtering_RequiredLevelThreshold_Tooltip  = "<<WRITE ME>>",
+    Options_Filtering_RequiredLevelThreshold_Tooltip  = "The minimum Required level that an item have in order for this to apply.",
 
 
     
-
-
+    Options_Filtering_WaypointTitle_Label = "Waypoint Title Format",
+    Options_Filtering_WaypointTitle_Tooltip = "Customize the title of the waypoints.\n"..Generic_MessageFormat,
+    Options_Filtering_HUDTrackerTitle_Label = "HUDTracker Title Format",
+    Options_Filtering_HUDTrackerTitle_Tooltip = "Customize the title of each entry in the hudtracker.\n"..Generic_MessageFormat,
 
 
     Options_Messages_Generic_Channels_Squad_Enabled_Label                                   =    "Send Squad Message",
     Options_Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    "Send message to Squad on this event",
     Options_Messages_Generic_Channels_Squad_Format_Label                                    =    "Squad Message Format",
-    Options_Messages_Generic_Channels_Squad_Format_Tooltip                                  =    Generic_MessageFormat,
+    Options_Messages_Generic_Channels_Squad_Format_Tooltip                                  =    "Specify the format of the Squad message.\n"..Generic_MessageFormat,
 
     Options_Messages_Generic_Channels_Platoon_Enabled_Label                                   =    "Send Platoon Message",
     Options_Messages_Generic_Channels_Platoon_Enabled_Tooltip                                 =    "Send message to Platoon on this event",
     Options_Messages_Generic_Channels_Platoon_Format_Label                                    =    "Platoon Message Format",
-    Options_Messages_Generic_Channels_Platoon_Format_Tooltip                                  =    Generic_MessageFormat,
+    Options_Messages_Generic_Channels_Platoon_Format_Tooltip                                  =    "Specify the format of the Platoon message.\n"..Generic_MessageFormat,
 
     Options_Messages_Generic_Channels_System_Enabled_Label                                  =    "Send System Message",
     Options_Messages_Generic_Channels_System_Enabled_Tooltip                                =    "Send message to System on this event",
     Options_Messages_Generic_Channels_System_Format_Label                                   =    "System Message Format",
 
-    Options_Messages_Generic_Channels_System_Format_Tooltip                                 =    Generic_MessageFormat,
+    Options_Messages_Generic_Channels_System_Format_Tooltip                                 =    "Specify the format of the System message.\n"..Generic_MessageFormat,
 
     Options_Messages_Generic_Channels_Notifications_Enabled_Label                           =    "Send Notifications Message",
     Options_Messages_Generic_Channels_Notifications_Enabled_Tooltip                         =    "Send message to Notifications on this event",
     Options_Messages_Generic_Channels_Notifications_Format_Label                            =    "Notifications Message Format",
 
-    Options_Messages_Generic_Channels_Notifications_Format_Tooltip                          =    Generic_MessageFormat,
+    Options_Messages_Generic_Channels_Notifications_Format_Tooltip                          =    "Specify the format of the Notifications message.\n"..Generic_MessageFormat,
 
     
     Options_Messages_Enabled_Label                                                          =    "Enable Messages",
@@ -368,9 +376,9 @@ LANG = {
 
 
     Mode_Choice_Simple_Label                                =    "Simple",
-    Mode_Choice_Simple_Tooltip                              =    "",
+    Mode_Choice_Simple_Tooltip                              =    "<<WRITE ME>>",
     Mode_Choice_Advanced_Label                              =    "Advanced",
-    Mode_Choice_Advanced_Tooltip                            =    "",
+    Mode_Choice_Advanced_Tooltip                            =    "<<WRITE ME>>",
 
     Options_Dropdown_ColorModes_Choice_custom_Label                          =    "Custom",
     Options_Dropdown_ColorModes_Choice_custom_Tooltip                        =    "",
@@ -511,4 +519,20 @@ LANG = {
     Sounds_Option_SlotMachine_InsertCoin                =    "Slot Machine Insert Coin",
     Sounds_Option_SlotMachine_EpicDecryption            =    "Slot Machine Epic Decrypt",
     Sounds_Option_SlotMachine_Decryption                =    "Slot Machine Decrypt",
+
+
+
+
+
+
+-- to remove
+UI_AssignedTo_nil                                                               =    "Not yet assigned",
+UI_AssignedTo_false                                                             =    "Free for all",
+UI_AssignedTo_true                                                              =    "Free for all",
+UI_AssignedTo_Prefix                                                            =    "Assigned To: ",
+UI_Messages_System_NoRollableForDistribute                                      =    "No Rollable Loot to distribute",
+UI_Messages_System_NoIdentifiedForDistribute                                    =    "No Identified Loot to distribute"
+
+
+
 }

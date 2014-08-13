@@ -131,7 +131,7 @@ function HUDTracker.Update(args)
         end
 
         -- Update is actually happening!
-        Debug.Event(args)
+        --Debug.Event(args)
 
         -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
         if State.tooltipActive then
@@ -208,7 +208,7 @@ function HUDTracker.Update(args)
 
                     -- Right
                     -- Item Name text
-                    ENTRY:GetChild('itemName'):SetText(GetWaypointTitle(loot))
+                    ENTRY:GetChild('itemName'):SetText(GetHUDTrackerTitle(loot))
 
                     -- Determine what to display
                     -- State Dependant Stuff
@@ -362,39 +362,45 @@ function AutosizeText(TEXT)
 end
 
 
+-- Gets filtered display name of loot from options
+function GetHUDTrackerTitle(loot)
+    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['HUDTracker']['Filtering'])
+    local formatString = Options['HUDTracker']['Filtering'][categoryKey][rarityKey]['HUDTrackerTitle']
+    return tostring(Messages.TextFilters(formatString, {loot=loot}))
+end
+
 -- Return true if lootA should come before lootB
--- Todo: Ehh pretty sure I fucked it up
 function HUDTrackerSort(lootA, lootB)
 
 
-    Debug.Log("************** HUDTrackerSort *********** ")
+    --Debug.Log("************** HUDTrackerSort *********** ")
     -- Handle nil values
     if lootA == nil and lootB == nil then
-        Debug.Log("A and B are nil, result: false")
+        --Debug.Log("A and B are nil, result: false")
         return false
     end
     if lootA == nil then
-        Debug.Log("A is nil, result: false")
+        --Debug.Log("A is nil, result: false")
         return false
     end
     if lootB == nil then
-        Debug.Log("B is nil, result: true")
+        --Debug.Log("B is nil, result: true")
         return true
     end
 
     -- Non Nil Results
-    Debug.Log("A: "..tostring(lootA:ToString()).." | Rarity:"..tostring(lootA:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootA:GetItemLevel()))
-    Debug.Log("B: "..tostring(lootB:ToString()).." | Rarity:"..tostring(lootB:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootB:GetItemLevel()))
+    --Debug.Log("A: "..tostring(lootA:ToString()).." | Rarity:"..tostring(lootA:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootA:GetItemLevel()))
+    --Debug.Log("B: "..tostring(lootB:ToString()).." | Rarity:"..tostring(lootB:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootB:GetItemLevel()))
     
     -- Rarer items first
     local rarityA = lootA:GetRarityValue()
     local rarityB = lootB:GetRarityValue()
 
     if rarityA ~= rarityB then
-        Debug.Log("Prioritizing rarity")
-        Debug.Log("A: Rarity " .. tostring(rarityA))
-        Debug.Log("B: Rarity " .. tostring(rarityB))
-        Debug.Log("A before B? : " .. tostring((rarityA > rarityB)))
+        --Debug.Log("Prioritizing rarity")
+        --Debug.Log("A: Rarity " .. tostring(rarityA))
+        --Debug.Log("B: Rarity " .. tostring(rarityB))
+        --Debug.Log("A before B? : " .. tostring((rarityA > rarityB)))
         return (rarityA > rarityB)
     end
 
@@ -402,14 +408,14 @@ function HUDTrackerSort(lootA, lootB)
     local ilvlA = lootA:GetItemLevel()
     local ilvlB = lootB:GetItemLevel()
     if ilvlA ~= ilvlB then
-        Debug.Log("Prioritizing ItemLevel")
-        Debug.Log("A: ItemLevel " .. tostring(ilvlA))
-        Debug.Log("B: ItemLevel " .. tostring(ilvlB))
-        Debug.Log("A before B? : " .. tostring((ilvlA > ilvlB)))
+        --Debug.Log("Prioritizing ItemLevel")
+        --Debug.Log("A: ItemLevel " .. tostring(ilvlA))
+        --Debug.Log("B: ItemLevel " .. tostring(ilvlB))
+        --Debug.Log("A before B? : " .. tostring((ilvlA > ilvlB)))
         return (ilvlA > ilvlB)
     end
 
     -- Alphabetic third
-    Debug.Log("Prioritizing alphabetic")
+    --Debug.Log("Prioritizing alphabetic")
     return (lootA:GetName() < lootB:GetName())
 end

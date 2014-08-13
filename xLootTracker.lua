@@ -30,9 +30,9 @@ require './lootpanel'
 
 -- Addon Meta
 AddonInfo = {
-    release  = "2014-08-04",
-    version = "1.05",
-    patch = "1.0.1788",
+    release  = "2014-08-12",
+    version = "1.09",
+    patch = "1.0.1793",
     save = 1.0,
 }
 
@@ -258,49 +258,49 @@ function OnTrackerNew(args)
     end
 
     -- Waypoints
-    WaypointManager.OnTrackerNew(args)
+    Callback2.FireAndForget(WaypointManager.OnTrackerNew, args, 0)
 
     -- Panels
-    PanelManager.OnTrackerNew(args)
+    Callback2.FireAndForget(PanelManager.OnTrackerNew, args, 0)
 
     -- HUDTracker
-    HUDTracker.OnTrackerNew(args)
+    Callback2.FireAndForget(HUDTracker.OnTrackerNew, args, 0)
 
     -- Messages
-    Messages.OnTrackerNew(args)
+    Callback2.FireAndForget(Messages.OnTrackerNew, args, 0)
 end
 
 function OnTrackerUpdate(args)
     Debug.Event(args)
 
     -- HUDTracker
-    HUDTracker.OnTrackerUpdate(args)
+    Callback2.FireAndForget(HUDTracker.OnTrackerUpdate, args, 0)
 
     -- Messages
-    Messages.OnTrackerUpdate(args)
+    Callback2.FireAndForget(Messages.OnTrackerUpdate, args, 0)
 end
 
 function OnTrackerLooted(args)
     Debug.Event(args)
 
     -- Waypoints
-    WaypointManager.OnTrackerLooted(args)
+    Callback2.FireAndForget(WaypointManager.OnTrackerLooted, args, 0)
 
     -- Panels
-    PanelManager.OnTrackerLooted(args)
+    Callback2.FireAndForget(PanelManager.OnTrackerLooted, args, 0)
 end
 
 function OnTrackerRemove(args)
     Debug.Event(args)
 
     -- Waypoints
-    WaypointManager.OnTrackerRemove(args)
+    Callback2.FireAndForget(WaypointManager.OnTrackerRemove, args, 0)
 
     -- Panels
-    PanelManager.OnTrackerRemove(args)
+    Callback2.FireAndForget(PanelManager.OnTrackerRemove, args, 0)
 
     -- HUDTracker
-    HUDTracker.OnTrackerRemove(args)
+    Callback2.FireAndForget(HUDTracker.OnTrackerRemove, args, 0)
 end
 
 

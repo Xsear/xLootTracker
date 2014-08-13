@@ -8,6 +8,9 @@ local Private = {
 
     CYCLE_Refresh = nil,
     CYCLE_LootEventHistoryCleanup = nil,
+
+    canSendLimitWarning = true,
+    limitWarningTimeout = 60, -- seconds before canSendLimitWarning is reset
 }
 
 
@@ -104,9 +107,15 @@ function Tracker.OnEntityAvailable(args)
     elseif Tracker.IsTrackedEntity(args.entityId) then
         return -- This is old news!
     -- Do we have room for it?
-    elseif #trackedLoot >= tonumber(Options['Tracker']['Limit']) then
+    elseif #Private.trackedLoot >= tonumber(Options['Tracker']['Limit']) then
+        if Private.canSendLimitWarning then
+            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Tracker_HitLimit'))
+            Private.canSendLimitWarning = false
+            Callback2.FireAndForget(function(refPrivate) refPrivate.canSendLimitWarning = true end, Private, Private.limitWarningTimeout)
+        end
         return -- Fire second thruster! Full ahead!
     end
+
     -- Sweet, a new entity. Track it!
     Callback2.FireAndForget(Tracker.Track, args, Options['Tracker']['TrackDelay'])
 end
@@ -196,22 +205,32 @@ function Tracker.OnLootEvent(args)
             -- Do we have more than one matches?
             if #matches > 1 then
                 -- Shit.
+                -- Okay, we're gonna have to store this lootevent for now.
                 --Debug.Log("Tracker.OnLootEvent Multiple potential matches (" .. tostring(count) .. ") for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
                 
+                -- If we haven't recently stored any lootevents of this type, create the table
                 if not Private.lootEventHistory[args.itemTypeId] then
                     Private.lootEventHistory[args.itemTypeId] = {}
                 end
 
-                table.insert(Private.lootEventHistory[args.itemTypeId], {occuredAt = tonumber(System.GetClientTime()), lootedBy = args.lootedBy, lootedTo = args.lootedTo})
+                -- Setup lootevent
+                local lootEvent = {
+                    occuredAt = tonumber(System.GetClientTime()),
+                    lootedBy = args.lootedBy,
+                    lootedTo = args.lootedTo
+                }
+
+                -- Insert lootevent into history
+                table.insert(Private.lootEventHistory[args.itemTypeId], lootEvent)
 
                 --[[
-
+                -- Not sure if this was reasonable but it seems somewhat unneccessary now
                 for i, item in ipairs(matches) do
                     Callback2.FireAndForget(Tracker.Update, item:GetId(), i)
                 end
+                --]]
 
-                    --]]
-
+            -- Is this the one?
             elseif #matches == 1 then
                 -- Aww yeah! Get that shit.
                 --Debug.Log('Tracker.OnLootEvent for '..loot:GetName()..', '..tostring(loot:GetEntityId())..', '..loot:GetId())
@@ -222,6 +241,8 @@ function Tracker.OnLootEvent(args)
 
                 -- Force update.
                 Callback2.FireAndForget(Tracker.Update, loot:GetId(), Options['Tracker']['UpdateDelay'])
+
+            -- No matches?
             else
                 -- Hmm, so we weren't tracking this item
                 Debug.Log("Tracker.OnLootEvent found no matches for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
@@ -237,7 +258,7 @@ end
 ]]--
 function Tracker.Track(args)
     args.event = "Tracker.Track"
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- Setup vars from args
     local entityId     = args.entityId
@@ -319,10 +340,10 @@ function Tracker.Track(args)
     args.itemInfo = itemInfo
 
     -- Create loot
-    Debug.Log("About to create loot")
+    --Debug.Log("About to create loot")
     local loot = Loot.Create(args)
 
-    Debug.Log("Created new loot!" .. loot:ToString())
+    --Debug.Log("Created new loot!" .. loot:ToString())
 
     -- Setup update cycle
     loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
@@ -332,7 +353,8 @@ function Tracker.Track(args)
     Private.identityByEntity[loot:GetEntityId()] = loot:GetId()
 
     -- Fire event
-    Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
+    --Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
+    OnTrackerNew({lootId = loot:GetId()})
 
     -- Start update cycle
     loot.CYCLE_Update:Run(Options['Tracker']['LootUpdateInterval'])
@@ -360,11 +382,13 @@ function Tracker.Update(lootArg)
     local newState = loot:GetState()
 
     if newState ~= previousState then
-        Component.GenerateEvent("XLT_ON_TRACKER_UPDATE", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+        --Component.GenerateEvent("XLT_ON_TRACKER_UPDATE", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+        OnTrackerUpdate({lootId = loot:GetId(), previousState = previousState, newState = newState})
         
 
         if previousState == LootState.Available and newState == LootState.Looted then
-            Component.GenerateEvent("XLT_ON_TRACKER_LOOTED", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+            --Component.GenerateEvent("XLT_ON_TRACKER_LOOTED", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+            OnTrackerLooted({lootId = loot:GetId(), previousState = previousState, newState = newState})
         end
 
         -- Trigger removal from Tracker
@@ -407,7 +431,8 @@ function Tracker.Remove(lootArg)
     loot:Destroy()
 
     -- Fire Event
-    Component.GenerateEvent("XLT_ON_TRACKER_REMOVE", {lootId = lootId})
+    --Component.GenerateEvent("XLT_ON_TRACKER_REMOVE", {lootId = lootId})
+    OnTrackerRemove({lootId = lootId})
 end
 
 

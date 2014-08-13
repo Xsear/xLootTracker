@@ -72,7 +72,7 @@ function Loot.DetermineCategory(targetInfo, itemInfo)
         -- Well this is basically the "shit we dont care about category" now ;o
     end
 
-    Debug.Log(tostring(targetInfo.name) .. ' identified as ' .. tostring(category))
+    --Debug.Log(tostring(targetInfo.name) .. ' identified as ' .. tostring(category))
 
     return category
 end
@@ -107,7 +107,7 @@ function Loot.Create(args)
 
 
     args.event = "Loot.Create"
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- Setup vars from args
     local entityId     = args.entityId
