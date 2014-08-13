@@ -151,12 +151,25 @@ function HUDTracker.Update(args)
         -- Populate
         if not _table.empty(trackedLoot) then
 
+
+            -- Determine stackable entries
+            local quantifiedEntries = {}
+            local counterTable = {}
+            for i, loot in ipairs(trackedLoot) do
+                -- Increment
+                quantifiedEntries[loot:GetTypeId()] = tonumber(quantifiedEntries[loot:GetTypeId()]) + 1
+
+                -- If we have more than one, then remove the previous entry
+                if quantifiedEntries[loot:GetTypeId()] > 1 then
+                    table.remove(trackedLoot, i)
+                end
+            end
+
             -- Order it by rarity
             table.sort(trackedLoot, HUDTrackerSort)
 
-
             -- Add rows
-            for id, loot in ipairs(trackedLoot) do
+            for i, loot in ipairs(trackedLoot) do
 
                     -- Create widget
                     local ENTRY = Component.CreateWidget('Tracker_List_Entry', LIST)
@@ -197,8 +210,11 @@ function HUDTracker.Update(args)
 
 
                     -- Setup Looted to
+                    -- Fixme: Removeable, replace with something better
                     local assignedToText = ""
-                    if loot:GetState() == LootState.Looted then
+                    if quantifiedEntries[loot:GetTypeId()] then
+                        assignedToText = tostring(quantifiedEntries[loot:GetTypeId()]) -- Temp:
+                    elseif loot:GetState() == LootState.Looted then
                         assignedtoText = tostring(loot:GetLootedTo())
                     elseif loot:GetState() == LootState.Lost then
                         assignedToText = "Lost"
