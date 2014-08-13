@@ -35,7 +35,7 @@ function Private.LootEventHistoryCleanup()
         local currentTime = asnumber(System.GetClientTime())
         local lifetime = asnumber(Options['Tracker']['LootEventHistoryLifetime'])
 
-        
+
         for itemTypeId, events in pairs(Private.lootEventHistory) do
 
             -- Go trough events if not empty
@@ -70,7 +70,7 @@ end
     Gives out the table of tracked loot. Please don't change it, everyone else D':
 --]]
 function Tracker.GetLoot()
-    return Private.trackedLoot
+    return _table.copy(Private.trackedLoot)
 end
 
 function Tracker.GetAvailableLoot()
@@ -80,7 +80,7 @@ function Tracker.GetAvailableLoot()
             result[#result + 1] = loot
         end
     end
-    return result
+    return _table.copy(result)
 end
 
 
