@@ -28,10 +28,12 @@ PRIVATE.uiSounds = {
         label='Sounds_Option_UI_Ability_Selection',
         val='Play_UI_Ability_Selection',
     },
+    --[[
     {
         label='Sounds_Option_UI_Ability_Trigger',
         val='Play_UI_Ability_Trigger',
     },
+    --]]
     {
         label='Sounds_Option_ui_abilities_cooldown_complete',
         val='Play_ui_abilities_cooldown_complete',
@@ -100,10 +102,12 @@ PRIVATE.uiSounds = {
         label='Sounds_Option_UI_DailyRewardsScreen_RewardGranted',
         val='Play_UI_DailyRewardsScreen_RewardGranted',
     },
+    --[[
     {
         label='Sounds_Option_UI_Friendly_Distress',
         val='Play_UI_Friendly_Distress',
     },
+    --]]
     {
         label='Sounds_Option_UI_Garage_CPUUgrade',
         val='Play_UI_Garage_CPUUgrade',
@@ -274,6 +278,7 @@ PRIVATE.uiSounds = {
         label='Sounds_Option_UI_Ticker_ZeroTick',
         val='Play_UI_Ticker_ZeroTick',
     },
+    --[[
     {
         label='Sounds_Option_UI_VOIP_CloseChannel',
         val='Play_UI_VOIP_CloseChannel',
@@ -282,6 +287,7 @@ PRIVATE.uiSounds = {
         label='Sounds_Option_UI_VOIP_OpenChannel',
         val='Play_UI_VOIP_OpenChannel',
     },
+    --]]
     {
         label='Sounds_Option_UI_ZoneSelect_Confirm',
         val='Play_UI_ZoneSelect_Confirm',
@@ -298,6 +304,7 @@ PRIVATE.uiSounds = {
         label='Sounds_Option_SFX_UI_AchievementEarned',
         val='Play_SFX_UI_AchievementEarned',
     },
+    --[[
     {
         label='Sounds_Option_SFX_UI_E_Initiate_Loop_Fail',
         val='Stop_SFX_UI_E_Initiate_Loop_Fail',
@@ -307,16 +314,17 @@ PRIVATE.uiSounds = {
         val='Stop_SFX_UI_E_Initiate_Loop_Success',
     },
     {
+        label='Sounds_Option_SFX_UI_E_Initiate_Loop',
+        val='Play_SFX_UI_E_Initiate_Loop',
+    },
+    --]]
+    {
         label='Sounds_Option_UI_NavWheel_MouseScroll',
         val='Stop_UI_NavWheel_MouseScroll',
     },
     {
         label='Sounds_Option_SFX_UI_Ding',
         val='Play_SFX_UI_Ding',
-    },
-    {
-        label='Sounds_Option_SFX_UI_E_Initiate_Loop',
-        val='Play_SFX_UI_E_Initiate_Loop',
     },
     {
         label='Sounds_Option_SFX_UI_End',
