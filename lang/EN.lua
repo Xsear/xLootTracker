@@ -190,15 +190,15 @@ LANG = {
     Options_Messages_Prefix_Label                                                           =    "Generic Prefix",
     Options_Messages_Prefix_Tooltip                                                         =    "Set the prefix for all public facing messages.",
     Options_Messages_Channels_Squad_Label                                                   =    "Send on Squad Channel",
-    Options_Messages_Channels_Squad_Tooltip                                                 =    "Master switch for Squad messages. The addon will not send ANY squad messages if this is checked, regardless of other settings.",
+    Options_Messages_Channels_Squad_Tooltip                                                 =    "Master switch for Squad messages. The addon will not send event squad messages if this is unchecked, regardless of other settings.",
 
     Options_Messages_Channels_Platoon_Label                                                 =  "Send on Platoon Channel",
-    Options_Messages_Channels_Platoon_Tooltip                                               =  "Master switch for Squad messages. The addon will not send ANY platoon messages if this is checked, regardless of other settings.",
+    Options_Messages_Channels_Platoon_Tooltip                                               =  "Master switch for Squad messages. The addon will not send event platoon messages if this is unchecked, regardless of other settings.",
 
     Options_Messages_Channels_Notifications_Label                                           =    "Send on Notifications Channel",
-    Options_Messages_Channels_Notifications_Tooltip                                         =    "Master switch for Notification messages. The addon will not send ANY notification messages if this is checked, regardless of other settings.",
+    Options_Messages_Channels_Notifications_Tooltip                                         =    "Master switch for Notification messages. The addon will not send event notification messages if this is unchecked, regardless of other settings.",
     Options_Messages_Channels_System_Label                                                  =    "Send on System Channel",
-    Options_Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send ANY system messages if this is checked, regardless of other settings.",
+    Options_Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send event system messages if this is unchecked, regardless of other settings.",
 
 
 
@@ -299,6 +299,8 @@ LANG = {
 
     Options_Debug_RoundRobin_Label                                                      =    "Log Round Robin",
     Options_Debug_RoundRobin_Tooltip                                                    =    "Extra logging for Round Robin, spammy.\nDetailed logging of Round Robin logic, helpful if its giving out unexpected results.",
+
+
 
 
     Options_Sounds_Enabled_Label                                                                =    "Enable Sounds",
