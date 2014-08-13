@@ -154,19 +154,35 @@ function HUDTracker.Update(args)
 
             -- Determine stackable entries
             local quantifiedEntries = {}
-            local counterTable = {}
-            for i, loot in ipairs(trackedLoot) do
 
+            --Debug.Log("************** Time to count!")
+            local i=1
+            while i <= #trackedLoot do
+
+                -- Get loot
+                local loot = trackedLoot[i]
+
+                --Debug.Log(" ** Counting " .. loot:ToString())
+
+                -- Count
                 if not quantifiedEntries[loot:GetTypeId()] then
                     quantifiedEntries[loot:GetTypeId()] = 1
                 else
                     quantifiedEntries[loot:GetTypeId()] = quantifiedEntries[loot:GetTypeId()] + 1
                 end
+
+                --Debug.Log("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has quantity " ..tostring(quantifiedEntries[loot:GetTypeId()]))
+
                 -- If we have more than one, then remove the previous entry
                 if quantifiedEntries[loot:GetTypeId()] > 1 then
+                    --Debug.Log("Quantity larger than 1, removing entry")
                     table.remove(trackedLoot, i)
+                else
+                    i = i + 1
                 end
             end
+
+            --Debug.Table("************** Count complete!", quantifiedEntries)
 
             -- Order it by rarity
             table.sort(trackedLoot, HUDTrackerSort)
@@ -215,7 +231,7 @@ function HUDTracker.Update(args)
                     -- Setup Looted to
                     -- Fixme: Removeable, replace with something better
                     local assignedToText = ""
-                    if quantifiedEntries[loot:GetTypeId()] > 1 then
+                    if tonumber(quantifiedEntries[loot:GetTypeId()]) > 1 then
                         assignedToText = tostring(quantifiedEntries[loot:GetTypeId()]) -- Temp:
                     elseif loot:GetState() == LootState.Looted then
                         assignedtoText = tostring(loot:GetLootedTo())
