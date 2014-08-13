@@ -168,6 +168,13 @@ function Loot.Create(args)
     targetInfo.name = targetInfo.name or itemInfo.name
 
 
+    if Options['Debug']['LogLootCreateData'] then
+        Debug.Log("Loot.Create on " .. tostring(targetInfo.name))
+        Debug.Log("entityId " .. tostring(entityId))
+        Debug.Table("targetInfo", targetInfo)
+        Debug.Table("itemInfo", itemInfo)
+    end
+
     -- Create instance
     local instance = {}
     setmetatable(instance, Loot)

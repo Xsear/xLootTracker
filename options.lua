@@ -715,10 +715,11 @@ Options = {
 
     ['Debug'] = {
         ['Enabled'] = false,
-        ['SquadToArmy'] = true,
+        ['SquadToArmy'] = false,
         ['LogLootableTargets'] = false, 
         ['LogLootableCollection'] = false,
-        ['LogOptionChange'] = true,
+        ['LogLootCreateData'] = false,
+        ['LogOptionChange'] = false,
     },
 
 }
@@ -1357,6 +1358,13 @@ function BuildInterfaceOptions_Front()
             default = Options['Debug']['LogLootableCollection'],
             label   = Lokii.GetString('Options_Debug_LogLootableCollection_Label'),
             tooltip = Lokii.GetString('Options_Debug_LogLootableCollection_Tooltip'),
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_LogLootCreateData',
+            default = Options['Debug']['LogLootCreateData'],
+            label   = Lokii.GetString('Options_Debug_LogLootCreateData_Label'),
+            tooltip = Lokii.GetString('Options_Debug_LogLootCreateData_Tooltip'),
         })
 
         InterfaceOptions.AddCheckBox({

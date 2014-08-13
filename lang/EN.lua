@@ -288,6 +288,12 @@ LANG = {
     Options_Debug_LogOptionChange_Label                                                         =    "Log Option Changes",
     Options_Debug_LogOptionChange_Tooltip                                                       =    "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
 
+
+    Options_Debug_LogLootCreateData_Label  = "Log Loot Created",
+    Options_Debug_LogLootCreateData_Tooltip = "Extra debug messages, spammy.\nLogs stored info about loot upon creation, helpful when errors are occuring in the various features of the addon (post detection).",
+
+
+
     Options_Debug_CommunicationExtra_Label                                                      =    "Log Communication Extra",
     Options_Debug_CommunicationExtra_Tooltip                                                    =    "Extra Communication messages, spammy.\nLogs encoding and decoding of communication links more closely, helpful when errors are occuring in this department.",
 
