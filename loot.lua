@@ -148,7 +148,7 @@ function Loot.Create(args)
         if targetInfo.itemTypeId then
 
             -- Get itemInfo by itemTypeId
-            itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
+            itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, targetInfo.modules)
 
             -- Verify success
             if not itemInfo then
@@ -310,7 +310,7 @@ end
 
 
 function Loot:GetAsLink()
-    return ChatLib.EncodeItemLink(self:GetTypeId()) or self:GetName()
+    return ChatLib.EncodeItemLink(self:GetTypeId(), self.itemInfo.hidden_modules, self.itemInfo.slotted_modules) or self:GetName()
 end
 
 function Loot.GetDisplayNameOfRarity(rarity)

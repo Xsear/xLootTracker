@@ -310,7 +310,7 @@ function Tracker.Track(args)
         if targetInfo.itemTypeId then
 
             -- Get itemInfo by itemTypeId
-            itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId)
+            itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, targetInfo.modules)
 
             -- Verify success
             if not itemInfo then
