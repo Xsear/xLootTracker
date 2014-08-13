@@ -35,13 +35,14 @@ function Private.LootEventHistoryCleanup()
             -- Go trough events if not empty
             if not _table.empty(events) then
 
+                local remove = table.remove
                 local i=1
                 while i <= #events do
                     local event = events[i]
 
                     -- If has lived longer than life, remove
                     if (tonumber(currentTime) - tonumber(event.occuredAt) > tonumber(Options['Tracker']['LootEventHistoryLifetime'])) then
-                        table.remove(events, i)
+                        remove(events, i)
                     else
                         i = i + 1
                     end
