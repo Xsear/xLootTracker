@@ -349,6 +349,12 @@ function HUDTracker.UpdateTooltip(lootId)
     TOOLTIP_ITEM:DisplayInfo(loot.itemInfo)
     TOOLTIP_ITEM.GROUP:SetDims("top:0; left:0; width:200; height:200")
 
+    -- Add compare info
+    local compare_info = LIB_ITEMS.GetMatchingEquippedItemInfo(loot.itemInfo)
+    if compare_info then
+        TOOLTIP_ITEM:CompareAgainst(compare_info)
+    end
+
     -- Return Tooltip
     local tip_args = TOOLTIP_ITEM:GetBounds()
     tip_args.frame_color = loot:GetColor()
