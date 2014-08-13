@@ -29,19 +29,24 @@ function Private.LootEventHistoryCleanup()
 
     if not _table.empty(Private.lootEventHistory) then
         
-        local currentTime = tonumber(System.GetClientTime())
+        local remove = table.remove -- I don't know if this helps
+        local asnumber = tonumber -- But give me that performance pls
+        local emptyTable = _table.empty -- This looks so bad
+        local currentTime = asnumber(System.GetClientTime())
+        local lifetime = asnumber(Options['Tracker']['LootEventHistoryLifetime'])
+
         
         for itemTypeId, events in pairs(Private.lootEventHistory) do
-            -- Go trough events if not empty
-            if not _table.empty(events) then
 
-                local remove = table.remove
+            -- Go trough events if not empty
+            if not emptyTable(events) then
+
                 local i=1
                 while i <= #events do
                     local event = events[i]
 
                     -- If has lived longer than life, remove
-                    if (tonumber(currentTime) - tonumber(event.occuredAt) > tonumber(Options['Tracker']['LootEventHistoryLifetime'])) then
+                    if (currentTime - asnumber(event.occuredAt) > lifetime) then
                         remove(events, i)
                     else
                         i = i + 1
@@ -50,7 +55,7 @@ function Private.LootEventHistoryCleanup()
             end
 
             -- Remove table if empty (second check, in case events have been removed)
-            if _table.empty(events) then
+            if emptyTable(events) then
                 Private.lootEventHistory[itemTypeId] = nil
             end
 
