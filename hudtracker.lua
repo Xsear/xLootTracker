@@ -156,9 +156,12 @@ function HUDTracker.Update(args)
             local quantifiedEntries = {}
             local counterTable = {}
             for i, loot in ipairs(trackedLoot) do
-                -- Increment
-                quantifiedEntries[loot:GetTypeId()] = tonumber(quantifiedEntries[loot:GetTypeId()]) + 1
 
+                if not quantifiedEntries[loot:GetTypeId()] then
+                    quantifiedEntries[loot:GetTypeId()] = 1
+                else
+                    quantifiedEntries[loot:GetTypeId()] = quantifiedEntries[loot:GetTypeId()] + 1
+                end
                 -- If we have more than one, then remove the previous entry
                 if quantifiedEntries[loot:GetTypeId()] > 1 then
                     table.remove(trackedLoot, i)
@@ -212,7 +215,7 @@ function HUDTracker.Update(args)
                     -- Setup Looted to
                     -- Fixme: Removeable, replace with something better
                     local assignedToText = ""
-                    if quantifiedEntries[loot:GetTypeId()] then
+                    if quantifiedEntries[loot:GetTypeId()] > 1 then
                         assignedToText = tostring(quantifiedEntries[loot:GetTypeId()]) -- Temp:
                     elseif loot:GetState() == LootState.Looted then
                         assignedtoText = tostring(loot:GetLootedTo())
