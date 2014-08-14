@@ -327,7 +327,9 @@ end
 
 
 
-
+function Loot:GetQuantity()
+    return self.itemInfo.quantity or 1
+end
 
 
 function Loot:GetAsText()
