@@ -1,0 +1,269 @@
+
+v1.12
+    Public Release 12
+    2014-08-14
+    This is the first release of xLootTracker, forked from the original xSquadLootManager project. This changelog covers what's changed from the persepctive of someone who used the latest version of the previous project.
+    - Distribution functionality has been dropped.
+    - The Detection system (now refered to as the Tracker) has been revamped to work without quality. It should also be more reliable than it was before.
+    - Alongside the new weapon and ability Modules, the addon now tracks loot that doesn't have to be interacted with to be picked up, including Components (any kind of crafting material) and Consumables (calldown items).
+    - Filtering options have been updated to work with Rarity instead of Stage, and Item/Required levels instead of Quality. Additionally, the format of the titles of Waypoints and entries in the HUDTracker can now be customized. These options are placed within the Filtering options to allow different formats based on rarity.
+    - Multiple entires of the same kind of item "stack" in the HUDTracker.
+    - Waypoint and HUDTracker title formats can now be customized.
+    - Switched to a more vocal formatting system (%i > {itemName}).
+    - Tooltips from item links and the hudtracker compare themselves to what you have equipped.
+    - The slash handles used by the addon can now be set from the setting (I have yet to lock down the slash commands though).
+    - Removed some broken sound options.
+    - Various code improvements and enworsements.
+
+
+v0.92
+    Public Release 11
+    2014-02-08
+    - Implemented functionality to support multiple rolls at the same time.
+        - For addon users, this will make it even easier to roll for things through the tracker.
+        - For non-addon users that are part of your squad, if there are multiple rolls occuring at the same time, they will want to enter an index number in order to be sure their roll declaration is sent to the correct roll.
+    - Added a Tracking Delay and implemented two Detection options to control Tracking Delay and Despawn Check Interval.
+        - These will help in combating ghost items. Default is 1 second tracking delay and 20 second check interval. An alternative you could use that would work well is 0 tracking delay and 1-2 second check interval. Just don't do that with debug mode enabled :P
+    - Implemented a tempoary fix that allows stage filtering options to work like the did before. When it encounters unstaged items with a quality higher than 0, the addon simply determines its stage by itself.
+    - Split up OnAssignItem, creating two new message events: OnAssignItemByRoll (used if the item was assigned from winning a roll) and OnAssignItemFreeForAll (used if an item won't be assigned to a player).
+    - If distributing, the addon will automatically assign items as "free for all" if they won't be distributed under the current filter rules. This allows other squad members to be able to see which items you don't intend to distribute and are thus "up for grabs".
+    - Added a new message replacement filter, %id, which links to the index number to be used for a non-addon user that wants to roll on an item.
+    - Reworked the Communications Options to better fit the new system.
+    - Tracker scroller is now hidden when there aren't enough entries to make the tracker scrollable.
+    - Fixed an issue where an important validation check was missing in two of the communication functions.
+    - Fixed an issue where Need Before Greed rolls would skip remaining rolls if everyone eligible for need rolls had chosen not to need roll.
+    - Fixed an issue where the addon would report items assigned to "free for all" as being stolen when looted. The addon should now report these as received. 
+    - Fixed a few issues that prevented Dice and Round-robin distribution from functioning properly.
+    - Various code improvements and enworsements.
+    - Removed some unused code.
+
+v0.91
+    Public Release 10
+    2014-01-31
+    - Now tracks Salvage Modules
+    - Changed the message replacement filters so that they use links where applicable.
+    - Added a new message replacement filter, %c, which links the coordinates of the subject item where applicable.
+    - Revamped addon-to-addon communication so that it uses (invisible) custom links. No more gibberish in the chat! \o/
+    - It is now possible to Need/Greed/Pass roll on items through buttons in the Tracker.
+    - Tracker can now be scrolled.
+    - Implemented "Unstaged" filter so that new kind of loot can be tracked.
+    - It is now possible to output the winning roll value in the OnAssignItem message, using the %r filter. This doesn't work that great, as you don't always have a roll value.
+    - Various code improvements and enworsements.
+    - Removed unused texture resources.
+    - Fixed an outdated function call in Options.
+    - Fixed OnAssignItem MessageEvent not being called.
+    - Fixes and improvements to various /slm commands. These are still not quite ready though.
+
+    Known Issues
+    - Please note that right now, the Squad Leader can only handle 1 roll at a time. This will be fixed in a future version.
+    - The janstone patch has made stages an inefficient way of filtering loot, because all equipment drops are now "unstaged".
+    - Loot Panels have some sporadic issues.
+    - Sometimes, the addon detects 'ghost items'. This is a mysterious capability that I do not remember implementing.
+
+v0.90
+    Public Release 9
+    2013-12-14
+    - Tracker will no longer 'display' when there are no items to display. This fixes an issue where the frame would block access to other UI elements when visibility was set to Always.
+    - Implemented Item Style Tracker Tooltips.
+    - Added message replacement functionality for itemForArchetype (%fA), which outputs the archetype an item is for.
+    - If it cannot resolve a replacement filter, the addon will output nothing rather than NOT_SET unless a debug option is enabled.
+    - Reworked the implementation of Weighting. 
+        - The addon now uses a combination of data provided by the game and data stored locally when it determines which frames an item is for. 
+        - This allows for Weighting to function for Crafting Components. If enabled, distribution now prioritises squad members in archetypes for which there is an item that can be modified with the crafting component (E.g. Biotechs can need Poison Gland because you can make a Noxius Needler with it). If you don't want this behavior, simply disable Weighting for Crafting Components.
+        - This should also allow weighting to function for (some) items that the addon does not have any local information on, making it more future-proof.
+    - Fixed an issue where the Debug_Enabled option wouldn't take effect until the next reload.
+    - Fixed an issue where messages would not get sent if the addon couldn't determine which frame an item was for.
+    - Fixed an issue where some debug options would remain active even if debug mode was disabled.
+    - Made slash commands available through /xslm aswell.
+    - Localized the moveable frame in the interface options.
+    - Updated calls to lib_Tooltip as per change in patch v0.7.1725.
+    - Replaced calls to string with unicode as per recent changes to R5Chat.
+    - Disabled alert functionality of messages as it no longer has the desired effect.
+
+v0.89
+    Public Release 8
+    2013-11-13
+    - Fixed an issue where the Tracker would not hide in sinvironment.
+    - Fixed an issue where the Tracker would not hide when the visibilty option was set to mousemode.
+    - Addon now also listens to hide_hud_request event.
+    - Updated the message format tooltip.
+
+v0.88
+    Public Release 7
+    2013-11-03
+    - Filtering: Distribution, Panels, Tracker and Waypoints can seperately have a certain quality and/or tier threshold/s in simple configuration mode, or can be configured in 'advanced mode' to ignore certain tiers of loot, optionally with separate quality thresholds per tier.
+    - Addon now detects optional crafting components.
+    - Options backend overhauled along with some reorganization of the menus
+        - Main/first tab now more easily allows you to turn specific features on and off.
+        - The old Manager subtab has been renamed to Distribution, and options here no longer affect what kind of loot the addon is tracking.
+        - Categorized the different message events into three subtabs of Messages (Detection, Distribution, Communication).
+        - Messages subtab now houses master toggles for the different channels that messages can be sent on.
+    - Tweaked default settings to use Notifications channel instead of System.
+    - Tracker has been graphically overhauled
+        - Tracked items can be mouseovered to see tooltips.
+        - Added Visibility option, allows you to hide the Tracker when not in mousemode.
+        - Makes use of an item name shortener (e.g. Accord Elite -> A.E.)
+    - Loot Panels
+        - Loot Panels now display the correct stats on items (modified by quality).
+        - The Battleframe icon on a LootPanel can now be hovered when in mousemode - displaying the Battleframe name in text.
+        - Added an option to hide the "Not yet Assigned" text of Loot Panels. When used in conjunction with the Display AssignedTo option, you will only see the Assigned To or free for all text when it has been declared as such.
+        - Fixed an issue with the color options for the AssignedTo text of Loot Panels.
+    - Added message replacement functionality for craftingTypeId (%cId) and itemForFrame (%fF). This allows you to output the most suitable battleframe for an item in the chat.
+    - Messages can now be sent on the Notifications channel as well.
+    - Fixed an issue with the roll logic where negative roll values could cause errors.
+    - Fixed at least one issue where a certain combination of options would cause an error that halted execution at a critical moment.
+    - Fixed an issue where the addon was unable to detect when other players looted items.
+
+    Known Issues
+    - Weighting option has no effect on Crafting Components.
+    - Weighting option has no effect on Round-robin.
+
+v0.77
+    Public Release 6
+    2013-09-09
+    - Need-before-greed rolls now end if all members that can need roll have selected need roll.
+    - Fixed a number of issues with Need-before-greed rolls.
+    - Fixed a bug where round-robin would award items to the same member continously.
+    - Fixed an issue where the distribute command could be run even if you were not the squad leader.
+    - Fixed an issue where changes to roll settings weren't being registered - this means that roll range and roll timeouts are now customizable, as was intended.
+    - It is now possible to set the default roll-type when a Need-before-greed roll times out.
+    - Standardized item names for a few of the default messages.
+    - Changed the despawn-check timer to 20 seconds.
+ 
+    Known Issues
+    - Roll timeout can be set to 0, causing the loot distribution to break.
+    - Roll minimum can be set to a higher value than Roll maximum, causing loot distribution to break.
+
+v0.74
+    Public Release 5
+    2013-08-28
+    - Fixed an issue where the addon would not distribute items (oops).
+
+v0.73
+    Public Release 4
+    2013-08-28
+    - Implemented support for Arsenal loot drops
+
+v0.72
+    Public Release 3
+    2013-08-27
+    - Added 3 missing message options - OnRollBusy (Attempted new roll but we're already rolling an item), OnRollNobody (Roll timed out without anyone declaring their roll) and OnLootDespawn (Item despawned)
+    - Added 4 new sounds from the Slot Machine to the selection of sound options
+    - Reordered Messages options and changed up which messages that are enabled by default in order to expose more functionality to new users. To further explain, some message events that weren't active by default allowed functionality that users were requesting in the forum thread, whereas a few other message events would by default send messages to both squad and system.
+    - Addon no longer detects resources/crystite (that must be interacted with in order to loot). At some point I might implement a few options around this, but for now there is no point in having the addon flip out on daily crates.
+    - Fixed the Display Headings option for the Tracker.
+    - Fixed a bug where waypoints/panels wouldn't disappear when items were looted when loot threshold was on.
+    - Fixed an issue where the addon would not behave as expected when items were looted.
+    - Reworked/cleaned up a little bit of the code.
+
+v0.67
+    Public Release 2
+    2013-08-22
+    - Reworked inter-addon communication so that squad members with the addon can properly see who the squad leader has assigned loot to.
+    - Added some options for waypoints
+        - Show/hide on HUD, WorldMap, Radar.
+        - Ping and/or set navigation trail to items when they are assigned to you
+    - Added some sound options
+        - Mute
+        - Play sound when loot is detected
+        - Play sound when loot is assigned
+        - Choose between 99 sounds
+    - Added a simple measure in order to try to prevent items getting identified twice for some reason.
+    - Increased despawn check timer by five seconds (To get rid of edge cases where loot despawns a second after timer resets)
+    - Fixed an issue preventing panels and waypoints from disappearing as soon as an item was looted if you were not the squad leader
+    - Fixed and improved some option tooltips and labels
+    - Fixed Communication options visibility
+    - Fixed item name formatting of despawn message (I'll make this customizable soon)
+    - Fixed the Assigned To status on panels not being set until item was assigned
+    - Fixed Display Assigned To option for panels
+    - Fixed Tracker item name formatting
+    - Fixed Tracker not displaying assigned to status properly
+    - Fixed item name formatting getting overridden
+    - Turned debug options off by default (oops)
+    - Updated Melder and addon Info with the forum thread url and a better description
+
+v0.61
+    Public Release 1
+    2013-08-19
+    - Addon sends a communication message through Squad when it assigns loot. This message is parsed by other addon users in order for them to be able to see who you've assigned loot to on the Tracker (some day) and Panels (probably works).
+    - New options
+        - Communication options allow you to royally screw up my fancy communication system if you'd like. It's there so that you can turn of the assign communication message, none of the other options have any merit.
+        - Generic message options allow you to set the prefix of all squad messages if you'd like.
+        - Debug options, turn debug mode on or off. If enabled, a second option to fake a squad roster can be activated (useful for /slm test)
+
+v0.5e
+    Private Release 6
+    - Fixed an issue causing the addon user to automatically need roll everything (oops)
+    - Fixed an issue where the function handling replacement in messages wasn't handling its parameters properly and sometimes halted execution due to errors.
+    - Implemented %t, rollType replacement for roll declaration messages.
+    - Waypoints now handle item names with ^Q in them more elegantly.
+    - Waypoints now display item icon
+    - Fixed an issue where if a roll was hardcancelled by clearing the list of identified items, the addon could get stuck in a state where it was unable to roll new items because the code to clean up after a roll had been cancelled halted with references to non existant items
+
+v0.5d
+    Private Release 5
+    - Added option to disable version message
+    - Changed roll timeout timers to run on the individual timers for loot
+    - Added message replacement functionality to get rid of ugly ^Q. Usage of %i will always print item name, removing ^Q if encountered. Usage of %iq will print item name with quality if ^Q is encountered. This isn't optimal at all... will improve.
+    - Fixed loot despawn alarm reset (aka despawn timers... again...)
+    - Fixed an issue where the addon would send too long chat messages. The addon will now try to use linebreaks (\n) in order to split too long messages into multiple. 
+
+v0.5c
+    Private Release 4
+    - Fixed a bug with fallback icons for panels, causing them to break when universal gear dropped
+    - Improve waypoint removal behavior
+    - Fixed despawn timers (again)
+
+v0.5b
+    Private Release 3
+    - Fixed messages not working at all (oops)
+    - Fixed tracker not clearing old list items before rewriting them, causing illegible text
+    - Fixed tracker not calculating positions for list items properly
+    - Fixed despawn timers breaking if waypoints were turned off (lol)
+    - Improved the panels massively
+        - No longer uses Airii mesh
+        - Displays more data... frankly, displays data
+        - Options that allow controlling some of the colors
+
+v0.5a
+    Private Release 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Checklist for things to do when releasing a new version
+
+        Update version number in Addon
+        Determine if save version number should be updated in Addon
+        Update version number in Melderinfo
+        Update patch number in Melderinfo
+
+        Write changelog
+
+        Write release post
+
+        Upload attachment to thread op
+        Remove old attachment from thread op
+        Update download link in thread op
+        Update latest version in thread op
+        Update melder url tag in thread op
+        Update melder version tag in thread op
+
+        Publish release post to thread
+
+        Upload to curse
+
+
+http://forums.firefallthegame.com/community/attachments/xsquadlootmanager_v0-91-zip.1449721/
+
+http://forums.firefallthegame.com/community/attachments/xsquadlootmanager_v0-92-zip.1506921/

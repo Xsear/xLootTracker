@@ -30,8 +30,8 @@ require './lootpanel'
 
 -- Addon Meta
 AddonInfo = {
-    release  = "2014-08-13",
-    version = "1.10",
+    release  = "2014-08-14",
+    version = "1.12",
     patch = "1.0.1793",
     save = 1.0,
 }
