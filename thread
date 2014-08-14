@@ -41,13 +41,13 @@
 [INDENT=1][SIZE=5][FONT=andale mono]Arkii[/FONT][/SIZE][/INDENT]
 [INDENT=2]For his work on Lokii, A simple localisation tool, which I implement and use in xLootTracker.[/INDENT]
 [INDENT=2]As well as his work on Airii, which inspired me to implement Panels.[/INDENT]
-[INDENT=2]And as his work on [url='http://firefall.nyaasync.net/Apiii/live.php']Apii[/url].[/INDENT]
+[INDENT=2]And as his work on [URL='http://firefall.nyaasync.net/Apiii/live.php']Apii[/URL].[/INDENT]
 [INDENT=1] [/INDENT]
 [INDENT=1][SIZE=5][FONT=andale mono]DeadWalking[/FONT][/SIZE][/INDENT]
 [INDENT=2]For his help with building loot weighting systems for xSquadLootManager.[/INDENT]
 [INDENT=1] [/INDENT]
 [INDENT=1][SIZE=5][FONT=andale mono]Granite[/FONT][/SIZE][/INDENT]
-[INDENT=2]For his work on lib_GTimer, which calls a function with a formatted text timer at intervals as needed for updates, used by xSquadLootManager for roll timeouts, panel timers and loot despawn detection.[/INDENT]
+[INDENT=2]For his work on lib_GTimer, which calls a function with a formatted text timer at intervals as needed for updates, used by xLootTracker for the panel timers.[/INDENT]
 [INDENT=1] [/INDENT]
 [INDENT=1][SIZE=5][FONT=andale mono]Mortelentus[/FONT][/SIZE][/INDENT]
 [INDENT=2]For his work on Simple Loot, which inspired parts of the early detection system.[/INDENT]
@@ -81,13 +81,29 @@
 [/LIST]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Changes[/FONT][/SIZE][/COLOR]
 [CODE]
-
+v1.12
+    Public Release 12
+    2014-08-14
+    This is the first release of xLootTracker, forked from the original xSquadLootManager project. This changelog covers what's changed from the persepctive of someone who used the latest version of the previous project.
+    - Distribution functionality has been dropped.
+    - The Detection system (now refered to as the Tracker) has been revamped to work without quality. It should also be more reliable than it was before.
+    - Alongside the new weapon and ability Modules, the addon now tracks loot that doesn't have to be interacted with to be picked up, including Components (any kind of crafting material) and Consumables (calldown items).
+    - Filtering options have been updated to work with Rarity instead of Stage, and Item/Required levels instead of Quality. Additionally, the format of the titles of Waypoints and entries in the HUDTracker can now be customized. These options are placed within the Filtering options to allow different formats based on rarity.
+    - Multiple entires of the same kind of item "stack" in the HUDTracker.
+    - Waypoint and HUDTracker title formats can now be customized.
+    - Switched to a more vocal formatting system (%i > {itemName}).
+    - Tooltips from item links and the hudtracker compare themselves to what you have equipped.
+    - The slash handles used by the addon can now be set from the setting (I have yet to lock down the slash commands though).
+    - Removed some broken sound options.
+    - Various code improvements and enworsements.
 [/CODE]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Download[/FONT][/SIZE][/COLOR]
 [CENTER][SIZE=5][URL='http://forums.firefallthegame.com/community/attachments/xsquadlootmanager_v0-92-zip.1506921/']Latest Version: 1.12 (1.0.1793)[/URL][/SIZE][/CENTER]
 [CENTER]Released on 2014-08-14[/CENTER]
 [CENTER] [/CENTER]
 [CENTER][URL='http://astrekassociation.com/melder.php?id=1506921'][IMG]http://astrekassociation.com/images/melder.png[/IMG][/URL][/CENTER]
-[CENTER][SIZE=1][COLOR=#161c1c][melder_info]version=1.12;patch=1.0.1793;dlurl=1506921[/melder_info][/COLOR][/SIZE][/CENTER]
+[CENTER][URL='http://www.curse.com/ff-addons/firefall/xsquadlootmanager'][IMG]http://media-curse.cursecdn.com/attachments/87/963/curse-logo.png[/IMG][/URL][/CENTER]
+[CENTER][SIZE=1][COLOR=#161c1c][melder_info]version=1.12;patch=1.0.1793;dlurl=1506921[/melder_info][/COLOR][/SIZE]
+[/CENTER]
  
 [CENTER][I][SIZE=3]For older versions, [URL='http://firefall.curseforge.com/ff-addons/xsquadlootmanager/files/']please see the page on CurseForge[/URL].[/SIZE][/I][/CENTER]

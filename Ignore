@@ -1,5 +1,7 @@
 \Ignore
 \Makefile
 \.git\
-\xslm.sublime-project
-\xslm.sublime-workspace
+\.gitignore
+\xLootTracker.sublime-project
+\xLootTracker.sublime-workspace
+\thread
