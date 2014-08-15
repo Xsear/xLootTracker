@@ -143,12 +143,12 @@ function OnSlash(args)
     if args.text == '' or args.text == 'help' or args.text == '?' then
         Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker r'..AddonInfo.release)
         Messages.SendChatMessage('system', 'Slash Commands')
-        Messages.SendChatMessage('system', '/slm [help|?]: Version message and command list.')
+        Messages.SendChatMessage('system', '/lt [help|?]: Version message and command list.')
 
         if Options['Debug']['Enabled'] then
             Messages.SendChatMessage('system', 'Debug Commands')
-            Messages.SendChatMessage('system', '/slm test [filter|any] [number|any] : Fake detection of items.')
-            Messages.SendChatMessage('system', '/slm stat : Log variables.')
+            Messages.SendChatMessage('system', '/lt test [filter|any] [number|any] : Fake detection of items.')
+            Messages.SendChatMessage('system', '/lt stat : Log variables.')
         end
 
     -- Debug/testing commands, subject to change
@@ -172,7 +172,7 @@ function OnSlash(args)
 
     elseif args.text == 'no' or args.text == 'stfu' or args.text == 'silence' then
         Options['Messages']['Enabled'] = false
-        Messages.SendChatMessage('system', 'Forcefully disabled Messages and Distribution. Reload the UI to reset.')
+        Messages.SendChatMessage('system', 'Forcefully disabled Messages.')
     end
 
 end
