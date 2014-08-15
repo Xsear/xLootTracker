@@ -488,15 +488,11 @@ end
 
 function Tracker.Clear()
     for i, loot in pairs(Private.trackedLoot) do
-        loot:Destroy()
+        Tracker.Remove(loot)
     end
 
     for i, array in pairs(Private.lootEventHistory) do
         array = nil
-    end
-
-    for i, id in pairs(Private.identityByEntity) do
-        id = nil
     end
 
     Private.trackedLoot = {}
