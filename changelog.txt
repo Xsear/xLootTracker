@@ -1,4 +1,14 @@
 
+
+v1.13
+    Public Release 13
+    2014-
+
+    <indev>
+    
+
+
+
 v1.12
     Public Release 12
     2014-08-14
@@ -7,14 +17,14 @@ v1.12
     - The Detection system (now refered to as the Tracker) has been revamped to work without quality. It should also be more reliable than it was before.
     - Alongside the new weapon and ability Modules, the addon now tracks loot that doesn't have to be interacted with to be picked up, including Components (any kind of crafting material) and Consumables (calldown items).
     - Filtering options have been updated to work with Rarity instead of Stage, and Item/Required levels instead of Quality. Additionally, the format of the titles of Waypoints and entries in the HUDTracker can now be customized. These options are placed within the Filtering options to allow different formats based on rarity.
-    - Multiple entires of the same kind of item "stack" in the HUDTracker.
+    - Multiple entries of the same kind of item "stack" in the HUDTracker.
+    - The entries in the HUDTracker are now sorted. The priority is rarity > itemlevel > name (alphabetic order)
     - Waypoint and HUDTracker title formats can now be customized.
     - Switched to a more vocal formatting system (%i > {itemName}).
     - Tooltips from item links and the hudtracker compare themselves to what you have equipped.
-    - The slash handles used by the addon can now be set from the setting (I have yet to lock down the slash commands though).
+    - The slash handles used by the addon can now be set from the setting (I have yet to lock down the slash commands though). The default slash handles have been changed from xslm/slm to xlt/lt in order to match the new name.
     - Removed some broken sound options.
     - Various code improvements and enworsements.
-
 
 v0.92
     Public Release 11
