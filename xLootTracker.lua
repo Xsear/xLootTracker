@@ -140,10 +140,10 @@ end
 ]]--
 function OnSlash(args)
     -- Help / command list
-    if args[1] == '' or args[1] == 'help' or args[1] == '?' then
+    if not args[1] or args[1] == 'help' or args[1] == '?' then
         Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker v'..AddonInfo.version)
         Messages.SendChatMessage('system', 'Slash Commands')
-        Messages.SendChatMessage('system', '/lt [help|?]: Version message and command list.')
+        Messages.SendChatMessage('system', '/lt [help|?] : Version message and command list.')
         Messages.SendChatMessage('system', '/lt refresh : Force the tracker to update the state of all loot.')
         Messages.SendChatMessage('system', '/lt clear : Force the tracker to remove all loot.')
 
@@ -174,6 +174,29 @@ function OnSlash(args)
 
     elseif args[1] == 'wayman' then
         WaypointManager.ToggleVisibility()
+
+    elseif args[1] == "t" or args[1] == "toggle" then
+        if not args[2] then
+            Options['Core']['Enabled'] = not Options['Core']['Enabled']
+
+        elseif args[2] == "wp" or "wps" or "waypoints" or "wayman" or "way" then
+            Options['Waypoints']['Enabled'] = not Options['Waypoints']['Enabled']
+
+        elseif args[2] == "hud" or "hudtracker" or "tracker" then
+            Options['HUDTracker']['Enabled'] = not Options['HUDTracker']['Enabled']
+
+        elseif args[2] == "sound" or "sounds" or "snd" then
+            Options['Sounds']['Enabled'] = not Options['Sounds']['Enabled']
+
+        elseif args[2] == "messages" or "msg" or "msgs" or "message" then
+            Options['Messages']['Enabled'] = not Options['Messages']['Enabled']
+
+        elseif args[2] == "panels" or "pan" or "panman" or "pans" then
+            Options['Panels']['Enabled'] = not Options['Panels']['Enabled']
+
+        end
+        -- local respKey
+        Messages.SendChatMessage('system', 'Toggled.')
 
     elseif args[1] == 'stop' then
         Options['Core']['Enabled'] = false
