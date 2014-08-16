@@ -140,10 +140,12 @@ end
 ]]--
 function OnSlash(args)
     -- Help / command list
-    if args.text == '' or args.text == 'help' or args.text == '?' then
-        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker r'..AddonInfo.release)
+    if args[1] == '' or args[1] == 'help' or args[1] == '?' then
+        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker v'..AddonInfo.version)
         Messages.SendChatMessage('system', 'Slash Commands')
         Messages.SendChatMessage('system', '/lt [help|?]: Version message and command list.')
+        Messages.SendChatMessage('system', '/lt refresh : Force the tracker to update the state of all loot.')
+        Messages.SendChatMessage('system', '/lt clear : Force the tracker to remove all loot.')
 
         if Options['Debug']['Enabled'] then
             Messages.SendChatMessage('system', 'Debug Commands')
@@ -151,26 +153,39 @@ function OnSlash(args)
             Messages.SendChatMessage('system', '/lt stat : Log variables.')
         end
 
+    -- Refresh
+    elseif args[1] == 'refresh' then
+        Slash_Refresh(args)
+
+    -- Clear
+    elseif args[1] == 'clear' then
+        Slash_Clear(args)
+
+
     -- Debug/testing commands, subject to change
     elseif args[1] == 'test' then
-        Test({args[2], args[3]})
+        Slash_Test(args)
 
-    elseif args.text == 'stat' then
-        Stat(args)
+    elseif args[1] == 'stat' then
+        Slash_Stat(args)
 
-    elseif args.text == 'refresh' then
-        Tracker.Refresh()
-
-    elseif args.text == 'clear' then
-        Clear(args)
-
-    elseif args.text == 'waymanpls' then
+    elseif args[1] == 'waymanpls' then
         WaypointManager.GetYourShitTogether()
 
-    elseif args.text == 'wayman' then
+    elseif args[1] == 'wayman' then
         WaypointManager.ToggleVisibility()
 
-    elseif args.text == 'no' or args.text == 'stfu' or args.text == 'silence' then
+    elseif args[1] == 'stop' then
+        Options['Core']['Enabled'] = false
+        Options['Tracker']['Enabled'] = false
+        Options['Waypoints']['Enabled'] = false
+        Options['HUDTracker']['Enabled'] = false
+        Options['Sounds']['Enabled'] = false
+        Options['Messages']['Enabled'] = false
+        Options['Panels']['Enabled'] = false
+        Messages.SendChatMessage('system', ':\'(')
+
+    elseif args[1] == 'no' or args[1] == 'stfu' or args[1] == 'silence' then
         Options['Messages']['Enabled'] = false
         Messages.SendChatMessage('system', 'Forcefully disabled Messages.')
     end
@@ -350,38 +365,17 @@ end
 
 
 
-function Test(args)
-    Debug.Log('Test')
+function Slash_Test(args)
+    table.remove(args, 1)
+
+    Debug.Log('Slash_Test')
     Debug.Log('args[1]: '..tostring(args[1]))
-    Debug.Log('args[2]: '..tostring(args[1]))
+    Debug.Log('args[2]: '..tostring(args[2]))
 
     Messages.SendChatMessage('system', 'Test')
 
 
-    if false then
-
-        -- 86682 Bone Fragments (Uncommon)
-        -- 98622 (BioRifle) Valerian Two (Common)
-        -- 99979 Charging Module (Common)
-
-
-        local idsOfInterest = {
-            86695,
-            99979,
-        }
-
-        for i, typeId in ipairs(idsOfInterest) do
-
-            local itemInfo = Game.GetItemInfoByType(typeId)
-
-            Debug.Log(tostring(itemInfo.name) .. " is of rarity " .. tostring(itemInfo.rarity) .. " which has the value " .. tostring(LIB_ITEMS.GetRarityValue(itemInfo.rarity)))
-
-        end
-
-
-
-
-    elseif true then
+    if true then
 
 
         local numberOfItems = 3
@@ -441,94 +435,31 @@ function Test(args)
 
     end
 
-
-  
-
---[[
-
-
-
-"targetInfo" : {
-            "damageable" : false, 
-            "type" : "loot", 
-            "lootPos" : {
-                "y" : -1778.966919, 
-                "x" : 113.551292, 
-                "z" : 518.921387
-            }, 
-            "quantity" : 1, 
-            "itemTypeId" : 86682, 
-            "bounds" : {
-                "height" : 0.614168, 
-                "length" : 0.441926, 
-                "width" : 0.353914
-            }, 
-            "hostile" : false, 
-            "faction" : "unknown", 
-            "interactToLoot" : false, 
-            "level" : 0, 
-            "modules" : [], 
-            "name" : "Bone Fragments"
-        }, 
-"itemInfo" : {
-            "flags" : {
-                "resource" : true, 
-                "is_tradable" : true
-            }, 
-            "stack_size" : 5, 
-            "rarity" : "uncommon", 
-            "certifications" : [], 
-            "web_icon_stem" : "BoneFragments", 
-            "constraints" : {
-                "cpu" : 0, 
-                "mass" : 0, 
-                "power" : 0
-            }, 
-            "character_scalars" : [], 
-            "tier" : {
-                "level" : 2, 
-                "description" : "Tier 2", 
-                "name" : "Tier 2"
-            }, 
-            "itemTypeId" : "86682", 
-            "type" : "resource_item", 
-            "name" : "Bone Fragments", 
-            "required_level" : 0, 
-            "item_level" : 1, 
-            "subTypeId" : "3291", 
-            "description" : "Bones and other Carbon-based materials. Gathered from creatures levels 20-29.", 
-            "web_icon" : "http://d2ja7bjtwj8eb0.cloudfront.net/assets/items/64/BoneFragments.png"
-        }, 
-
-
-
-
---]]
-
 end
 
 
-function Stat(args)
-    Debug.Log('Stat')
+function Slash_Stat(args)
+    Debug.Log('Slash_Stat')
     Debug.Table(State)
     Debug.Table('Features', {
-                panels = Options['Panels']['Enabled'],
+                tracker = Options['Tracker']['Enabled'],
                 waypoints = Options['Waypoints']['Enabled'],
                 hudtracker = Options['HUDTracker']['Enabled'],
+                sounds = Options['Sounds']['Enabled'],
                 messages = Options['Messages']['Enabled'],
+                panels = Options['Panels']['Enabled'],
                 })
     Tracker.Stat()
     WaypointManager.Stat()
 end
 
-function Clear(args)
-    -- Fixme: This command does not work properly.
-    Debug.Log('Clear')
+function Slash_Clear(args)
+    Debug.Log('Slash_Clear')
     Tracker.Clear()
 end
 
 function Slash_Refresh(args)
-    Debug.Log("Refresh")
+    Debug.Log("Slash_Refresh")
     Tracker.Refresh()
 end
 
