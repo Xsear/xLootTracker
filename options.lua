@@ -1022,7 +1022,288 @@ Options['HUDTracker']['Filtering'] = {
 
 
 
+Options['Sounds']['Filtering'] = {
+    [LootCategory.Equipment] = {
+        ['Enabled'] = true,
 
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = LootRarity.Salvage,
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+    },
+
+    [LootCategory.Consumable] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = LootRarity.Salvage,
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+    },
+
+    [LootCategory.Modules] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = LootRarity.Salvage,
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+    },
+
+    [LootCategory.Salvage] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = LootRarity.Salvage,
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+    },
+
+    [LootCategory.Components] = {
+        ['Enabled'] = true,
+
+        ['Mode'] = TriggerModeOptions.Simple,
+
+        ['Simple'] = {
+            ['RarityThreshold'] = LootRarity.Salvage,
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Salvage] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Common] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Uncommon] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Rare] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Epic] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Prototype] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+
+        [LootRarity.Legendary] = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
+        },
+    },
+    
+    [LootCategory.Currency] = {
+        ['Enabled'] = false,
+    },
+}
 
 
 
@@ -1157,7 +1438,7 @@ function SetOptionsAvailability()
 
 
     -- If simple disable advanced options
-    for i, moduleKey in pairs({'HUDTracker', 'Panels', 'Waypoints'}) do
+    for i, moduleKey in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds'}) do
 
         for id, categoryKey in pairs(FilterableLootCategories) do
 
@@ -1689,7 +1970,7 @@ function BuildInterfaceOptions_HUDTracker()
 end
 
 function BuildInterfaceOptions_Sounds()
-    UIHELPER_SoundOptionsMenu('Sounds_OnIdentify', Lokii.GetString('Options_Sounds_OnIdentify_Label'), Options['Sounds']['OnIdentify'], Lokii.GetString('Options_Subtab_Sounds'))
+    UIHELPER_Filtering('Sounds')
 end
 
 
@@ -1803,6 +2084,11 @@ function UIHELPER_FilterRarity(moduleKey, x, rarity, subtab)
                 default = Options[moduleKey]['Filtering'][x][rarity]['HUDTrackerTitle'],
                 subtab  = subtab
             })
+
+        elseif moduleKey == "Sounds" then
+
+            UIHELPER_SoundOptionsMenu(moduleKey..'_Filtering_'..x..'_'..rarity..'_SoundsNewLoot', Lokii.GetString('Options_Filtering_SoundsNewLoot_Label'), Options['Sounds']['Filtering'][x][rarity]['SoundsNewLoot'], subtab)
+
         end
 
     InterfaceOptions.StopGroup({
@@ -1852,7 +2138,7 @@ function UIHELPER_SoundOptionsMenu(uid, label, default, subtab)
     InterfaceOptions.AddChoiceMenu({
             id=uid,
             label=label,
-            subtab={subtab},
+            subtab=subtab,
             default=default,
         })
 

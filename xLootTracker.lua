@@ -56,6 +56,7 @@ require './messages' -- Messages
 require './tracker' -- Tracker
 require './markers' -- Markers (Panels / Waypoints)
 require './hudtracker' -- HUDTracker
+require './sounds'
 
 -- Functions
 --[[
@@ -291,9 +292,7 @@ function OnTrackerNew(args)
     Debug.Event(args)
 
     -- Sounds
-    if Options['Sounds']['Enabled'] and Options['Sounds']['OnIdentify'] then
-        System.PlaySound(Options['Sounds']['OnIdentify'])
-    end
+    Callback2.FireAndForget(Sounds.OnTrackerNew, args, 0)
 
     -- Waypoints
     Callback2.FireAndForget(WaypointManager.OnTrackerNew, args, 0)

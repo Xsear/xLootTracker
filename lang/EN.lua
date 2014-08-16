@@ -161,6 +161,10 @@ LANG = {
     Options_Filtering_HUDTrackerTitle_Label = "HUDTracker Title Format",
     Options_Filtering_HUDTrackerTitle_Tooltip = "Customize the title of each entry in the hudtracker.\n"..Generic_MessageFormat,
 
+    Options_Filtering_SoundsNewLoot_Label = "Sound Notification",
+    Options_Filtering_SoundsNewLoot_Tooltip = "",
+
+
 
     Options_Messages_Generic_Channels_Squad_Enabled_Label                                   =    "Send Squad Message",
     Options_Messages_Generic_Channels_Squad_Enabled_Tooltip                                 =    "Send message to Squad on this event",

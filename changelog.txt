@@ -5,7 +5,10 @@ v1.13
     2014-
 
     <indev>
-    
+    - Updated /lt help info to reflect new version.
+    - Added/Fixed /lt clear command.
+    - Added Sound Filtering Options. This makes it possible to have different sound notifications for different kinds of loot.
+
 
 
 
