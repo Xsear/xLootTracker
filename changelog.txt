@@ -17,6 +17,8 @@ v1.13
     - Tracker Ignore Crystite
     - Tracker Ignore Metals in Melding Tornado
 
+    - Fixed the Tracker Limit not working as intended.
+
 
 v1.12
     Public Release 12

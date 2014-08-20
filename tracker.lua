@@ -13,6 +13,9 @@ local Private = {
     limitWarningTimeout = 60, -- seconds before canSendLimitWarning is reset
 
     crystiteTypeId = 10,
+
+
+    trackedLootCounter = 0,
 }
 
 
@@ -85,6 +88,10 @@ function Tracker.GetAvailableLoot()
     return _table.copy(result)
 end
 
+function Tracker.GetCount()
+    local count = Private.trackedLootCounter
+    return count
+end
 
 --[[
     Tracker.Refresh()
@@ -115,7 +122,7 @@ function Tracker.OnEntityAvailable(args)
     elseif Tracker.IsTrackedEntity(args.entityId) then
         return -- This is old news!
     -- Do we have room for it?
-    elseif #Private.trackedLoot >= tonumber(Options['Tracker']['Limit']) then
+    elseif Private.trackedLootCounter >= tonumber(Options['Tracker']['Limit']) then
         if Private.canSendLimitWarning then
             Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Tracker_HitLimit'))
             Private.canSendLimitWarning = false
@@ -374,6 +381,9 @@ function Tracker.Track(args)
     Private.trackedLoot[loot:GetId()] = loot
     Private.identityByEntity[loot:GetEntityId()] = loot:GetId()
 
+    -- Increment counter
+    Private.trackedLootCounter = Private.trackedLootCounter + 1
+
     -- Fire event
     --Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
     OnTrackerNew({lootId = loot:GetId()})
@@ -448,6 +458,9 @@ function Tracker.Remove(lootArg)
 
     -- Clear tracker reference
     Private.trackedLoot[loot:GetId()] = nil
+
+    -- Decrement counter
+    Private.trackedLootCounter = Private.trackedLootCounter - 1
 
     -- Self destruct
     loot:Destroy()
