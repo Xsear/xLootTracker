@@ -19,6 +19,16 @@ local Private = {
 }   
 
 
+local DimensionOptions = {
+    ScrollerSpacing = 8,
+    ScrollerSliderMarginVisible = 5,
+    ScrollerSliderMarginHidden = 5,
+    EntryDimsWidth = "100%",
+    EntryDimsHeight = "32",
+    MaxEntriesBeforeScroller = 3,
+}
+
+
 function HUDTracker.OnTrackerNew(args)
     HUDTracker.Update()
 end
@@ -40,8 +50,8 @@ function HUDTracker.Setup()
     -- Scroller
     SCROLLER = RowScroller.Create(LIST)
     SCROLLER:SetSlider(SLIDER)
-    SCROLLER:SetSliderMargin(5, 5)
-    SCROLLER:SetSpacing(8)
+    SCROLLER:SetSliderMargin(DimensionOptions.ScrollerSliderMarginVisible, DimensionOptions.ScrollerSliderMarginHidden)
+    SCROLLER:SetSpacing(DimensionOptions.ScrollerSpacing)
     SCROLLER:ShowSlider(true)
 
     -- Tooltip
@@ -196,7 +206,7 @@ function HUDTracker.Update(args)
                     local ENTRY_ITEM = ENTRY:GetChild('item')
 
                     -- Set dimensions
-                    ENTRY:SetDims('top:0; left:0; width:100%; height:32');
+                    ENTRY:SetDims('top:0; left:0; width:'..tostring(DimensionOptions.EntryDimsWidth)..'; height:'..tostring(DimensionOptions.EntryDimsHeight));
 
                     -- Set the plate tag
                     ENTRY_PLATE:SetTag(tostring(loot:GetId()))
@@ -342,8 +352,8 @@ function HUDTracker.UpdateVisibility()
             -- Yes, display tracker
             FRAME:Show(true)
 
-            -- Show/hide the Slider depending on the number of rows shown - hardcoded.
-            if SCROLLER:GetRowCount() > 3 then
+            -- Show/hide the Slider depending on the number of rows shown.
+            if SCROLLER:GetRowCount() > tonumber(DimensionOptions.MaxEntriesBeforeScroller) then
                 SLIDER:Show(true)
             else
                 SLIDER:Show(false)
