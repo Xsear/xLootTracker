@@ -11,6 +11,8 @@ local Private = {
 
     canSendLimitWarning = true,
     limitWarningTimeout = 60, -- seconds before canSendLimitWarning is reset
+
+    crystiteTypeId = 10,
 }
 
 
@@ -340,6 +342,20 @@ function Tracker.Track(args)
         return
     end
 
+    -- Ignore Crystite
+    if itemTypeId == Private.crystiteTypeId and Options['Tracker']['IgnoreCrystite'] then
+        return
+    end
+
+    -- Ignore Metals in Tornado
+    if Options['Tracker']['IgnoreMetalsTornado'] and Loot.DetermineCategory(targetInfo, itemInfo) == LootCategory.Metals then
+        for i, tornadoZoneId in ipairs(TornadoPocketZoneIds) do
+            if State.zoneId == tornadoZoneId then
+                return
+            end
+        end
+    end
+
     -- Prep data
     args.entityId = entityId
     args.targetInfo = targetInfo
@@ -521,7 +537,7 @@ end
 ]]--
 function IsTrackableItem(itemInfo)
     -- Verify that the looted item is of a type that we care about
-    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsComponent(itemInfo) or IsConsumable(itemInfo))
+    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsConsumable(itemInfo) or IsMetal(itemInfo) or IsComponent(itemInfo))
 end
 
 
@@ -543,17 +559,41 @@ function IsEquipment(itemInfo)
 end
 
 
-
 function IsComponent(itemInfo)
+    local craftingComponentsSubTypeId = 15 -- 149
+
     local old = (itemInfo.type == "crafting_component")
-    local new = (itemInfo.type == "resource_item" and not itemInfo.flags.is_salvageable) -- Note: Uncertain, might be too broad
+    local new = (itemInfo.type == "resource_item" and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, craftingComponentsSubTypeId))
 
-    local cc = (itemInfo.type == "basic" and itemInfo.flags.resource and itemInfo.flags.is_tradable)
+    local extra = (itemInfo.type == "basic" and itemInfo.flags.resource and itemInfo.flags.is_tradable)
 
-    return (new or old or cc)
+    return (new or extra or old)
 end
 
+function IsMetal(itemInfo)
+    local rawMetalsSubTypeId = 3288
 
+    local metals = (itemInfo.type == "resource_item" and itemInfo.flags.resource and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, rawMetalsSubTypeId))
+
+    return (metals)
+end
+
+function IsBioMaterial(itemInfo)
+    local rawBioMaterialsSubTypeId = 3291
+
+    local biomaterials = (itemInfo.type == "resource_item" and itemInfo.flags.resource and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, rawBioMaterialsSubTypeId))
+
+    return (biomaterials)
+end
+
+function IsCrystiteResonator(itemInfo)
+    return (itemInfo.itemTypeId and itemInfo.itemTypeId == 30412)
+end
+
+function IsCurrency(itemInfo)
+    local currencySubTypeId = 207
+    return (itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, currencySubTypeId))
+end
 
 function IsSalvage(itemInfo)
     local cond1 = (itemInfo.type == "basic" or itemInfo.type == "resource_item")

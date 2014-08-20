@@ -28,21 +28,25 @@ OptionsColorModesDropdown = {
 
 
 LootCategory = {
-    Equipment  = 'equipment',
-    Modules    = 'modules',
-    Salvage    = 'salvage',
-    Components = 'components',
-    Consumable = 'consumable',
-    Currency   = 'currency',
-    Unknown    = 'unknown',
+    Equipment    = 'equipment',
+    Modules      = 'modules',
+    Salvage      = 'salvage',
+    Components   = 'components',
+    --Biomaterials = 'biomaterials',
+    Metals       = 'metals',
+    Consumable   = 'consumable',
+    Currency     = 'currency',
+    Unknown      = 'unknown',
 }
 
 FilterableLootCategories = { -- Used by options to generate filtering options
     Equipment  = LootCategory.Equipment,
     Modules    = LootCategory.Modules,
     Salvage    = LootCategory.Salvage,
+    Metals     = LootCategory.Metals,
     Components = LootCategory.Components,
     Consumable = LootCategory.Consumable,
+    Currency   = LootCategory.Currency,
 }
 
 LootState = {
@@ -144,3 +148,10 @@ OptionsRadarEdgeModesDropdown = {
 }
 
 
+
+
+TornadoPocketZoneIds = {
+    805, -- Epicenter
+    865, -- Abyss
+    868, -- Cinerarium
+}

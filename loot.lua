@@ -59,11 +59,17 @@ function Loot.DetermineCategory(targetInfo, itemInfo)
     elseif IsSalvage(itemInfo) then
         category = LootCategory.Salvage
 
+    elseif IsConsumable(itemInfo) then
+        category = LootCategory.Consumable
+
+    elseif IsMetal(itemInfo) then
+        category = LootCategory.Metals
+
     elseif IsComponent(itemInfo) then
         category = LootCategory.Components
 
-    elseif IsConsumable(itemInfo) then
-        category = LootCategory.Consumable
+    elseif IsCurrency(itemInfo) then
+        category = LootCategory.Currency
 
     end
 

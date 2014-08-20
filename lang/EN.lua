@@ -15,15 +15,6 @@ Simple             =    "Simple"
 
 
 --[[
-LootCategory
-    Equipment
-    Modules
-    Salvage
-    Components
-    Consumable
-    Currency
-    Unknown
-
 
 
 LootRarity
@@ -105,6 +96,12 @@ LANG = {
     Options_Tracker_LootEventHistoryLifetime_Tooltip = "How long a lootevent should be valid for. A shorter lifetime should result in better accuracy when multiple items of the same kind are picked up in a short timespan, but too short may cause the addon to think items have despawned when they were looted. Longer timespans prevent the aforementioned issue, but may result in reduced accuracy in the aforementioned scenario.",
 
 
+    Options_Tracker_IgnoreCrystite_Label  = "Ignore Currency Crystite",
+    Options_Tracker_IgnoreCrystite_Tooltip = "When enabled, the Tracker ignores Crytite. Otherwise, it is tracked under the currency category. That category was added to track stuff like Crystite Resonators.",
+
+    Options_Tracker_IgnoreMetalsTornado_Label  = "Ignore Metals in Tornado",
+    Options_Tracker_IgnoreMetalsTornado_Tooltip = "When enabled, the Tracker ignores any Metals when you are inside a (known) Melding Tornado Pocket.",
+
     Options_Filtering_Simple_Enabled_Label                                              =    "Simple",
     Options_Filtering_Simple_Enabled_Tooltip                                            =    "If in Simple configuration mode, only these settings are used.",
 
@@ -125,6 +122,8 @@ LANG = {
     Options_Filtering_salvage_Enabled_Tooltip               = "Salvage Enabled",
     Options_Filtering_components_Enabled_Label              = "Components Enabled",
     Options_Filtering_components_Enabled_Tooltip            = "Components Enabled",
+    Options_Filtering_metals_Enabled_Label                  = "Metals Enabled",
+    Options_Filtering_metals_Enabled_Tooltip                = "Metals Enabled",
     Options_Filtering_consumable_Enabled_Label              = "Consumable Enabled",
     Options_Filtering_consumable_Enabled_Tooltip            = "Consumable Enabled",
     Options_Filtering_currency_Enabled_Label                = "Currency Enabled",
@@ -349,6 +348,7 @@ LANG = {
     Options_Subtab_salvage      = "Salvage",
     Options_Subtab_components   = "Components",
     Options_Subtab_consumable   = "Consumable",
+    Options_Subtab_metals       = "Metals",
     Options_Subtab_currency     = "Currency",
     Options_Subtab_unknown      = "Unknown",
 
