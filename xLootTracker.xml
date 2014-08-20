@@ -139,7 +139,8 @@
             </FocusBox>
 
             <!-- Bar on the left -->
-            <Group name="leftBar" dimensions="left:11%; width:25%; height:28; top:2;">
+            <!-- left:11%; width:25%; -->
+            <Group name="leftBar" dimensions="left:11%; width:5%; height:28; top:2;">
 
                  <!-- Bar Backplate -->
                 <!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#00FF00; alpha:0.6;"/>-->
@@ -155,7 +156,8 @@
             </Group>
 
             <!-- Item name on the right -->
-            <Text name="itemName" dimensions="left:59%; width:20%; height:100%; top:2;" class="Tracker_Text"/>
+            <!-- left:59%; width:20%; -->
+            <Text name="itemName" dimensions="left:20%; width:80%; height:100%; top:2;" class="Tracker_Text"/>
         </BluePrint>
     </BluePrints>
 
