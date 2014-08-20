@@ -399,7 +399,7 @@ end
 
 -- Fix text size
 function AutosizeText(TEXT)
-    TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20))
+    TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20)) -- Fixme: Magic number
 end
 
 
