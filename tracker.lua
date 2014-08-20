@@ -550,7 +550,7 @@ end
 ]]--
 function IsTrackableItem(itemInfo)
     -- Verify that the looted item is of a type that we care about
-    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsConsumable(itemInfo) or IsMetal(itemInfo) or IsComponent(itemInfo))
+    return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsConsumable(itemInfo) or IsMetal(itemInfo) or IsComponent(itemInfo) or IsCurrency(itemInfo))
 end
 
 
