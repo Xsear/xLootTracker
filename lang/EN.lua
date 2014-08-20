@@ -187,7 +187,9 @@ LANG = {
 
     Options_Messages_Generic_Channels_Notifications_Format_Tooltip                          =    "Specify the format of the Notifications message.\n"..Generic_MessageFormat,
 
-    
+    Options_Messages_Generic_IgnoreOthers_Label = "Ignore Others",
+    Options_Messages_Generic_IgnoreOthers_Tooltip = "If checked, the message will not be sent unless the event is triggered by the local player.",
+
     Options_Messages_Enabled_Label                                                          =    "Enable Messages",
     Options_Messages_Enabled_Tooltip                                                        =    "The addon will send customizable Messages to the Chat when certain events occur, keeping you and your Squad members in the loop of what is going on with the item drops.",
     Options_Messages_Prefix_Label                                                           =    "Generic Prefix",

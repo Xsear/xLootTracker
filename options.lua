@@ -833,6 +833,8 @@ Options = {
                 ['OnLootLooted'] = {
                     ['Enabled'] = true,
 
+                    ['IgnoreOthers'] = false,
+
                     ['Channels'] = {
                         ['Squad'] = {
                             ['Enabled'] = true,
@@ -2628,6 +2630,17 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
         tooltip  = Lokii.GetString('Options_'..rootKey..'_Events_'..eventKey..'_Enabled_Tooltip'),
         subtab   = subtab,
     })
+
+        -- OnLootLooted - IgnoreOthers
+        if eventKey == 'OnLootLooted' then
+            InterfaceOptions.AddCheckBox({
+                id      = rootKey..'_Events_'..eventKey..'_IgnoreOthers',
+                default = defaults['IgnoreOthers'],
+                label   = Lokii.GetString('Options_Messages_Generic_IgnoreOthers_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_IgnoreOthers_Tooltip'),
+                subtab  = {Lokii.GetString('Options_Subtab_Messages')}
+            })
+        end
 
         -- Squad
         InterfaceOptions.AddCheckBox({

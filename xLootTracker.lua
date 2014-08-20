@@ -45,6 +45,7 @@ State = {
     inSquad       = false, -- Whether we are currently in a squad or not
     isSquadLeader = false, -- Whether we are currently the squad leader or not
     zoneId        = -1,
+    playerName    = "",
 }
 
 -- Addon
@@ -98,6 +99,10 @@ end
 
 function OnEnterZone(args)
     State.zoneId = tonumber(args.zoneId)
+end
+
+function OnPlayerReady(args)
+    State.playerName = Player.GetInfo()
 end
 
 --[[
