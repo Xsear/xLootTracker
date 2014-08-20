@@ -10,6 +10,12 @@ v1.13
     - Added Sound Filtering Options. This makes it possible to have different sound notifications for different kinds of loot.
 
 
+    - Moved the title text of items further to the left in the hudtracker.
+    
+    - Added Metals category, splitting them from the Components category.
+
+    - Tracker Ignore Crystite
+    - Tracker Ignore Metals in Melding Tornado
 
 
 v1.12
