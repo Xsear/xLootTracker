@@ -662,10 +662,6 @@ function IsBioMaterial(itemInfo)
     return (biomaterials)
 end
 
-function IsCrystiteResonator(itemInfo)
-    return (itemInfo.itemTypeId and itemInfo.itemTypeId == 30412)
-end
-
 function IsCurrency(itemInfo)
     local currencySubTypeId = 207
     return (itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, currencySubTypeId))
@@ -674,7 +670,7 @@ end
 function IsSalvage(itemInfo)
     local cond1 = (itemInfo.type == "basic" or itemInfo.type == "resource_item")
     local cond2 = (itemInfo.rarity == "salvage")
-    local cond3 = (itemInfo.flags.is_salvageable)
+    local cond3 = (itemInfo.flags and itemInfo.flags.is_salvageable)
 
     return ((cond1 or cond2) and cond3)
 end
