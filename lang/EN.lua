@@ -336,11 +336,11 @@ LANG = {
 
     -- Subtabs
     Options_Subtab_Messages                                         =    "Messages",
-    Options_Subtab_Messages_Tracker                                 =    "Tracker",
+    Options_Subtab_Messages_Tracker                                 =    "Tracking",
     Options_Subtab_Markers                                          =    "Markers",
     Options_Subtab_Panels                                           =    "Panels",
     Options_Subtab_Waypoints                                        =    "Waypoints",
-    Options_Subtab_Tracker                                          =    "Tracker",
+    Options_Subtab_Tracker                                          =    "Tracking",
     Options_Subtab_HUDTracker                                       =    "HUDTracker",
     Options_Subtab_Sounds                                           =    "Sounds",
     Options_Subtab_Filtering                                        =    "Filtering",
