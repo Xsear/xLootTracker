@@ -326,7 +326,17 @@ end
 
 
 function Loot:GetCoordLink()
-    return ChatLib.EncodeCoordLink(self:GetPos()) or tostring(self:GetPos())
+
+    --return ChatLib.EncodeCoordLink(self:GetPos()) or tostring(self:GetPos())
+
+    local zone = State.zoneId
+    local instance = Chat.WriteInstanceKey()
+    local player = Player.GetCharacterId()
+    if zone and instance and player then
+        return ChatLib.EncodeCoordLink(self:GetPos(), zone, instance, player)       
+    end
+
+    return tostring(self:GetPos())
 end
 
 
