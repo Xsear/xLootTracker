@@ -24,11 +24,57 @@ local Private = {
     Performs OnComponentLoad tasks.
 --]]
 function Tracker.Setup()
-    --Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
-    --Private.CYCLE_Refresh:Run(TrackerRefreshInterval)
+    if Options['Tracker']['UpdateMode'] == 'global' then
+        Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
+        Private.CYCLE_Refresh:Run(tonumber(Options['Tracker']['RefreshInterval']))
+    end 
     Private.CYCLE_LootEventHistoryCleanup = Callback2.CreateCycle(Private.LootEventHistoryCleanup)
     Private.CYCLE_LootEventHistoryCleanup:Run(tonumber(Options['Tracker']['LootEventHistoryCleanupInterval']))
 end
+
+function Tracker.OnOptionChange(id, value)
+    if id == 'Tracker_UpdateMode' then
+        -- Switching from global to indivudal update mode
+        if value == 'individual' then
+            -- Clear global refresh cycle
+            if Private.CYCLE_Refresh then
+                Private.CYCLE_Refresh:Stop()
+                Private.CYCLE_Refresh:Release()   
+            end
+
+            -- Create individual update cycles for each existing loot
+            for id, loot in pairs(trackedLoot) do
+                if not loot.CYCLE_Update then
+                    -- Setup update cycle
+                    loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
+
+                    -- Start update cycle
+                    loot.CYCLE_Update:Run(tonumber(Options['Tracker']['LootUpdateInterval']))
+                end
+            end 
+
+
+        -- Switching from indivudal update to global
+        elseif value == 'global' then
+            -- Clear indivudal updates
+            for id, loot in pairs(trackedLoot) do
+                if loot.CYCLE_Update then
+                    loot.CYCLE_Update:Stop()
+                    loot.CYCLE_Update:Release()   
+                end
+            end
+
+            -- Create global refresh cycle
+            if not Private.CYCLE_Refresh then
+                Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
+                Private.CYCLE_Refresh:Run(tonumber(Options['Tracker']['RefreshInterval']))
+            end
+        end
+    else
+        --Debug.Log("Unhandled Option Id "..tostring(id))
+    end
+end
+
 
 function Private.LootEventHistoryCleanup()
 
@@ -386,9 +432,6 @@ function Tracker.Track(args)
 
     --Debug.Log("Created new loot!" .. loot:ToString())
 
-    -- Setup update cycle
-    loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
-
     -- Save loot
     Private.trackedLoot[loot:GetId()] = loot
     Private.identityByEntity[loot:GetEntityId()] = loot:GetId()
@@ -400,8 +443,14 @@ function Tracker.Track(args)
     --Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
     OnTrackerNew({lootId = loot:GetId()})
 
-    -- Start update cycle
-    loot.CYCLE_Update:Run(Options['Tracker']['LootUpdateInterval'])
+    -- Setup indivdual updates
+    if Options['Tracker']['UpdateMode'] == 'individual' then
+        -- Setup update cycle
+        loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
+
+        -- Start update cycle
+        loot.CYCLE_Update:Run(Options['Tracker']['LootUpdateInterval'])
+    end
 end
 
 
@@ -460,8 +509,10 @@ function Tracker.Remove(lootArg)
     local lootId = loot:GetId()
 
     -- Clear update cycle
-    loot.CYCLE_Update:Stop()
-    loot.CYCLE_Update:Release()
+    if loot.CYCLE_Update then
+        loot.CYCLE_Update:Stop()
+        loot.CYCLE_Update:Release()
+    end
 
     -- Clear ent to id reference
     if loot:GetState() == LootState.Available then

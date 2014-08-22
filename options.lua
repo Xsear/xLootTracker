@@ -10,13 +10,14 @@ Options = {
         ['TrackDelay'] = 1,
         ['UpdateDelay'] = 0,
         ['RemoveDelay'] = 0.5,
-        ['RefreshInterval'] = 2,
+        ['RefreshInterval'] = 10,
         ['LootUpdateInterval'] = 2,
         ['LootEventHistoryCleanupInterval'] = 2,
         ['LootEventHistoryLifetime'] = 3 * 1000,
         ['Limit'] = 50,
         ['IgnoreCrystite'] = true,
         ['IgnoreMetalsTornado'] = true,
+        ['UpdateMode'] = 'global',
     },
 
     ['Panels'] = {
@@ -1819,9 +1820,13 @@ function OnOptionChange(args)
 
     -- Perform extra actions when loaded
     if State.loaded then
-        -- For Tracker options, update the tracker
+        -- For HUDTracker options, update the tracker
         if explodedId[1] == 'HUDTracker' then
             HUDTracker.OnOptionChange(args.id, args.val)
+
+        -- For Tracker options
+        elseif explodedId[1] == 'Tracker' then
+            Tracker.OnOptionChange(args.id, args.val)
 
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
