@@ -229,6 +229,24 @@ function Loot:GetWebIcon()
     return self.itemInfo.web_icon
 end
 
+function Loot:GetMultiArt(PARENT)
+    local ICON = MultiArt.Create(PARENT)
+
+    -- If ability, use ability icon
+    if self.itemInfo.type == "ability_module" and self.itemInfo.abilityId then
+        local abilityinfo = Player.GetAbilityInfo(tonumber(self.itemInfo.abilityId))
+        if abilityinfo and abilityinfo.iconId then
+            ICON:SetIcon(abilityinfo.iconId)
+            return ICON
+        end
+    end
+
+    -- Otherwise, use web icon
+    ICON:SetUrl(self:GetWebIcon())
+    return ICON
+end
+
+
 function Loot:GetTypeId()
     return self.itemInfo.itemTypeId
 end
