@@ -217,8 +217,74 @@ function Private.CreateEntry(loot, stackInfo)
     -- Setup title
     ENTRY.TITLE:SetText(GetHUDTrackerTitle(loot))
 
+    Private.SetEntrySize(ENTRY)
+    Private.SetEntryFont(ENTRY)
+    Private.SetEntryVisibility(ENTRY)
+
     return ENTRY
 end
+
+
+function Private.SetEntrySize(ENTRY)
+
+    local newHeight = tonumber(Options['HUDTracker']['EntrySize']) -- ugh this var name
+
+    local height = tostring(newHeight)
+
+    -- Entry
+    ENTRY.GROUP:SetDims("width:100%; height:"..height..";")
+
+    -- Plate
+    local plateLeftOffset = tostring(newHeight - 4) -- (width of box - px for overlap)
+    local plateHeightReduced = tostring(height - 4); -- 2 top and 2 bot to free up space for the bottom borders of the plate
+    ENTRY.PLATE:SetDims("width:100%-"..plateLeftOffset.."; height:"..plateHeightReduced..";top:2;left:"..plateLeftOffset)
+
+    -- Box (affecting Icon)
+    local boxDimms = "width:"..height.."; height:"..height..";" .. "left:0; top:0;"
+    ENTRY.BOX:SetDims(boxDimms)
+end
+
+
+
+function Private.SetEntryFont(ENTRY)
+    local fontType = tostring(Options['HUDTracker']['EntryFontType'])
+    local fontSize = tostring(Options['HUDTracker']['EntryFontSize'])
+
+    local suffix = ""
+    if fontType == OptionsFontTypes.Wide then
+        suffix = "B"
+    end
+
+
+    local font = fontType .. "_" .. fontSize..suffix 
+
+    ENTRY.TITLE:SetFont(font)
+end
+
+function Private.SetEntryVisibility(ENTRY)
+    -- Visibility
+    ENTRY.STACK:Show(true)
+    ENTRY.TITLE:Show(true)
+
+
+    local plateMode = Options['HUDTracker']['PlateMode']
+    
+    ENTRY.PLATE:GetChild('bg'):Show( (plateMode ~= HUDTrackerPlateModeOptions.None ) )
+    ENTRY.PLATE:GetChild('outer'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
+    ENTRY.PLATE:GetChild('shade'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
+
+
+    local boxMode = Options['HUDTracker']['IconMode']
+
+    ENTRY.BOX:GetChild('bg'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
+                                    or boxMode == HUDTrackerIconModeOptions.Simple) )
+    ENTRY.BOX:GetChild('backplate'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
+                                           or boxMode == HUDTrackerIconModeOptions.Simple) )
+    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
+    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
+    ENTRY.BOX:GetChild('icon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
+end
+
 
 
 --ENTRY.ICON:Destroy()
@@ -318,37 +384,11 @@ function HUDTracker.Update(args)
             -- Add rows
             for i, loot in ipairs(trackedLoot) do
 
-                    -- Create widget
+                    -- Create entry
                     local ENTRY = Private.CreateEntry(loot, stackedEntry[loot:GetTypeId()])
-                    
 
-                    -- Set dimensions
-                    --ENTRY:SetDims('top:0; left:0; width:'..tostring(DimensionOptions.EntryDimsWidth)..'; height:'..tostring(DimensionOptions.EntryDimsHeight));
-
-
-                    -- Visibility
-                    ENTRY.STACK:Show(true)
-                    ENTRY.TITLE:Show(true)
-
-
-                    local plateMode = Options['HUDTracker']['PlateMode']
-                    
-                    ENTRY.PLATE:GetChild('bg'):Show( (plateMode ~= HUDTrackerPlateModeOptions.None ) )
-                    ENTRY.PLATE:GetChild('outer'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
-                    ENTRY.PLATE:GetChild('shade'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
-
-
-                    local boxMode = Options['HUDTracker']['IconMode']
-
-                    ENTRY.BOX:GetChild('bg'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
-                                                    or boxMode == HUDTrackerIconModeOptions.Simple) )
-                    ENTRY.BOX:GetChild('backplate'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
-                                                           or boxMode == HUDTrackerIconModeOptions.Simple) )
-                    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
-                    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
-                    ENTRY.BOX:GetChild('icon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
-
-
+        
+                    -- Add entry as row
                     local ROW = SCROLLER:AddRow(ENTRY.GROUP)
                 
             end -- for loop
