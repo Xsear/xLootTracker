@@ -172,23 +172,29 @@ function HUDTracker.Update(args)
                 -- Get loot
                 local loot = trackedLoot[i]
 
-                --Debug.Log(" ** Counting " .. loot:ToString())
-
-                -- Count
-                if not quantifiedEntries[loot:GetTypeId()] then
-                    quantifiedEntries[loot:GetTypeId()] = 1
-                else
-                    quantifiedEntries[loot:GetTypeId()] = quantifiedEntries[loot:GetTypeId()] + 1
-                end
-
-                --Debug.Log("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has quantity " ..tostring(quantifiedEntries[loot:GetTypeId()]))
-
-                -- If we have more than one, then remove the previous entry
-                if quantifiedEntries[loot:GetTypeId()] > 1 then
-                    --Debug.Log("Quantity larger than 1, removing entry")
+                -- Remove filterad loot
+                if not LootFiltering(loot, Options['HUDTracker']) then
                     table.remove(trackedLoot, i)
                 else
-                    i = i + 1
+
+                    --Debug.Log(" ** Counting " .. loot:ToString())
+
+                    -- Count
+                    if not quantifiedEntries[loot:GetTypeId()] then
+                        quantifiedEntries[loot:GetTypeId()] = 1
+                    else
+                        quantifiedEntries[loot:GetTypeId()] = quantifiedEntries[loot:GetTypeId()] + 1
+                    end
+
+                    --Debug.Log("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has quantity " ..tostring(quantifiedEntries[loot:GetTypeId()]))
+
+                    -- If we have more than one, then remove the previous entry
+                    if quantifiedEntries[loot:GetTypeId()] > 1 then
+                        --Debug.Log("Quantity larger than 1, removing entry")
+                        table.remove(trackedLoot, i)
+                    else
+                        i = i + 1
+                    end
                 end
             end
 
