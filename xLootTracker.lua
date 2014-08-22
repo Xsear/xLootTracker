@@ -148,16 +148,16 @@ end
 function OnSlash(args)
     -- Help / command list
     if not args[1] or args[1] == 'help' or args[1] == '?' then
-        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker v'..AddonInfo.version)
-        Messages.SendChatMessage('system', 'Slash Commands')
-        Messages.SendChatMessage('system', '/lt [help|?] : Version message and command list.')
-        Messages.SendChatMessage('system', '/lt refresh : Force the tracker to update the state of all loot.')
-        Messages.SendChatMessage('system', '/lt clear : Force the tracker to remove all loot.')
+        Messages.SendSystemMessage('Xsear\'s Loot Tracker v'..AddonInfo.version)
+        Messages.SendSystemMessage('Slash Commands')
+        Messages.SendSystemMessage('/lt [help|?] : Version message and command list.')
+        Messages.SendSystemMessage('/lt refresh : Force the tracker to update the state of all loot.')
+        Messages.SendSystemMessage('/lt clear : Force the tracker to remove all loot.')
 
         if Options['Debug']['Enabled'] then
-            Messages.SendChatMessage('system', 'Debug Commands')
-            Messages.SendChatMessage('system', '/lt test [filter|any] [number|any] : Fake detection of items.')
-            Messages.SendChatMessage('system', '/lt stat : Log variables.')
+            Messages.SendSystemMessage('Debug Commands')
+            Messages.SendSystemMessage('/lt test [filter|any] [number|any] : Fake detection of items.')
+            Messages.SendSystemMessage('/lt stat : Log variables.')
         end
 
     -- Refresh
@@ -203,9 +203,10 @@ function OnSlash(args)
 
         end
         -- local respKey
-        Messages.SendChatMessage('system', 'Toggled.')
+        Messages.SendSystemMessage('Toggled.')
 
     elseif args[1] == 'stop' then
+        Messages.SendSystemMessage(':\'(')
         Options['Core']['Enabled'] = false
         Options['Tracker']['Enabled'] = false
         Options['Waypoints']['Enabled'] = false
@@ -213,11 +214,10 @@ function OnSlash(args)
         Options['Sounds']['Enabled'] = false
         Options['Messages']['Enabled'] = false
         Options['Panels']['Enabled'] = false
-        Messages.SendChatMessage('system', ':\'(')
 
     elseif args[1] == 'no' or args[1] == 'stfu' or args[1] == 'silence' then
+        Messages.SendSystemMessage('Forcefully disabling Messages.')
         Options['Messages']['Enabled'] = false
-        Messages.SendChatMessage('system', 'Forcefully disabled Messages.')
     end
 
 end
@@ -400,7 +400,7 @@ function Slash_Test(args)
     Debug.Log('args[1]: '..tostring(args[1]))
     Debug.Log('args[2]: '..tostring(args[2]))
 
-    Messages.SendChatMessage('system', 'Test')
+    Messages.SendSystemMessage('Test')
 
 
     if true then
@@ -485,16 +485,19 @@ function Slash_Stat(args)
                 })
     Tracker.Stat()
     WaypointManager.Stat()
+    Messages.SendSystemMessage('Stat')
 end
 
 function Slash_Clear(args)
     Debug.Log('Slash_Clear')
     Tracker.Clear()
+    Messages.SendSystemMessage('Clear')
 end
 
 function Slash_Refresh(args)
     Debug.Log("Slash_Refresh")
     Tracker.Refresh()
+    Messages.SendSystemMessage('Refresh')
 end
 
 

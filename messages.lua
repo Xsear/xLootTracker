@@ -109,7 +109,8 @@ function Messages.SendFilteredMessage(channel, message, args)
 end
 
 function Messages.SendSystemMessage(message)
-    Messages.SendMessageToChat("system", message)
+    local prefix = Lokii.GetString('SystemMessage_Prefix')
+    Messages.SendMessageToChat("system", prefix..message)
 end
 
 -- Function to handle the actual sending of messages

@@ -53,7 +53,8 @@ SystemMessagePrefix = "[xLT]: "
 LANG = {
 
     -- System Messages
-    SystemMessage_Tracker_HitLimit = SystemMessagePrefix.."Hit the limit on number of tracked items!",
+    SystemMessage_Prefix = "[xLT]: ",
+    SystemMessage_Tracker_HitLimit = "Hit the limit on number of tracked items!",
 
 
     -- UI
