@@ -78,7 +78,7 @@ function Loot.DetermineCategory(targetInfo, itemInfo)
         -- Well this is basically the "shit we dont care about category" now ;o
     end
 
-    --Debug.Log(tostring(targetInfo.name) .. ' identified as ' .. tostring(category))
+    Debug.Log(tostring(targetInfo.name) .. ' identified as ' .. tostring(category))
 
     return category
 end

@@ -32,7 +32,7 @@ require './lootpanel'
 AddonInfo = {
     release  = "dev",
     version = "1.13",
-    patch = "1.0.1793",
+    patch = "1.0.1796",
     save = 1.0,
 }
 
@@ -426,10 +426,13 @@ function Slash_Test(args)
             {itemTypeId = 113722},
             {itemTypeId = 99979},
             {itemTypeId = 99899},
+            {itemTypeId = 99659},
             {itemTypeId = 98622},
             {itemTypeId = 95088},
-            {itemTypeId = 99659},
             {itemTypeId = 98937, modules = {94145}},
+            {itemTypeId = 52206}, -- Recovered Chosen Tech
+            {itemTypeId = 30408}, -- Broken Bandit Gear
+            {itemTypeId = 86398}, -- Half Digested Module
         }
 
 
@@ -452,6 +455,9 @@ function Slash_Test(args)
             -- Set loot property
             args.type = "loot"
             args.targetInfo.type = "loot"
+
+
+            --Messages.SendSystemMessage('Test Loot: ' .. tostring(args.targetInfo.itemTypeId))
 
             -- Call
             OnEntityAvailable(args)

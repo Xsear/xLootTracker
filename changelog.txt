@@ -14,10 +14,14 @@ v1.13
     
     - Added Metals category, splitting them from the Components category.
 
-    - Tracker Ignore Crystite
     - Tracker Ignore Metals in Melding Tornado
 
+    - Added Currency category, allowing you to track Crystite Resonators in BP.
+
+    - Tracker Ignore Crystite
+
     - Fixed the Tracker Limit not working as intended.
+    - Added Ignore Others option to OnLootLooted. If checked, the addon won't send loot messages unless they were looted by the local player.
 
 
 v1.12
