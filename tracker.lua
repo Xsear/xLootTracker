@@ -12,7 +12,7 @@ local Private = {
     canSendLimitWarning = true,
     limitWarningTimeout = 60, -- seconds before canSendLimitWarning is reset
 
-    crystiteTypeId = 10,
+    crystiteTypeId = tostring(10),
 
 
     trackedLootCounter = 0,
@@ -191,6 +191,11 @@ function Tracker.OnLootEvent(args)
     -- Requires args.itemTypeId, otherwise we can't get item info
     if not args.itemTypeId then return end
 
+    -- Ignore Crystite
+    if args.itemTypeId == Private.crystiteTypeId and Options['Tracker']['IgnoreCrystite'] then
+        return
+    end
+
     -- Get itemInfo
     local itemInfo = Game.GetItemInfoByType(args.itemTypeId)
 
@@ -305,6 +310,9 @@ function Tracker.Track(args)
                 return
             end
 
+            -- Control types
+            targetInfo.itemTypeId = tostring(targetInfo.itemTypeId)
+
         -- If we don't have targetInfo, we must have an entityId that references a valid target, so that we can retrieve information.
         else
             Debug.Error('Loot.Create called without targetInfo, and lacks available entity.')
@@ -350,7 +358,11 @@ function Tracker.Track(args)
     end
 
     -- Ignore Crystite
-    if itemTypeId == Private.crystiteTypeId and Options['Tracker']['IgnoreCrystite'] then
+    Debug.Log("targetInfo.itemTypeId == " .. tostring(targetInfo.itemTypeId) .. '(' .. type(targetInfo.itemTypeId) .. ')')
+    Debug.Log("Private.crystiteTypeId == " .. tostring(Private.crystiteTypeId) .. '(' .. type(Private.crystiteTypeId) .. ')')
+    Debug.Log("Options['Tracker']['IgnoreCrystite'] == " .. tostring(Options['Tracker']['IgnoreCrystite']))
+    if targetInfo.itemTypeId == Private.crystiteTypeId and Options['Tracker']['IgnoreCrystite'] then
+        Debug.Log("We have a match, so I'm returning! ")
         return
     end
 
