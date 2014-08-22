@@ -114,6 +114,119 @@ function HUDTracker.OnOptionChange(id, value)
     end
 end
 
+
+
+
+
+local c_ENTRY_PRINT = [[
+    <Group name="EntryGroup" dimensions="width:100%; height:32;">
+
+        <!-- Plate -->
+        <FocusBox name="plate" dimensions="width:100%-30; height:28; left:30; top:2;">
+            <StillArt name="bg" dimensions="width:100%-2.2; height:99%-2;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
+            <Border name="outer" dimensions="dock:fill" class="Tracker_PlateBorder"/>
+            <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
+        </FocusBox>
+
+        <!-- Box -->
+        <Group name="box" dimensions="width:32; height:32; left:0; top:0;">
+            <StillArt name="bg" dimensions="width:96%; height:96%;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
+            <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common;"/>
+            <Border name="outer" dimensions="dock:fill;" class="ButtonBorder"/>
+            <Border name="shade" dimensions="width:0;height:0;" class="ButtonFade"/>
+            <WebImage name="itemIcon" dimensions="width:32; height:32; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
+            <Group name="icon" dimensions="dock:fill;"/>
+        </Group>
+
+        <!-- Stack -->
+        <Text name="stack" dimensions="width:4%; height:100%-2; top:2; left:10%;" class="Tracker_Text"/>
+        
+        <!-- Title -->
+        <Text name="title" dimensions="width:80%; height:100%-2; top:2; left:20%;" class="Tracker_Text"/>
+    </Group>
+]]
+
+
+
+function Private.CreateEntry(loot, stackInfo)
+    -- Create
+    local GROUP = Component.CreateWidget(c_ENTRY_PRINT, LIST)
+
+    -- Setup entry
+    local ENTRY = {
+        PARENT = LIST,
+        GROUP = GROUP,
+        PLATE = GROUP:GetChild('plate'),
+        BOX = GROUP:GetChild('box'),
+        STACK = GROUP:GetChild('stack'),
+        TITLE = GROUP:GetChild('title'),
+    }
+
+    -- Setup plate tooltip tag
+    ENTRY.PLATE:SetTag(loot:GetId())
+
+    -- Setup plate tooltip events
+    if Options['HUDTracker']['Tooltip']['Enabled'] then
+        ENTRY.PLATE:BindEvent('OnMouseEnter', function(args)
+            TOOLTIP_ITEM.GROUP:Show(true)
+            Tooltip.Show(HUDTracker.UpdateTooltip(args.widget:GetTag()))
+            State.tooltipActive = true
+        end)
+        ENTRY.PLATE:BindEvent('OnMouseLeave', function(args)
+            TOOLTIP_ITEM.GROUP:Show(false)
+            Tooltip.Show(false)
+            State.tooltipActive = false
+        end)
+    end
+
+    -- Setup plate right click menu
+    ENTRY.PLATE:BindEvent('OnRightMouse', function(args)
+        -- Todo:
+    end)
+
+    -- Setup plate colors
+    local lootColor = loot:GetColor()
+
+    ENTRY.PLATE:GetChild('outer'):SetParam('tint', lootColor)
+    ENTRY.PLATE:GetChild('shade'):SetParam('tint', lootColor)
+
+    -- Setup box colors
+    ENTRY.BOX:GetChild('outer'):SetParam('tint', lootColor)
+    ENTRY.BOX:GetChild('shade'):SetParam('tint', lootColor)
+
+    -- Setup box
+    ENTRY.BOX:GetChild('backplate'):SetRegion(loot:GetRarity())
+
+    -- Setup icon
+    local ICON_PARENT = ENTRY.BOX:GetChild("icon")
+    ENTRY.ICON = loot:GetMultiArt(ICON_PARENT)
+    
+    -- Setup stack
+    if stackInfo and stackInfo.count > 1 then
+
+        -- Normally only display count
+        local stackText = tostring(stackInfo.count)
+
+        -- Add in quantity if it is of interest
+        if stackInfo.quantity > stackInfo.count then
+            stackText = stackText .. ' (' .. tostring(stackInfo.quantity) .. ')'
+        end
+
+        ENTRY.STACK:SetText(stackText)
+    end
+
+    -- Setup title
+    ENTRY.TITLE:SetText(GetHUDTrackerTitle(loot))
+
+    return ENTRY
+end
+
+
+--ENTRY.ICON:Destroy()
+
+
+
+
 function HUDTracker.Update(args)
     args = args or {}
     args.event = "HUDTracker.Update"
@@ -161,35 +274,35 @@ function HUDTracker.Update(args)
         -- Populate
         if not _table.empty(trackedLoot) then
 
-
-            -- Determine stackable entries
-            local quantifiedEntries = {}
-
-            --Debug.Log("************** Time to count!")
+            -- Parse the list, filtering and counting quantities
+            local stackedEntry = {}
             local i=1
             while i <= #trackedLoot do
 
                 -- Get loot
                 local loot = trackedLoot[i]
 
-                -- Remove filterad loot
+                -- If loot does not pass filters, remove it
                 if not LootFiltering(loot, Options['HUDTracker']) then
                     table.remove(trackedLoot, i)
+
+                -- Otherwise, count
                 else
 
                     --Debug.Log(" ** Counting " .. loot:ToString())
 
                     -- Count
-                    if not quantifiedEntries[loot:GetTypeId()] then
-                        quantifiedEntries[loot:GetTypeId()] = 1
+                    if not stackedEntry[loot:GetTypeId()] then
+                        stackedEntry[loot:GetTypeId()] = {quantity = loot:GetQuantity(), count = 1}
                     else
-                        quantifiedEntries[loot:GetTypeId()] = quantifiedEntries[loot:GetTypeId()] + 1
+                        stackedEntry[loot:GetTypeId()].quantity = stackedEntry[loot:GetTypeId()].quantity + loot:GetQuantity()
+                        stackedEntry[loot:GetTypeId()].count = stackedEntry[loot:GetTypeId()].count + 1
                     end
 
                     --Debug.Log("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has quantity " ..tostring(quantifiedEntries[loot:GetTypeId()]))
 
-                    -- If we have more than one, then remove the previous entry
-                    if quantifiedEntries[loot:GetTypeId()] > 1 then
+                    -- If this isn't the only loot of this kind, remove it
+                    if stackedEntry[loot:GetTypeId()].count > 1 then
                         --Debug.Log("Quantity larger than 1, removing entry")
                         table.remove(trackedLoot, i)
                     else
@@ -207,126 +320,37 @@ function HUDTracker.Update(args)
             for i, loot in ipairs(trackedLoot) do
 
                     -- Create widget
-                    local ENTRY = Component.CreateWidget('Tracker_List_Entry', LIST)
-                    local ENTRY_PLATE = ENTRY:GetChild('plate')
-                    local ENTRY_ITEM = ENTRY:GetChild('item')
+                    local ENTRY = Private.CreateEntry(loot, stackedEntry[loot:GetTypeId()])
+                    
 
                     -- Set dimensions
-                    ENTRY:SetDims('top:0; left:0; width:'..tostring(DimensionOptions.EntryDimsWidth)..'; height:'..tostring(DimensionOptions.EntryDimsHeight));
+                    --ENTRY:SetDims('top:0; left:0; width:'..tostring(DimensionOptions.EntryDimsWidth)..'; height:'..tostring(DimensionOptions.EntryDimsHeight));
 
-                    -- Set the plate tag
-                    ENTRY_PLATE:SetTag(tostring(loot:GetId()))
+
+                    -- Visibility
+                    ENTRY.STACK:Show(true)
+                    ENTRY.TITLE:Show(true)
+
+
+                    local plateMode = Options['HUDTracker']['PlateMode']
                     
-                    -- Tooltip
-                    if Options['HUDTracker']['Tooltip']['Enabled'] then
-                        ENTRY_PLATE:BindEvent('OnMouseEnter', function(args)
-                            TOOLTIP_ITEM.GROUP:Show(true)
-                            Tooltip.Show(HUDTracker.UpdateTooltip(args.widget:GetTag()))
-                            State.tooltipActive = true
-                        end)
-                        ENTRY_PLATE:BindEvent('OnMouseLeave', function(args)
-                            TOOLTIP_ITEM.GROUP:Show(false)
-                            Tooltip.Show(false)
-                            State.tooltipActive = false
-                        end)
-                    end
-                        
-                    -- Colours
-                    ENTRY_PLATE:GetChild('outer'):SetParam('tint', loot:GetColor())
-                    ENTRY_PLATE:GetChild('shade'):SetParam('tint', loot:GetColor())
-                    ENTRY_ITEM:GetChild('outer'):SetParam('tint', loot:GetColor())
-                    ENTRY_ITEM:GetChild('shade'):SetParam('tint', loot:GetColor())
-
-                    -- Item Backplate
-                    ENTRY_ITEM:GetChild('backplate'):SetRegion(tostring(loot:GetRarity()))
-
-                    -- Item Icon
-                    ENTRY_ITEM:GetChild('itemIcon'):SetUrl(loot:GetWebIcon())
+                    ENTRY.PLATE:GetChild('bg'):Show( (plateMode ~= HUDTrackerPlateModeOptions.None ) )
+                    ENTRY.PLATE:GetChild('outer'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
+                    ENTRY.PLATE:GetChild('shade'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
 
 
-                    -- Setup Looted to
-                    -- Fixme: Removeable, replace with something better
-                    local assignedToText = ""
-                    if tonumber(quantifiedEntries[loot:GetTypeId()]) > 1 then
-                        assignedToText = tostring(quantifiedEntries[loot:GetTypeId()]) -- Temp:
-                    elseif loot:GetState() == LootState.Looted then
-                        assignedtoText = tostring(loot:GetLootedTo())
-                    elseif loot:GetState() == LootState.Lost then
-                        assignedToText = "Lost"
-                    end
+                    local boxMode = Options['HUDTracker']['IconMode']
 
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):SetText(assignedToText)
-
-                    -- Right
-                    -- Item Name text
-                    ENTRY:GetChild('itemName'):SetText(GetHUDTrackerTitle(loot))
-
-                    -- Determine what to display
-                    -- State Dependant Stuff
-                    -- Left Side
-                    ENTRY:GetChild('leftBar'):GetChild('buttons'):Show(false) -- note: Watch out for when fixing buttons
-                    ENTRY:GetChild('leftBar'):GetChild('assignedTo'):Show(true)
-
-         
-
-                    -- Right Side
-                    ENTRY:GetChild('itemName'):Show(true)
+                    ENTRY.BOX:GetChild('bg'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
+                                                    or boxMode == HUDTrackerIconModeOptions.Simple) )
+                    ENTRY.BOX:GetChild('backplate'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
+                                                           or boxMode == HUDTrackerIconModeOptions.Simple) )
+                    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
+                    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
+                    ENTRY.BOX:GetChild('itemIcon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
 
 
-                    -- Options Dependant Stuff
-                    if Options['HUDTracker']['PlateMode'] == HUDTrackerPlateModeOptions.Decorated then
-                        ENTRY_PLATE:GetChild('bg'):Show(true)
-                        ENTRY_PLATE:GetChild('outer'):Show(true)
-                        ENTRY_PLATE:GetChild('shade'):Show(true)
-
-                    elseif Options['HUDTracker']['PlateMode'] == HUDTrackerPlateModeOptions.Simple then
-                        ENTRY_PLATE:GetChild('bg'):Show(true)
-                        ENTRY_PLATE:GetChild('outer'):Show(false)
-                        ENTRY_PLATE:GetChild('shade'):Show(false)
-                    
-                    elseif Options['HUDTracker']['PlateMode'] == HUDTrackerPlateModeOptions.None then
-                        ENTRY_PLATE:GetChild('bg'):Show(false)
-                        ENTRY_PLATE:GetChild('outer'):Show(false)
-                        ENTRY_PLATE:GetChild('shade'):Show(false)
-                    end
-
-                    if Options['HUDTracker']['IconMode'] == HUDTrackerIconModeOptions.Decorated then
-                        
-                        ENTRY_ITEM:GetChild('bg'):Show(true)
-                        ENTRY_ITEM:GetChild('backplate'):Show(true)
-                        ENTRY_ITEM:GetChild('outer'):Show(true)
-                        ENTRY_ITEM:GetChild('shade'):Show(true)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
-
-
-                    elseif Options['HUDTracker']['IconMode'] == HUDTrackerIconModeOptions.Simple then
-                        
-                        ENTRY_ITEM:GetChild('bg'):Show(true)
-                        ENTRY_ITEM:GetChild('backplate'):Show(true)
-                        ENTRY_ITEM:GetChild('outer'):Show(false)
-                        ENTRY_ITEM:GetChild('shade'):Show(false)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
-                    
-                    elseif Options['HUDTracker']['IconMode'] == HUDTrackerIconModeOptions.IconOnly then                   
-
-                        ENTRY_ITEM:GetChild('bg'):Show(false)
-                        ENTRY_ITEM:GetChild('backplate'):Show(false)
-                        ENTRY_ITEM:GetChild('outer'):Show(false)
-                        ENTRY_ITEM:GetChild('shade'):Show(false)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(true)
-
-                    elseif Options['HUDTracker']['IconMode'] == HUDTrackerIconModeOptions.None then
-
-                        ENTRY_ITEM:GetChild('bg'):Show(false)
-                        ENTRY_ITEM:GetChild('backplate'):Show(false)
-                        ENTRY_ITEM:GetChild('outer'):Show(false)
-                        ENTRY_ITEM:GetChild('shade'):Show(false)
-                        ENTRY_ITEM:GetChild('itemIcon'):Show(false)
-                        
-                        --ENTRY_PLATE:SetDims('left:0')
-                    end
-
-                    local ROW = SCROLLER:AddRow(ENTRY)
+                    local ROW = SCROLLER:AddRow(ENTRY.GROUP)
                 
             end -- for loop
 
@@ -423,7 +447,7 @@ end
 function GetHUDTrackerTitle(loot)
     local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['HUDTracker']['Filtering'])
     local formatString = Options['HUDTracker']['Filtering'][categoryKey][rarityKey]['HUDTrackerTitle']
-    return tostring(Messages.TextFilters(formatString, {loot=loot}))
+    return tostring(Messages.TextFilters(formatString, {loot=loot}), true)
 end
 
 -- Return true if lootA should come before lootB
