@@ -75,7 +75,9 @@ function WaypointManager.Create(loot)
     if Game.IsTargetAvailable(loot:GetEntityId()) then
         MARKER:BindToEntity(loot:GetEntityId())
     else
-        MARKER:BindToPosition(loot:GetPos())
+        local modPos = _table.copy(loot:GetPos())
+        modPos.z = modPos.z + 1
+        MARKER:BindToPosition(modPos)
     end
 
     -- Text
