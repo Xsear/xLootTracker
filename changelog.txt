@@ -14,15 +14,18 @@ v1.13
     
     - Added Metals category, splitting them from the Components category.
 
-    - Tracker Ignore Metals in Melding Tornado
+    - Tracker Ignore Metals in Melding Tornado - TEST ME
 
     - Added Currency category, allowing you to track Crystite Resonators in BP.
-
-    - Tracker Ignore Crystite
-
+    - Added Tracker option to not track Crystite, enabled by default.
     - Fixed the Tracker Limit not working as intended.
     - Added Ignore Others option to OnLootLooted. If checked, the addon won't send loot messages unless they were looted by the local player.
 
+    - Fixed HUDTracker filtering options not working.
+
+    - Fixed an issue caused by a patch where most features would break if the game lost connection to the chat server.
+
+    - Improved performance of loot tracking.
 
 v1.12
     Public Release 12
