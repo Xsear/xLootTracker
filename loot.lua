@@ -237,7 +237,7 @@ function Loot:GetMultiArt(PARENT, forceWebIcon)
     local ICON = MultiArt.Create(PARENT)
 
     -- If ability, use ability icon
-    if not noAbilityIcon and self.itemInfo.type == "ability_module" and self.itemInfo.abilityId then
+    if not forceWebIcon and self.itemInfo.type == "ability_module" and self.itemInfo.abilityId then
         local abilityinfo = Player.GetAbilityInfo(tonumber(self.itemInfo.abilityId))
         if abilityinfo and abilityinfo.iconId then
             ICON:SetIcon(abilityinfo.iconId)
