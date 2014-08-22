@@ -448,7 +448,7 @@ function Slash_Test(args)
             args.entityId = tonumber(tostring(num)..tostring(math.random(0, 10)))
 
             -- Set location
-            args.targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}
+            args.targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z + 1}
             local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
             args.targetInfo.lootPos.x = args.targetInfo.lootPos.x - posMod
 
