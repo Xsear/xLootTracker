@@ -404,11 +404,7 @@ function Tracker.Track(args)
     end
 
     -- Ignore Crystite
-    Debug.Log("targetInfo.itemTypeId == " .. tostring(targetInfo.itemTypeId) .. '(' .. type(targetInfo.itemTypeId) .. ')')
-    Debug.Log("Private.crystiteTypeId == " .. tostring(Private.crystiteTypeId) .. '(' .. type(Private.crystiteTypeId) .. ')')
-    Debug.Log("Options['Tracker']['IgnoreCrystite'] == " .. tostring(Options['Tracker']['IgnoreCrystite']))
     if targetInfo.itemTypeId == Private.crystiteTypeId and Options['Tracker']['IgnoreCrystite'] then
-        Debug.Log("We have a match, so I'm returning! ")
         return
     end
 
