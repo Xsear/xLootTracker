@@ -306,7 +306,7 @@ function Loot:GetRequiredLevel()
 end
 
 function Loot:GetRarity()
-    return self.itemInfo.rarity or -1
+    return self.itemInfo.rarity or tostring(-1)
 end
 
 function Loot:GetRarityValue()
