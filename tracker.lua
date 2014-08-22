@@ -24,7 +24,7 @@ local Private = {
     Performs OnComponentLoad tasks.
 --]]
 function Tracker.Setup()
-    if Options['Tracker']['UpdateMode'] == 'global' then
+    if Options['Tracker']['UpdateMode'] == TrackerUpdateMode.Global then
         Private.CYCLE_Refresh = Callback2.CreateCycle(Tracker.Refresh)
         Private.CYCLE_Refresh:Run(tonumber(Options['Tracker']['RefreshInterval']))
     end 
@@ -35,32 +35,37 @@ end
 function Tracker.OnOptionChange(id, value)
     if id == 'Tracker_UpdateMode' then
         -- Switching from global to indivudal update mode
-        if value == 'individual' then
+        if value == TrackerUpdateMode.Individual then
             -- Clear global refresh cycle
             if Private.CYCLE_Refresh then
                 Private.CYCLE_Refresh:Stop()
-                Private.CYCLE_Refresh:Release()   
+                Private.CYCLE_Refresh:Release()
+                Private.CYCLE_Refresh = nil
             end
 
             -- Create individual update cycles for each existing loot
-            for id, loot in pairs(trackedLoot) do
-                if not loot.CYCLE_Update then
-                    -- Setup update cycle
-                    loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
+            if not _table.empty(Private.trackedLoot) then
+                for id, loot in pairs(Private.trackedLoot) do
+                    if not loot.CYCLE_Update then
+                        -- Setup update cycle
+                        loot.CYCLE_Update = Callback2.CreateCycle(Tracker.Update, loot:GetId())
 
-                    -- Start update cycle
-                    loot.CYCLE_Update:Run(tonumber(Options['Tracker']['LootUpdateInterval']))
-                end
-            end 
-
+                        -- Start update cycle
+                        loot.CYCLE_Update:Run(tonumber(Options['Tracker']['LootUpdateInterval']))
+                    end
+                end 
+            end
 
         -- Switching from indivudal update to global
-        elseif value == 'global' then
+        elseif value == TrackerUpdateMode.Global then
             -- Clear indivudal updates
-            for id, loot in pairs(trackedLoot) do
-                if loot.CYCLE_Update then
-                    loot.CYCLE_Update:Stop()
-                    loot.CYCLE_Update:Release()   
+            if not _table.empty(Private.trackedLoot) then
+                for id, loot in pairs(Private.trackedLoot) do
+                    if loot.CYCLE_Update then
+                        loot.CYCLE_Update:Stop()
+                        loot.CYCLE_Update:Release()
+                        loot.CYCLE_Update = nil
+                    end
                 end
             end
 
@@ -508,10 +513,11 @@ function Tracker.Remove(lootArg)
     if loot.CYCLE_Update then
         loot.CYCLE_Update:Stop()
         loot.CYCLE_Update:Release()
+        loot.CYCLE_Update = nil
     end
 
     -- Clear ent to id reference
-    if loot:GetState() == LootState.Available then
+    if loot:GetState() == LootState.Available or Private.identityByEntity[loot:GetEntityId()] then
         Private.identityByEntity[loot:GetEntityId()] = nil
     end
 

@@ -17,7 +17,7 @@ Options = {
         ['Limit'] = 50,
         ['IgnoreCrystite'] = true,
         ['IgnoreMetalsTornado'] = true,
-        ['UpdateMode'] = 'global',
+        ['UpdateMode'] = TrackerUpdateMode.Global,
     },
 
     ['Panels'] = {
@@ -1893,7 +1893,13 @@ end
 function SetOptionsAvailability()
 
 
-    -- If simple disable advanced options
+    -- Tracker Update Mode
+    local updateModeToggler = (Options['Tracker']['UpdateMode'] == TrackerUpdateMode.Global)
+    InterfaceOptions.EnableOption('Tracker_RefreshInterval', updateModeToggler)
+    InterfaceOptions.DisableOption('Tracker_LootUpdateInterval', updateModeToggler)
+
+
+    -- Summary: If simple disable advanced options
     for i, moduleKey in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds'}) do
 
         for id, categoryKey in pairs(FilterableLootCategories) do
@@ -2115,6 +2121,8 @@ function BuildInterfaceOptions_Front()
 end
 
 function BuildInterfaceOptions_Tracker()
+    -- Update Mode
+    UIHELPER_DropdownFromTable('Tracker_UpdateMode', 'Options_Tracker_UpdateMode', Options['Tracker']['UpdateMode'], OptionsTrackerUpdateModeDropdown, 'TrackerUpdateMode', Lokii.GetString('Options_Subtab_Tracker'))
 
     -- Track Delay
     InterfaceOptions.AddSlider({
@@ -2174,11 +2182,10 @@ function BuildInterfaceOptions_Tracker()
     })
 
     -- Refresh Interval
-    --[[
     InterfaceOptions.AddSlider({
         id      = 'Tracker_RefreshInterval',
         min     = 0.5,
-        max     = 5.0,
+        max     = 120.0,
         inc     = 0.5,
         suffix  = 's',
         default = Options['Tracker']['RefreshInterval'],
@@ -2188,13 +2195,12 @@ function BuildInterfaceOptions_Tracker()
             Lokii.GetString('Options_Subtab_Tracker')
         },
     })
-    --]]
 
     -- Loot Update Interval
     InterfaceOptions.AddSlider({
         id      = 'Tracker_LootUpdateInterval',
         min     = 0.5,
-        max     = 120,
+        max     = 120.0,
         inc     = 0.5,
         suffix  = 's',
         default = Options['Tracker']['LootUpdateInterval'],

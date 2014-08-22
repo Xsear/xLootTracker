@@ -161,12 +161,12 @@ TornadoPocketZoneIds = {
 
 
 OptionsFontTypes = {
-    UbuntuRegular = "UbuntuRegular",
-    UbuntuMedium = "UbuntuMedium",
-    UbuntuBold = "UbuntuBold",
-    Demi = "Demi",
-    Bold = "Bold",
-    Wide = "Wide",
+    UbuntuRegular = 'UbuntuRegular',
+    UbuntuMedium = 'UbuntuMedium',
+    UbuntuBold = 'UbuntuBold',
+    Demi = 'Demi',
+    Bold = 'Bold',
+    Wide = 'Wide',
 }
 
 OptionsFontTypeDropdown = {
@@ -178,3 +178,13 @@ OptionsFontTypeDropdown = {
     [6] = OptionsFontTypes.Wide,
 }
 
+
+
+TrackerUpdateMode = {
+    Global = 'global',
+    Individual = 'individual',
+}
+OptionsTrackerUpdateModeDropdown = {
+    [1] = TrackerUpdateMode.Global,
+    [2] = TrackerUpdateMode.Individual,
+}

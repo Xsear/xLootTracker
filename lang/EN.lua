@@ -347,6 +347,9 @@ LANG = {
     Options_HUDTracker_ForceWebIcons_Tooltip           = "When getting the icon for the entry, the addon gets the ability icon if the item is an ability. Checking this will ignore that procedure and force the usage of web icon.",
 
 
+    Options_Tracker_UpdateMode_Label            = "Update Mode",
+    Options_Tracker_UpdateMode_Tooltip          = "Select which mode to use for the periodic updating of loot (a saftey system that for most purposes is probably redundant).\nUnified mode (Refresh) updates all loot at once on a single cycle.\nIndividual mode (Loot Update Interval) places a cycle on each loot, checking each piece of loot on a consistent interval.",
+
     -- Subtabs
     Options_Subtab_Messages                                         =    "Messages",
     Options_Subtab_Messages_Tracker                                 =    "Tracking",
@@ -449,6 +452,10 @@ LANG = {
     Options_Dropdown_OptionsFontTypes_Choice_Demi_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_DEMI'),
     Options_Dropdown_OptionsFontTypes_Choice_Bold_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_BOLD'),
     Options_Dropdown_OptionsFontTypes_Choice_Wide_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_WIDEBOLD'),
+
+    Options_Dropdown_TrackerUpdateMode_Choice_global_Label      = "Unified",
+    Options_Dropdown_TrackerUpdateMode_Choice_individual_Label  = "Individual",
+
 
     Sounds_Option_none                                  =    "None",
     Sounds_Option_UI_Beep_06                            =    "Beep 06",
