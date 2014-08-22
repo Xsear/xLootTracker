@@ -109,6 +109,11 @@ function HUDTracker.OnOptionChange(id, value)
         else
             HUDTracker.Disable()
         end
+    
+    elseif id ~= 'UpdateInterval'
+       and id ~= 'MinimumUpdateDelay'
+    then
+        HUDTracker.Update()
     else
         Debug.Log("Unhandled Option Id "..tostring(id))
     end
