@@ -904,6 +904,11 @@ Options = {
         ['UpdateInterval'] = 5,
         ['MinimumUpdateDelay'] = 1,
 
+        ['EntrySize'] = 32,
+        ['EntryFontType'] = OptionsFontTypes.UbuntuMedium,
+        ['EntryFontSize'] = 10,
+
+        ['ForceWebIcons'] = false,
     },
 
     ['Sounds'] = {
@@ -2439,6 +2444,48 @@ function BuildInterfaceOptions_HUDTracker()
     -- IconMode
     UIHELPER_DropdownFromTable('HUDTracker_IconMode', 'Options_HUDTracker_IconMode', Options['HUDTracker']['IconMode'], OptionsHUDTrackerIconModeDropdown, 'HUDTrackerIconModeOptions',  Lokii.GetString('Options_Subtab_HUDTracker'))
 
+    -- Entry Size
+    InterfaceOptions.AddSlider({
+        id      = 'HUDTracker_EntrySize',
+        min     = 24,
+        max     = 64,
+        inc     = 8,
+        suffix  = 'px',
+        default = Options['HUDTracker']['EntrySize'],
+        label   = Lokii.GetString('Options_HUDTracker_EntrySize_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_EntrySize_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Options_Subtab_HUDTracker')
+        },
+    })
+
+    -- Font Type
+    UIHELPER_DropdownFromTable('HUDTracker_EntryFontType', 'Options_HUDTracker_EntryFontType', Options['HUDTracker']['EntryFontType'], OptionsFontTypeDropdown, 'OptionsFontTypes',  Lokii.GetString('Options_Subtab_HUDTracker'))
+
+    -- Font Size
+    InterfaceOptions.AddSlider({
+        id      = 'HUDTracker_EntryFontSize',
+        min     = 8,
+        max     = 24,
+        inc     = 1,
+        suffix  = 'px',
+        default = Options['HUDTracker']['EntryFontSize'],
+        label   = Lokii.GetString('Options_HUDTracker_EntryFontSize_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_EntryFontSize_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Options_Subtab_HUDTracker')
+        },
+    })
+
+    -- Force Web Icons
+    InterfaceOptions.AddCheckBox({
+        id      = 'HUDTracker_ForceWebIcons',
+        default = Options['HUDTracker']['ForceWebIcons'],
+        label   = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
     UIHELPER_Filtering('HUDTracker')
 end
 
@@ -2596,7 +2643,7 @@ function UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
                 tooltip = Lokii.GetString('Options_Dropdown_'..optionKey..'_Choice_'..tableValue..'_Tooltip'),
                 subtab  = subtab,
             })
-            if optionKey == "RadarEdgeModes" then
+            if optionKey == "OptionsFontTypes" then
                 Debug.Log('Options_Dropdown_'..optionKey..'_Choice_'..tableValue..'_Label', 'Options_Dropdown_'..optionKey..'_Choice_'..tableValue..'_Tooltip')
             end
         end

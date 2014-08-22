@@ -333,6 +333,18 @@ LANG = {
     Options_HUDTracker_IconMode_Tooltip                =  "Changes the look of the item icon of entries in the Tracker. ",
 
 
+    Options_HUDTracker_EntrySize_Label                 = "Entry Size",
+    Options_HUDTracker_EntrySize_Tooltip               = "Sets the height of the entries in the HUDTracker.",
+
+    Options_HUDTracker_EntryFontType_Label             = "Entry Font Type",
+    Options_HUDTracker_EntryFontType_Tooltip           = "Sets the font of the text in the HUDTracker.",
+
+    Options_HUDTracker_EntryFontSize_Label             = "Entry Font Size",
+    Options_HUDTracker_EntryFontSize_Tooltip           = "Sets the font size of the text in the HUDTracker.",
+
+    Options_HUDTracker_ForceWebIcons_Label             = "Force Web Icons",
+    Options_HUDTracker_ForceWebIcons_Tooltip           = "When getting the icon for the entry, the addon gets the ability icon if the item is an ability. Checking this will ignore that procedure and force the usage of web icon.",
+
 
     -- Subtabs
     Options_Subtab_Messages                                         =    "Messages",
@@ -428,6 +440,14 @@ LANG = {
     Options_Dropdown_HUDTrackerIconModeOptions_Choice_simple_Tooltip            =    "Simple",
     Options_Dropdown_HUDTrackerIconModeOptions_Choice_iconOnly_Label            =    "IconOnly",
     Options_Dropdown_HUDTrackerIconModeOptions_Choice_iconOnly_Tooltip          =    "IconOnly",
+
+    -- Chill!~
+    Options_Dropdown_OptionsFontTypes_Choice_UbuntuRegular_Label  = Component.LookupText('CHAT_FONT_TYPE_UBUNTU_REGULAR'),
+    Options_Dropdown_OptionsFontTypes_Choice_UbuntuMedium_Label   = Component.LookupText('CHAT_FONT_TYPE_UBUNTU_MEDIUM'),
+    Options_Dropdown_OptionsFontTypes_Choice_UbuntuBold_Label     = Component.LookupText('CHAT_FONT_TYPE_UBUNTU_BOLD'),
+    Options_Dropdown_OptionsFontTypes_Choice_Demi_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_DEMI'),
+    Options_Dropdown_OptionsFontTypes_Choice_Bold_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_BOLD'),
+    Options_Dropdown_OptionsFontTypes_Choice_Wide_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_WIDEBOLD'),
 
     Sounds_Option_none                                  =    "None",
     Sounds_Option_UI_Beep_06                            =    "Beep 06",

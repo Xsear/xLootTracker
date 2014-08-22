@@ -150,8 +150,6 @@ local c_ENTRY_PRINT = [[
     </Group>
 ]]
 
-
-
 function Private.CreateEntry(loot, stackInfo)
     -- Create
     local GROUP = Component.CreateWidget(c_ENTRY_PRINT, LIST)
@@ -203,7 +201,7 @@ function Private.CreateEntry(loot, stackInfo)
 
     -- Setup icon
     local ICON_PARENT = ENTRY.BOX:GetChild("icon")
-    ENTRY.ICON = loot:GetMultiArt(ICON_PARENT)
+    ENTRY.ICON = loot:GetMultiArt(ICON_PARENT, Options['HUDTracker']['ForceWebIcons'])
     
     -- Setup stack
     if stackInfo and stackInfo.count > 1 then

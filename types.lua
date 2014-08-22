@@ -155,3 +155,26 @@ TornadoPocketZoneIds = {
     865, -- Abyss
     868, -- Cinerarium
 }
+
+
+
+
+
+OptionsFontTypes = {
+    UbuntuRegular = "UbuntuRegular",
+    UbuntuMedium = "UbuntuMedium",
+    UbuntuBold = "UbuntuBold",
+    Demi = "Demi",
+    Bold = "Bold",
+    Wide = "Wide",
+}
+
+OptionsFontTypeDropdown = {
+    [1] = OptionsFontTypes.UbuntuRegular,
+    [2] = OptionsFontTypes.UbuntuMedium,
+    [3] = OptionsFontTypes.UbuntuBold,
+    [4] = OptionsFontTypes.Demi,
+    [5] = OptionsFontTypes.Bold,
+    [6] = OptionsFontTypes.Wide,
+}
+
