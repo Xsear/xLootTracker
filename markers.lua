@@ -60,17 +60,23 @@ function WaypointManager.Create(loot)
     end
 
     -- Check Entity
+    --[[
     if not loot:GetEntityId() or not Game.IsTargetAvailable(loot:GetEntityId()) then
         Debug.Warn("Attempt to create waypoint for loot with state available but no available entity")
         return
     end
+    --]]
 
     -- Create Marker
     local markerId = "xlt_"..tostring(loot:GetEntityId()).."_waypoint"
     local MARKER = MapMarker.Create(markerId)
 
     -- Bind to loot entity
-    MARKER:BindToEntity(loot:GetEntityId())
+    if Game.IsTargetAvailable(loot:GetEntityId()) then
+        MARKER:BindToEntity(loot:GetEntityId())
+    else
+        MARKER:BindToPosition(loot:GetPos())
+    end
 
     -- Text
     MARKER:SetTitle(GetWaypointTitle(loot))
