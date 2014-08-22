@@ -134,8 +134,7 @@ local c_ENTRY_PRINT = [[
             <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common;"/>
             <Border name="outer" dimensions="dock:fill;" class="ButtonBorder"/>
             <Border name="shade" dimensions="width:0;height:0;" class="ButtonFade"/>
-            <WebImage name="itemIcon" dimensions="width:32; height:32; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
-            <Group name="icon" dimensions="dock:fill;"/>
+            <Group name="icon" dimensions="dock:fill;" style="fixed-bounds:true; valign:center;"/>
         </Group>
 
         <!-- Stack -->
@@ -347,7 +346,7 @@ function HUDTracker.Update(args)
                                                            or boxMode == HUDTrackerIconModeOptions.Simple) )
                     ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
                     ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
-                    ENTRY.BOX:GetChild('itemIcon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
+                    ENTRY.BOX:GetChild('icon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
 
 
                     local ROW = SCROLLER:AddRow(ENTRY.GROUP)

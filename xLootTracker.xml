@@ -113,52 +113,11 @@
     </Styles>
     
     <BluePrints>
-
         <BluePrint name="LootPanel_Stat" instantiable="true">
             <StillArt dimensions="top:0; left:10%; width:40% -8; height:100%;" style="texture:colors; region:white; tint:#000000; alpha:0.5;"/>
             <StillArt dimensions="top:0; left:50%; width:40%; height:100%;" style="texture:colors; region:white; tint:#000000; alpha:0.5;"/>
             <Text name="statName" dimensions="top:0; left:10%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
             <Text name="statValue" dimensions="top:0; left:50%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
-        </BluePrint>
-
-        <BluePrint name="Tracker_List_Entry" instantiable="true">
-
-            <!-- Plate -->
-            <FocusBox name="plate" dimensions="width:100%-30; height:28; left:30; top:2;">
-                <StillArt name="bg" dimensions="width:100%-2.2; height:99%-2;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
-                <Border name="outer" dimensions="dock:fill" class="Tracker_PlateBorder"/>
-                <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
-            </FocusBox>
-
-            <!-- Item icon -->
-            <FocusBox name="item" dimensions="width:32; height:32; left:0; top:0;">
-                <StillArt name="bg" dimensions="width:96%; height:96%;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
-                <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common;"/>
-                <Border name="outer" dimensions="dock:fill" class="ButtonBorder"/>
-                <Border name="shade" dimensions="width:0;height:0;" class="ButtonFade"/>
-                <WebImage name="itemIcon" dimensions="width:32; height:32; left:0; top:0" style="fixed-bounds:true; valign:center;"/>
-            </FocusBox>
-
-            <!-- Bar on the left -->
-            <!-- left:11%; width:25%; -->
-            <Group name="leftBar" dimensions="left:11%; width:5%; height:28; top:2;">
-
-                 <!-- Bar Backplate -->
-                <!--<StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#00FF00; alpha:0.6;"/>-->
-
-                <!-- Primary Button Group -->
-                <ListLayout name="buttons" dimensions="width:87; height:25" style="halign:center; valign:center; horizontal:true; hpadding:4;" >
-                    <!-- Buttons dynamically created -->
-                </ListLayout>
-
-                <!-- Alternate Text -->
-                <Text name="assignedTo" dimensions="width:100%; height:100%;" class="Tracker_Text"/>
-
-            </Group>
-
-            <!-- Item name on the right -->
-            <!-- left:59%; width:20%; -->
-            <Text name="itemName" dimensions="left:20%; width:80%; height:100%; top:2;" class="Tracker_Text"/>
         </BluePrint>
     </BluePrints>
 

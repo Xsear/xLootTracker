@@ -27,6 +27,10 @@ v1.13
 
     - Improved performance of loot tracking.
 
+    - Changed the name of the Tracker options tab to Tracking in an attempt to reduce confusion between the options for the tracking system and the HUDTracker UI.
+
+    - The HUDTracker now displays the quantity rather than the number of items on the ground. So if there are 2 iron ore loot entities, and each have a quantity of 5, the hudtracker will display 10.
+
 v1.12
     Public Release 12
     2014-08-14
