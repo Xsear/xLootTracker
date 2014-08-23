@@ -364,7 +364,7 @@ function HUDTracker.Update(args)
                 local loot = trackedLoot[i]
 
                 -- If loot does not pass filters, remove it
-                if not LootFiltering(loot, Options['HUDTracker']) then
+                if Options['Blacklist']['HUDTracker'][tostring(loot:GetTypeId())] or not LootFiltering(loot, Options['HUDTracker']) then
                     table.remove(trackedLoot, i)
 
                 -- Otherwise, count

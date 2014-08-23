@@ -139,13 +139,22 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
     --Debug.Table({event="MessageEvent", eventClass=eventClass, eventName=eventName, eventArgs=eventArgs, canSend=canSend})
     if Options['Messages']['Events'][eventClass][eventName]['Enabled'] then
 
-        -- OnLootLooted Ignore Others Check
-        if eventName == 'OnLootLooted' then
-            if Options['Messages']['Events'][eventClass][eventName]['IgnoreOthers'] then
-                if eventArgs.lootId then
-                    local loot = Tracker.GetLootById(eventArgs.lootId)
-                    if namecompare(State.playerName, loot:GetLootedBy()) then
-                        return
+        if eventArgs.lootId then
+            local loot = Tracker.GetLootById(eventArgs.lootId)
+            
+            if loot then
+
+                -- Blacklist Check
+                if Options['Blacklist']['Messages'][tostring(loot:GetTypeId())] then
+                    return
+                end
+
+                -- OnLootLooted Ignore Others Check
+                if eventName == 'OnLootLooted' then
+                    if Options['Messages']['Events'][eventClass][eventName]['IgnoreOthers'] then
+                        if namecompare(State.playerName, loot:GetLootedBy()) then
+                            return
+                        end
                     end
                 end
             end

@@ -28,6 +28,10 @@ function WaypointManager.OnTrackerNew(args)
     
     local loot = Tracker.GetLootById(args.lootId)
 
+    if Options['Blacklist']['Waypoints'][tostring(loot:GetTypeId())] then
+        return
+    end
+
     if LootFiltering(loot, Options['Waypoints']) then
         WaypointManager.Create(loot)
     end
@@ -157,6 +161,10 @@ function PanelManager.OnTrackerNew(args)
     if not Options['Panels']['Enabled'] then return end
 
     local loot = Tracker.GetLootById(args.lootId)
+
+    if Options['Blacklist']['Waypoints'][tostring(loot:GetTypeId())] then
+        return
+    end
 
     if LootFiltering(loot, Options['Panels']) then
         PanelManager.Create(loot)

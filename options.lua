@@ -20,6 +20,15 @@ Options = {
         ['UpdateMode'] = TrackerUpdateMode.Global,
     },
 
+    ['Blacklist'] = {
+        ['Tracker'] = {},
+        ['Panels'] = {},
+        ['Sounds'] = {},
+        ['HUDTracker'] = {},
+        ['Messages'] = {},
+        ['Waypoints'] = {},
+    },
+
     ['Panels'] = {
         ['Enabled'] = true,
 

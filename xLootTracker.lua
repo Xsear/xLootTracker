@@ -80,7 +80,12 @@ function OnComponentLoad()
     Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
 
     -- Setup Options
-    Options.Setup()    
+    Options.Setup() 
+
+    -- Setup Blacklist
+    if Component.GetSetting('Core_Blacklist') then
+        Options['Blacklist'] = Component.GetSetting('Core_Blacklist')
+    end
 end
 
 function OnOptionsLoaded()
@@ -152,8 +157,9 @@ function OnSlash(args)
         Messages.SendSystemMessage('Xsear\'s Loot Tracker v'..AddonInfo.version)
         Messages.SendSystemMessage('Slash Commands')
         Messages.SendSystemMessage('/lt [help|?] : Version message and command list.')
-        Messages.SendSystemMessage('/lt refresh : Force the tracker to update the state of all loot.')
         Messages.SendSystemMessage('/lt clear : Force the tracker to remove all loot.')
+        Messages.SendSystemMessage('/lt blacklist <action> <scope> [itemName|itemTypeId].')
+        Messages.SendSystemMessage('/lt refresh : Force the tracker to update all loot.')
 
         if Options['Debug']['Enabled'] then
             Messages.SendSystemMessage('Debug Commands')
@@ -168,6 +174,9 @@ function OnSlash(args)
     -- Clear
     elseif args[1] == 'clear' then
         Slash_Clear(args)
+
+    elseif args[1] == 'blacklist' then
+        Slash_Blacklist(args)
 
 
     -- Debug/testing commands, subject to change
@@ -499,6 +508,215 @@ function Slash_Refresh(args)
     Debug.Log("Slash_Refresh")
     Tracker.Refresh()
     Messages.SendSystemMessage('Refresh')
+end
+
+
+function Slash_Blacklist(args)
+    Debug.Table("Slash_Blacklist", args)
+    Messages.SendSystemMessage('Blacklist')
+    -- args[2] == action
+    -- args[3] == scope
+    -- args[4+] == itemTypeId or string to use to find itemTypeId
+    -- args.text entire thing
+
+    if not args[2] or not args[3] then
+        Messages.SendSystemMessage('Incorrect syntax. First, provide an action (add, remove, view, clear). Then, specify (one) scope (all, panels, sounds, hudtracker, messages, waypoints). Finally, for add and remove, provide either the exact item name, or the itemTypeId.')
+        return
+    end
+
+    local success = false
+    local reason = ""
+    local itemInfo = nil
+
+    -- Validate actionKey
+    local actionKey = unicode.lower(args[2])
+    
+    if actionKey == 'add' or actionKey == 'rem' or actionKey == 'remove' or actionKey == 'view' or actionKey == 'list' or actionKey == 'clear' then -- didn't think this through did I now I've fallen into the wrapped second line <3 sublime
+
+        -- Determine scopeKey
+        local scope = unicode.lower(args[3])
+        local scopeKey = false
+
+        local scopeKeyTable = {
+            ['Tracker'] = {
+                'tracker', 'core', 'all',
+            },
+
+            ['Panels'] = {
+                'panels', 'panel', 'pan',
+            },
+
+            ['Sounds'] = {
+                'sounds', 'sound', 'snd',
+            },
+
+            ['HUDTracker'] = {
+                'hudtracker', 'hud', 'ht',
+            },
+
+            ['Messages'] = {
+                'messages', 'message', 'msg',
+            },
+
+            ['Waypoints'] = {
+                'waypoints', 'waypoint', 'way', 'wp',
+            },
+        }
+
+        for key, matchTable in pairs(scopeKeyTable) do
+            for i, entry in ipairs(matchTable) do
+                if entry == scope then
+                    scopeKey = key
+                    break
+                end
+            end
+        end
+
+        -- If we have the scopeKey, move on to the itemTypeId
+        if scopeKey then
+
+
+            if actionKey == 'list' or actionKey == 'view' then
+
+                if not _table.empty(Options['Blacklist'][scopeKey]) then
+                    local results = {"Viewing blacklist entries in scope " .. tostring(scopeKey)}
+
+                    Debug.Table(Options['Blacklist'][scopeKey])
+
+                    for itemTypeId, value in pairs(Options['Blacklist'][scopeKey]) do
+                        local itemInfo = Game.GetItemInfoByType(itemTypeId)
+                        if not itemInfo then
+                            Debug.Warn('Invalid itemTypeId in blacklist') 
+                        else
+                            results[#results + 1] = tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) ..')'
+                        end
+
+                    end
+
+                    local message = table.concat(results, '\n')
+
+                    Messages.SendChatMessage('system', message)
+                    return
+
+                else
+                    reason = 'Nothing to list.'
+
+                end
+
+            elseif actionKey == 'clear' then
+
+                if not _table.empty(Options['Blacklist'][scopeKey]) then
+                    local count = 0
+                    for itemTypeId, value in pairs(Options['Blacklist'][scopeKey]) do
+                        Options['Blacklist'][scopeKey] = nil
+                        count = count + 1
+                    end
+                    
+                    Messages.SendSystemMessage('Success! Cleared the ' .. tostring(scopeKey) .. ' scope.')
+                    return
+                else
+                    reason = 'The scope is bloody empty!'
+                end
+
+
+            else
+
+                if not args[4] then
+                    reason = 'Missing itemName or itemTypeId argument.'
+
+                else
+
+
+                    local haveItemTypeId = false
+
+                    local lookupString = ""
+                    
+
+                    if not args[5] then
+                        itemInfo = Game.GetItemInfoByType(args[4])
+                        if itemInfo and not _table.empty(itemInfo) then
+                            haveItemTypeId = true
+                        end
+                    end
+
+                    -- Itterate all ids and see if the name exactly matches? ;3
+                    if not haveItemTypeId then
+                        local previousArgs = args[1] .. ' ' .. args[2] .. ' ' .. args[3] .. ' '
+                        Debug.Log("PreviousArgs: " .. previousArgs)
+                        Debug.Log("unicode.len(previousArgs): " .. tostring(unicode.len(previousArgs)))
+                        searchName = unicode.sub(args.text, unicode.len(previousArgs) + 1)
+                        
+                        local maxNum = 300000
+                        local getItemInfo = Game.GetItemInfoByType 
+
+                        for num = 1, maxNum do
+
+                            local itemInfoQuery = getItemInfo(num)
+
+                            if itemInfoQuery and not _table.empty(itemInfoQuery) then
+                                if itemInfoQuery.name == searchName then
+                                    itemInfo = itemInfoQuery
+                                    break
+                                end
+                            end
+
+                        end
+
+                        if not itemInfo then
+                            reason = 'Could not get itemInfo, unable to find an item with the name ' .. tostring(searchName)
+                        end
+
+                    end
+
+                    -- If we have itemInfo, add to blacklist.
+                    if itemInfo then
+
+                        if actionKey == "add" then
+                            if not Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] then
+                                Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] = true
+                                success = true
+                            else
+                                reason = 'Already blacklisted in this scope'
+                            end
+                        elseif actionKey == "remove" or actionKey == 'rem' then
+                            if Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] then
+                                Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] = nil
+                                success = true
+                            else
+                                reason = 'This typeId was not blacklisted in this scope'
+                            end
+                        end
+                    end
+
+                    if success then
+                        -- Save
+                        Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
+
+                        if actionKey == "add" then
+                            Messages.SendSystemMessage('Success! Added ' .. tostring(itemInfo.name) .. '(' .. tostring(itemInfo.itemTypeId) .. ') to the ' .. tostring(scopeKey) .. ' blacklist.')
+
+                        elseif actionKey == "remove" or actionKey == 'rem' then
+                            Messages.SendSystemMessage('Success! Removed ' .. tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) .. ') from the ' .. tostring(scopeKey) .. ' blacklist.')
+                        end
+                        return
+                    end
+                end
+
+            end
+
+
+
+        -- If we don't have the scopeKey, invalid input!
+        else
+            reason = 'Invalid scope argument'
+        end
+
+    else
+        reason = 'Invalid actionKey. Use add or remove.'
+    end
+
+
+    Messages.SendSystemMessage('Failure. Reason: ' .. reason)
 end
 
 

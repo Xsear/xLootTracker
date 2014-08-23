@@ -413,6 +413,11 @@ function Tracker.Track(args)
         return
     end
 
+    -- Ignore Blacklisted typeIds
+    if Options['Blacklist']['Tracker'][tostring(targetInfo.itemTypeId)] then
+        return
+    end
+
     -- Ignore Metals in Tornado
     if Options['Tracker']['IgnoreMetalsTornado'] and Loot.DetermineCategory(targetInfo, itemInfo) == LootCategory.Metals then
         for i, tornadoZoneId in ipairs(TornadoPocketZoneIds) do
