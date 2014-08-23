@@ -611,8 +611,11 @@ function Slash_Blacklist(args)
                         Options['Blacklist'][scopeKey] = nil
                         count = count + 1
                     end
-                    
-                    Messages.SendSystemMessage('Success! Cleared the ' .. tostring(scopeKey) .. ' scope.')
+                        
+                    -- Save
+                    Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
+
+                    Messages.SendSystemMessage('Success! Cleared ' .. tostring(count) .. ' entries from the ' .. tostring(scopeKey) .. ' scope.')
                     return
                 else
                     reason = 'The scope is bloody empty!'
