@@ -325,7 +325,7 @@ LANG = {
     Options_Sounds_OnAssignItemToMe_Label                   =    "Item Assigned To You",
     Options_Sounds_OnAssignItemToOther_Label                =    "Item Assigned To Other",
 
-    Options_HUDTracker_Enabled_Label                           =    "Enable Tracker",
+    Options_HUDTracker_Enabled_Label                           =    "Enable HUDTracker",
     Options_HUDTracker_Enabled_Tooltip                         =    "The addon will display information about currently tracked item drops, allowing you to keep track of things at a glance, as well as to perform actions with ease, or inspect the items in more detail, when in mousemode.",
 
     Options_HUDTracker_Visibility_Label                        =    "Visibility",
