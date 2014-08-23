@@ -16,7 +16,8 @@ require 'lib/lib_table' -- Common table functions
 require 'lib/lib_UserKeybinds' -- User keybinds
 require 'lib/lib_Colors' -- Colors, used by markers
 require 'lib/lib_RowScroller' -- Row Scroller, used by Tacker
-require "lib/lib_MultiArt"
+require 'lib/lib_MultiArt'
+require 'lib/lib_SubTypeIds'
 
 -- Custom Libs
 require './lib/Lokii' -- Localization

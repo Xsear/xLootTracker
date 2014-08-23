@@ -638,10 +638,9 @@ end
 
 
 function IsComponent(itemInfo)
-    local craftingComponentsSubTypeId = 15 -- 149
-
+    -- SubTypeIds.Resource should be 15 and represent Crafting Components
     local old = (itemInfo.type == "crafting_component")
-    local new = (itemInfo.type == "resource_item" and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, craftingComponentsSubTypeId))
+    local new = (itemInfo.type == "resource_item" and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, SubTypeIds.Resource))
 
     local extra = (itemInfo.type == "basic" and itemInfo.flags.resource and itemInfo.flags.is_tradable)
 
@@ -665,8 +664,8 @@ function IsBioMaterial(itemInfo)
 end
 
 function IsCurrency(itemInfo)
-    local currencySubTypeId = 207
-    return (itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, currencySubTypeId))
+    -- SubTypeIds.Currency should be 207 and represent Currency
+    return (itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, SubTypeIds.Currency))
 end
 
 function IsSalvage(itemInfo)
