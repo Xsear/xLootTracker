@@ -253,6 +253,9 @@ LANG = {
     Options_Panels_TimerMode_Label    = "Timer Mode",
     Options_Panels_TimerMode_Tooltip  = "Set the timer mode.\nNormal - The timer starts at 0 and counts to infinity.\nCountdown - The time starts at the specified timestamp and counts down to 0. (Useful as an indication of the risk of despawn.)",
 
+    Options_Panels_TimerCountdownTime_Label = "Countdown Time",
+    Options_Panels_TimerCountdownTime_Tooltip = "The time to begin counting down from when Timer Mode is set to Countdown.",
+
 
     Options_Detection_IdentifyDelay_Label                                                       =    "Tracking Delay",
     Options_Detection_IdentifyDelay_Tooltip                                                     =    "The number of seconds the addon should wait after detecting a new lootable item before it begins to track it. Lower values feel better, but make the addon more prone to glitches caused by unexpected behavior from the game client.",

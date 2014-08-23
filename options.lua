@@ -1906,6 +1906,10 @@ function SetOptionsAvailability()
     InterfaceOptions.EnableOption('Tracker_RefreshInterval', updateModeToggler)
     InterfaceOptions.DisableOption('Tracker_LootUpdateInterval', updateModeToggler)
 
+    -- Panels Timer Mode
+    local timerModeToggler = (Options['Panels']['TimerMode'] == PanelsTimerMode.Countdown)
+    InterfaceOptions.EnableOption('Panels_TimerCountdownTime', timerModeToggler)
+
 
     -- Summary: If simple disable advanced options
     for i, moduleKey in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds'}) do
