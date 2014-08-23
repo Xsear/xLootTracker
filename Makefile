@@ -1,5 +1,5 @@
 # Version
-ADDON_VERSION = v1.12
+ADDON_VERSION = v1.13.RC1
 ADDON_NAME = xLootTracker
 
 # Paths
@@ -32,8 +32,9 @@ XCOPY_FILES_IGNORE = Ignore
 # /F = Display full paths when copying
 # /I = Assume copying dir if dest does not exist and more than one source
 # /K = Copy attributes
-XCOPY_FLAGS_FILES = /E /F /I /K /EXCLUDE:${XCOPY_FILES_IGNORE}
-XCOPY_FLAGS_ARCHIVES = /F
+# last time I did this without /K but that was probably not the reason it worked so I added it back
+XCOPY_FLAGS_FILES = /E/F/I/K/EXCLUDE:${XCOPY_FILES_IGNORE}
+#XCOPY_FLAGS_ARCHIVES = /F
 
 # Rules
 release:
@@ -44,8 +45,8 @@ release:
 	7z.exe a "${PATH_DERIVED_ARCHIVE_FILENAME_WIN}.7z" "${PATH_DERIVED_FILES_WIN}"
 	7z.exe a "${PATH_DERIVED_ARCHIVE_FILENAME_WIN}.zip" "${PATH_DERIVED_FILES_WIN}"
 	@echo [Copying to Dropbox]
-	xcopy "${PATH_DERIVED_ARCHIVE_FILENAME_WIN}.7z" "${PATH_DROPBOX_WIN}" ${XCOPY_FLAGS_ARCHIVES}
-	xcopy "${PATH_DERIVED_ARCHIVE_FILENAME_WIN}.zip" "${PATH_DROPBOX_WIN}" ${XCOPY_FLAGS_ARCHIVES}
+	xcopy "${PATH_DERIVED_ARCHIVE_FILENAME_WIN}.7z" "${PATH_DROPBOX_WIN}"
+	xcopy "${PATH_DERIVED_ARCHIVE_FILENAME_WIN}.zip" "${PATH_DROPBOX_WIN}"
 	@echo [Outputting Dropbox Links]
 	@echo ${PATH_DERIVED_ARCHIVE_FILENAME_HTTP}.7z
 	@echo ${PATH_DERIVED_ARCHIVE_FILENAME_HTTP}.zip

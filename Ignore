@@ -1,7 +1,8 @@
-\Ignore
-\Makefile
-\.git\
-\.gitignore
-\xLootTracker.sublime-project
-\xLootTracker.sublime-workspace
-\thread
+Ignore
+Makefile
+.git
+.gitignore
+xLootTracker.sublime-project
+xLootTracker.sublime-workspace
+thread
+curse
