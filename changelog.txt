@@ -5,33 +5,26 @@ v1.13
     2014-
 
     <indev>
-    - Updated /lt help info to reflect new version.
-    - Added/Fixed /lt clear command.
-    - Added Sound Filtering Options. This makes it possible to have different sound notifications for different kinds of loot.
-
-
-    - Moved the title text of items further to the left in the hudtracker.
-    
+    - Changed the way loot updates work with hopes of improving performance, added Update Mode to the Tracking options in case you want to go back.
+    - Fixed a misstake that caused the Tracker Limit to not work as intended.
     - Added Metals category, splitting them from the Components category.
-
-    - Tracker Ignore Metals in Melding Tornado - TEST ME
-
+    - Added a Tracker option to Ignore Metals category regardless of filters when in a Melding Tornado instance.
     - Added Currency category, allowing you to track Crystite Resonators in BP.
-    - Added Tracker option to not track Crystite, enabled by default.
-    - Fixed the Tracker Limit not working as intended.
-    - Added Ignore Others option to OnLootLooted. If checked, the addon won't send loot messages unless they were looted by the local player.
-
-    - Fixed HUDTracker filtering options not working.
-
-    - Fixed an issue caused by a patch where most features would break if the game lost connection to the chat server.
-
-    - Changed the name of the Tracker options tab to Tracking in an attempt to reduce confusion between the options for the tracking system and the HUDTracker UI.
-
-    - Changed the way loot updates work in hopes of improving performance, added Update Mode to the Tracking options.
-
-
+    - Added Tracker option to Ignore Crystite, which would otherwise fall into the Currency catgory. I enabled this by default.
+    - Added Sound Filtering Options. This makes it possible to have different sound notifications for different kinds of loot.
+    - Added options to change the width and height of the HUDTracker frame.
+    - Added options to change the size, font type and font size of the HUDTracker entries.
+    - Moved the title text of items further to the left in the HUDTracker.
+    - When getting the item icons in the HUDTracker, the addon will use a different method for abilities and display the proper ability icons. If you dislike this behavior, enable the HUDTracker option Force Web Icons.
     - Stacked entries in the HUDTracker now also display the combined quantity (in addition to the count) of the entities when applicable.
-    - Added options to change the size, font type and font size of the hudtracker entries.
+    - Fixed HUDTracker filtering options not working. Hope my addon is no longer shit!
+    - Added Ignore Others option to OnLootLooted. If checked, the addon won't send loot messages unless they were looted by the local player.
+    - Reimplemented the timers on the Panels. By default, this is now a 2 minute countdown timer. It is meant to be an indication of how close the item is to despawning (the timer itself does nothing special). The start time is customizable and there's also a timer mode option in case you preferred the old style.
+    - Added/Fixed /lt clear slash command.
+    - Updated /lt help info to reflect new version.
+    - Fixed an issue caused by a patch (and poor code) where most features would break if the game lost connection to the chat server.
+    - Changed a few option labels in an attempt to reduce confusion between the options for the Tracking system and the HUDTracker that is displayed on the screen.
+    - Various code improvements and enworsements.
 
 
 v1.12
