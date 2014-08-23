@@ -398,7 +398,7 @@ function HUDTracker.Update(args)
             -- Add rows
             for i, loot in ipairs(trackedLoot) do
 
-                    Debug.Table("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has stackInfo ", stackedEntry[loot:GetTypeId()])
+                    --Debug.Table("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has stackInfo ", stackedEntry[loot:GetTypeId()])
 
                     -- Create entry
                     local ENTRY = Private.CreateEntry(loot, stackedEntry[loot:GetTypeId()])
