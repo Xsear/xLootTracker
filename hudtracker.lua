@@ -110,6 +110,14 @@ function HUDTracker.OnOptionChange(id, value)
             HUDTracker.Disable()
         end
     
+    elseif id == 'HUDTracker_Frame_Width'
+    then
+        InterfaceOptions.ChangeFrameWidth(FRAME, value)
+        
+    elseif id == 'HUDTracker_Frame_Height'
+    then
+        InterfaceOptions.ChangeFrameHeight(FRAME, value)
+
     elseif id ~= 'UpdateInterval'
        and id ~= 'MinimumUpdateDelay'
     then

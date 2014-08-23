@@ -250,6 +250,9 @@ LANG = {
     Options_Panels_Color_AssignedTo_Other_Label                                           =    "AssignedTo Color For other",
     Options_Panels_Color_AssignedTo_Other_Tooltip                                         =    "Set the color of the Assigned To text when the item has been assigned to someone else.",
 
+    Options_Panels_TimerMode_Label    = "Timer Mode",
+    Options_Panels_TimerMode_Tooltip  = "Set the timer mode.\nNormal - The timer starts at 0 and counts to infinity.\nCountdown - The time starts at the specified timestamp and counts down to 0. (Useful as an indication of the risk of despawn.)",
+
 
     Options_Detection_IdentifyDelay_Label                                                       =    "Tracking Delay",
     Options_Detection_IdentifyDelay_Tooltip                                                     =    "The number of seconds the addon should wait after detecting a new lootable item before it begins to track it. Lower values feel better, but make the addon more prone to glitches caused by unexpected behavior from the game client.",
@@ -345,6 +348,11 @@ LANG = {
 
     Options_HUDTracker_ForceWebIcons_Label             = "Force Web Icons",
     Options_HUDTracker_ForceWebIcons_Tooltip           = "When getting the icon for the entry, the addon gets the ability icon if the item is an ability. Checking this will ignore that procedure and force the usage of web icon.",
+
+    Options_HUDTracker_Frame_Width_Label       = "Frame Width",
+    Options_HUDTracker_Frame_Width_Tooltip     = "Sets the frame width",
+    Options_HUDTracker_Frame_Height_Label      = "Frame Height",
+    Options_HUDTracker_Frame_Height_Tooltip    = "Sets the frame height",
 
 
     Options_Tracker_UpdateMode_Label            = "Update Mode",
@@ -456,6 +464,10 @@ LANG = {
     Options_Dropdown_TrackerUpdateMode_Choice_global_Label      = "Unified",
     Options_Dropdown_TrackerUpdateMode_Choice_individual_Label  = "Individual",
 
+
+    Options_Dropdown_PanelsTimerMode_Choice_countdown_Label = "Countdown",
+    Options_Dropdown_PanelsTimerMode_Choice_normal_Label    = "Normal",
+    Options_Dropdown_PanelsTimerMode_Choice_disabled_Label  = "Disabled",
 
     Sounds_Option_none                                  =    "None",
     Sounds_Option_UI_Beep_06                            =    "Beep 06",

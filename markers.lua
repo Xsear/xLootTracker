@@ -194,11 +194,24 @@ function PanelManager.Create(loot)
     panel.pos:SetParam('Translation', translationVector)
     panel.pos:SetParam('Rotation', {axis={x=0,y=0,z=1},angle=0})
 
+
     -- Get some handles
     local RenderTarget = panel.panel_rt
     local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
     local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
     local LOOT_PANEL_ICONBAR = LOOT_PANEL_CONTENT:GetChild('IconBar')
+
+
+    -- Setup panel timer
+    if Options['Panels']['TimerMode'] == PanelsTimerMode.Countdown then
+         panel.timer = GTimer.Create(function(time) if panel ~= nil then LOOT_PANEL_ICONBAR:GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', -1)
+         panel.timer:SetTime(tonumber(Options['Panels']['TimerCountdownTime']))
+    else
+        panel.timer = GTimer.Create(function(time) if panel ~= nil then LOOT_PANEL_ICONBAR:GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1)
+    end
+    panel.timer:StartTimer()
+
+
 
     -- Build Header
         -- Item Name

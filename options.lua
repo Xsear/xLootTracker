@@ -46,6 +46,9 @@ Options = {
             ['ItemNameCustomValue'] = {alpha=1, tint='FFFFFF'},
         },
 
+        ['TimerMode'] = PanelsTimerMode.Countdown,
+        ['TimerCountdownTime'] = 120,
+
         ['Filtering'] = {
             [LootCategory.Equipment] = {
                 ['Enabled'] = true,
@@ -909,6 +912,11 @@ Options = {
         ['EntryFontSize'] = 10,
 
         ['ForceWebIcons'] = false,
+
+        ['Frame'] = {
+            ['Width'] = 450,
+            ['Height'] = 150,
+        },
     },
 
     ['Sounds'] = {
@@ -2286,6 +2294,7 @@ function BuildInterfaceOptions_Panels()
     })
     --]]
     
+
     -- Color Mode Headerbar
     UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', 'Panels_ColorMode_HeaderBar', Options['Panels']['ColorMode']['HeaderBar'], OptionsColorModesDropdown, 'ColorModes', Lokii.GetString('Options_Subtab_Panels'))
     
@@ -2344,6 +2353,25 @@ function BuildInterfaceOptions_Panels()
         subtab  = Lokii.GetString('Options_Subtab_Panels'),
     })
     --]]
+
+
+    UIHELPER_DropdownFromTable('Panels_TimerMode', 'Options_Panels_TimerMode', Options['Panels']['TimerMode'], OptionsPanelsTimerModeDropdown, 'PanelsTimerMode', Lokii.GetString('Options_Subtab_Panels'))
+    
+     InterfaceOptions.AddSlider({
+        id      = 'Panels_TimerCountdownTime',
+        min     = 1,
+        max     = 600,
+        inc     = 1,
+        suffix  = 's',
+        default = Options['Panels']['TimerCountdownTime'],
+        label   = Lokii.GetString('Options_Panels_TimerCountdownTime_Label'),
+        tooltip = Lokii.GetString('Options_Panels_TimerCountdownTime_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Options_Subtab_Panels')
+        },
+    })    
+
+
 
     UIHELPER_Filtering('Panels')
 end
@@ -2432,6 +2460,25 @@ function BuildInterfaceOptions_Messages()
 end
 
 function BuildInterfaceOptions_HUDTracker()
+    -- HUDTracker frame
+    InterfaceOptions.AddTextInput({
+        id      = 'HUDTracker_Frame_Width',
+        numeric = true,
+        label   = Lokii.GetString('Options_HUDTracker_Frame_Width_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_Frame_Width_Tooltip'),
+        default = Options['HUDTracker']['Frame']['Width'],
+        subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
+    InterfaceOptions.AddTextInput({
+        id      = 'HUDTracker_Frame_Height',
+        numeric = true,
+        label   = Lokii.GetString('Options_HUDTracker_Frame_Height_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_Frame_Height_Tooltip'),
+        default = Options['HUDTracker']['Frame']['Height'],
+        subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
     -- Visibility
     UIHELPER_DropdownFromTable('HUDTracker_Visibility', 'Options_HUDTracker_Visibility', Options['HUDTracker']['Visibility'], OptionsHUDTrackerVisibilityDropdown, 'HUDTrackerVisibility',  Lokii.GetString('Options_Subtab_HUDTracker'))
 

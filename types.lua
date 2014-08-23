@@ -188,3 +188,13 @@ OptionsTrackerUpdateModeDropdown = {
     [1] = TrackerUpdateMode.Global,
     [2] = TrackerUpdateMode.Individual,
 }
+
+PanelsTimerMode = {
+    Countdown = 'countdown',
+    Normal = 'normal',
+    Disabled = 'disabled',
+}
+OptionsPanelsTimerModeDropdown = {
+    [1] = PanelsTimerMode.Normal,
+    [2] = PanelsTimerMode.Countdown,
+}
