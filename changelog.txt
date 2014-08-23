@@ -2,9 +2,7 @@
 
 v1.13
     Public Release 13
-    2014-
-
-    <indev>
+    2014-08-23
     - Changed the way loot updates work with hopes of improving performance, added Update Mode to the Tracking options in case you want to go back.
     - Fixed a misstake that caused the Tracker Limit to not work as intended.
     - Added Metals category, splitting them from the Components category.
@@ -20,12 +18,12 @@ v1.13
     - Fixed HUDTracker filtering options not working. Hope my addon is no longer shit!
     - Added Ignore Others option to OnLootLooted. If checked, the addon won't send loot messages unless they were looted by the local player.
     - Reimplemented the timers on the Panels. By default, this is now a 2 minute countdown timer. It is meant to be an indication of how close the item is to despawning (the timer itself does nothing special). The start time is customizable and there's also a timer mode option in case you preferred the old style.
+    - Added /lt blacklist slash command. This allows you to blacklist specific items from specific features (or the entire tracker).
     - Added/Fixed /lt clear slash command.
     - Updated /lt help info to reflect new version.
     - Fixed an issue caused by a patch (and poor code) where most features would break if the game lost connection to the chat server.
     - Changed a few option labels in an attempt to reduce confusion between the options for the Tracking system and the HUDTracker that is displayed on the screen.
     - Various code improvements and enworsements.
-
 
 v1.12
     Public Release 12
