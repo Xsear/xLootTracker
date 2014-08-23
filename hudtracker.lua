@@ -113,7 +113,7 @@ function HUDTracker.OnOptionChange(id, value)
     elseif id == 'HUDTracker_Frame_Width'
     then
         InterfaceOptions.ChangeFrameWidth(FRAME, value)
-        
+
     elseif id == 'HUDTracker_Frame_Height'
     then
         InterfaceOptions.ChangeFrameHeight(FRAME, value)
@@ -212,10 +212,15 @@ function Private.CreateEntry(loot, stackInfo)
     ENTRY.ICON = loot:GetMultiArt(ICON_PARENT, Options['HUDTracker']['ForceWebIcons'])
     
     -- Setup stack
-    if stackInfo and stackInfo.count > 1 then
+    if stackInfo then
 
-        -- Normally only display count
-        local stackText = tostring(stackInfo.count)
+        -- We want to see the count if it is higher than 1
+        -- OR if the quantity is higher than 1 (we want to see that it is 3 crystite on the ground).
+        -- Since quantity can not be lower then count (quantity is either 1 or higher, there are no half items), we only check quantity here
+        local stackText = ""
+        if stackInfo.quantity > 1 then
+            stackText = tostring(stackInfo.count)
+        end
 
         -- Add in quantity if it is of interest
         if stackInfo.quantity > stackInfo.count then
@@ -375,8 +380,6 @@ function HUDTracker.Update(args)
                         stackedEntry[loot:GetTypeId()].count = stackedEntry[loot:GetTypeId()].count + 1
                     end
 
-                    --Debug.Log("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has quantity " ..tostring(quantifiedEntries[loot:GetTypeId()]))
-
                     -- If this isn't the only loot of this kind, remove it
                     if stackedEntry[loot:GetTypeId()].count > 1 then
                         --Debug.Log("Quantity larger than 1, removing entry")
@@ -394,6 +397,8 @@ function HUDTracker.Update(args)
 
             -- Add rows
             for i, loot in ipairs(trackedLoot) do
+
+                    Debug.Table("Loot with typeId " .. tostring(loot:GetTypeId()) .. " has stackInfo ", stackedEntry[loot:GetTypeId()])
 
                     -- Create entry
                     local ENTRY = Private.CreateEntry(loot, stackedEntry[loot:GetTypeId()])
