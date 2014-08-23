@@ -27,10 +27,13 @@ Loot Tracker was developed with one goal in mind: To assist the user in keeping 
 ==== Arkii
 For his work on Lokii, A simple localisation tool, which I implement and use in xLootTracker.
 As well as his work on Airii, which inspired me to implement Panels.
-And as his work on [[http://firefall.nyaasync.net/Apiii/live.php|Apii]]
+And as his work on [[http://firefall.nyaasync.net/Apiii/live.php|Apii]].
 
 ==== DeadWalking
 For his help with building loot weighting systems for xSquadLootManager.
+
+==== DarkByke
+For his help with testing the addon, as well as feedback and ideas.
 
 ==== Granite
 For his work on lib_GTimer, which calls a function with a formatted text timer at intervals as needed for updates, used by xLootTracker for the panel timers.

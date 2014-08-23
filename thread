@@ -1,6 +1,6 @@
 [CENTER][COLOR=#00ccff][SIZE=7][FONT=arial]Xsear's Loot Tracker[/FONT][/SIZE][/COLOR][/CENTER]
-[CENTER][SIZE=4]<<New slogan needed>[/SIZE][/CENTER]
-[CENTER][IMG]http://i.imgur.com/H21DfMK.png[/IMG][/CENTER]
+[CENTER][SIZE=4]LOOT TRACKER 2: The Lootiest![/SIZE][/CENTER]
+[CENTER][IMG]http://i.imgur.com/bMpDyAm.png[/IMG][/CENTER]
 [CENTER] [/CENTER]
 [CENTER] [/CENTER]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Abstract[/FONT][/SIZE][/COLOR]
@@ -10,7 +10,7 @@
 [*][COLOR=#00ccff][FONT=arial][SIZE=5]Core[/SIZE][/FONT][/COLOR]
 [LIST]
 [*]Tracks Equipment, Modules, Components, Salvage and Consumable item drops.
-[*]All features beyond tracking are considered additional and can be enabled or disabled seperately.
+[*]All features beyond tracking are considered additional and can be enabled or disabled separately.
 [*]Everything is customizable in some way, in an attempt to cater to as many users as possible.
 [*]Most of the features can have different kinds of behavior depending on what kind of loot it is acting on (Filtering).
 [/LIST]
@@ -36,15 +36,18 @@
 [/LIST]
 [/LIST]
 [COLOR=#00ccff][SIZE=6][FONT=arial]History[/FONT][/SIZE][/COLOR]
-[INDENT=1]Loot Tracker succeeds Xsear's Squad Loot Manager. Originally, the addon was written to give organised groups a system to distribute loot with. It was built in anticipation for a different kind of endgame than what Firefall eventually developed into. Additionally, an official need/greed system was implemented, eliminating the need for the systems that the addon was providing. Therefore, those systems were scrapped and the focus shifted towards improving the tracking system and providing more convenience features than before. The change of direction and feature set warranted a change of addon name, and thus, Loot Tracker was born.[/INDENT]
+[INDENT=1]Loot Tracker succeeds Xsear's Squad Loot Manager. Originally, the addon was written to give organized groups a system to distribute loot with. It was built in anticipation for a different kind of endgame than what Firefall eventually developed into. Additionally, an official need/greed system was implemented, eliminating the need for the systems that the addon was providing. Therefore, those systems were scrapped and the focus shifted towards improving the tracking system and providing more convenience features than before. The change of direction and feature set warranted a change of addon name, and thus, Loot Tracker was born.[/INDENT]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Acknowledgements[/FONT][/SIZE][/COLOR]
 [INDENT=1][SIZE=5][FONT=andale mono]Arkii[/FONT][/SIZE][/INDENT]
-[INDENT=2]For his work on Lokii, A simple localisation tool, which I implement and use in xLootTracker.[/INDENT]
-[INDENT=2]As well as his work on Airii, which inspired me to implement Panels.[/INDENT]
-[INDENT=2]And as his work on [URL='http://firefall.nyaasync.net/Apiii/live.php']Apii[/URL].[/INDENT]
+[INDENT=2]For her work on Lokii, A simple localization tool, which I implement and use in xLootTracker.[/INDENT]
+[INDENT=2]As well as her work on Airii, which inspired me to implement Panels.[/INDENT]
+[INDENT=2]And as her work on [URL='http://firefall.nyaasync.net/Apiii/live.php']Apiii[/URL].[/INDENT]
 [INDENT=1] [/INDENT]
 [INDENT=1][SIZE=5][FONT=andale mono]DeadWalking[/FONT][/SIZE][/INDENT]
 [INDENT=2]For his help with building loot weighting systems for xSquadLootManager.[/INDENT]
+[INDENT=1] [/INDENT]
+[INDENT=1][SIZE=5][FONT=andale mono]DarkByke[/FONT][/SIZE][/INDENT]
+[INDENT=2]For his help with testing the addon, as well as feedback and ideas.[/INDENT]
 [INDENT=1] [/INDENT]
 [INDENT=1][SIZE=5][FONT=andale mono]Granite[/FONT][/SIZE][/INDENT]
 [INDENT=2]For his work on lib_GTimer, which calls a function with a formatted text timer at intervals as needed for updates, used by xLootTracker for the panel timers.[/INDENT]
@@ -69,41 +72,67 @@
 [INDENT=2] [/INDENT]
 [INDENT=1][SIZE=5][FONT=andale mono]TwoShoes[/FONT][/SIZE][/INDENT]
 [INDENT=2]For his help with testing the addon, as well as feedback, ideas and encouragement.[/INDENT]
+[INDENT=2]Also for the new slogan.[/INDENT]
 [INDENT=2] [/INDENT]
 [INDENT=1][I]And the many other friends who gave me feedback on the way[/I]. :)[/INDENT]
  
 [COLOR=#00ccff][SIZE=6][FONT=arial]Issues[/FONT][/SIZE][/COLOR]
 [LIST]
-[*]If you enter a tornado with Components tracking on, you're gonna have a bad time.
-[*]Loot Panels do not currently provide any interesting information. They have not been updated for patch 1.0 yet.
+[*]Loot Panels do not currently provide any interesting information. They have not been fully updated for patch 1.0 yet.
 [*]Whilst the filtering system provides a decent number of options, it hardly does so elegantly. I have ideas for a better system, but it is not yet on the horizon.
 [*]The game sometimes changes its mind about loot drops. In order to not be fooled, the addon must delay certain actions.
 [/LIST]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Changes[/FONT][/SIZE][/COLOR]
 [CODE]
+v1.13
+    Public Release 13
+    2014-08-23
+    - Changed the way loot updates work with hopes of improving performance, added Update Mode to the Tracking options in case you want to go back.
+    - Fixed a misstake that caused the Tracker Limit to not work as intended.
+    - Added Metals category, splitting them from the Components category.
+    - Added a Tracker option to Ignore Metals category regardless of filters when in a Melding Tornado instance.
+    - Added Currency category, allowing you to track Crystite Resonators in BP.
+    - Added Tracker option to Ignore Crystite, which would otherwise fall into the Currency catgory. I enabled this by default.
+    - Added Sound Filtering Options. This makes it possible to have different sound notifications for different kinds of loot.
+    - Added options to change the width and height of the HUDTracker frame.
+    - Added options to change the size, font type and font size of the HUDTracker entries.
+    - Moved the title text of items further to the left in the HUDTracker.
+    - When getting the item icons in the HUDTracker, the addon will use a different method for abilities and display the proper ability icons. If you dislike this behavior, enable the HUDTracker option Force Web Icons.
+    - Stacked entries in the HUDTracker now also display the combined quantity (in addition to the count) of the entities when applicable.
+    - Fixed HUDTracker filtering options not working. Hope my addon is no longer shit!
+    - Added Ignore Others option to OnLootLooted. If checked, the addon won't send loot messages unless they were looted by the local player.
+    - Reimplemented the timers on the Panels. By default, this is now a 2 minute countdown timer. It is meant to be an indication of how close the item is to despawning (the timer itself does nothing special). The start time is customizable and there's also a timer mode option in case you preferred the old style.
+    - Added /lt blacklist slash command. This allows you to blacklist specific items from specific features (or the entire tracker).
+    - Added/Fixed /lt clear slash command.
+    - Updated /lt help info to reflect new version.
+    - Fixed an issue caused by a patch (and poor code) where most features would break if the game lost connection to the chat server.
+    - Changed a few option labels in an attempt to reduce confusion between the options for the Tracking system and the HUDTracker that is displayed on the screen.
+    - Various code improvements and enworsements.
+ 
 v1.12
     Public Release 12
     2014-08-14
-    This is the first release of xLootTracker, forked from the original xSquadLootManager project. This changelog covers what's changed from the persepctive of someone who used the latest version of the previous project.
+    This is the first release of xLootTracker, forked from the original xSquadLootManager project. This changelog covers what's changed from the perspective of someone who used the latest version of the previous project.
     - Distribution functionality has been dropped.
-    - The Detection system (now refered to as the Tracker) has been revamped to work without quality. It should also be more reliable than it was before.
+    - The Detection system (now referred to as the Tracker) has been revamped to work without quality. It should also be more reliable than it was before.
     - Alongside the new weapon and ability Modules, the addon now tracks loot that doesn't have to be interacted with to be picked up, including Components (any kind of crafting material) and Consumables (calldown items).
     - Filtering options have been updated to work with Rarity instead of Stage, and Item/Required levels instead of Quality. Additionally, the format of the titles of Waypoints and entries in the HUDTracker can now be customized. These options are placed within the Filtering options to allow different formats based on rarity.
-    - Multiple entires of the same kind of item "stack" in the HUDTracker.
+    - Multiple entries of the same kind of item "stack" in the HUDTracker.
+    - The entries in the HUDTracker are now sorted. The priority is rarity > itemlevel > name (alphabetic order)
     - Waypoint and HUDTracker title formats can now be customized.
     - Switched to a more vocal formatting system (%i > {itemName}).
     - Tooltips from item links and the hudtracker compare themselves to what you have equipped.
-    - The slash handles used by the addon can now be set from the setting (I have yet to lock down the slash commands though).
+    - The slash handles used by the addon can now be set from the setting (I have yet to lock down the slash commands though). The default slash handles have been changed from xslm/slm to xlt/lt in order to match the new name.
     - Removed some broken sound options.
     - Various code improvements and enworsements.
 [/CODE]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Download[/FONT][/SIZE][/COLOR]
-[CENTER][SIZE=5][URL='http://forums.firefallthegame.com/community/attachments/xsquadlootmanager_v0-92-zip.1506921/']Latest Version: 1.12 (1.0.1793)[/URL][/SIZE][/CENTER]
-[CENTER]Released on 2014-08-14[/CENTER]
+[CENTER][SIZE=5][URL='http://forums.firefallthegame.com/community/attachments/xloottracker_v1-13-zip.2514921/']Latest Version: 1.13 (1.0.1796)[/URL][/SIZE][/CENTER]
+[CENTER]Released on 2014-08-23[/CENTER]
 [CENTER] [/CENTER]
-[CENTER][URL='http://astrekassociation.com/melder.php?id=1506921'][IMG]http://astrekassociation.com/images/melder.png[/IMG][/URL][/CENTER]
+[CENTER][URL='http://astrekassociation.com/melder.php?id=2514921'][IMG]http://astrekassociation.com/images/melder.png[/IMG][/URL][/CENTER]
 [CENTER][URL='http://www.curse.com/ff-addons/firefall/xsquadlootmanager'][IMG]http://media-curse.cursecdn.com/attachments/87/963/curse-logo.png[/IMG][/URL][/CENTER]
-[CENTER][SIZE=1][COLOR=#161c1c][melder_info]version=1.12;patch=1.0.1793;dlurl=1506921[/melder_info][/COLOR][/SIZE]
-[/CENTER]
+[CENTER][SIZE=1][COLOR=#161c1c][melder_info]version=1.13;patch=1.0.1796;dlurl=2514921[/melder_info][/COLOR][/SIZE][/CENTER]
+[CENTER] [/CENTER]
  
 [CENTER][I][SIZE=3]For older versions, [URL='http://firefall.curseforge.com/ff-addons/xsquadlootmanager/files/']please see the page on CurseForge[/URL].[/SIZE][/I][/CENTER]
