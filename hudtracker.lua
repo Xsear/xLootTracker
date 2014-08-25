@@ -52,11 +52,16 @@ function HUDTracker.Setup()
     SCROLLER:SetSlider(SLIDER)
     SCROLLER:SetSliderMargin(DimensionOptions.ScrollerSliderMarginVisible, DimensionOptions.ScrollerSliderMarginHidden)
     SCROLLER:SetSpacing(DimensionOptions.ScrollerSpacing)
-    SCROLLER:ShowSlider(true)
+    SCROLLER:ShowSlider('auto')
 
     -- Tooltip
     TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
     TOOLTIP_ITEM.GROUP:Show(false)
+
+    -- Apply width/height frame options
+    InterfaceOptions.ChangeFrameWidth(FRAME, Options['HUDTracker']['Frame']['Width'])
+    InterfaceOptions.ChangeFrameHeight(FRAME, Options['HUDTracker']['Frame']['Height'])
+    SCROLLER:UpdateSize()
 
     -- Start
     HUDTracker.Enable()
@@ -112,11 +117,14 @@ function HUDTracker.OnOptionChange(id, value)
     
     elseif id == 'HUDTracker_Frame_Width'
     then
+        Debug.Log("Updating HUDTracker Frame Width")
         InterfaceOptions.ChangeFrameWidth(FRAME, value)
+        SCROLLER:UpdateSize()
 
     elseif id == 'HUDTracker_Frame_Height'
     then
         InterfaceOptions.ChangeFrameHeight(FRAME, value)
+        SCROLLER:UpdateSize()
 
     elseif id ~= 'UpdateInterval'
        and id ~= 'MinimumUpdateDelay'
@@ -311,30 +319,45 @@ end
 function HUDTracker.Update(args)
     args = args or {}
     args.event = "HUDTracker.Update"
+    --Debug.Event(args)
+
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
-        
+        --Debug.Log("HUDTracker is enabled")
+
         -- Minimum update limiter
         local currentTime = tonumber(System.GetClientTime())
+        --Debug.Log('currentTime: ' .. tostring(currentTime))
         if args.triggeredByCB then -- Ensure that the callback is cleaned up
+            --Debug.Log('We were triggered by minUpdateCallback, cleaning up')
             Private.minUpdateCB:Release()
             Private.minUpdateCB = nil
         else
+            --Debug.Log('We\'re normal, calculating if we were too early')
             local timeSinceLastUpdate = System.GetElapsedTime(Private.lastUpdate)
             local minimumUpdateDelay = tonumber(Options['HUDTracker']['MinimumUpdateDelay'])
+            --Debug.Log('timeSinceLastUpdate: ' .. tostring(timeSinceLastUpdate))
+            --Debug.Log('minimumUpdateDelay: ' .. tostring(minimumUpdateDelay))
             -- If this is too early to update
             if timeSinceLastUpdate < minimumUpdateDelay then
+                --Debug.Log('timeSinceLastUpdate is less than minimumUpdateDelay, we are too early')
                 -- Schedule one if we haven't already.
                 if not Private.minUpdateCB then
+                    --Debug.Log('There was not a minUpdateCallback scheduled, so we create one and schedule it within ' .. tostring(timeSinceLastUpdate - minimumUpdateDelay))
                     Private.minUpdateCB = Callback2.Create()
                     Private.minUpdateCB:Bind(HUDTracker.Update, {triggeredByCB = true})
                     Private.minUpdateCB:Schedule(timeSinceLastUpdate - minimumUpdateDelay)
+                else
+                    --Debug.Log('There is already a minUpdateCallback scheduled, so we just quitely return.')
                 end
                 return
+            else
+                --Debug.Log('We are late enough!')
             end
         end
 
         -- Update is actually happening!
+        --Debug.Log('Update is actually happening!')
         --Debug.Event(args)
 
         -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
@@ -436,14 +459,6 @@ function HUDTracker.UpdateVisibility()
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
             FRAME:Show(true)
-
-            -- Show/hide the Slider depending on the number of rows shown.
-            if SCROLLER:GetRowCount() > tonumber(DimensionOptions.MaxEntriesBeforeScroller) then
-                SLIDER:Show(true)
-            else
-                SLIDER:Show(false)
-            end
-
         else
             --Debug.Log('No, hide the tracker')
             -- No, hide the tracker
