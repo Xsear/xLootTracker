@@ -196,19 +196,19 @@ function OnSlash(args)
         if not args[2] then
             Options['Core']['Enabled'] = not Options['Core']['Enabled']
 
-        elseif args[2] == "wp" or "wps" or "waypoints" or "wayman" or "way" then
+        elseif args[2] == "wp" or args[2] == "wps" or args[2] == "waypoints" or args[2] == "wayman" or args[2] == "way" then
             Options['Waypoints']['Enabled'] = not Options['Waypoints']['Enabled']
 
-        elseif args[2] == "hud" or "hudtracker" or "tracker" then
+        elseif args[2] == "hud" or args[2] == "hudtracker" or args[2] == "tracker" then
             Options['HUDTracker']['Enabled'] = not Options['HUDTracker']['Enabled']
 
-        elseif args[2] == "sound" or "sounds" or "snd" then
+        elseif args[2] == "sound" or args[2] == "sounds" or args[2] == "snd" then
             Options['Sounds']['Enabled'] = not Options['Sounds']['Enabled']
 
-        elseif args[2] == "messages" or "msg" or "msgs" or "message" then
+        elseif args[2] == "messages" or args[2] == "msg" or args[2] == "msgs" or args[2] == "message" then
             Options['Messages']['Enabled'] = not Options['Messages']['Enabled']
 
-        elseif args[2] == "panels" or "pan" or "panman" or "pans" then
+        elseif args[2] == "panels" or args[2] == "pan" or args[2] == "panman" or args[2] == "pans" then
             Options['Panels']['Enabled'] = not Options['Panels']['Enabled']
 
         end
