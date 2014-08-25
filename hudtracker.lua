@@ -128,7 +128,7 @@ function HUDTracker.OnOptionChange(id, value)
 
     elseif id == 'HUDTracker_UpdateInterval' then
         if CYCLE_HUDTrackerUpdate then
-            Debug.Log('Restarting HUDTrackerUpdate cycle with interval (s): ' .. tostring(tonumber(Options['HUDTracker']['UpdateInterval']))
+            Debug.Log('Restarting HUDTrackerUpdate cycle with interval (s): ' .. tostring(tonumber(Options['HUDTracker']['UpdateInterval'])))
             CYCLE_HUDTrackerUpdate:Stop()
             CYCLE_HUDTrackerUpdate:Run(tonumber(Options['HUDTracker']['UpdateInterval']))
         end
