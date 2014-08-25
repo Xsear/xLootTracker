@@ -75,6 +75,21 @@ function Tracker.OnOptionChange(id, value)
                 Private.CYCLE_Refresh:Run(tonumber(Options['Tracker']['RefreshInterval']))
             end
         end
+
+    elseif id == 'Tracker_RefreshInterval' then
+
+        if Private.CYCLE_Refresh then
+            Private.CYCLE_Refresh:Stop()
+            Private.CYCLE_Refresh:Run(tonumber(Options['Tracker']['RefreshInterval']))
+        end
+
+    elseif id == 'LootEventHistoryCleanupInterval' then
+
+        if Private.CYCLE_LootEventHistoryCleanup then
+            Private.CYCLE_LootEventHistoryCleanup:Stop()
+            Private.CYCLE_LootEventHistoryCleanup:Run(tonumber(Options['Tracker']['LootEventHistoryCleanupInterval']))
+        end
+
     else
         --Debug.Log("Unhandled Option Id "..tostring(id))
     end
