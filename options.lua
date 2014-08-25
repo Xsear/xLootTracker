@@ -58,342 +58,6 @@ Options = {
         ['TimerMode'] = PanelsTimerMode.Countdown,
         ['TimerCountdownTime'] = 120,
 
-        ['Filtering'] = {
-            [LootCategory.Equipment] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-            },
-
-            [LootCategory.Consumable] = {
-                ['Enabled'] = false,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-            },
-
-            [LootCategory.Modules] = {
-                ['Enabled'] = false,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-            },
-
-            [LootCategory.Salvage] = {
-                ['Enabled'] = false,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-            },
-
-            [LootCategory.Metals] = {
-                ['Enabled'] = false,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-            },
-
-            [LootCategory.Components] = {
-                ['Enabled'] = false,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-            },
-            
-            [LootCategory.Currency] = {
-                ['Enabled'] = false,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-            },
-
-        },
-
     },  
  
     ['Waypoints'] = {
@@ -403,400 +67,6 @@ Options = {
         ['ShowOnWorldMap'] = true,
         ['ShowOnRadar'] = true,
         ['RadarEdgeMode'] = RadarEdgeModes.Icon,
-
-
-        ['Filtering'] = {
-            [LootCategory.Equipment] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-            },
-
-            [LootCategory.Consumable] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-            },
-
-            [LootCategory.Modules] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
-                },
-            },
-
-            [LootCategory.Salvage] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-            },
-
-            [LootCategory.Metals] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-            },
-
-            [LootCategory.Components] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-            },
-            
-            [LootCategory.Currency] = {
-                ['Enabled'] = true,
-
-                ['Mode'] = TriggerModeOptions.Simple,
-
-                ['Simple'] = {
-                    ['RarityThreshold'] = LootRarity.Salvage,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Salvage] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Common] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Uncommon] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Rare] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Epic] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Prototype] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-                [LootRarity.Legendary] = {
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = "{itemName}",
-                },
-
-            },
-
-        },
-
 
     },
 
@@ -987,6 +257,403 @@ for categoryKey, categoryValue in pairs(FilterableLootCategories) do
 
 end
 --]]
+
+
+
+
+Options['Waypoints']['Filtering'] = {
+            [LootCategory.Equipment] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+            },
+
+            [LootCategory.Consumable] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+            },
+
+            [LootCategory.Modules] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "[{itemReqLevel}] {itemName}",
+                },
+            },
+
+            [LootCategory.Salvage] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+            },
+
+            [LootCategory.Metals] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+            },
+
+            [LootCategory.Components] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+            },
+            
+            [LootCategory.Currency] = {
+                ['Enabled'] = true,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                    ['WaypointTitle'] = "{itemName}",
+                },
+
+            },
+
+        }
+
+
 
 
 Options['HUDTracker']['Filtering'] = {
@@ -1775,7 +1442,341 @@ Options['Sounds']['Filtering'] = {
 }
 
 
+Options['Panels']['Filtering'] = {
+            [LootCategory.Equipment] = {
+                ['Enabled'] = true,
 
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+            },
+
+            [LootCategory.Consumable] = {
+                ['Enabled'] = false,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+            },
+
+            [LootCategory.Modules] = {
+                ['Enabled'] = false,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+            },
+
+            [LootCategory.Salvage] = {
+                ['Enabled'] = false,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+            },
+
+            [LootCategory.Metals] = {
+                ['Enabled'] = false,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+            },
+
+            [LootCategory.Components] = {
+                ['Enabled'] = false,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+            },
+            
+            [LootCategory.Currency] = {
+                ['Enabled'] = false,
+
+                ['Mode'] = TriggerModeOptions.Simple,
+
+                ['Simple'] = {
+                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Salvage] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Common] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Uncommon] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Rare] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Epic] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Prototype] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+                [LootRarity.Legendary] = {
+                    ['ItemLevelThreshold'] = 0,
+                    ['RequiredLevelThreshold'] = 0,
+                },
+
+            },
+
+        }
 
 
 
@@ -2550,6 +2551,34 @@ function BuildInterfaceOptions_HUDTracker()
         label   = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Label'),
         tooltip = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Tooltip'),
         subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
+    InterfaceOptions.AddSlider({
+        id      = 'HUDTracker_UpdateInterval',
+        min     = 0.5,
+        max     = 60.0,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['HUDTracker']['UpdateInterval'],
+        label   = Lokii.GetString('Options_HUDTracker_UpdateInterval_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_UpdateInterval_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Options_Subtab_HUDTracker')
+        },
+    })
+
+    InterfaceOptions.AddSlider({
+        id      = 'HUDTracker_MinimumUpdateDelay',
+        min     = 0.5,
+        max     = 60.0,
+        inc     = 0.5,
+        suffix  = 's',
+        default = Options['HUDTracker']['MinimumUpdateDelay'],
+        label   = Lokii.GetString('Options_HUDTracker_MinimumUpdateDelay_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_MinimumUpdateDelay_Tooltip'),
+        subtab  = {
+            Lokii.GetString('Options_Subtab_HUDTracker')
+        },
     })
 
     UIHELPER_Filtering('HUDTracker')

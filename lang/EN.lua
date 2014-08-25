@@ -357,6 +357,11 @@ LANG = {
     Options_HUDTracker_Frame_Height_Label      = "Frame Height",
     Options_HUDTracker_Frame_Height_Tooltip    = "Sets the frame height",
 
+    Options_HUDTracker_UpdateInterval_Label       = "Update Interval",
+    Options_HUDTracker_UpdateInterval_Tooltip     = "The interval at which the HUDTracker will regularily update. Note that this is in addition to updates triggered by events.",
+    Options_HUDTracker_MinimumUpdateDelay_Label   = "Minimum Update Delay",
+    Options_HUDTracker_MinimumUpdateDelay_Tooltip = "The absolute minimum number of seconds to wait between each HUDTracker update. Increasing this reduces the number of updates that occur and improves performance, but that also means the HUDTracker will be out of date for longer.",
+
 
     Options_Tracker_UpdateMode_Label            = "Update Mode",
     Options_Tracker_UpdateMode_Tooltip          = "Select which mode to use for the periodic updating of loot (a saftey system that for most purposes is probably redundant).\nUnified mode (Refresh) updates all loot at once on a single cycle.\nIndividual mode (Loot Update Interval) places a cycle on each loot, checking each piece of loot on a consistent interval.",
