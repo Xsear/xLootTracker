@@ -76,6 +76,17 @@ function Tracker.OnOptionChange(id, value)
             end
         end
 
+    elseif id == 'Tracker_LootUpdateInterval' then
+
+        if Options['Tracker']['UpdateMode'] == TrackerUpdateMode.Global then
+            for id, loot in pairs(Private.trackedLoot) do
+                if loot.CYCLE_Update then
+                    loot.CYCLE_Update:Stop()
+                    loot.CYCLE_Update:Run(tonumber(Options['Tracker']['LootUpdateInterval']))
+                end
+            end
+        end
+
     elseif id == 'Tracker_RefreshInterval' then
 
         if Private.CYCLE_Refresh then
