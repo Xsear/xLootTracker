@@ -173,7 +173,7 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
 
                 -- Send message if we have one
                 if message ~= '' then
-                    Messages.SendChatMessage(channelKey, message, eventArgs)
+                    Messages.SendChatMessage(channelKey, message) -- , eventArgs
                 end
             end
         end
