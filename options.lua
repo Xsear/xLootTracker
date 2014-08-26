@@ -2779,13 +2779,13 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
     })
 
         -- OnLootLooted - IgnoreOthers
-        if eventKey == 'OnLootLooted' then
+        if eventKey == 'Tracker_OnLootLooted' then
             InterfaceOptions.AddCheckBox({
                 id      = rootKey..'_Events_'..eventKey..'_IgnoreOthers',
                 default = defaults['IgnoreOthers'],
                 label   = Lokii.GetString('Options_Messages_Generic_IgnoreOthers_Label'),
                 tooltip = Lokii.GetString('Options_Messages_Generic_IgnoreOthers_Tooltip'),
-                subtab  = {Lokii.GetString('Options_Subtab_Messages')}
+                subtab  = subtab,
             })
         end
 
