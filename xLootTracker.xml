@@ -135,7 +135,7 @@
                     </Group>
 
                     <!-- Slider -->
-                    <Slider name='Slider' dimensions="width:3; right:100%; height:100%; top:0; bottom:100%" class="Tracker_Slider"/>
+                    <Slider name='Slider' dimensions="width:3; right:100%; top:0; bottom:100%" class="Tracker_Slider"/>
             </Children>
         </PanelFrame>
     </Frames>
