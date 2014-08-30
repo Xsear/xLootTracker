@@ -1,4 +1,16 @@
+v1.14
+    Public Release 14
+    2014-
 
+
+    - Fixed an issue with the blacklist command where the clear action did not save its changes.
+    - Fixed some issues with one of the debug slash commands.
+    - Fixed an issue where the HUDTracker Frame Width and Height options were not being applied on load.
+    - Fixed an issue where the HUDTracker slider would not display when it was supposed to when non-default height/size options were used.
+    - Added HUDTracker Update Interval and Minimum Update Delay options.
+    - Fixed issues where the Tracker interval options required reloads or workarounds before they applied. (Tracker_RefreshInterval, Tracker_LootEventHistoryCleanupInterval, Tracker_LootUpdateInterval)
+    - Fixed an issue where the Messages OnLootLooted Ignore Others option did not appear in the options.
+    - Fixed an issue where every squad message would be sent with the alertprefix.
 
 v1.13
     Public Release 13
