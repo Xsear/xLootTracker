@@ -196,6 +196,10 @@ Options = {
             ['Width'] = 450,
             ['Height'] = 150,
         },
+
+        ['ContextMenu'] = {
+            ['Enabled'] = true,
+        },
     },
 
     ['Sounds'] = {

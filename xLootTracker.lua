@@ -16,8 +16,9 @@ require 'lib/lib_table' -- Common table functions
 require 'lib/lib_UserKeybinds' -- User keybinds
 require 'lib/lib_Colors' -- Colors, used by markers
 require 'lib/lib_RowScroller' -- Row Scroller, used by Tacker
-require 'lib/lib_MultiArt'
-require 'lib/lib_SubTypeIds'
+require 'lib/lib_MultiArt' -- Used for icons
+require 'lib/lib_SubTypeIds' -- Used for determining loot categories
+require "lib/lib_ContextMenu" -- Used for hudtracker context menu
 
 -- Custom Libs
 require './lib/Lokii' -- Localization

@@ -203,9 +203,42 @@ function Private.CreateEntry(loot, stackInfo)
     end
 
     -- Setup plate right click menu
-    ENTRY.PLATE:BindEvent('OnRightMouse', function(args)
-        -- Todo:
-    end)
+    if Options['HUDTracker']['ContextMenu']['Enabled'] then
+        local ShowContextMenu = function(args)
+            -- Get loot
+            local lootId = args.widget:GetTag()
+            local loot = Tracker.GetLootById(lootId)
+            if not loot then
+                Debug.Warn("HUDTracker Context Menu could not get loot.")
+                return
+            end
+
+            local MENU = ContextMenu.Create()
+            MENU:BindOnRequest(function(MENU, id)
+                if id == "root" then
+                    MENU:AddButton({label_key="SET_WAYPOINT", id="self_waypoint"})
+                    
+                    if State.isSquadLeader then
+                        MENU:AddButton({label_key="SET_SQUAD_WAYPOINT", id="squad_waypoint"})
+                    end
+                end
+            end)
+            MENU:BindOnSelect(function(args)
+                if args.menu == "root" then
+                    local lootPos = loot:GetPos()
+                    if args.id == "self_waypoint" then
+                        Component.GenerateEvent("MY_PERSONAL_WAYPOINT_SET", {x=lootPos.x, y=lootPos.y, z=lootPos.z+1})
+                    elseif args.id == "squad_waypoint" then
+                        Squad.SetWayPoint(lootPos.x, lootPos.y, lootPos.z+1)
+                    end
+                end
+            end)
+            MENU:Show()
+        end
+
+        ENTRY.PLATE:BindEvent('OnMouseDown', ShowContextMenu)
+        ENTRY.PLATE:BindEvent('OnRightMouse', ShowContextMenu)
+    end
 
     -- Setup plate colors
     local lootColor = loot:GetColor()
