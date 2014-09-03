@@ -71,12 +71,12 @@ Options = {
     },
 
     ['Messages'] = {
-        ['Enabled'] = true,
+        ['Enabled'] = false,
 
         ['Channels'] = {
-            ['Squad'] = true,
-            ['Platoon'] = true,
-            ['System'] = true,
+            ['Squad'] = false,
+            ['Platoon'] = false,
+            ['System'] = false,
             ['Notifications'] = true,
         },
 
@@ -101,12 +101,12 @@ Options = {
                         },
 
                         ['System'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = 'New loot drop: {itemAsLink}',
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = 'New loot drop: {itemAsLink}',
                         },
                     },
@@ -130,12 +130,12 @@ Options = {
                         },
 
                         ['System'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = '{lootedTo} looted {itemAsLink}',
                         },
 
                         ['Notifications'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = '{lootedTo} looted {itemAsLink}',
                         },
                     },
@@ -147,7 +147,7 @@ Options = {
 
                     ['Channels'] = {
                         ['Squad'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = '{itemAsLink} has despawned',
                         },
 
@@ -157,7 +157,7 @@ Options = {
                         },
 
                         ['System'] = {
-                            ['Enabled'] = false,
+                            ['Enabled'] = true,
                             ['Format'] = '{itemAsLink} has despawned',
                         },
 
