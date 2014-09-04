@@ -306,55 +306,55 @@ end
 
 
 function OnTrackerNew(args)
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- Sounds
-    Callback2.FireAndForget(Sounds.OnTrackerNew, args, 0)
+    Sounds.OnTrackerNew(args)
 
     -- Waypoints
-    Callback2.FireAndForget(WaypointManager.OnTrackerNew, args, 0)
+    WaypointManager.OnTrackerNew(args)
 
     -- Panels
-    Callback2.FireAndForget(PanelManager.OnTrackerNew, args, 0)
+    PanelManager.OnTrackerNew(args)
 
     -- HUDTracker
-    Callback2.FireAndForget(HUDTracker.OnTrackerNew, args, 0)
+    HUDTracker.OnTrackerNew(args)
 
     -- Messages
-    Callback2.FireAndForget(Messages.OnTrackerNew, args, 0)
+    Messages.OnTrackerNew(args)
 end
 
 function OnTrackerUpdate(args)
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- HUDTracker
-    Callback2.FireAndForget(HUDTracker.OnTrackerUpdate, args, 0)
+    HUDTracker.OnTrackerUpdate(args)
 
     -- Messages
-    Callback2.FireAndForget(Messages.OnTrackerUpdate, args, 0)
+    Messages.OnTrackerUpdate(args)
 end
 
 function OnTrackerLooted(args)
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- Waypoints
-    Callback2.FireAndForget(WaypointManager.OnTrackerLooted, args, 0)
+    WaypointManager.OnTrackerLooted(args)
 
     -- Panels
-    Callback2.FireAndForget(PanelManager.OnTrackerLooted, args, 0)
+    PanelManager.OnTrackerLooted(args)
 end
 
 function OnTrackerRemove(args)
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- Waypoints
-    Callback2.FireAndForget(WaypointManager.OnTrackerRemove, args, 0)
+    WaypointManager.OnTrackerRemove(args)
 
     -- Panels
-    Callback2.FireAndForget(PanelManager.OnTrackerRemove, args, 0)
+    PanelManager.OnTrackerRemove(args)
 
     -- HUDTracker
-    Callback2.FireAndForget(HUDTracker.OnTrackerRemove, args, 0)
+    HUDTracker.OnTrackerRemove(args)
 end
 
 
