@@ -231,6 +231,88 @@ Options = {
 
 
 
+Debug.EnableLogging(true)
+for i, eventKey in ipairs({'OnLootNew', 'OnLootLooted', 'OnLootLost'}) do
+
+    Options['Messages']['Events']['Tracker'][eventKey]['Filtering'] = {}
+
+    local filteringTable = Options['Messages']['Events']['Tracker'][eventKey]['Filtering']
+
+    for categoryId, categoryKey in pairs(FilterableLootCategories) do
+
+        filteringTable[categoryKey] = {}
+        local categoryTable = filteringTable[categoryKey]
+
+        categoryTable['Enabled'] = true
+        categoryTable['Mode'] = TriggerModeOptions.Simple
+
+
+        local formatDefault = ''
+        if eventKey == 'OnLootNew' then
+            formatDefault = 'New loot drop: {itemAsLink}'
+        elseif eventKey == 'OnLootLooted' then
+            formatDefault = '{lootedTo} looted {itemAsLink}'
+        elseif eventKey == 'OnLootLost' then
+            formatDefault = '{itemAsLink} has despawned'
+        end
+
+        local rarityTableTemplate = {
+            ['ItemLevelThreshold'] = 0,
+            ['RequiredLevelThreshold'] = 0,
+
+            ['Channels'] = {
+                ['Squad'] = {
+                    ['Enabled'] = false,
+                    ['Format'] = formatDefault,
+                },
+
+                ['Platoon'] = {
+                    ['Enabled'] = true,
+                    ['Format'] = formatDefault,
+                },
+
+                ['System'] = {
+                    ['Enabled'] = false,
+                    ['Format'] = formatDefault,
+                },
+
+                ['Notifications'] = {
+                    ['Enabled'] = true,
+                    ['Format'] = formatDefault,
+                },
+            },
+        }
+
+        if eventKey == 'OnLootLooted' then
+            rarityTableTemplate['IgnoreOthers'] = false
+        end
+
+
+        -- Trigger Group: Simple Mode
+        categoryTable['Simple'] = _table.copy(rarityTableTemplate)
+        categoryTable['Simple']['RarityThreshold'] = LootRarity.Salvage
+
+        -- Trigger Groups: Advanced Mode (Rarity Trigger Groups)   
+        for rarityKey, rarityValue  in pairs(LootRarity) do
+
+            -- Create
+            categoryTable[rarityValue] = _table.copy(rarityTableTemplate)
+
+        end
+
+
+    end
+
+
+end
+Debug.Table('MessagesEventPost', Options['Messages']['Events'])
+
+
+
+
+
+
+
 --_table.copy
 
 
@@ -1926,51 +2008,89 @@ function SetOptionsAvailability()
 
 
     -- Summary: If simple disable advanced options
-    for i, moduleKey in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds'}) do
-
-        for id, categoryKey in pairs(FilterableLootCategories) do
+    for i, moduleArg in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds', {parent='Messages', 'OnLootNew', 'OnLootLooted', 'OnLootLost'}}) do
 
 
-            -- Mode selection only available when type enabled
-            InterfaceOptions.EnableOption(moduleKey..'_Filtering_'..categoryKey..'_Mode', Options[moduleKey]['Filtering'][categoryKey]['Enabled'])
+        local modules = {}
+        local moduleParent = nil
+        if type(moduleArg) == 'table' then
+            if moduleArg.parent == 'Messages' then
+                moduleParent = moduleArg.parent
+                for i, eventKey in ipairs(moduleArg) do
+                    local moduleKey = moduleArg.parent..'_Events_Tracker_'..eventKey
+                    local moduleRef = Options[moduleArg.parent]['Events']['Tracker'][eventKey]['Filtering']
+                    modules[moduleKey] = moduleRef
+                end
+            end
+        else
+            local moduleKey = moduleArg
+            local moduleRef = Options[moduleArg]['Filtering']
+            modules[moduleKey] = moduleRef
+        end
 
-            -- Don't wanna hardcode this shit
-            local rarityKeys = _table.copy(OptionsLootRarityDropdown)
-            rarityKeys[#rarityKeys + 1] = 'Simple'
 
-            -- For each rarity (and simple)
-            for i, rarityKey in ipairs(rarityKeys) do
-                --Debug.Log(moduleKey..'_'..categoryKey)
+        -- Generate
+        for moduleKey, moduleRef in pairs(modules) do
+         
+            for id, categoryKey in pairs(FilterableLootCategories) do
 
-                -- Disable/Enable logic
-                -- Fixme: bluuuuuurgh
-                local disable = false
 
-                -- If type not enabled, disable everything
-                if Options[moduleKey]['Filtering'][categoryKey]['Enabled'] == false then
-                    disable = true 
+                -- Mode selection only available when type enabled
+                InterfaceOptions.EnableOption(moduleKey..'_Filtering_'..categoryKey..'_Mode', moduleRef[categoryKey]['Enabled'])
 
-                -- If type is enabled, disable stuff not relevant to current mode
-                else
-                    -- Tired Xsear reading this got confused, so he expanded the comments. Stick with me here.
-                    -- We want to disable all the other groups if we're in simple mode, and only the simple group otherwise.
+                -- Don't wanna hardcode this shit
+                local rarityKeys = _table.copy(OptionsLootRarityDropdown)
+                rarityKeys[#rarityKeys + 1] = 'Simple'
 
-                    -- So. If we are currently in Simple Mode, disable = true.
-                    disable = (Options[moduleKey]['Filtering'][categoryKey]['Mode'] == TriggerModeOptions.Simple)
+                -- For each rarity (and simple)
+                for i, rarityKey in ipairs(rarityKeys) do
+                    --Debug.Log(moduleKey..'_'..categoryKey)
 
-                    -- But in order to keep Simple enabled, if the current rarityKey is Simple, disable = false (but I decided to be fancy and just invert it)
-                    if rarityKey == 'Simple' then disable = not disable end
+                    -- Disable/Enable logic
+                    -- Fixme: bluuuuuurgh
+                    local disable = false
+
+                    -- If type not enabled, disable everything
+                    if moduleRef[categoryKey]['Enabled'] == false then
+                        disable = true 
+
+                    -- If type is enabled, disable stuff not relevant to current mode
+                    else
+                        -- Tired Xsear reading this got confused, so he expanded the comments. Stick with me here.
+                        -- We want to disable all the other groups if we're in simple mode, and only the simple group otherwise.
+
+                        -- So. If we are currently in Simple Mode, disable = true.
+                        disable = (moduleRef[categoryKey]['Mode'] == TriggerModeOptions.Simple)
+
+                        -- But in order to keep Simple enabled, if the current rarityKey is Simple, disable = false (but I decided to be fancy and just invert it)
+                        if rarityKey == 'Simple' then disable = not disable end
+                    end
+
+                    -- Do our job
+                    for optionKey, optionValue in pairs(moduleRef[categoryKey][rarityKey]) do
+
+
+                        -- major hardcode for message channels specific options
+                        if optionKey == 'Channels' then 
+
+                            for channelKey, channelOptions in pairs(optionValue) do
+                                for key, val in pairs(channelOptions) do
+                                    InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey..'_'..channelKey..'_'..key, disable)
+                                end
+                            end
+
+                        else
+                            InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey, disable)
+                        end
+                    end
+
+      
                 end
 
-                -- Do our job
-                for optionKey, optionValue in pairs(Options[moduleKey]['Filtering'][categoryKey][rarityKey]) do
-                    InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey, disable)
-                end
-
-  
             end
 
         end
+
 
     end
 
@@ -2470,11 +2590,11 @@ function BuildInterfaceOptions_Messages()
     })
 
     -- Event settings
-    for tableKey, tableValue in pairs(Options['Messages']['Events']) do
-        for eventKey, eventValue in pairs(Options['Messages']['Events'][tableKey]) do
-            UIHELPER_MessageEventOptions('Messages', tableKey..'_'..eventKey, Options['Messages']['Events'][tableKey][eventKey], {Lokii.GetString('Options_Subtab_Messages'), Lokii.GetString('Options_Subtab_Messages_'..tableKey)})
-        end
+    local filteringArgs = {parent='Messages'}
+    for eventKey, eventValue in pairs(Options['Messages']['Events']['Tracker']) do
+        table.insert(filteringArgs, eventKey)
     end
+    UIHELPER_Filtering(filteringArgs)
 end
 
 function BuildInterfaceOptions_HUDTracker()
@@ -2593,67 +2713,81 @@ function BuildInterfaceOptions_Sounds()
 end
 
 
-function UIHELPER_Filtering(moduleKey)
-    for id, category in pairs(FilterableLootCategories) do
-        UIHELPER_FilterCategory(moduleKey, category)
+function UIHELPER_Filtering(moduleArg)
+
+    -- Determine modules
+    local modules = {}
+    local moduleParent = nil
+    if type(moduleArg) == 'table' then
+        if moduleArg.parent == 'Messages' then
+            moduleParent = moduleArg.parent
+            for i, eventKey in ipairs(moduleArg) do
+                local moduleKey = moduleArg.parent..'_Events_Tracker_'..eventKey
+                local moduleRef = Options[moduleArg.parent]['Events']['Tracker'][eventKey]['Filtering']
+                modules[moduleKey] = moduleRef
+            end
+        end
+    else
+        local moduleKey = moduleArg
+        local moduleRef = Options[moduleArg]['Filtering']
+        modules[moduleKey] = moduleRef
+    end
+
+    Debug.Table('filtering modules', modules)
+
+    -- Generate
+    for moduleKey, moduleRef in pairs(modules) do
+        for id, category in pairs(FilterableLootCategories) do
+            UIHELPER_FilterCategory(moduleKey, moduleRef, category, moduleParent)
+        end
     end
 end
 
-function UIHELPER_FilterCategory(moduleKey, x)
-    Debug.Log("UIHELPER_FilterCategory", tostring(moduleKey), tostring(x))
-    -- Checkbox Group X
-    --[[
-    -- Maybe one day we'll have nested groups...
-    InterfaceOptions.StartGroup({
-        id       = moduleKey..'_'..x..'_Enabled',
-        checkbox = true,
-        default  = Options[moduleKey][x]['Enabled'],
-        label    = Lokii.GetString(moduleKey..'_'..x..'_Enabled_Label'),
-        tooltip  = Lokii.GetString(moduleKey..'_'..x..'_Enabled_Tooltip'),
-        subtab   = {
-            Lokii.GetString('Options_Subtab_'..moduleKey)
-        },
+function UIHELPER_FilterCategory(moduleKey, moduleRef, category, moduleParent)
+    Debug.Log("UIHELPER_FilterCategory", tostring(moduleKey), tostring(category))
+
+    local subtab = {}
+    if moduleParent then
+        table.insert(subtab, Lokii.GetString('Options_Subtab_'..moduleParent))
+    end
+
+    table.insert(subtab, Lokii.GetString('Options_Subtab_'..moduleKey))
+
+    table.insert(subtab, Lokii.GetString('Options_Subtab_Filtering'))
+
+    -- moduleKey category Enabled
+    InterfaceOptions.AddCheckBox({
+        id      = moduleKey..'_Filtering_'..category..'_Enabled',
+        default = moduleRef[category]['Enabled'],
+        label   = Lokii.GetString('Options_Filtering_'..category..'_Enabled_Label'),
+        tooltip = Lokii.GetString('Options_Filtering_'..category..'_Enabled_Tooltip'),
+        subtab  = subtab
     })
-    ]]--
-        -- moduleKey x Enabled
-        InterfaceOptions.AddCheckBox({
-            id      = moduleKey..'_Filtering_'..x..'_Enabled',
-            default = Options[moduleKey]['Filtering'][x]['Enabled'],
-            label   = Lokii.GetString('Options_Filtering_'..x..'_Enabled_Label'),
-            tooltip = Lokii.GetString('Options_Filtering_'..x..'_Enabled_Tooltip'),
-            subtab  = {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering')}
-        })
 
-        -- Mode dropdown
-        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..x..'_Mode', 'Options_Filtering_Mode', Options[moduleKey]['Filtering'][x]['Mode'], OptionsTriggerModeDropdown, 'Mode', {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering'), Lokii.GetString('Options_Subtab_'..x)})
+    table.insert(subtab, Lokii.GetString('Options_Subtab_'..category))
 
-        -- Simple mode options
-        UIHELPER_FilterRarity(moduleKey, x, 'Simple', {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering'), Lokii.GetString('Options_Subtab_'..x)})
+    -- Mode dropdown
+    UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..category..'_Mode', 'Options_Filtering_Mode', moduleRef[category]['Mode'], OptionsTriggerModeDropdown, 'Mode', subtab)
 
-        -- Advanced mode options
-        for id, rarity in pairs(LootRarity) do
-            UIHELPER_FilterRarity(moduleKey, x, rarity, {Lokii.GetString('Options_Subtab_'..moduleKey), Lokii.GetString('Options_Subtab_Filtering'), Lokii.GetString('Options_Subtab_'..x)})
-        end
+    -- Simple mode options
+    UIHELPER_FilterRarity(moduleKey, moduleRef, category, 'Simple', subtab)
 
-    --[[
-    InterfaceOptions.StopGroup({
-        subtab = {
-            Lokii.GetString('Options_Subtab_'..moduleKey)
-        },
-    })
-    ]]--
+    -- Advanced mode options
+    for id, rarity in pairs(LootRarity) do
+        UIHELPER_FilterRarity(moduleKey, moduleRef, category, rarity, subtab)
+    end
 end
 
-function UIHELPER_FilterRarity(moduleKey, x, rarity, subtab)
+function UIHELPER_FilterRarity(moduleKey, moduleRef, category, rarity, subtab)
     -- Vars
     local checkbox = (rarity ~= 'Simple')
     local raritydropdown = (rarity == 'Simple')
 
-    -- moduleKey x rarity Enabled group
+    -- moduleKey category rarity Enabled group
     InterfaceOptions.StartGroup({
-        id       = moduleKey..'_Filtering_'..x..'_'..rarity..'_Enabled',
+        id       = moduleKey..'_Filtering_'..category..'_'..rarity..'_Enabled',
         checkbox = checkbox,
-        default  = Options[moduleKey]['Filtering'][x]['Enabled'],
+        default  = moduleRef[category]['Enabled'],
         label    = Lokii.GetString('Options_Filtering_'..rarity..'_Enabled_Label'),
         tooltip  = Lokii.GetString('Options_Filtering_'..rarity..'_Enabled_Tooltip'),
         subtab   = subtab
@@ -2661,52 +2795,142 @@ function UIHELPER_FilterRarity(moduleKey, x, rarity, subtab)
 
         -- Rarity Threshold
         if raritydropdown then
-        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..x..'_'..rarity..'_RarityThreshold', 'Options_Filtering_RarityThreshold', Options[moduleKey]['Filtering'][x][rarity]['RarityThreshold'], OptionsLootRarityDropdown, 'RarityThreshold', subtab)
+        UIHELPER_DropdownFromTable(moduleKey..'_Filtering_'..category..'_'..rarity..'_RarityThreshold', 'Options_Filtering_RarityThreshold', moduleRef[category][rarity]['RarityThreshold'], OptionsLootRarityDropdown, 'RarityThreshold', subtab)
         end
 
-        -- Item Level Threshold
-        InterfaceOptions.AddTextInput({
-            id      = moduleKey..'_Filtering_'..x..'_'..rarity..'_ItemLevelThreshold',
-            numeric = true,
+
+        InterfaceOptions.AddSlider({
+            id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_ItemLevelThreshold',
+            min     = 0.0,
+            max     = 100.0,
+            inc     = 1.0,
             label   = Lokii.GetString('Options_Filtering_ItemLevelThreshold_Label'),
             tooltip = Lokii.GetString('Options_Filtering_ItemLevelThreshold_Tooltip'),
-            default = Options[moduleKey]['Filtering'][x][rarity]['ItemLevelThreshold'],
+            default = moduleRef[category][rarity]['ItemLevelThreshold'],
             subtab  = subtab
         })
 
-        -- Required Level Threshold
-        InterfaceOptions.AddTextInput({
-            id      = moduleKey..'_Filtering_'..x..'_'..rarity..'_RequiredLevelThreshold',
-            numeric = true,
+
+        InterfaceOptions.AddSlider({
+            id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_RequiredLevelThreshold',
+            min     = 0.0,
+            max     = 100.0,
+            inc     = 1.0,
             label   = Lokii.GetString('Options_Filtering_RequiredLevelThreshold_Label'),
             tooltip = Lokii.GetString('Options_Filtering_RequiredLevelThreshold_Tooltip'),
-            default = Options[moduleKey]['Filtering'][x][rarity]['RequiredLevelThreshold'],
+            default = moduleRef[category][rarity]['RequiredLevelThreshold'],
             subtab  = subtab
         })
+
+
 
         -- Waypoints
         if moduleKey == "Waypoints" then
             InterfaceOptions.AddTextInput({
-                id      = moduleKey..'_Filtering_'..x..'_'..rarity..'_WaypointTitle',
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_WaypointTitle',
                 label   = Lokii.GetString('Options_Filtering_WaypointTitle_Label'),
                 tooltip = Lokii.GetString('Options_Filtering_WaypointTitle_Tooltip'),
-                default = Options[moduleKey]['Filtering'][x][rarity]['WaypointTitle'],
+                default = moduleRef[category][rarity]['WaypointTitle'],
                 subtab  = subtab
             })
 
         -- HUDTracker
         elseif moduleKey == "HUDTracker" then
             InterfaceOptions.AddTextInput({
-                id      = moduleKey..'_Filtering_'..x..'_'..rarity..'_HUDTrackerTitle',
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_HUDTrackerTitle',
                 label   = Lokii.GetString('Options_Filtering_HUDTrackerTitle_Label'),
                 tooltip = Lokii.GetString('Options_Filtering_HUDTrackerTitle_Tooltip'),
-                default = Options[moduleKey]['Filtering'][x][rarity]['HUDTrackerTitle'],
+                default = moduleRef[category][rarity]['HUDTrackerTitle'],
                 subtab  = subtab
             })
 
+        -- Sounds
         elseif moduleKey == "Sounds" then
 
-            UIHELPER_SoundOptionsMenu(moduleKey..'_Filtering_'..x..'_'..rarity..'_SoundsNewLoot', Lokii.GetString('Options_Filtering_SoundsNewLoot_Label'), Options['Sounds']['Filtering'][x][rarity]['SoundsNewLoot'], subtab)
+            UIHELPER_SoundOptionsMenu(moduleKey..'_Filtering_'..category..'_'..rarity..'_SoundsNewLoot', Lokii.GetString('Options_Filtering_SoundsNewLoot_Label'), moduleRef[category][rarity]['SoundsNewLoot'], subtab)
+
+        -- Messages
+        elseif moduleKey == 'Messages_Events_Tracker_OnLootNew' or moduleKey == 'Messages_Events_Tracker_OnLootLooted' or moduleKey == 'Messages_Events_Tracker_OnLootLost' then 
+
+            -- OnLootLooted - IgnoreOthers
+            if moduleKey == 'Messages_Events_Tracker_OnLootLooted' then
+                InterfaceOptions.AddCheckBox({
+                    id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_IgnoreOthers',
+                    default = moduleRef[category][rarity]['IgnoreOthers'],
+                    label   = Lokii.GetString('Options_Messages_Generic_IgnoreOthers_Label'),
+                    tooltip = Lokii.GetString('Options_Messages_Generic_IgnoreOthers_Tooltip'),
+                    subtab  = subtab,
+                })
+            end
+
+            -- Squad
+            InterfaceOptions.AddCheckBox({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_Squad_Enabled',
+                default = moduleRef[category][rarity]['Channels']['Squad']['Enabled'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_Squad_Enabled_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_Squad_Enabled_Tooltip'),
+                subtab  = subtab,
+            })
+
+            InterfaceOptions.AddTextInput({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_Squad_Format',
+                default = moduleRef[category][rarity]['Channels']['Squad']['Format'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_Squad_Format_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_Squad_Format_Tooltip'),
+                subtab  = subtab,
+            })
+
+            -- Platoon
+            InterfaceOptions.AddCheckBox({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_Platoon_Enabled',
+                default = moduleRef[category][rarity]['Channels']['Platoon']['Enabled'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_Platoon_Enabled_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_Platoon_Enabled_Tooltip'),
+                subtab  = subtab,
+            })
+
+            InterfaceOptions.AddTextInput({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_Platoon_Format',
+                default = moduleRef[category][rarity]['Channels']['Platoon']['Format'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_Platoon_Format_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_Platoon_Format_Tooltip'),
+                subtab  = subtab,
+            })
+
+            -- System
+            InterfaceOptions.AddCheckBox({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_System_Enabled',
+                default = moduleRef[category][rarity]['Channels']['System']['Enabled'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_System_Enabled_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_System_Enabled_Tooltip'),
+                subtab  = subtab,
+            })
+
+            InterfaceOptions.AddTextInput({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_System_Format',
+                default = moduleRef[category][rarity]['Channels']['System']['Format'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_System_Format_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_System_Format_Tooltip'),
+                subtab  = subtab,
+            })
+
+            -- Notifications
+            InterfaceOptions.AddCheckBox({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_Notifications_Enabled',
+                default = moduleRef[category][rarity]['Channels']['Notifications']['Enabled'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_Notifications_Enabled_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_Notifications_Enabled_Tooltip'),
+                subtab  = subtab,
+            })
+
+            InterfaceOptions.AddTextInput({
+                id      = moduleKey..'_Filtering_'..category..'_'..rarity..'_Channels_Notifications_Format',
+                default = moduleRef[category][rarity]['Channels']['Notifications']['Format'],
+                label   = Lokii.GetString('Options_Messages_Generic_Channels_Notifications_Format_Label'),
+                tooltip = Lokii.GetString('Options_Messages_Generic_Channels_Notifications_Format_Tooltip'),
+                subtab  = subtab,
+            })
+
 
         end
 
