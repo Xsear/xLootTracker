@@ -441,10 +441,19 @@ function Slash_Test(args)
             {itemTypeId = 99659},
             {itemTypeId = 98622},
             {itemTypeId = 95088},
+
+            -- Moduled Item
             {itemTypeId = 98937, modules = {94145}},
+
+            -- Salvage
             {itemTypeId = 52206}, -- Recovered Chosen Tech
             {itemTypeId = 30408}, -- Broken Bandit Gear
             {itemTypeId = 86398}, -- Half Digested Module
+
+            -- Epics
+            {itemTypeId = 116407}, -- Necro Crossbow
+            {itemTypeId = 116378}, -- Thermal Needler (Epic)
+            {itemTypeId = 107786}, -- Thermal Needler (Rare)
         }
 
 
