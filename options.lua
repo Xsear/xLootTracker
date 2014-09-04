@@ -1946,7 +1946,7 @@ function OnOptionChange(args)
         end
 
         -- Update Options Visibility
-        SetOptionsAvailability()
+        SetOptionsAvailability({id=args.id, val=args.val, explodedId=explodedId})
     end
 
 end
@@ -1994,7 +1994,7 @@ end
     SetOptionsAvailability()
     Supposed to hide/unhide shit in the Interface Options.
 ]]--
-function SetOptionsAvailability()
+function SetOptionsAvailability(args)
 
 
     -- Tracker Update Mode
@@ -2010,85 +2010,113 @@ function SetOptionsAvailability()
     -- Summary: If simple disable advanced options
     for i, moduleArg in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds', {parent='Messages', 'OnLootNew', 'OnLootLooted', 'OnLootLost'}}) do
 
-
-        local modules = {}
-        local moduleParent = nil
-        if type(moduleArg) == 'table' then
-            if moduleArg.parent == 'Messages' then
-                moduleParent = moduleArg.parent
-                for i, eventKey in ipairs(moduleArg) do
-                    local moduleKey = moduleArg.parent..'_Events_Tracker_'..eventKey
-                    local moduleRef = Options[moduleArg.parent]['Events']['Tracker'][eventKey]['Filtering']
-                    modules[moduleKey] = moduleRef
-                end
+        -- If we didn't receive args, we have to go through all modules. But if we did recieve args, we only update the module that changed!
+        local function hasPart(targetPart, parts)
+            for i, part in ipairs(parts) do
+                if part == targetPart then 
+                    return true 
+                end 
             end
-        else
-            local moduleKey = moduleArg
-            local moduleRef = Options[moduleArg]['Filtering']
-            modules[moduleKey] = moduleRef
+            return false
         end
+        local function hasEventArg(moduleArg, explodedId)
+            for i, part in ipairs(moduleArg) do
+                if hasPart(part, explodedId) then
+                    return true
+                end
+            end
+            return false
+        end
+        if not args 
+           or  ( 
+                (
+                   (type(moduleArg) ~= 'table' and args.explodedId[1] == moduleArg)
+                or (moduleArg.parent and args.explodedId[1] == moduleArg.parent and hasEventArg(moduleArg, args.explodedId))
+                )
+                and
+                (hasPart('Filtering', args.explodedId))
+            )
+        then
 
-
-        -- Generate
-        for moduleKey, moduleRef in pairs(modules) do
-         
-            for id, categoryKey in pairs(FilterableLootCategories) do
-
-
-                -- Mode selection only available when type enabled
-                InterfaceOptions.EnableOption(moduleKey..'_Filtering_'..categoryKey..'_Mode', moduleRef[categoryKey]['Enabled'])
-
-                -- Don't wanna hardcode this shit
-                local rarityKeys = _table.copy(OptionsLootRarityDropdown)
-                rarityKeys[#rarityKeys + 1] = 'Simple'
-
-                -- For each rarity (and simple)
-                for i, rarityKey in ipairs(rarityKeys) do
-                    --Debug.Log(moduleKey..'_'..categoryKey)
-
-                    -- Disable/Enable logic
-                    -- Fixme: bluuuuuurgh
-                    local disable = false
-
-                    -- If type not enabled, disable everything
-                    if moduleRef[categoryKey]['Enabled'] == false then
-                        disable = true 
-
-                    -- If type is enabled, disable stuff not relevant to current mode
-                    else
-                        -- Tired Xsear reading this got confused, so he expanded the comments. Stick with me here.
-                        -- We want to disable all the other groups if we're in simple mode, and only the simple group otherwise.
-
-                        -- So. If we are currently in Simple Mode, disable = true.
-                        disable = (moduleRef[categoryKey]['Mode'] == TriggerModeOptions.Simple)
-
-                        -- But in order to keep Simple enabled, if the current rarityKey is Simple, disable = false (but I decided to be fancy and just invert it)
-                        if rarityKey == 'Simple' then disable = not disable end
+            local modules = {}
+            local moduleParent = nil
+            if type(moduleArg) == 'table' then
+                if moduleArg.parent == 'Messages' then
+                    moduleParent = moduleArg.parent
+                    for i, eventKey in ipairs(moduleArg) do
+                        local moduleKey = moduleArg.parent..'_Events_Tracker_'..eventKey
+                        local moduleRef = Options[moduleArg.parent]['Events']['Tracker'][eventKey]['Filtering']
+                        modules[moduleKey] = moduleRef
                     end
+                end
+            else
+                local moduleKey = moduleArg
+                local moduleRef = Options[moduleArg]['Filtering']
+                modules[moduleKey] = moduleRef
+            end
 
-                    -- Do our job
-                    for optionKey, optionValue in pairs(moduleRef[categoryKey][rarityKey]) do
+
+            -- Generate
+            for moduleKey, moduleRef in pairs(modules) do
+             
+                for id, categoryKey in pairs(FilterableLootCategories) do
 
 
-                        -- major hardcode for message channels specific options
-                        if optionKey == 'Channels' then 
+                    -- Mode selection only available when type enabled
+                    InterfaceOptions.EnableOption(moduleKey..'_Filtering_'..categoryKey..'_Mode', moduleRef[categoryKey]['Enabled'])
 
-                            for channelKey, channelOptions in pairs(optionValue) do
-                                for key, val in pairs(channelOptions) do
-                                    InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey..'_'..channelKey..'_'..key, disable)
-                                end
-                            end
+                    -- Don't wanna hardcode this shit
+                    local rarityKeys = _table.copy(OptionsLootRarityDropdown)
+                    rarityKeys[#rarityKeys + 1] = 'Simple'
 
+                    -- For each rarity (and simple)
+                    for i, rarityKey in ipairs(rarityKeys) do
+                        --Debug.Log(moduleKey..'_'..categoryKey)
+
+                        -- Disable/Enable logic
+                        -- Fixme: bluuuuuurgh
+                        local disable = false
+
+                        -- If type not enabled, disable everything
+                        if moduleRef[categoryKey]['Enabled'] == false then
+                            disable = true 
+
+                        -- If type is enabled, disable stuff not relevant to current mode
                         else
-                            InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey, disable)
+                            -- Tired Xsear reading this got confused, so he expanded the comments. Stick with me here.
+                            -- We want to disable all the other groups if we're in simple mode, and only the simple group otherwise.
+
+                            -- So. If we are currently in Simple Mode, disable = true.
+                            disable = (moduleRef[categoryKey]['Mode'] == TriggerModeOptions.Simple)
+
+                            -- But in order to keep Simple enabled, if the current rarityKey is Simple, disable = false (but I decided to be fancy and just invert it)
+                            if rarityKey == 'Simple' then disable = not disable end
                         end
+
+                        -- Do our job
+                        for optionKey, optionValue in pairs(moduleRef[categoryKey][rarityKey]) do
+
+
+                            -- major hardcode for message channels specific options
+                            if optionKey == 'Channels' then 
+
+                                for channelKey, channelOptions in pairs(optionValue) do
+                                    for key, val in pairs(channelOptions) do
+                                        InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey..'_'..channelKey..'_'..key, disable)
+                                    end
+                                end
+
+                            else
+                                InterfaceOptions.DisableOption(moduleKey..'_Filtering_'..categoryKey..'_'..rarityKey..'_'..optionKey, disable)
+                            end
+                        end
+
+          
                     end
 
-      
                 end
 
             end
-
         end
 
 
