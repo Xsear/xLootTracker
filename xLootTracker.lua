@@ -1,35 +1,35 @@
 -- Standard Libs
-require 'math' -- In order to generate random numbers
-require 'unicode' -- Because why not
+require 'math'                     -- In order to generate random numbers
+require 'unicode'                  -- Should be used primarily for string handling. Note that the string library is included elsewhere...
 
 -- Firefall Libs
-require 'lib/lib_Debug' -- Debug library, used for logging
+require 'lib/lib_Debug'            -- Debug library, used for logging
 require 'lib/lib_InterfaceOptions' -- Interface Options
-require 'lib/lib_Items' -- Item library, used to get color-by-quality, and item tooltips
-require 'lib/lib_MapMarker' -- Map Marker library, used for waypoint creation.
-require 'lib/lib_Slash' -- Slash commands
-require 'lib/lib_Vector' -- Vector coordinates
-require 'lib/lib_Button' -- Buttons used by Tracker
-require 'lib/lib_Tooltip' -- Tooltip used by Tracker
-require 'lib/lib_ChatLib' -- Used to send some chat messages
-require 'lib/lib_table' -- Common table functions
-require 'lib/lib_UserKeybinds' -- User keybinds
-require 'lib/lib_Colors' -- Colors, used by markers
-require 'lib/lib_RowScroller' -- Row Scroller, used by Tacker
-require 'lib/lib_MultiArt' -- Used for icons
-require 'lib/lib_SubTypeIds' -- Used for determining loot categories
-require "lib/lib_ContextMenu" -- Used for hudtracker context menu
+require 'lib/lib_Items'            -- Item library, used to get color-by-quality, and item tooltips
+require 'lib/lib_MapMarker'        -- Map Marker library, used for waypoint creation.
+require 'lib/lib_Slash'            -- Slash commands
+require 'lib/lib_Vector'           -- Vector coordinates
+require 'lib/lib_Button'           -- Buttons used by Tracker
+require 'lib/lib_Tooltip'          -- Tooltip used by Tracker
+require 'lib/lib_ChatLib'          -- Used to send some chat messages
+require 'lib/lib_table'            -- Common table functions
+require 'lib/lib_UserKeybinds'     -- User keybinds
+require 'lib/lib_Colors'           -- Colors, used by markers
+require 'lib/lib_RowScroller'      -- Row Scroller, used by Tacker
+require 'lib/lib_MultiArt'         -- Used for icons
+require 'lib/lib_SubTypeIds'       -- Used for determining loot categories
+require "lib/lib_ContextMenu"      -- Used for hudtracker context menu
 
 -- Custom Libs
-require './lib/Lokii' -- Localization
-require './lib/lib_GTimer' -- Timer for rolltimeout
-require './lib/lib_LKObjects' -- Trivialize objects
+require './lib/Lokii'              -- Localization
+require './lib/lib_GTimer'         -- Timer for rolltimeout
+require './lib/lib_LKObjects'      -- Trivialize objects
 
 -- Custom Utils
-require './util/xSounds' -- Soundfiles for options
+require './util/xSounds'           -- Soundfiles for options
 
 -- Custom Objects
-require './lootpanel'
+require './lootpanel'              -- Loot Panel object
 
 -- Addon Meta
 AddonInfo = {
@@ -41,34 +41,33 @@ AddonInfo = {
 
 -- Global state
 State = {
-    loaded        = false, -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
-    hud           = false, -- Whether game wants HUD to be displayed or not, updated by OnHudShow
-    cursor        = false, -- Whether game is in cursor mode or not, updated by OnInputModeChanged
-    tooltipActive = false, -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.
-    inSquad       = false, -- Whether we are currently in a squad or not
-    isSquadLeader = false, -- Whether we are currently the squad leader or not
-    inPlatoon     = false,
-    isPlatoonLeader = false,
-    zoneId        = -1,
-    playerName    = "",
+    loaded        = false,   -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
+    hud           = false,   -- Whether game wants HUD to be displayed or not, updated by OnHudShow
+    cursor        = false,   -- Whether game is in cursor mode or not, updated by OnInputModeChanged
+    tooltipActive = false,   -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.
+    inSquad       = false,   -- Whether we are currently in a squad or not
+    isSquadLeader = false,   -- Whether we are currently the squad leader or not
+    inPlatoon     = false,   -- Whether we are currently in a platoon or not
+    isPlatoonLeader = false, -- Whether we are currently the platoon leader or not
+    zoneId        = -1,      -- The local zone id
+    playerName    = "",      -- The name of the local player
 }
 
 -- Addon
-require './util' -- To be deprecated
-require './types'   -- Types
-require './options' -- Options
-require './loot'-- Loot
-require './messages' -- Messages
-require './tracker' -- Tracker
-require './markers' -- Markers (Panels / Waypoints)
+require './util'       -- Various functions that need to be cleaned up.
+require './types'      -- Types
+require './options'    -- Options
+require './loot'       -- Loot
+require './messages'   -- Messages
+require './tracker'    -- Tracker
+require './markers'    -- Markers (Panels / Waypoints)
 require './hudtracker' -- HUDTracker
-require './sounds'
+require './sounds'     -- Sounds
 
 -- Functions
 --[[
     OnComponentLoad()
-    Callback for ON_COMPONENT_LOAD
-    Sets up Interace options, slash commands and prints a version message
+    Event handler for ON_COMPONENT_LOAD
 ]]--
 function OnComponentLoad()
     -- Setup Lokii
@@ -91,6 +90,10 @@ function OnComponentLoad()
     end
 end
 
+--[[
+    OnOptionsLoaded()
+    Called when Interface Options sends the __LOADED signal.
+]]--
 function OnOptionsLoaded()
     -- Setup Slash
     LIB_SLASH.BindCallback({slash_list=Options['Core']['SlashHandles'], description='Xsear\'s Loot Tracker', func=OnSlash})
@@ -107,18 +110,25 @@ function OnOptionsLoaded()
     end
 end
 
+--[[
+    OnEnterZone(args)
+    Event handler for ON_ENTER_ZONE
+]]--
 function OnEnterZone(args)
     State.zoneId = tonumber(args.zoneId)
 end
 
+--[[
+    OnPlayerReady(args)
+    Event handler for ON_PLAYER_READY
+]]--
 function OnPlayerReady(args)
     State.playerName = Player.GetInfo()
 end
 
 --[[
     OnHudShow(args)
-    Callback for MY_HUD_SHOW
-    Used to determine if the tracker should be displayed or not.
+    Event handler for MY_HUD_SHOW
 ]]--
 function OnHudShow(args)
     local hide = args.loading_screen or args.logout_bonus or args.freecamera or args.sinvironment
@@ -127,7 +137,7 @@ end
 
 --[[
     OnHudShow(args)
-    Callback for MY_HUD_HIDE_REQUEST
+    Event handler for MY_HUD_HIDE_REQUEST
 ]]--
 function OnHideHudRequest(args)
     State.hud = not args.hide
@@ -135,7 +145,7 @@ end
 
 --[[
     OnInputModeChanged(args)
-    Callback for ON_INPUT_MODE_CHANGED
+    Event handler for ON_INPUT_MODE_CHANGED
 ]]--
 function OnInputModeChanged(args)
     State.cursor = (args.mode == 'cursor')
@@ -143,7 +153,7 @@ end
 
 --[[
     OnInputModeChanged(args)
-    Callback for ON_SQUAD_ROSTER_UPDATE
+    Event handler for ON_SQUAD_ROSTER_UPDATE
 ]]--
 function OnSquadRosterUpdate(args)
     State.inSquad = Squad.IsInSquad()
@@ -159,6 +169,7 @@ end
 
 --[[
     OnSlash(args)
+    Callback handler for LIB_SLASH.
 ]]--
 function OnSlash(args)
     -- Help / command list
@@ -241,7 +252,7 @@ end
 
 --[[
     OnEntityAvailable(args)
-    Callback function for ON_UI_ENTITY_AVAILABLE
+    Event handler for ON_UI_ENTITY_AVAILABLE
 ]]--
 function OnEntityAvailable(args)
     -- Requires Core enabled
@@ -256,7 +267,7 @@ end
 
 --[[
     OnEntityAvailable(args)
-    Callback function for ON_UI_ENTITY_LOST
+    Event handler for ON_UI_ENTITY_LOST
 ]]--
 function OnEntityLost(args)
     -- Requires Core enabled
@@ -271,7 +282,7 @@ end
 
 --[[
     OnLootPickup(args)
-    Callback function for ON_LOOT_PICKUP
+    Event handler for ON_LOOT_PICKUP
 ]]--
 function OnLootPickup(args)
     -- Requires Core enabled
@@ -286,7 +297,7 @@ end
 
 --[[
     OnLootCollected(args)
-    Callback function for ON_LOOT_COLLECTED
+    Event handler for ON_LOOT_COLLECTED
 --]]
 function OnLootCollected(args)
     -- Requires Core enabled
@@ -306,11 +317,11 @@ function OnLootCollected(args)
 end
 
 
-
-
-
-
-
+--[[
+    OnTrackerNew(args)
+    Event handler for XLT_ON_TRACKER_NEW
+    Called by the Tracker when it has added a new item.
+--]]
 function OnTrackerNew(args)
     --Debug.Event(args)
 
@@ -330,6 +341,11 @@ function OnTrackerNew(args)
     Messages.OnTrackerNew(args)
 end
 
+--[[
+    OnTrackerUpdate(args)
+    Event handler for XLT_ON_TRACKER_UPDATE
+    Called by the Tracker when an item has been updated.
+--]]
 function OnTrackerUpdate(args)
     --Debug.Event(args)
 
@@ -340,6 +356,11 @@ function OnTrackerUpdate(args)
     Messages.OnTrackerUpdate(args)
 end
 
+--[[
+    OnTrackerLooted(args)
+    Event handler for XLT_ON_TRACKER_LOOTED
+    Called by the Tracker when an item has been looted.
+--]]
 function OnTrackerLooted(args)
     --Debug.Event(args)
 
@@ -350,6 +371,11 @@ function OnTrackerLooted(args)
     PanelManager.OnTrackerLooted(args)
 end
 
+--[[
+    OnTrackerRemove(args)
+    Event handler for XLT_ON_TRACKER_REMOVE
+    Called by the Tracker when an item is about to be removed.
+--]]
 function OnTrackerRemove(args)
     --Debug.Event(args)
 
@@ -369,164 +395,26 @@ end
 
 
 
+
+
+
+
 --[[
-
-function GetItemByIdentity(identityId)
-    local localItem
-    for num, item in ipairs(aIdentifiedLoot) do
-        if tostring(item.identityId) == tostring(identityId) then
-            localItem = item
-            break
-        end
-    end
-
-    -- If we don't know about this item we won't get info from it anyway, so just abort
-    if not localItem then Debug.Warn('No matching item for identityId: '..tostring(identityId)) end
-    return localItem
-end
-
-
-function GetIdentifiedItem(entityId)
-    Debug.Log('GetIdentifiedItem called with entityId: '..tostring(entityId))
-    local stringType = (type(entityId) == 'string')
-    if not _table.empty(aIdentifiedLoot) then
-        for num, item in ipairs(aIdentifiedLoot) do 
-            if (stringType and tostring(item.entityId) == entityId) or (item.entityId == entityId) then 
-                return item
-            end
-        end
-        Debug.Warn('GetIdentifiedItem called but didn\'t find any item with a matching entityId')
-    else
-        Debug.Warn('GetIdentifiedItem called but we don\'t have any identified items')
-    end
-    return false
-end
-
+    Slash_Clear(args)
+    The Clear Slash Command.
+    Attempts to remove all tracked items cleanly.
 --]]
-
-
-
-
-
-
-
-function Slash_Test(args)
-    table.remove(args, 1)
-
-    Debug.Log('Slash_Test')
-    Debug.Log('args[1]: '..tostring(args[1]))
-    Debug.Log('args[2]: '..tostring(args[2]))
-
-    Messages.SendSystemMessage('Test')
-
-
-    if true then
-
-
-        local numberOfItems = 3
-
-        local targetInfoData = {
-            {itemTypeId = 86681},
-            {itemTypeId = 86682},
-            {itemTypeId = 86695},
-            {itemTypeId = 86698},
-            {itemTypeId = 77344},
-            {itemTypeId = 52206},
-            {itemTypeId = 30408},
-            {itemTypeId = 100061},
-            {itemTypeId = 100479},
-            {itemTypeId = 103075},
-            {itemTypeId = 105253},
-            {itemTypeId = 106163},
-            {itemTypeId = 114314},
-            {itemTypeId = 114020},
-            {itemTypeId = 114176},
-            {itemTypeId = 113722},
-            {itemTypeId = 99979},
-            {itemTypeId = 99899},
-            {itemTypeId = 99659},
-            {itemTypeId = 98622},
-            {itemTypeId = 95088},
-
-            -- Moduled Item
-            {itemTypeId = 98937, modules = {94145}},
-
-            -- Salvage
-            {itemTypeId = 52206}, -- Recovered Chosen Tech
-            {itemTypeId = 30408}, -- Broken Bandit Gear
-            {itemTypeId = 86398}, -- Half Digested Module
-
-            -- Epics
-            {itemTypeId = 116407}, -- Necro Crossbow
-            {itemTypeId = 116378}, -- Thermal Needler (Epic)
-            {itemTypeId = 107786}, -- Thermal Needler (Rare)
-        }
-
-
-        for num = 1, tonumber(numberOfItems) do
-
-            -- Setup args
-            local args = {}
-
-            -- Get random targetInfo
-            args.targetInfo = targetInfoData[math.random(#targetInfoData)]
-
-            -- Generate fake entityId
-            args.entityId = tonumber(tostring(num)..tostring(math.random(0, 10)))
-
-            -- Set location
-            args.targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}
-            local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
-            args.targetInfo.lootPos.x = args.targetInfo.lootPos.x - posMod
-
-            -- Set loot property
-            args.type = "loot"
-            args.targetInfo.type = "loot"
-
-
-            --Messages.SendSystemMessage('Test Loot: ' .. tostring(args.targetInfo.itemTypeId))
-
-            -- Call
-            OnEntityAvailable(args)
-        end
-
-        
-
-
-    end
-
-end
-
-
-function Slash_Stat(args)
-    Debug.Log('Slash_Stat')
-    Debug.Table(State)
-    Debug.Table('Features', {
-                tracker = Options['Tracker']['Enabled'],
-                waypoints = Options['Waypoints']['Enabled'],
-                hudtracker = Options['HUDTracker']['Enabled'],
-                sounds = Options['Sounds']['Enabled'],
-                messages = Options['Messages']['Enabled'],
-                panels = Options['Panels']['Enabled'],
-                })
-    Tracker.Stat()
-    WaypointManager.Stat()
-    Messages.SendSystemMessage('Stat')
-end
-
 function Slash_Clear(args)
     Debug.Log('Slash_Clear')
     Tracker.Clear()
     Messages.SendSystemMessage('Clear')
 end
 
-function Slash_Refresh(args)
-    Debug.Log("Slash_Refresh")
-    Tracker.Refresh()
-    Messages.SendSystemMessage('Refresh')
-end
-
-
+--[[
+    Slash_Blacklist(args)
+    The Blacklist Slash Command.
+    Allows for blacklisting specific items from specific parts of the addon.
+--]]
 function Slash_Blacklist(args)
     Debug.Table("Slash_Blacklist", args)
     Messages.SendSystemMessage('Blacklist')
@@ -737,6 +625,127 @@ function Slash_Blacklist(args)
 
     Messages.SendSystemMessage('Failure. Reason: ' .. reason)
 end
+
+--[[
+    Slash_Refresh(args)
+    The Refresh Slash Command.
+    Attempts to update all tracked items so that their status is refreshed.
+--]]
+function Slash_Refresh(args)
+    Debug.Log("Slash_Refresh")
+    Tracker.Refresh()
+    Messages.SendSystemMessage('Refresh')
+end
+
+
+
+
+
+
+function Slash_Test(args)
+    table.remove(args, 1)
+
+    Debug.Log('Slash_Test')
+    Debug.Log('args[1]: '..tostring(args[1]))
+    Debug.Log('args[2]: '..tostring(args[2]))
+
+    Messages.SendSystemMessage('Test')
+
+
+    if true then
+
+
+        local numberOfItems = 3
+
+        local targetInfoData = {
+            {itemTypeId = 86681},
+            {itemTypeId = 86682},
+            {itemTypeId = 86695},
+            {itemTypeId = 86698},
+            {itemTypeId = 77344},
+            {itemTypeId = 52206},
+            {itemTypeId = 30408},
+            {itemTypeId = 100061},
+            {itemTypeId = 100479},
+            {itemTypeId = 103075},
+            {itemTypeId = 105253},
+            {itemTypeId = 106163},
+            {itemTypeId = 114314},
+            {itemTypeId = 114020},
+            {itemTypeId = 114176},
+            {itemTypeId = 113722},
+            {itemTypeId = 99979},
+            {itemTypeId = 99899},
+            {itemTypeId = 99659},
+            {itemTypeId = 98622},
+            {itemTypeId = 95088},
+
+            -- Moduled Item
+            {itemTypeId = 98937, modules = {94145}},
+
+            -- Salvage
+            {itemTypeId = 52206}, -- Recovered Chosen Tech
+            {itemTypeId = 30408}, -- Broken Bandit Gear
+            {itemTypeId = 86398}, -- Half Digested Module
+
+            -- Epics
+            {itemTypeId = 116407}, -- Necro Crossbow
+            {itemTypeId = 116378}, -- Thermal Needler (Epic)
+            {itemTypeId = 107786}, -- Thermal Needler (Rare)
+        }
+
+
+        for num = 1, tonumber(numberOfItems) do
+
+            -- Setup args
+            local args = {}
+
+            -- Get random targetInfo
+            args.targetInfo = targetInfoData[math.random(#targetInfoData)]
+
+            -- Generate fake entityId
+            args.entityId = tonumber(tostring(num)..tostring(math.random(0, 10)))
+
+            -- Set location
+            args.targetInfo.lootPos = {x=Player.GetAimPosition().x, y=Player.GetAimPosition().y, z=Player.GetAimPosition().z}
+            local posMod = (1*(num-(1*(num%2)))) * (-1 + (2*(num%2))) 
+            args.targetInfo.lootPos.x = args.targetInfo.lootPos.x - posMod
+
+            -- Set loot property
+            args.type = "loot"
+            args.targetInfo.type = "loot"
+
+
+            --Messages.SendSystemMessage('Test Loot: ' .. tostring(args.targetInfo.itemTypeId))
+
+            -- Call
+            OnEntityAvailable(args)
+        end
+
+        
+
+
+    end
+
+end
+
+
+function Slash_Stat(args)
+    Debug.Log('Slash_Stat')
+    Debug.Table(State)
+    Debug.Table('Features', {
+                tracker = Options['Tracker']['Enabled'],
+                waypoints = Options['Waypoints']['Enabled'],
+                hudtracker = Options['HUDTracker']['Enabled'],
+                sounds = Options['Sounds']['Enabled'],
+                messages = Options['Messages']['Enabled'],
+                panels = Options['Panels']['Enabled'],
+                })
+    Tracker.Stat()
+    WaypointManager.Stat()
+    Messages.SendSystemMessage('Stat')
+end
+
 
 
 
