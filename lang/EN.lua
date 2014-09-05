@@ -386,7 +386,10 @@ LANG = {
     Options_Subtab_currency     = "Currency",
     Options_Subtab_unknown      = "Unknown",
 
-
+    Options_Subtab_Advanced                                       =    "Advanced",
+    Options_Subtab_Messages_Events_Tracker_OnLootNew              =    "New",
+    Options_Subtab_Messages_Events_Tracker_OnLootLooted           =    "Looted",
+    Options_Subtab_Messages_Events_Tracker_OnLootLost             =    "Lost",
 
 
 
