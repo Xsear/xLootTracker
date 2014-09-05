@@ -1,3 +1,7 @@
+--[[
+    Waypoints
+    Handles the waypoints.
+--]]
 WaypointManager = {
     
 }
@@ -12,11 +16,11 @@ MarkerType = {
     Group = "group",
 }
 
-
-function WaypointManager.Stat()
-    Debug.Table("WaypointManager Private.waypointList", Private.waypointList)
-end
-
+--[[
+    WaypointManager.OnTrackerNew(args)
+    Called when Tracker has added a new item.
+    Triggers the creation of a waypoint for that item.
+--]]
 function WaypointManager.OnTrackerNew(args)
     if not Options['Waypoints']['Enabled'] then return end
     
@@ -31,19 +35,30 @@ function WaypointManager.OnTrackerNew(args)
     end
 end
 
+--[[
+    WaypointManager.OnTrackerLooted(args)
+    Called when Tracker thinks an item was looted.
+    Triggers the removal of the Waypoint for that item.
+--]]
 function WaypointManager.OnTrackerLooted(args)
     if not Options['Waypoints']['Enabled'] then return end
-    WaypointManager.OnLootStateChange(args)
+    WaypointManager.Remove(args.lootId)
 end
 
-
+--[[
+    WaypointManager.OnTrackerRemove(args)
+    Called when Tracker has removed an item.
+    Triggers the removal of the Waypoint for that item.
+--]]
 function WaypointManager.OnTrackerRemove(args)
     if not Options['Waypoints']['Enabled'] then return end
-    args.newState = "silly"
-    WaypointManager.OnLootStateChange(args)
+    WaypointManager.Remove(args.lootId)
 end
 
-
+--[[
+    WaypointManager.Create(loot)
+    Creates a Waypoint for loot.
+--]]
 function WaypointManager.Create(loot)
     -- Check Args
     if not loot or type(loot) ~= "table" then
@@ -51,9 +66,9 @@ function WaypointManager.Create(loot)
         return
     end
 
-    -- Check Loot State
+    -- Check Available
     if loot:GetState() ~= LootState.Available then
-        Debug.Log("Cannot create waypoint for unavailable " .. Loot:ToString())
+        Debug.Log("Cannot create waypoint for unavailable " .. loot:ToString())
         return
     end
 
@@ -79,7 +94,7 @@ function WaypointManager.Create(loot)
     end
 
     -- Text
-    MARKER:SetTitle(GetWaypointTitle(loot))
+    MARKER:SetTitle(Private.GetWaypointTitle(loot))
     MARKER:SetSubtitle(Lokii.GetString('UI_Waypoints_Subtitle'))
 
     -- Color ?
@@ -100,6 +115,55 @@ function WaypointManager.Create(loot)
     Private.waypointList[#Private.waypointList + 1] = {MARKER = MARKER, markerType = MarkerType.Loot, lootId = loot:GetId()}
 end
 
+--[[
+    WaypointManager.Remove(lootId)
+    Removes the Waypoint for the specified lootId.
+--]]
+function WaypointManager.Remove(lootId)
+    for i, waypoint in ipairs(Private.waypointList) do
+        if waypoint.markerType == MarkerType.Loot then
+            if waypoint.lootId == lootId then
+                waypoint.MARKER:Destroy()
+                table.remove(Private.waypointList, i)
+                break
+            end
+        end 
+    end
+end
+
+--[[
+    WaypointManager.Stat()
+    Debug output for the Stat slash command.
+--]]
+function WaypointManager.Stat()
+    Debug.Log('WaypointManager is tracking ' .. tostring(#Private.waypointList) .. ' waypoints.')
+end
+
+--[[
+    Private.GetWaypointTitle(loot)
+    Returns a formatted title for the Waypoint matching the filters of the loot.
+--]]
+function Private.GetWaypointTitle(loot)
+    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Waypoints']['Filtering'])
+    local formatString = Options['Waypoints']['Filtering'][categoryKey][rarityKey]['WaypointTitle']
+    return Messages.TextFilters(formatString, {loot=loot})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+--[[
+    WaypointManager.ToggleVisibility
+    This totally doesn't work. Fixme: dafaq you doing here.
+--]]
 function WaypointManager.ToggleVisibility(show)
     Private.visibility = show or not Private.visibility
     for i, waypoint in ipairs(Private.waypointList) do
@@ -107,27 +171,3 @@ function WaypointManager.ToggleVisibility(show)
     end
 end
 
-
-function WaypointManager.OnLootStateChange(args)
-    if args.newState ~= LootState.Available then
-        for i, waypoint in ipairs(Private.waypointList) do
-            if waypoint.markerType == MarkerType.Loot then
-                if waypoint.lootId == args.lootId then
-                    waypoint.MARKER:Destroy()
-                    table.remove(Private.waypointList, i)
-                    break
-                end
-            
-            elseif args.markerType == MarkerType.Group then
-                -- Todo:
-            end 
-        end
-
-    end
-end
-
-function GetWaypointTitle(loot)
-    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Waypoints']['Filtering'])
-    local formatString = Options['Waypoints']['Filtering'][categoryKey][rarityKey]['WaypointTitle']
-    return Messages.TextFilters(formatString, {loot=loot})
-end
