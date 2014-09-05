@@ -260,6 +260,7 @@ for i, eventKey in ipairs({'OnLootNew', 'OnLootLooted', 'OnLootLost'}) do
         end
 
         local rarityTableTemplate = {
+            ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
 
