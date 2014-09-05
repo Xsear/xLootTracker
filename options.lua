@@ -234,7 +234,6 @@ Options = {
 
 
 
-Debug.EnableLogging(true)
 for i, eventKey in ipairs({'OnLootNew', 'OnLootLooted', 'OnLootLost'}) do
 
     Options['Messages']['Events']['Tracker'][eventKey]['Filtering'] = {}

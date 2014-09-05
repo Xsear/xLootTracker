@@ -153,7 +153,7 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
 
                 -- Filtering Check
                 if not LootFiltering(loot, Options['Messages']['Events'][eventClass][eventName]) then
-                    Debug.Log("Not sending message because it did not pass filters")
+                    --Debug.Log("Not sending message because it did not pass filters")
                     return
                 end
 
