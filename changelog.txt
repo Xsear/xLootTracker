@@ -8,7 +8,7 @@ v1.15
     - Added options to toggle sending of messages on Squad/Platoon channels when not leader (Defaults to not sending messages unless leader).
     - Changed default values for Messages so that Squad/Platoon messages are not enabled by default.
     - Changed item/required level options to use a slider instead of a textfield.
-
+    - Various code improvements and enworsements.
 
 v1.14
     Public Release 14
