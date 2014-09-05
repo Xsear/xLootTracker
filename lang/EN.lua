@@ -207,6 +207,11 @@ LANG = {
     Options_Messages_Channels_System_Tooltip                                                =    "Master switch for System messages. The addon will not send event system messages if this is unchecked, regardless of other settings.",
 
 
+    Options_Messages_OnlyWhenSquadLeader_Label                      =  "Send on Squad only when Leader",
+    Options_Messages_OnlyWhenSquadLeader_Tooltip                    =  "When checked, messages will not be sent on the Squad channel unless you are the Squad leader.",
+    Options_Messages_OnlyWhenPlatoonLeader_Label                    =  "Send on Platoon only when Leader",
+    Options_Messages_OnlyWhenPlatoonLeader_Tooltip                  =  "When checked, messages will not be sent on the Platoon channel, unless you are the Platoon leader.",
+
 
     Options_Messages_Events_Tracker_OnLootClaimed_Enabled_Label                               =    "Loot Claimed",
     Options_Messages_Events_Tracker_OnLootClaimed_Enabled_Tooltip                             =    "When somebody loots an item that the addon had not found",

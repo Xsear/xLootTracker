@@ -2845,6 +2845,24 @@ function BuildInterfaceOptions_Messages()
         subtab  = {Lokii.GetString('Options_Subtab_Messages')}
     })
 
+    -- Only Squad when Squad Leader
+    InterfaceOptions.AddCheckBox({
+        id      = 'Messages_OnlyWhenSquadLeader',
+        default = Options['Messages']['OnlyWhenSquadLeader'],
+        label   = Lokii.GetString('Options_Messages_OnlyWhenSquadLeader_Label'),
+        tooltip = Lokii.GetString('Options_Messages_OnlyWhenSquadLeader_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_Messages')}
+    })
+
+    -- Only Platoon when Platoon Leader
+    InterfaceOptions.AddCheckBox({
+        id      = 'Messages_OnlyWhenPlatoonLeader',
+        default = Options['Messages']['OnlyWhenPlatoonLeader'],
+        label   = Lokii.GetString('Options_Messages_OnlyWhenPlatoonLeader_Label'),
+        tooltip = Lokii.GetString('Options_Messages_OnlyWhenPlatoonLeader_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_Messages')}
+    })
+
     -- Event settings
     local filteringArgs = {parent='Messages'}
     for eventKey, eventValue in pairs(Options['Messages']['Events']['Tracker']) do
