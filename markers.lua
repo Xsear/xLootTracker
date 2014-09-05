@@ -132,11 +132,6 @@ function WaypointManager.OnLootStateChange(args)
     end
 end
 
-function WaypointManager.GetYourShitTogether()
-    Debug.Log("Sorry :(")
-    Private.waypointList = {}
-end
-
 function GetWaypointTitle(loot)
     local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Waypoints']['Filtering'])
     local formatString = Options['Waypoints']['Filtering'][categoryKey][rarityKey]['WaypointTitle']

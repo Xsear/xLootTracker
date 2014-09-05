@@ -184,6 +184,7 @@ function OnSlash(args)
     elseif args[1] == 'clear' then
         Slash_Clear(args)
 
+    -- Blacklist
     elseif args[1] == 'blacklist' then
         Slash_Blacklist(args)
 
@@ -194,9 +195,6 @@ function OnSlash(args)
 
     elseif args[1] == 'stat' then
         Slash_Stat(args)
-
-    elseif args[1] == 'waymanpls' then
-        WaypointManager.GetYourShitTogether()
 
     elseif args[1] == 'wayman' then
         WaypointManager.ToggleVisibility()
