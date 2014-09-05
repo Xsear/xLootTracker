@@ -165,7 +165,7 @@ function OnSlash(args)
     if not args[1] or args[1] == 'help' or args[1] == '?' then
         Messages.SendSystemMessage('Xsear\'s Loot Tracker v'..AddonInfo.version)
         Messages.SendSystemMessage('Slash Commands')
-        Messages.SendSystemMessage('/lt [help|?] : Version message and command list.')
+        Messages.SendSystemMessage('/lt : Version message and command list.')
         Messages.SendSystemMessage('/lt clear : Force the tracker to remove all loot.')
         Messages.SendSystemMessage('/lt blacklist <action> <scope> [itemName|itemTypeId].')
         Messages.SendSystemMessage('/lt refresh : Force the tracker to update all loot.')
