@@ -152,9 +152,16 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
                     return
                 end
 
+                -- Filtering Check
+                if not LootFiltering(loot, Options['Messages']['Events'][eventClass][eventName]) then
+                    Debug.Log("Not sending message because it did not pass filters")
+                    return
+                end
+
                 -- OnLootLooted Ignore Others Check
                 if eventName == 'OnLootLooted' then
-                    if Options['Messages']['Events'][eventClass][eventName]['IgnoreOthers'] then
+                    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Messages']['Events'][eventClass][eventName]['Filtering'])
+                    if Options['Messages']['Events'][eventClass][eventName][categoryKey][rarityKey]['IgnoreOthers'] then
                         if namecompare(State.playerName, loot:GetLootedBy()) then
                             return
                         end
