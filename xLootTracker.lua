@@ -60,7 +60,8 @@ require './options'    -- Options
 require './loot'       -- Loot
 require './messages'   -- Messages
 require './tracker'    -- Tracker
-require './markers'    -- Markers (Panels / Waypoints)
+require './panels'     -- Panels
+require './waypoints'  -- Waypoints
 require './hudtracker' -- HUDTracker
 require './sounds'     -- Sounds
 
