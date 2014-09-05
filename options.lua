@@ -3020,6 +3020,9 @@ function UIHELPER_FilterCategory(moduleKey, moduleRef, category, moduleParent)
         subtab  = subtab
     })
 
+
+
+    subtab = _table.copy(subtab) -- end Filtering tab
     table.insert(subtab, Lokii.GetString('Options_Subtab_'..category))
 
     -- Mode dropdown
@@ -3029,7 +3032,7 @@ function UIHELPER_FilterCategory(moduleKey, moduleRef, category, moduleParent)
     UIHELPER_FilterRarity(moduleKey, moduleRef, category, 'Simple', subtab)
 
     -- Advanced mode options
-    subtab = _table.copy(subtab)
+    subtab = _table.copy(subtab) -- end Category tab
     table.insert(subtab, Lokii.GetString('Options_Subtab_Advanced'))
     for id, rarity in pairs(LootRarity) do
         UIHELPER_FilterRarity(moduleKey, moduleRef, category, rarity, subtab)
