@@ -1,3 +1,7 @@
+--[[
+    Tracker
+    The Tracking system. Detects and tracks loot drops. Stores data and triggers events to be used by the rest of the addon.
+--]]
 Tracker = {}
 
 local Private = {
@@ -32,6 +36,11 @@ function Tracker.Setup()
     Private.CYCLE_LootEventHistoryCleanup:Run(tonumber(Options['Tracker']['LootEventHistoryCleanupInterval']))
 end
 
+--[[
+    Tracker.OnOptionChange(id, value)
+    Called by Options when a Tracker Option is changed.
+    Used to handle switching of tracking modes cleanly.
+--]]
 function Tracker.OnOptionChange(id, value)
     if id == 'Tracker_UpdateMode' then
         -- Switching from global to indivudal update mode
@@ -107,54 +116,20 @@ function Tracker.OnOptionChange(id, value)
 end
 
 
-function Private.LootEventHistoryCleanup()
-
-    if not _table.empty(Private.lootEventHistory) then
-        
-        local remove = table.remove -- I don't know if this helps
-        local asnumber = tonumber -- But give me that performance pls
-        local emptyTable = _table.empty -- This looks so bad
-        local currentTime = asnumber(System.GetClientTime())
-        local lifetime = asnumber(Options['Tracker']['LootEventHistoryLifetime'])
-
-
-        for itemTypeId, events in pairs(Private.lootEventHistory) do
-
-            -- Go trough events if not empty
-            if not emptyTable(events) then
-
-                local i=1
-                while i <= #events do
-                    local event = events[i]
-
-                    -- If has lived longer than life, remove
-                    if (currentTime - asnumber(event.occuredAt) > lifetime) then
-                        remove(events, i)
-                    else
-                        i = i + 1
-                    end
-                end
-            end
-
-            -- Remove table if empty (second check, in case events have been removed)
-            if emptyTable(events) then
-                Private.lootEventHistory[itemTypeId] = nil
-            end
-
-        end
-    end
-end
-
 
 
 --[[
     Tracker.GetLoot()
-    Gives out the table of tracked loot. Please don't change it, everyone else D':
+    Returns a copy of all current loot data.
 --]]
 function Tracker.GetLoot()
     return _table.copy(Private.trackedLoot)
 end
 
+--[[
+    Tracker.GetAvailableLoot()
+    Returns a table of all loot that is currently available.
+--]]
 function Tracker.GetAvailableLoot()
     local result = {}
     for id, loot in pairs(Private.trackedLoot) do
@@ -165,6 +140,10 @@ function Tracker.GetAvailableLoot()
     return _table.copy(result)
 end
 
+--[[
+    Tracker.GetCount()
+    Returns the number of currently tracked items.
+--]]
 function Tracker.GetCount()
     local count = Private.trackedLootCounter
     return count
@@ -213,6 +192,11 @@ function Tracker.OnEntityAvailable(args)
 end
 
 
+--[[
+    Tracker.OnLootableEntity(args)
+    Checks if the entity was being tracked. If it was, try to figure out if it despawned or not. Trigger an update so that the loot will eventually be removed.
+    Call when an OnEntityLost has occured.
+--]]
 function Tracker.OnEntityLost(args)
     --Debug.Log("Tracker.OnEntityLost on entityId " .. tostring(args.entityId))
     -- Do we have an entityId?
@@ -254,14 +238,9 @@ function Tracker.OnEntityLost(args)
     Callback2.FireAndForget(Tracker.Update, loot:GetId(), Options['Tracker']['UpdateDelay'])
 end
 
-
-
-
-
 --[[
     Tracker.OnLootEvent(args)
     When an OnLootCollected or OnLootPickup has occured.
-
     Determines whether some form of OnLoot event should occur.    
 ]]--
 function Tracker.OnLootEvent(args)
@@ -347,7 +326,6 @@ function Tracker.OnLootEvent(args)
         end
     end
 end
-
 
 --[[
     Tracker.Track(entityId, [targetInfo], [itemInfo])
@@ -486,7 +464,13 @@ function Tracker.Track(args)
 end
 
 
-
+--[[
+    Tracker.Update(lootArg)
+    Updates the state of a loot instance.
+    Fires the OnTrackerUpdate event if the state of the loot has changed.
+    Additionally, if the item was looted, fires the OnTrackerLooted event.
+    Additionally, queues the removal of items that are no longer available.
+]]--
 function Tracker.Update(lootArg)
     local loot = nil
     if type(lootArg) == "table" then
@@ -525,6 +509,11 @@ function Tracker.Update(lootArg)
 
 end
 
+--[[
+    Tracker.Remove(lootArg)
+    Removes a tracked loot instance cleanly.
+    Fires the OnTrackerRemove event.
+--]]
 function Tracker.Remove(lootArg)
     local loot = nil
     if type(lootArg) == "table" then
@@ -566,12 +555,10 @@ function Tracker.Remove(lootArg)
     OnTrackerRemove({lootId = lootId})
 end
 
-
-
-
-
-
-
+--[[
+    Tracker.IsTrackedEntity(entityId) 
+    Returns true if entityId is currently being tracked.
+--]]
 function Tracker.IsTrackedEntity(entityId) 
     local id = Private.identityByEntity[entityId]
 
@@ -583,34 +570,38 @@ function Tracker.IsTrackedEntity(entityId)
 end
 
 
-
-function Tracker.GetLootById(id)
-    local loot = Private.trackedLoot[id]
+--[[
+    Tracker.GetLootById(id) 
+    Returns the loot instance with the matching lootId.
+--]]
+function Tracker.GetLootById(lootId)
+    local loot = Private.trackedLoot[lootId]
 
     if not loot then
-        Debug.Log("Tracker.GetLootById returning nil because it did not find any matching loot")
+        Debug.Log("Tracker.GetLootById returning nil because it did not find any matching loot for lootId: " .. tostring(lootId))
     end
 
     return loot
 end
 
+--[[
+    Tracker.GetLootByEntityId(entityId)
+    Returns the loot instance with the matching entityId.
+--]]
 function Tracker.GetLootByEntityId(entityId)
     local loot = Private.trackedLoot[Private.identityByEntity[entityId]]
 
     if not loot then
-        Debug.Log("Tracker.GetLootByEntityId returning nil because it did not find any matching loot")
+        Debug.Log("Tracker.GetLootByEntityId returning nil because it did not find any matching loot for entityId " .. tostring(entityId))
     end
 
     return loot
 end
 
-
-
-function Tracker.Stat()
-    Debug.Table("trackedLoot", Private.trackedLoot)
-    Debug.Table("lootEventHistory", Private.lootEventHistory)
-end
-
+--[[
+    Tracker.Clear()
+    Clears trackedLoot and the lootEventHistory as cleanly as possible.
+--]]
 function Tracker.Clear()
     for i, loot in pairs(Private.trackedLoot) do
         Tracker.Remove(loot)
@@ -626,12 +617,69 @@ function Tracker.Clear()
 end
 
 
+--[[
+    Tracker.Stat()
+    Debug output for the Stat slash command.
+--]]
+function Tracker.Stat()
+    --Debug.Table("trackedLoot", Private.trackedLoot)
+    --Debug.Table("lootEventHistory", Private.lootEventHistory)
+    Debug.Log("Tracker.GetCount(): " .. tostring(Tracker.GetCount()))
+end
 
-
+--[[
+    Private.SetLooted(args)
+    Sets the lootedBy/To properties of a loot instance.
+--]]
 function Private.SetLooted(args)
     args.loot:SetLootedBy(tostring(args.lootedBy))
     args.loot:SetLootedTo(tostring(args.lootedTo))
 end
+
+--[[
+    Private.LootEventHistoryCleanup()
+    Removes aged entries in the lootEventHistory.
+--]]
+function Private.LootEventHistoryCleanup()
+
+    if not _table.empty(Private.lootEventHistory) then
+        
+        local remove = table.remove -- I don't know if this helps
+        local asnumber = tonumber -- But give me that performance pls
+        local emptyTable = _table.empty -- This looks so bad
+        local currentTime = asnumber(System.GetClientTime())
+        local lifetime = asnumber(Options['Tracker']['LootEventHistoryLifetime'])
+
+
+        for itemTypeId, events in pairs(Private.lootEventHistory) do
+
+            -- Go trough events if not empty
+            if not emptyTable(events) then
+
+                local i=1
+                while i <= #events do
+                    local event = events[i]
+
+                    -- If has lived longer than life, remove
+                    if (currentTime - asnumber(event.occuredAt) > lifetime) then
+                        remove(events, i)
+                    else
+                        i = i + 1
+                    end
+                end
+            end
+
+            -- Remove table if empty (second check, in case events have been removed)
+            if emptyTable(events) then
+                Private.lootEventHistory[itemTypeId] = nil
+            end
+
+        end
+    end
+end
+
+
+
 
 
 
@@ -642,14 +690,12 @@ end
 
 --[[
     IsTrackableItem(itemInfo)
-    Whether or not an item (post pickup) was a lootable target (ish)
+    Whether or not an item can be tracked by the addon.
 ]]--
 function IsTrackableItem(itemInfo)
     -- Verify that the looted item is of a type that we care about
     return (IsEquipment(itemInfo) or IsModule(itemInfo) or IsSalvage(itemInfo) or IsConsumable(itemInfo) or IsMetal(itemInfo) or IsComponent(itemInfo) or IsCurrency(itemInfo))
 end
-
-
 
 function IsEquipment(itemInfo)
     local EquipmentItemTypes = {
@@ -666,7 +712,6 @@ function IsEquipment(itemInfo)
 
     return false
 end
-
 
 function IsComponent(itemInfo)
     -- SubTypeIds.Resource should be 15 and represent Crafting Components
@@ -706,7 +751,6 @@ function IsSalvage(itemInfo)
 
     return ((cond1 or cond2) and cond3)
 end
-
 
 function IsModule(itemInfo)
     return (itemInfo.type == "item_module")
