@@ -80,6 +80,9 @@ Options = {
             ['Notifications'] = true,
         },
 
+        ['OnlyWhenSquadLeader'] = true,
+        ['OnlyWhenPlatoonLeader'] = true,
+
         ['Prefix'] = '',
 
         ['Events'] = {

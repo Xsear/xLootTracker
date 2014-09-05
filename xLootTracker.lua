@@ -47,6 +47,8 @@ State = {
     tooltipActive = false, -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.
     inSquad       = false, -- Whether we are currently in a squad or not
     isSquadLeader = false, -- Whether we are currently the squad leader or not
+    inPlatoon     = false,
+    isPlatoonLeader = false,
     zoneId        = -1,
     playerName    = "",
 }
@@ -144,9 +146,15 @@ end
     Callback for ON_SQUAD_ROSTER_UPDATE
 ]]--
 function OnSquadRosterUpdate(args)
-    local roster = Squad.GetRoster()
-    State.inSquad = (roster ~= nil and not _table.empty(roster))
-    State.isSquadLeader = (State.inSquad and namecompare(Player.GetInfo(), roster.leader))
+    State.inSquad = Squad.IsInSquad()
+    State.inPlatoon = Platoon.IsInPlatoon()
+
+    if State.inSquad and State.inPlatoon then
+        State.inSquad = false
+    end
+
+    State.isSquadLeader = (State.inSquad and namecompare(State.playerName, Squad.GetLeader()))
+    State.isPlatoonLeader = (State.inPlatoon and namecompare(State.playerName, Platoon.GetLeader()))
 end
 
 --[[
