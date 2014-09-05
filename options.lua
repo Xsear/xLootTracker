@@ -2801,6 +2801,8 @@ function UIHELPER_FilterCategory(moduleKey, moduleRef, category, moduleParent)
     UIHELPER_FilterRarity(moduleKey, moduleRef, category, 'Simple', subtab)
 
     -- Advanced mode options
+    subtab = _table.copy(subtab)
+    table.insert(subtab, Lokii.GetString('Options_Subtab_Advanced'))
     for id, rarity in pairs(LootRarity) do
         UIHELPER_FilterRarity(moduleKey, moduleRef, category, rarity, subtab)
     end
@@ -2810,6 +2812,12 @@ function UIHELPER_FilterRarity(moduleKey, moduleRef, category, rarity, subtab)
     -- Vars
     local checkbox = (rarity ~= 'Simple')
     local raritydropdown = (rarity == 'Simple')
+
+    if false and checkbox then
+        subtab = _table.copy(subtab)
+        table.insert(subtab, Lokii.GetString('Options_Subtab_Advanced'))
+    end
+
 
     -- moduleKey category rarity Enabled group
     InterfaceOptions.StartGroup({
