@@ -1,0 +1,80 @@
+
+    Checklist for things to do when releasing a new version
+
+        Update version number in Addon
+        Determine if save version number should be updated in Addon
+        Update version number in Melderinfo
+        Update patch number in Melderinfo
+
+        Write changelog
+
+        Write release post
+
+        Upload attachment to thread op
+        Remove old attachment from thread op
+        Update download link in thread op
+        Update latest version in thread op
+        Update melder url tag in thread op
+        Update melder version tag in thread op
+
+        Publish release post to thread
+
+        Upload to curse
+
+
+
+
+v0.5e
+    Private Release 6
+    - Fixed an issue causing the addon user to automatically need roll everything (oops)
+    - Fixed an issue where the function handling replacement in messages wasn't handling its parameters properly and sometimes halted execution due to errors.
+    - Implemented %t, rollType replacement for roll declaration messages.
+    - Waypoints now handle item names with ^Q in them more elegantly.
+    - Waypoints now display item icon
+    - Fixed an issue where if a roll was hardcancelled by clearing the list of identified items, the addon could get stuck in a state where it was unable to roll new items because the code to clean up after a roll had been cancelled halted with references to non existant items
+
+v0.5d
+    Private Release 5
+    - Added option to disable version message
+    - Changed roll timeout timers to run on the individual timers for loot
+    - Added message replacement functionality to get rid of ugly ^Q. Usage of %i will always print item name, removing ^Q if encountered. Usage of %iq will print item name with quality if ^Q is encountered. This isn't optimal at all... will improve.
+    - Fixed loot despawn alarm reset (aka despawn timers... again...)
+    - Fixed an issue where the addon would send too long chat messages. The addon will now try to use linebreaks (\n) in order to split too long messages into multiple. 
+
+v0.5c
+    Private Release 4
+    - Fixed a bug with fallback icons for panels, causing them to break when universal gear dropped
+    - Improve waypoint removal behavior
+    - Fixed despawn timers (again)
+
+v0.5b
+    Private Release 3
+    - Fixed messages not working at all (oops)
+    - Fixed tracker not clearing old list items before rewriting them, causing illegible text
+    - Fixed tracker not calculating positions for list items properly
+    - Fixed despawn timers breaking if waypoints were turned off (lol)
+    - Improved the panels massively
+        - No longer uses Airii mesh
+        - Displays more data... frankly, displays data
+        - Options that allow controlling some of the colors
+
+v0.5a
+    Private Release 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+http://forums.firefallthegame.com/community/attachments/xsquadlootmanager_v0-91-zip.1449721/
+
+http://forums.firefallthegame.com/community/attachments/xsquadlootmanager_v0-92-zip.1506921/
