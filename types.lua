@@ -1,31 +1,21 @@
-
--- Fixme: Some of these don't need to be global, though some do. >_<
--- do this better
+-- There's room for improvement here...
 
 
 uiSounds = xSounds.GetSounds()
 
 
-LootPanelModes = {
-    Standard = 'standard',
-    Small = 'small',
+TornadoPocketZoneIds = {
+    805, -- Epicenter
+    865, -- Abyss
+    868, -- Cinerarium
 }
 
-OptionsLootPanelModes = {
-    [1] = LootPanelModes.Standard,
-    [2] = LootPanelModes.Small,
+LootState = {
+    Available  = "available", -- Has a valid entityId
+    Looted     = "looted",    -- Was Available, then looted
+    Lost       = "lost",      -- Was Available, then hit by OnEntityLost
+    Unknown    = "unknown",
 }
-
-ColorModes = {
-    MatchItem = 'matchitem',
-    Custom = 'custom',
-}
-
-OptionsColorModesDropdown = {
-    [1] = ColorModes.MatchItem,
-    [2] = ColorModes.Custom,
-}
-
 
 LootCategory = {
     Equipment    = 'equipment',
@@ -47,13 +37,6 @@ FilterableLootCategories = { -- Used by options to generate filtering options
     Components = LootCategory.Components,
     Consumable = LootCategory.Consumable,
     Currency   = LootCategory.Currency,
-}
-
-LootState = {
-    Available  = "available", -- Has a valid entityId
-    Looted     = "looted",    -- Was Available, then looted
-    Lost       = "lost",      -- Was Available, then hit by OnEntityLost
-    Unknown    = "unknown",
 }
 
 LootRarity = {
@@ -86,7 +69,6 @@ LootRarityIndex = {
     [LootRarity.Legendary] = 7,
 }
 
-
 TriggerModeOptions = {
     Simple = 'simple',
     Advanced = 'advanced',
@@ -96,6 +78,27 @@ OptionsTriggerModeDropdown = {
     [1] = TriggerModeOptions.Simple,
     [2] = TriggerModeOptions.Advanced,
 }
+
+LootPanelModes = {
+    Standard = 'standard',
+    Small = 'small',
+}
+
+OptionsLootPanelModes = {
+    [1] = LootPanelModes.Standard,
+    [2] = LootPanelModes.Small,
+}
+
+ColorModes = {
+    MatchItem = 'matchitem',
+    Custom = 'custom',
+}
+
+OptionsColorModesDropdown = {
+    [1] = ColorModes.MatchItem,
+    [2] = ColorModes.Custom,
+}
+
 
 HUDTrackerVisibilityOptions = {
     Always = 'always',
@@ -134,7 +137,6 @@ OptionsHUDTrackerIconModeDropdown = {
     [3] = HUDTrackerIconModeOptions.None,
 }
 
-
 RadarEdgeModes = {
     None = MapMarker.EDGE_NONE,
     Arrow = MapMarker.EDGE_ARROW,
@@ -146,19 +148,6 @@ OptionsRadarEdgeModesDropdown = {
     [2] = RadarEdgeModes.Arrow,
     [3] = RadarEdgeModes.Icon,
 }
-
-
-
-
-TornadoPocketZoneIds = {
-    805, -- Epicenter
-    865, -- Abyss
-    868, -- Cinerarium
-}
-
-
-
-
 
 OptionsFontTypes = {
     UbuntuRegular = 'UbuntuRegular',
@@ -177,8 +166,6 @@ OptionsFontTypeDropdown = {
     [5] = OptionsFontTypes.Bold,
     [6] = OptionsFontTypes.Wide,
 }
-
-
 
 TrackerUpdateMode = {
     Global = 'global',
