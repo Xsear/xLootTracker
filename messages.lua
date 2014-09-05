@@ -146,7 +146,6 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
             local loot = Tracker.GetLootById(eventArgs.lootId)
             
             if loot then
-
                 -- Blacklist Check
                 if Options['Blacklist']['Messages'][tostring(loot:GetTypeId())] then
                     return
@@ -158,35 +157,44 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs, canSend)
                     return
                 end
 
+                -- Setup filtering options ref
+                local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Messages']['Events'][eventClass][eventName]['Filtering'])
+                local optionsRef = Options['Messages']['Events'][eventClass][eventName]['Filtering'][categoryKey][rarityKey]
+
                 -- OnLootLooted Ignore Others Check
                 if eventName == 'OnLootLooted' then
-                    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Messages']['Events'][eventClass][eventName]['Filtering'])
-                    if Options['Messages']['Events'][eventClass][eventName][categoryKey][rarityKey]['IgnoreOthers'] then
+                    
+                    if optionsRef['IgnoreOthers'] then
                         if namecompare(State.playerName, loot:GetLootedBy()) then
                             return
                         end
                     end
                 end
-            end
-        end
 
-        -- Event looks fine, proceed with the messages
-        for channelKey, channelValue in pairs(Options['Messages']['Events'][eventClass][eventName]['Channels']) do
-            if Options['Messages']['Channels'][channelKey] then
-                -- Var
-                local message = ''
 
-                -- Add event message
-                if Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Enabled'] then
-                    message = Messages.TextFilters(Options['Messages']['Events'][eventClass][eventName]['Channels'][channelKey]['Format'], eventArgs)
+                -- Event looks fine, proceed with the messages
+                for channelKey, channelValue in pairs(optionsRef['Channels']) do
+                    if Options['Messages']['Channels'][channelKey] then
+                        -- Var
+                        local message = ''
+
+                        -- Add event message
+                        if optionsRef['Channels'][channelKey]['Enabled'] then
+                            message = Messages.TextFilters(optionsRef['Channels'][channelKey]['Format'], eventArgs)
+                        end
+
+                        -- Send message if we have one
+                        if message ~= '' then
+                            Messages.SendChatMessage(channelKey, message) -- , eventArgs
+                        end
+                    end
                 end
 
-                -- Send message if we have one
-                if message ~= '' then
-                    Messages.SendChatMessage(channelKey, message) -- , eventArgs
-                end
             end
+
+
         end
+
     end
 end
 
