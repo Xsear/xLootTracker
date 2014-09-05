@@ -1,6 +1,7 @@
-
-
-
+--[[
+    Panels
+    Handles the lootpanels.
+--]]
 PanelManager = {
     
 }
@@ -9,10 +10,12 @@ local Private = {
     panelList = {},
 }
 
-function PanelManager.Stat()
-    Debug.Table("PanelManager Private.panelList", Private.panelList)
-end
 
+--[[
+    PanelManager.OnTrackerNew(args)
+    Called when Tracker has added a new item.
+    Triggers the creation of a panel for that item.
+--]]
 function PanelManager.OnTrackerNew(args)
     if not Options['Panels']['Enabled'] then return end
 
@@ -27,25 +30,44 @@ function PanelManager.OnTrackerNew(args)
     end
 end
 
+--[[
+    PanelManager.OnTrackerLooted(args)
+    Called when Tracker thinks an item was looted.
+    Triggers the removal of the Panel for that item.
+--]]
 function PanelManager.OnTrackerLooted(args)
     if not Options['Panels']['Enabled'] then return end
-    Debug.Log("PanelManager.OnTrackerLooted calling Remove")
+    --Debug.Log("PanelManager.OnTrackerLooted calling Remove")
     PanelManager.Remove(args.lootId)
 end
 
+--[[
+    PanelManager.OnTrackerRemove(args)
+    Called when Tracker has removed an item.
+    Triggers the removal of the Panel for that item.
+--]]
 function PanelManager.OnTrackerRemove(args)
     if not Options['Panels']['Enabled'] then return end
-    Debug.Log("PanelManager.OnTrackerRemove calling Remove")
+    --Debug.Log("PanelManager.OnTrackerRemove calling Remove")
     PanelManager.Remove(args.lootId)
 end
 
 
 
-
+--[[
+    PanelManager.Create(loot)
+    Creates a Panel for loot.
+--]]
 function PanelManager.Create(loot)
-    -- Verify available
+    -- Check Args
+    if not loot or type(loot) ~= "table" then
+        Debug.Log('PanelManager.Create called with invalid argument: ' .. tostring(loot))
+        return
+    end
+
+    -- Check Available
     if loot:GetState() ~= LootState.Available then
-        Debug.Warn("PanelManager.Create called for unavailable loot!")
+        Debug.Warn('PanelManager.Create called for unavailable ' .. loot:ToString())
         return
     end
 
@@ -167,27 +189,10 @@ function PanelManager.Create(loot)
     Private.panelList[loot:GetId()] = panel
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-function PanelManager.Update(lootId)
-    if Private.panelList[lootId] then
-        local panel = Private.panelList[lootId]
-
-        -- Todo: Update
-
-    end
-end
-
+--[[
+    PanelManager.Remove(lootId)
+    Removes the Panel for the specified lootId.
+--]]
 function PanelManager.Remove(lootId)
     if Private.panelList[lootId] then
         LKObjects.Destroy(Private.panelList[lootId])
@@ -195,5 +200,10 @@ function PanelManager.Remove(lootId)
     end
 end
 
-
-
+--[[
+    PanelManager.Stat()
+    Debug output for the Stat slash command.
+--]]
+function PanelManager.Stat()
+    Debug.Table("PanelManager Private.panelList", Private.panelList)
+end
