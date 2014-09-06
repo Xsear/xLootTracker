@@ -30,7 +30,7 @@ Options = {
     },
 
     ['Panels'] = {
-        ['Enabled'] = true,
+        ['Enabled'] = false,
 
         ['Mode'] = LootPanelModes.Standard,
 
@@ -178,7 +178,7 @@ Options = {
     },
 
     ['HUDTracker'] = {
-        ['Enabled'] = false,
+        ['Enabled'] = true,
         ['Visibility'] = HUDTrackerVisibilityOptions.HUD,
         ['Tooltip'] = {
             ['Enabled'] = true,
@@ -1707,7 +1707,7 @@ Options['Panels']['Filtering'] = {
 
                 ['Simple'] = {
                     ['Enabled'] = true,
-                    ['RarityThreshold'] = LootRarity.Salvage,
+                    ['RarityThreshold'] = LootRarity.Uncommon,
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
                 },
