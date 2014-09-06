@@ -308,7 +308,7 @@ for i, eventKey in ipairs({'OnLootNew', 'OnLootLooted', 'OnLootLost'}) do
 
 
 end
-Debug.Table('MessagesEventPost', Options['Messages']['Events'])
+--Debug.Table('MessagesEventPost', Options['Messages']['Events'])
 
 
 
@@ -2240,7 +2240,7 @@ function SetOptionsAvailability(args)
         -- If we didn't receive args, we have to go through all modules. But if we did recieve args, we only update the module that changed!
         local function hasPart(targetPart, parts)
             for i, part in ipairs(parts) do
-                if part == targetPart then 
+                if part == targetPart then
                     return true 
                 end 
             end
@@ -2249,7 +2249,7 @@ function SetOptionsAvailability(args)
         local function hasEventArg(moduleArg, explodedId)
             for i, part in ipairs(moduleArg) do
                 if hasPart(part, explodedId) then
-                    return true
+                    return part
                 end
             end
             return false
@@ -2258,7 +2258,7 @@ function SetOptionsAvailability(args)
            or  ( 
                 (
                    (type(moduleArg) ~= 'table' and args.explodedId[1] == moduleArg)
-                or (moduleArg.parent and args.explodedId[1] == moduleArg.parent and hasEventArg(moduleArg, args.explodedId))
+                or (type(moduleArg) == 'table' and moduleArg.parent and args.explodedId[1] == moduleArg.parent and hasEventArg(moduleArg, args.explodedId))
                 )
                 and
                 (hasPart('Filtering', args.explodedId))
@@ -2271,9 +2271,11 @@ function SetOptionsAvailability(args)
                 if moduleArg.parent == 'Messages' then
                     moduleParent = moduleArg.parent
                     for i, eventKey in ipairs(moduleArg) do
-                        local moduleKey = moduleArg.parent..'_Events_Tracker_'..eventKey
-                        local moduleRef = Options[moduleArg.parent]['Events']['Tracker'][eventKey]['Filtering']
-                        modules[moduleKey] = moduleRef
+                        if not args or eventKey == hasEventArg(moduleArg, args.explodedId) then
+                            local moduleKey = moduleArg.parent..'_Events_Tracker_'..eventKey
+                            local moduleRef = Options[moduleArg.parent]['Events']['Tracker'][eventKey]['Filtering']
+                            modules[moduleKey] = moduleRef
+                        end
                     end
                 end
             else
@@ -3006,7 +3008,7 @@ function UIHELPER_Filtering(moduleArg)
         modules[moduleKey] = moduleRef
     end
 
-    Debug.Table('filtering modules', modules)
+    --Debug.Table('filtering modules', modules)
 
     -- Generate
     for moduleKey, moduleRef in pairs(modules) do
