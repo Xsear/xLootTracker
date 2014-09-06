@@ -84,6 +84,36 @@
 [/LIST]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Changes[/FONT][/SIZE][/COLOR]
 [CODE]
+v1.16
+    Public Release 16
+    2014-09-06
+    - Fixed a bug in the /lt blacklist clear command that caused features of the addon to break after it had been used. The addon should automatically repair the damage without notifying you if you were affected.
+    - Changed default values so that HUDTracker is enabled and Panels are disabled. (Since Panels are kinda barebones at the moment).
+
+v1.15
+    Public Release 15
+    2014-09-06
+    - Implemented Message Filtering options. It's pretty messy, sorry.
+    - Fixed advanced filtering mode not working as intended.
+    - Fixed an issue where the addon would send Platoon messages despite the user not being the leader.
+    - Added options to toggle sending of messages on Squad/Platoon channels when not leader (Defaults to not sending messages unless leader).
+    - Changed default values for Messages so that Squad/Platoon messages are not enabled by default.
+    - Changed item/required level options to use a slider instead of a textfield.
+    - Various code improvements and enworsements.
+ 
+v1.14
+    Public Release 14
+    2014-09-01
+    - Added a right-click context menu to the HUDTracker entries from which you can set your personal waypoint to the location of the loot.
+    - Fixed an issue where the Messages OnLootLooted Ignore Others option did not appear in the options.
+    - Fixed an issue where every squad message would be sent as an alert.
+    - Fixed an issue with the blacklist command where the clear action did not save its changes.
+    - Fixed an issue where the HUDTracker Frame Width and Height options were not being applied on load.
+    - Fixed an issue where the HUDTracker slider would not display when it was supposed to when non-default height/size options were used.
+    - Added missing HUDTracker Update Interval and Minimum Update Delay options.
+    - Fixed issues where the Tracker interval options required reloads or workarounds before they applied. (Tracker_RefreshInterval, Tracker_LootEventHistoryCleanupInterval, Tracker_LootUpdateInterval)
+    - Fixed some issues with one of the debug slash commands.
+ 
 v1.13
     Public Release 13
     2014-08-23
@@ -127,12 +157,12 @@ v1.12
     - Various code improvements and enworsements.
 [/CODE]
 [COLOR=#00ccff][SIZE=6][FONT=arial]Download[/FONT][/SIZE][/COLOR]
-[CENTER][SIZE=5][URL='http://forums.firefallthegame.com/community/attachments/xloottracker_v1-13-zip.2514921/']Latest Version: 1.13 (1.0.1796)[/URL][/SIZE][/CENTER]
-[CENTER]Released on 2014-08-23[/CENTER]
+[CENTER][SIZE=5][URL='http://forums.firefallthegame.com/community/attachments/xloottracker_v1-16-zip.2636221/']Latest Version: 1.16 (1.0.1797)[/URL][/SIZE][/CENTER]
+[CENTER]Released on 2014-09-06[/CENTER]
 [CENTER] [/CENTER]
-[CENTER][URL='http://astrekassociation.com/melder.php?id=2514921'][IMG]http://astrekassociation.com/images/melder.png[/IMG][/URL][/CENTER]
+[CENTER][URL='http://astrekassociation.com/melder.php?id=2636221'][IMG]http://astrekassociation.com/images/melder.png[/IMG][/URL][/CENTER]
 [CENTER][URL='http://www.curse.com/ff-addons/firefall/xsquadlootmanager'][IMG]http://media-curse.cursecdn.com/attachments/87/963/curse-logo.png[/IMG][/URL][/CENTER]
-[CENTER][SIZE=1][COLOR=#161c1c][melder_info]version=1.13;patch=1.0.1796;dlurl=2514921[/melder_info][/COLOR][/SIZE][/CENTER]
+[CENTER][SIZE=1][COLOR=#161c1c][melder_info]version=1.16;patch=1.0.1797;dlurl=2636221[/melder_info][/COLOR][/SIZE][/CENTER]
 [CENTER] [/CENTER]
  
 [CENTER][I][SIZE=3]For older versions, [URL='http://firefall.curseforge.com/ff-addons/xsquadlootmanager/files/']please see the page on CurseForge[/URL].[/SIZE][/I][/CENTER]
