@@ -88,6 +88,22 @@ function OnComponentLoad()
     -- Setup Blacklist
     if Component.GetSetting('Core_Blacklist') then
         Options['Blacklist'] = Component.GetSetting('Core_Blacklist')
+
+        local blacklistStructure = {
+                ['Tracker'] = {},
+                ['Panels'] = {},
+                ['Sounds'] = {},
+                ['HUDTracker'] = {},
+                ['Messages'] = {},
+                ['Waypoints'] = {},
+        }
+
+        for key, table in pairs(blacklistStructure) do
+            if not Options['Blacklist'][key] then
+                Debug.Log('Restoring Blacklist Structure: Adding key ' .. tostring(key))
+                Options['Blacklist'][key] = {}
+            end
+        end
     end
 end
 
@@ -513,7 +529,7 @@ function Slash_Blacklist(args)
                 if not _table.empty(Options['Blacklist'][scopeKey]) then
                     local count = 0
                     for itemTypeId, value in pairs(Options['Blacklist'][scopeKey]) do
-                        Options['Blacklist'][scopeKey] = nil
+                        Options['Blacklist'][scopeKey][itemTypeId] = nil
                         count = count + 1
                     end
                         
