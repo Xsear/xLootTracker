@@ -1,4 +1,10 @@
 
+v1.16
+    Public Release 16
+    2014-09-06
+    - Fixed a bug in the /lt blacklist clear command that caused features of the addon to break after it had been used. The addon should automatically repair the damage without notifying you if you were affected.
+    - Changed default values so that HUDTracker is enabled and Panels are disabled. (Since Panels are kinda barebones at the moment).
+
 v1.15
     Public Release 15
     2014-09-06
