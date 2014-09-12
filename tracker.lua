@@ -431,14 +431,10 @@ function Tracker.Track(args)
         end
     end
 
-    -- Prep data
-    args.entityId = entityId
-    args.targetInfo = targetInfo
-    args.itemInfo = itemInfo
 
     -- Create loot
     --Debug.Log("About to create loot")
-    local loot = Loot.Create(args)
+    local loot = Loot(entityId, targetInfo, itemInfo)
 
     --Debug.Log("Created new loot!" .. loot:ToString())
 
@@ -472,6 +468,7 @@ end
     Additionally, queues the removal of items that are no longer available.
 ]]--
 function Tracker.Update(lootArg)
+    -- Handle argument
     local loot = nil
     if type(lootArg) == "table" then
         loot = lootArg
@@ -484,23 +481,29 @@ function Tracker.Update(lootArg)
         return
     end
 
+    -- Store pre-update state
     local previousState = loot:GetState()
 
+    -- Call update
     loot:Update()
 
+    -- Get post-update state
     local newState = loot:GetState()
 
+    -- Has the state changed? If so, trigger events
     if newState ~= previousState then
+
+        -- XLT_ON_TRACKER_UPDATE is always triggered when the state changes
         --Component.GenerateEvent("XLT_ON_TRACKER_UPDATE", {lootId = loot:GetId(), previousState = previousState, newState = newState})
         OnTrackerUpdate({lootId = loot:GetId(), previousState = previousState, newState = newState})
         
-
+        -- XLT_ON_TRACKER_LOOTED is triggered when an item that was available changes to having been looted
         if previousState == LootState.Available and newState == LootState.Looted then
             --Component.GenerateEvent("XLT_ON_TRACKER_LOOTED", {lootId = loot:GetId(), previousState = previousState, newState = newState})
             OnTrackerLooted({lootId = loot:GetId(), previousState = previousState, newState = newState})
         end
 
-        -- Trigger removal from Tracker
+        -- Trigger internal removal from Tracker
         if previousState == LootState.Available and not loot.markedForDeletion then
             loot.markedForDeletion = true
             Callback2.FireAndForget(Tracker.Remove, loot, Options['Tracker']['RemoveDelay'])

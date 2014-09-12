@@ -1,52 +1,67 @@
--- Loot Entry Class
+--[[
+    Loot class
+    An attempt to gather all the loot info in one object so that it can be retrieved identically and safely.
+    In the event of changes to targetInfo/itemInfo, I hope this class will prove it's worth.
+    I still let it give out the full targetInfo and itemInfo tables though, as that can be useful when using libraries and stuff.
+--]]
 
+Loot = {}
+Loot.__index = Loot -- When calling functions on the instance tables, fallback to the one Loot table.
 
-
-Loot = {
-    id            = nil,
-    entityId      = nil,
-    targetInfo    = nil,
-    itemInfo      = nil,
-    category      = nil,
-
-    createdAt     = nil,
-
-    state = nil,
-
-
-
-    -- should ideally not be here ?
-    CYCLE_Update = nil,
-    waypoint = nil,
-    lootedBy = nil,
-    lootedTo = nil,
-
-
-
-};
-Loot.__index = Loot
+setmetatable(Loot, {
+             -- Makes it possible to create instances like this: "local loot = Loot(args)"
+             __call = function(class, ...)
+                        return class.Create(...)
+                      end,
+             })
 
 
 local Private = {
     idCounter = 0,
 }
 
-function Private.GenerateId()
 
-    -- local player = tostring(Player.GetInfo()) -- Fixme: Get rid of army tag
+--[[
+***************************
+    Static Functions
+***************************
+--]]
 
-    local time = tostring(System.GetLocalUnixTime())
 
-    local occurance = tostring(Private.idCounter)
-    Private.idCounter = Private.idCounter + 1
 
-    -- Put it all together
-    local id = time..occurance -- player..
+--[[
+    Loot.Create(entityId, targetInfo, itemInfo)
+    Constructor of Loot.
+--]]
+function Loot.Create(entityId, targetInfo, itemInfo)
+    if Options['Debug']['LogLootCreateData'] then
+        Debug.Log("Loot.Create on " .. tostring(targetInfo.name))
+        Debug.Log("entityId " .. tostring(entityId))
+        Debug.Table("targetInfo", targetInfo)
+        Debug.Table("itemInfo", itemInfo)
+    end
 
-    return id
+    -- Create instance
+    local self = setmetatable({}, Loot)
+
+    self.id              = Private.GenerateId()
+    self.createdAt       = System.GetClientTime()
+
+    self.entityId        = entityId
+    self.targetInfo      = targetInfo
+    self.itemInfo        = itemInfo
+
+    self.category        = Loot.DetermineCategory(targetInfo, itemInfo)
+    
+    self.state           = Private.DetermineState(self)
+
+    return self
 end
 
-
+--[[
+    Loot.DetermineCategory(targetInfo, itemInfo)
+    Determines the LootCategory from target and itemInfo (mostly itemInfo)
+--]]
 function Loot.DetermineCategory(targetInfo, itemInfo)
     local category = LootCategory.Unknown
 
@@ -83,142 +98,94 @@ function Loot.DetermineCategory(targetInfo, itemInfo)
     return category
 end
 
-function Private.DetermineState(loot)
-    local state = LootState.Unknown
-
-    if loot:GetEntityId() then
-        if Game.IsTargetAvailable(loot:GetEntityId()) then
-            state = LootState.Available
-        elseif Options['Debug']['Enabled'] and tonumber(loot:GetEntityId()) <= 2000 and tonumber(System.GetElapsedTime(loot.createdAt)) < 30 then
-            state = LootState.Available -- Debug
-        else
-            if loot.lootedBy then
-                state = LootState.Looted
-            else
-                state = LootState.Lost
-            end
-        end
-    end
-
-    if not state then Debug.Warn("dafaq, determine state returning nil, why?") Debug.Table("determinestate loot", loot) end
-
-    return state
+--[[
+    Loot.GetDisplayNameOfRarity(rarity)
+    Some shit right here...
+--]]
+function Loot.GetDisplayNameOfRarity(rarity)
+    return ucfirst(rarity) or "ukwn"
 end
+
+--[[
+    DEPRECATED
+    Loot.GetRarityIndex(rarity)
+    Returns the rarity as a number in a series representative of the rarity
+    I originally wrote and started using this function before I discovered that it had already been implemented in LIB_ITEMS.
+--]]
+function Loot.GetRarityIndex(rarity)
+    return LIB_ITEMS.GetRarityValue(rarity) or 0
+end
+
+
+--[[
+***************************
+    Instance Functions
+***************************
+--]]
 
 function Loot:Update()
     self.state = Private.DetermineState(self)
 end
 
-function Loot.Create(args)
+function Loot:Destroy()
+    --Debug.Log("Loot:Destroy for " ..self.id.. " "..self:GetName())
+        
+    self = nil
+end
 
 
-    args.event = "Loot.Create"
-    --Debug.Event(args)
+-- Below follows a slew of Getters and Setters.
 
-    -- Setup vars from args
-    local entityId     = args.entityId
-    local targetInfo   = args.targetInfo
-    local itemInfo     = args.itemInfo
-
-    -- Check entityId
-    if not entityId then
-        -- We should have an entityId
-        Debug.Warn("Loot.Create called without an entityId")
-    end
-
-    -- Setup targetInfo
-    if not targetInfo then
-        -- Do we have a valid entityId?
-        if Game.IsTargetAvailable(entityId) then
-
-            -- Get targetInfo by entityId
-            targetInfo = Game.GetTargetInfo(entityId)
-
-            -- Verify success
-            if not targetInfo then
-                Debug.Error('Loot.Create unable to acquire targetInfo for entityId '..tostring(entityId))
-                return
-            end
-
-        -- If we don't have targetInfo, we must have an entityId that references a valid target, so that we can retrieve information.
-        else
-            Debug.Error('Loot.Create called without targetInfo, and lacks available entity.')
-            return
-        end
-    end
-
-    -- Setup itemInfo
-    if not itemInfo then
-
-        -- Do we have a valid itemTypeId?
-        if targetInfo.itemTypeId then
-
-            -- Get itemInfo by itemTypeId
-            itemInfo = Game.GetItemInfoByType(targetInfo.itemTypeId, targetInfo.modules)
-
-            -- Verify success
-            if not itemInfo then
-                Debug.Error('Loot.Create was unable to acquire itemInfo for itemTypeId '..tostring(targetInfo.itemTypeId))
-                return
-            end
-
-        -- We don't have a valid itemTypeId? Then what do we do...
-        else
-            Debug.Log("Loot.Create called without itemInfo, and lacks target with itemTypeId")
-            Debug.Table({entityId, targetInfo, itemInfo})
-            return
-        end
-    end
-
-    -- Simplify testing a little -- Note: Still?
-    targetInfo.name = targetInfo.name or itemInfo.name
-
-
-    if Options['Debug']['LogLootCreateData'] then
-        Debug.Log("Loot.Create on " .. tostring(targetInfo.name))
-        Debug.Log("entityId " .. tostring(entityId))
-        Debug.Table("targetInfo", targetInfo)
-        Debug.Table("itemInfo", itemInfo)
-    end
-
-    -- Create instance
-    local instance = {}
-    setmetatable(instance, Loot)
-
-    instance.id              = Private.GenerateId()
-    instance.createdAt       = System.GetClientTime()
-
-    instance.entityId        = entityId
-    instance.targetInfo      = targetInfo
-    instance.itemInfo        = itemInfo
-
-    instance.category        = Loot.DetermineCategory(targetInfo, itemInfo)
-    
-    instance.state           = Private.DetermineState(instance)
-
-    return instance
+function Loot:GetId()
+    return self.id
 end
 
 function Loot:GetEntityId()
     return self.entityId
 end
 
-function Loot:GetId()
-    return self.id
-end
-
 function Loot:GetTypeId()
     return self.targetInfo.itemTypeId
 end
 
-
 function Loot:GetName()
-    if not self.targetInfo then
-        Debug.Warn("Loot Get Name called but no targetInfo!?")
-        Debug.Table(self)
-    end
-
     return self.targetInfo.name
+end
+
+function Loot:GetCategory()
+    return self.category
+end
+
+function Loot:GetState()
+    return self.state
+end
+
+function Loot:SetState(newState)
+    self.state = newState
+end
+
+function Loot:GetPos()
+    return self.targetInfo.lootPos or {x=0, y=0, z=0}
+end
+
+function Loot:GetItemLevel()
+    return self.itemInfo.item_level or 1
+end
+
+function Loot:GetRequiredLevel()
+    return self.itemInfo.required_level or 0
+end
+
+function Loot:GetRarity()
+    return self.itemInfo.rarity or tostring(-1)
+end
+
+function Loot:GetRarityValue()
+    return LIB_ITEMS.GetRarityValue(self:GetRarity()) or 0
+end
+
+function Loot:GetQuantity()
+    return self.targetInfo.quantity or 1
 end
 
 function Loot:GetColor()
@@ -250,50 +217,44 @@ function Loot:GetMultiArt(PARENT, forceWebIcon)
     return ICON
 end
 
-
-function Loot:GetTypeId()
-    return self.itemInfo.itemTypeId
-end
-
-function Loot:GetPos()
-    return self.targetInfo.lootPos or {x=0, y=0, z=0}
-end
-
-function Loot:Destroy()
-    Debug.Log("Loot:Destroy for " ..self.id.. " "..self:GetName())
-        
-    self = nil
-end
-
-
-
-function Loot:SetState(newState)
-    self.state = newState
-end
-
-function Loot:GetState()
-    return self.state
+function Loot:GetLootedBy()
+    return self.lootedBy or false
 end
 
 function Loot:SetLootedBy(input)
     self.lootedBy = input
 end
 
-function Loot:SetLootedTo(input)
-    self.lootedTo = input
-end
-
-function Loot:GetLootedBy()
-    return self.lootedBy or false
-end
-
 function Loot:GetLootedTo()
     return self.lootedTo or false
 end
 
+function Loot:SetLootedTo(input)
+    self.lootedTo = input
+end
 
-function Loot:GetCategory()
-    return self.category
+function Loot:GetAsText()
+    --Debug.Log("Loot:GetAsText not yet implemented")
+    -- Todo: Fixme: Remove?
+    return self:GetName()
+end
+
+function Loot:GetAsLink()
+    return ChatLib.EncodeItemLink(self:GetTypeId(), self.itemInfo.hidden_modules, self.itemInfo.slotted_modules) or self:GetName()
+end
+
+function Loot:GetCoordLink()
+    -- In order to work around a problem caused by ChatLib.EncodeCoordLink erroring when there were issues with the Chat server, this function had to be extended a bit.
+    -- In the event that a proper link cannot be created, this function returns normal text.
+
+    local zone = State.zoneId
+    local instance = Chat.WriteInstanceKey()
+    local player = Player.GetCharacterId()
+    if zone and instance and player then
+        return ChatLib.EncodeCoordLink(self:GetPos(), zone, instance, player)       
+    end
+
+    return tostring(self:GetPos())
 end
 
 function Loot:ToString()
@@ -319,65 +280,47 @@ end
 
 
 
-function Loot:GetItemLevel()
-    return self.itemInfo.item_level or 1
+
+
+--[[
+***************************
+    Private Functions
+***************************
+--]]
+
+function Private.GenerateId()
+
+    -- local player = tostring(Player.GetInfo()) -- Fixme: Get rid of army tag
+
+    local time = tostring(System.GetLocalUnixTime())
+
+    Private.idCounter = Private.idCounter + 1
+    local occurance = tostring(Private.idCounter)
+
+    -- Put it all together
+    local id = time..occurance -- player..
+
+    return id
 end
 
-function Loot:GetRequiredLevel()
-    return self.itemInfo.required_level or 0
-end
+function Private.DetermineState(loot)
+    local state = LootState.Unknown
 
-function Loot:GetRarity()
-    return self.itemInfo.rarity or tostring(-1)
-end
-
-function Loot:GetRarityValue()
-    return LIB_ITEMS.GetRarityValue(self:GetRarity()) or 0
-end
-
-
-
-function Loot:GetAsLink()
-    return ChatLib.EncodeItemLink(self:GetTypeId(), self.itemInfo.hidden_modules, self.itemInfo.slotted_modules) or self:GetName()
-end
-
-function Loot.GetDisplayNameOfRarity(rarity)
-    return ucfirst(rarity) or "ukwn"
-end
-
-
-
-function Loot:GetCoordLink()
-
-    --return ChatLib.EncodeCoordLink(self:GetPos()) or tostring(self:GetPos())
-
-    local zone = State.zoneId
-    local instance = Chat.WriteInstanceKey()
-    local player = Player.GetCharacterId()
-    if zone and instance and player then
-        return ChatLib.EncodeCoordLink(self:GetPos(), zone, instance, player)       
+    if loot:GetEntityId() then
+        if Game.IsTargetAvailable(loot:GetEntityId()) then
+            state = LootState.Available
+        elseif Options['Debug']['Enabled'] and tonumber(loot:GetEntityId()) <= 2000 and tonumber(System.GetElapsedTime(loot.createdAt)) < 30 then
+            state = LootState.Available -- Debug
+        else
+            if loot.lootedBy then
+                state = LootState.Looted
+            else
+                state = LootState.Lost
+            end
+        end
     end
 
-    return tostring(self:GetPos())
+    if not state then Debug.Warn("dafaq, determine state returning nil, why?") Debug.Table("determinestate loot", loot) end
+
+    return state
 end
-
-
-
-function Loot:GetQuantity()
-    return self.targetInfo.quantity or 1
-end
-
-
-
-
-function Loot:GetAsText()
-    --Debug.Log("Loot:GetAsText not yet implemented")
-    -- Todo: Fixme: Remove?
-    return self:GetName()
-end
-
-
-function Loot.GetRarityIndex(rarity) -- Deprecated
-    return LIB_ITEMS.GetRarityValue(rarity) or 0
-end
-
