@@ -1,4 +1,10 @@
 
+v1.17
+    Public Release 16
+    2014-09-
+    - Fixed a bug that caused the HUDTracker Minimum Update Delay not to function as intended. This fix should improve performance.
+
+
 v1.16
     Public Release 16
     2014-09-06
