@@ -361,7 +361,7 @@ function HUDTracker.Update(args)
 
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
-        --Debug.Log("HUDTracker is enabled")
+        --Debug.Log("HUDTracker Update called and HUDTracker is enabled")
 
         -- Minimum update limiter
         local currentTime = tonumber(System.GetClientTime())
@@ -384,10 +384,11 @@ function HUDTracker.Update(args)
                     --Debug.Log('There was not a minUpdateCallback scheduled, so we create one and schedule it within ' .. tostring(timeSinceLastUpdate - minimumUpdateDelay))
                     Private.minUpdateCB = Callback2.Create()
                     Private.minUpdateCB:Bind(HUDTracker.Update, {triggeredByCB = true})
-                    Private.minUpdateCB:Schedule(timeSinceLastUpdate - minimumUpdateDelay)
+                    Private.minUpdateCB:Schedule(math.ceil(minimumUpdateDelay - timeSinceLastUpdate))
                 else
                     --Debug.Log('There is already a minUpdateCallback scheduled, so we just quitely return.')
                 end
+                --Debug.Log('Skipping update.\n\n')
                 return
             else
                 --Debug.Log('We are late enough!')
@@ -395,7 +396,7 @@ function HUDTracker.Update(args)
         end
 
         -- Update is actually happening!
-        --Debug.Log('Update is actually happening!')
+        --Debug.Log('Update is actually happening!\n\n')
         --Debug.Event(args)
 
         -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
