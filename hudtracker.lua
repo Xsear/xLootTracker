@@ -16,6 +16,8 @@ local CYCLE_HUDTrackerUpdate = nil
 local Private = {
     lastUpdate = 0,
     minUpdateCB = nil,
+
+    entries = {}
 }   
 
 
@@ -29,17 +31,7 @@ local DimensionOptions = {
 }
 
 
-function HUDTracker.OnTrackerNew(args)
-    HUDTracker.Update()
-end
 
-function HUDTracker.OnTrackerUpdate(args)
-    HUDTracker.Update()
-end
-
-function HUDTracker.OnTrackerRemove(args)
-    HUDTracker.Update()
-end
 
 
 function HUDTracker.GetFrame()
@@ -172,6 +164,9 @@ local c_ENTRY_PRINT = [[
 ]]
 
 function Private.CreateEntry(loot, stackInfo)
+    -- Handle arguments
+    stackInfo = stackInfo or {quantity = loot:GetQuantity(), count = 1}
+
     -- Create
     local GROUP = Component.CreateWidget(c_ENTRY_PRINT, LIST)
 
@@ -183,6 +178,7 @@ function Private.CreateEntry(loot, stackInfo)
         BOX = GROUP:GetChild('box'),
         STACK = GROUP:GetChild('stack'),
         TITLE = GROUP:GetChild('title'),
+        stackInfo = stackInfo,
     }
 
     -- Setup plate tooltip tag
@@ -354,50 +350,179 @@ end
 
 
 
+
+
+function HUDTracker.OnTrackerNew(args)
+    
+    local loot = Tracker.GetLootById(args.lootId)
+
+    if Options['Blacklist']['HUDTracker'][tostring(loot:GetTypeId())] then
+        return
+    end
+
+    if LootFiltering(loot, Options['HUDTracker']) then
+
+        -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
+        if State.tooltipActive then
+            Tooltip.Show(false)
+            TOOLTIP_ITEM.GROUP:Show(false)
+        end
+
+        SCROLLER:LockUpdates()
+
+        -- Check for existing row
+        local ENTRY = Private.entries[tostring(loot:GetTypeId())]
+
+        -- If there is an existing entry
+        if ENTRY then
+
+            --Debug.Table('OnTrackerNew found existing entry: ' , ENTRY)
+
+            -- Retrieve existing stackInfo
+            local stackInfo = _table.copy(ENTRY.stackInfo)
+            
+            -- Add this new loot to the stack
+            stackInfo.quantity = stackInfo.quantity + loot:GetQuantity()
+            stackInfo.count = stackInfo.count + 1
+            
+            -- Retrieve row reference
+            local ROW = ENTRY.ROW
+
+            -- Create new entry based on updated stackInfo
+            local ENTRY_NEW = Private.CreateEntry(loot, stackInfo)
+
+            ENTRY_NEW.ROW = ROW
+
+            -- Foster new entry onto row
+            ROW:SetWidget(ENTRY_NEW.GROUP)
+
+            -- Store new entry
+            Private.entries[tostring(loot:GetTypeId())] = ENTRY_NEW
+
+            -- Trash the old entry
+            Component.RemoveWidget(ENTRY.GROUP)
+            ENTRY = nil
+
+        -- There is not an existing row, create a completely new one
+        else
+            
+            -- Create entry
+            ENTRY = Private.CreateEntry(loot)
+
+            -- Add entry as row
+            local ROW = SCROLLER:AddRow(ENTRY.GROUP)
+
+            -- Save a row reference
+            ENTRY.ROW = ROW
+            
+            -- Store entry
+            Private.entries[tostring(loot:GetTypeId())] = ENTRY
+        end
+
+
+
+        SCROLLER:UnlockUpdates()
+
+    end
+
+    HUDTracker.UpdateVisibility()
+
+end
+
+
+function HUDTracker.OnTrackerLooted(args)
+
+    local loot = Tracker.GetLootById(args.lootId)
+
+    SCROLLER:LockUpdates()
+
+        -- Check for existing row
+        local ENTRY = Private.entries[tostring(loot:GetTypeId())]
+
+        -- If there is an existing entry
+        if ENTRY then
+
+            -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
+            if State.tooltipActive then
+                Tooltip.Show(false)
+                TOOLTIP_ITEM.GROUP:Show(false)
+            end
+
+            -- Retrieve existing stackInfo
+            local stackInfo = _table.copy(ENTRY.stackInfo)
+            
+            -- If this is a stacked entry, we update it
+            if stackInfo.count > 1 then
+
+                -- Remove this loot from the stack
+                stackInfo.quantity = stackInfo.quantity - loot:GetQuantity()
+                stackInfo.count = stackInfo.count - 1
+                
+                -- Retrieve row reference
+                local ROW = ENTRY.ROW
+
+                -- Create new entry based on updated stackInfo
+                local ENTRY_NEW = Private.CreateEntry(loot, stackInfo)
+
+                ENTRY_NEW.ROW = ROW
+
+                -- Foster new entry onto row
+                ROW:SetWidget(ENTRY_NEW.GROUP)
+
+                -- Store new entry
+                Private.entries[tostring(loot:GetTypeId())] = ENTRY_NEW
+
+                -- Trash the old entry
+                Component.RemoveWidget(ENTRY.GROUP)
+                ENTRY = nil
+
+
+            -- Otherwise, just remove
+            else
+                Component.RemoveWidget(ENTRY.GROUP)
+                ENTRY.ROW:Remove()
+                ENTRY = nil
+                Private.entries[tostring(loot:GetTypeId())] = nil
+            end
+        end
+            
+
+    SCROLLER:UnlockUpdates()
+    HUDTracker.UpdateVisibility()
+end
+
+
+function HUDTracker.OnTrackerUpdate(args)
+
+
+    if args.newState ~= LootState.Available then
+
+        HUDTracker.OnTrackerLooted(args)
+
+    end
+
+end
+
+function HUDTracker.OnTrackerRemove(args)
+    HUDTracker.Update()
+end
+
+
+
+
+
 function HUDTracker.Update(args)
     args = args or {}
     args.event = "HUDTracker.Update"
     --Debug.Event(args)
 
+    if true then
+        return
+    end
+
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
         --Debug.Log("HUDTracker Update called and HUDTracker is enabled")
-
-        -- Minimum update limiter
-        local currentTime = tonumber(System.GetClientTime())
-        --Debug.Log('currentTime: ' .. tostring(currentTime))
-        if args.triggeredByCB then -- Ensure that the callback is cleaned up
-            --Debug.Log('We were triggered by minUpdateCallback, cleaning up')
-            Private.minUpdateCB:Release()
-            Private.minUpdateCB = nil
-        else
-            --Debug.Log('We\'re normal, calculating if we were too early')
-            local timeSinceLastUpdate = System.GetElapsedTime(Private.lastUpdate)
-            local minimumUpdateDelay = tonumber(Options['HUDTracker']['MinimumUpdateDelay'])
-            --Debug.Log('timeSinceLastUpdate: ' .. tostring(timeSinceLastUpdate))
-            --Debug.Log('minimumUpdateDelay: ' .. tostring(minimumUpdateDelay))
-            -- If this is too early to update
-            if timeSinceLastUpdate < minimumUpdateDelay then
-                --Debug.Log('timeSinceLastUpdate is less than minimumUpdateDelay, we are too early')
-                -- Schedule one if we haven't already.
-                if not Private.minUpdateCB then
-                    --Debug.Log('There was not a minUpdateCallback scheduled, so we create one and schedule it within ' .. tostring(timeSinceLastUpdate - minimumUpdateDelay))
-                    Private.minUpdateCB = Callback2.Create()
-                    Private.minUpdateCB:Bind(HUDTracker.Update, {triggeredByCB = true})
-                    Private.minUpdateCB:Schedule(math.ceil(minimumUpdateDelay - timeSinceLastUpdate))
-                else
-                    --Debug.Log('There is already a minUpdateCallback scheduled, so we just quitely return.')
-                end
-                --Debug.Log('Skipping update.\n\n')
-                return
-            else
-                --Debug.Log('We are late enough!')
-            end
-        end
-
-        -- Update is actually happening!
-        --Debug.Log('Update is actually happening!\n\n')
-        --Debug.Event(args)
 
         -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
         if State.tooltipActive then

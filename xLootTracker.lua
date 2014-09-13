@@ -386,6 +386,9 @@ function OnTrackerLooted(args)
 
     -- Panels
     PanelManager.OnTrackerLooted(args)
+
+    -- HUDTracker
+    HUDTracker.OnTrackerLooted(args)
 end
 
 --[[
@@ -403,7 +406,7 @@ function OnTrackerRemove(args)
     PanelManager.OnTrackerRemove(args)
 
     -- HUDTracker
-    HUDTracker.OnTrackerRemove(args)
+    --HUDTracker.OnTrackerRemove(args)
 end
 
 
