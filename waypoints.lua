@@ -8,7 +8,7 @@ WaypointManager = {
 
 local Private = {
     waypointList = {},
-    visibility = true,
+    hudVisibilityRarity = 0,
 }
 
 MarkerType = {
@@ -84,6 +84,9 @@ function WaypointManager.Create(loot)
     local markerId = "xlt_"..tostring(loot:GetEntityId()).."_waypoint"
     local MARKER = MapMarker.Create(markerId)
 
+    -- Setup waypoint table
+    local waypoint = {MARKER = MARKER, markerType = MarkerType.Loot, lootId = loot:GetId()}
+
     -- Bind to loot entity
     if Game.IsTargetAvailable(loot:GetEntityId()) then
         MARKER:BindToEntity(loot:GetEntityId())
@@ -105,14 +108,15 @@ function WaypointManager.Create(loot)
     MULTIART:SetUrl(loot:GetWebIcon())
 
     -- Visibility
-    MARKER:ShowOnHud(Options['Waypoints']['ShowOnHud'] and Private.visibility)
+    Private.SetHudVisibility(waypoint)
+
     --MARKER:SetHudPriority(Options['Waypoints']['HudPriority'])
     MARKER:ShowOnWorldMap(Options['Waypoints']['ShowOnWorldMap'])
     MARKER:ShowOnRadar(Options['Waypoints']['ShowOnRadar']) 
     MARKER:SetRadarEdgeMode(Options['Waypoints']['RadarEdgeMode'])
 
     -- Insert
-    Private.waypointList[#Private.waypointList + 1] = {MARKER = MARKER, markerType = MarkerType.Loot, lootId = loot:GetId()}
+    Private.waypointList[#Private.waypointList + 1] = waypoint
 end
 
 --[[
@@ -162,12 +166,61 @@ end
 
 --[[
     WaypointManager.ToggleVisibility
-    This totally doesn't work. Fixme: dafaq you doing here.
+    First call - Hides all waypoints that are not of the same rarity as the rarest item in the tracker. Second call (when such a threhsold is set) - reset to 0, show all.
 --]]
-function WaypointManager.ToggleVisibility(show)
-    Private.visibility = show or not Private.visibility
+function WaypointManager.ToggleVisibility(args)
+
+
+    -- If not filtering, determine and set.
+    if Private.hudVisibilityRarity == 0 then
+        -- Determine top rarity
+        local topRarityValue = 0
+        for i, waypoint in ipairs(Private.waypointList) do
+            local rarityValue = waypoint.lootId:GetRarityValue()
+            if rarityValue > topRarityValue then
+                topRarityValue = rarityValue
+            end
+        end
+
+        -- Set rarity
+        Private.hudVisibilityRarity = topRarityValue
+
+    -- If already filtering, reset.
+    else
+        Private.hudVisibilityRarity = 0
+    end
+
+    -- Update visibilty
     for i, waypoint in ipairs(Private.waypointList) do
-        waypoint.MARKER:ShowOnHud(Private.visibility)
+        Private.SetHudVisibility(waypoint)
     end
 end
 
+function Private.SetHudVisibility(waypoint)
+    -- Saftey check
+    if not waypoint.lootId or not waypoint.MARKER then
+        return
+    end
+
+    -- Do we care?
+    if not Options['Waypoints']['ShowOnHud'] then
+        
+        -- Get loot
+        local loot = Tracker.GetLootById(waypoint.lootId)
+        if loot then
+            -- Get rarityValue
+            local rarityValue = loot:GetRarityValue()
+
+            -- If rare enough
+            if rarityValue >= Private.hudVisibilityRarity then
+                -- Able to show
+                waypoint.MARKER:ShowOnHud(true)
+                return -- Exit, we're done.
+            end
+        end
+   
+    end
+ 
+    -- Otherwise, hide
+    waypoint.MARKER:ShowOnHud(false)
+end
