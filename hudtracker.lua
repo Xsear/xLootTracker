@@ -165,7 +165,7 @@ local c_ENTRY_PRINT = [[
 
 function Private.CreateEntry(loot, stackInfo)
     -- Handle arguments
-    stackInfo = stackInfo or {quantity = loot:GetQuantity(), count = 1}
+    stackInfo = stackInfo or {quantity = loot:GetQuantity(), count = 1, sortProfile = {itemLevel = loot:GetItemLevel(), requiredLevel = loot:GetRequiredLevel(), rarityValue = loot:GetRarityValue(), name=loot:GetName()}}
 
     -- Create
     local GROUP = Component.CreateWidget(c_ENTRY_PRINT, LIST)
@@ -409,8 +409,24 @@ function HUDTracker.OnTrackerNew(args)
             -- Create entry
             ENTRY = Private.CreateEntry(loot)
 
-            -- Add entry as row
-            local ROW = SCROLLER:AddRow(ENTRY.GROUP)
+            -- Get the index of each entry in the rowscroller
+            local indexList = {}
+            for typeId, ENTRY_OTHER in pairs(Private.entries) do
+                local index = ENTRY_OTHER.ROW:GetIdx()
+                indexList[index] = ENTRY_OTHER
+            end
+
+            -- Determine which inded our new entry should have
+            local ourEntryIndex = nil
+            for index, ENTRY_OTHER in pairs(indexList) do
+                if HUDTrackerSort2(ENTRY, ENTRY_OTHER) then
+                    ourEntryIndex = index
+                    break
+                end
+            end
+
+            -- Insert entry as row
+            local ROW = SCROLLER:AddRow(ENTRY.GROUP, ourEntryIndex)
 
             -- Save a row reference
             ENTRY.ROW = ROW
@@ -607,6 +623,39 @@ function HUDTracker.Update(args)
     end
 end
 
+
+
+function HUDTracker.SortIndex()
+
+    local rowIndex = {}
+
+    -- Build rowIndex
+    for typeId, ENTRY in pairs(Private.entries) do
+
+        local entryIndex = ENTRY.ROW:GetIdx()
+        rowIndex[entryIndex] = ENTRY
+
+    end
+
+    -- Sort the index
+    table.sort(rowIndex, HUDTrackerSort2)
+
+    -- Apply to tracker
+    for sortedIndex, ENTRY in ipairs(rowIndex) do
+
+        local currentIndex = ENTRY.ROW:GetIdx()
+
+        if currentIndex ~= sortedIndex then
+            ENTRY.ROW:MoveTo(sortedIndex) --, 1500
+        end
+
+    end
+
+
+
+end
+
+
 function HUDTracker.UpdateVisibility()
     if Options['HUDTracker']['Enabled'] then
      -- Should we display the tracker?
@@ -623,6 +672,8 @@ function HUDTracker.UpdateVisibility()
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
             FRAME:Show(true)
+            HUDTracker.SortIndex()
+
         else
             --Debug.Log('No, hide the tracker')
             -- No, hide the tracker
@@ -733,4 +784,59 @@ function HUDTrackerSort(lootA, lootB)
     -- Alphabetic third
     --Debug.Log("Prioritizing alphabetic")
     return (lootA:GetName() < lootB:GetName())
+end
+
+
+-- Return true if lootA should come before lootB
+function HUDTrackerSort2(lootA, lootB)
+
+
+    --Debug.Log("************** HUDTrackerSort *********** ")
+    -- Handle nil values
+    if lootA == nil and lootB == nil then
+        --Debug.Log("A and B are nil, result: false")
+        return false
+    end
+    if lootA == nil then
+        --Debug.Log("A is nil, result: false")
+        return false
+    end
+    if lootB == nil then
+        --Debug.Log("B is nil, result: true")
+        return true
+    end
+
+    -- Non Nil Results
+    --Debug.Log("A: "..tostring(lootA:ToString()).." | Rarity:"..tostring(lootA:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootA:GetItemLevel()))
+    --Debug.Log("B: "..tostring(lootB:ToString()).." | Rarity:"..tostring(lootB:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootB:GetItemLevel()))
+
+    lootA = lootA.stackInfo.sortProfile
+    lootB = lootB.stackInfo.sortProfile
+    
+    -- Rarer items first
+    local rarityA = lootA.rarityValue
+    local rarityB = lootB.rarityValue
+
+    if rarityA ~= rarityB then
+        --Debug.Log("Prioritizing rarity")
+        --Debug.Log("A: Rarity " .. tostring(rarityA))
+        --Debug.Log("B: Rarity " .. tostring(rarityB))
+        --Debug.Log("A before B? : " .. tostring((rarityA > rarityB)))
+        return (rarityA > rarityB)
+    end
+
+    -- Better items second
+    local ilvlA = lootA.itemLevel
+    local ilvlB = lootB.itemLevel
+    if ilvlA ~= ilvlB then
+        --Debug.Log("Prioritizing ItemLevel")
+        --Debug.Log("A: ItemLevel " .. tostring(ilvlA))
+        --Debug.Log("B: ItemLevel " .. tostring(ilvlB))
+        --Debug.Log("A before B? : " .. tostring((ilvlA > ilvlB)))
+        return (ilvlA > ilvlB)
+    end
+
+    -- Alphabetic third
+    --Debug.Log("Prioritizing alphabetic")
+    return (lootA.name < lootB.name)
 end
