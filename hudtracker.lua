@@ -195,20 +195,42 @@ function Private.CreateEntry(loot, stackInfo)
             local MENU = ContextMenu.Create()
             MENU:BindOnRequest(function(MENU, id)
                 if id == "root" then
-                    MENU:AddButton({label_key="SET_WAYPOINT", id="self_waypoint"})
+
+                    -- Waypoints
+                    MENU:AddButton({id="self_waypoint", label_key="SET_WAYPOINT"})
                     
                     if State.isSquadLeader then
-                        MENU:AddButton({label_key="SET_SQUAD_WAYPOINT", id="squad_waypoint"})
+                        MENU:AddButton({id="squad_waypoint", label_key="SET_SQUAD_WAYPOINT"})
                     end
+
+                    -- Append link to Chat
+                    MENU:AddButton({id="add_item_link", label_key="ADD_ITEM_LINK"})
+
+                    -- Debug
+                    if Options['Debug']['Enabled'] then
+                        MENU:AddButton({id="debug_remove", label="Debug - Remove"})
+                    end
+
                 end
             end)
             MENU:BindOnSelect(function(args)
                 if args.menu == "root" then
+
+                    -- Waypoints
                     local lootPos = loot:GetPos()
                     if args.id == "self_waypoint" then
                         Component.GenerateEvent("MY_PERSONAL_WAYPOINT_SET", {x=lootPos.x, y=lootPos.y, z=lootPos.z+1})
                     elseif args.id == "squad_waypoint" then
                         Squad.SetWayPoint(lootPos.x, lootPos.y, lootPos.z+1)
+
+
+                    -- Append link to Chat
+                    elseif args.id == 'add_item_link' then
+                        loot:AppendToChat()
+
+                    -- Debug - Remove
+                    elseif args.id == "debug_remove" then
+                        Tracker.Remove(lootId)
                     end
                 end
             end)
@@ -494,6 +516,7 @@ function HUDTracker.OnTrackerLooted(args)
 end
 
 function HUDTracker.OnTrackerRemove(args)
+    args.event = 'HUDTracker.OnTrackerRemove'
     Debug.Event(args)
 
     --Debug.Table('HUDTracker Private.entries', Private.entries)

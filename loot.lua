@@ -279,7 +279,10 @@ function Loot:ToString()
 end
 
 
-
+function Loot:AppendToChat()
+    Debug.Log('LootAppendToChat')
+    ChatLib.AddItemLinkToChatInput(self:GetTypeId(), self.itemInfo.hidden_modules, self.itemInfo.slotted_modules)
+end
 
 
 --[[
