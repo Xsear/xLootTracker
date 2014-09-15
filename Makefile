@@ -36,6 +36,9 @@ XCOPY_FILES_IGNORE = Ignore
 XCOPY_FLAGS_FILES = /E/F/I/K/EXCLUDE:${XCOPY_FILES_IGNORE}
 #XCOPY_FLAGS_ARCHIVES = /F
 
+build:
+	@echo Call Release Rule instead
+
 # Rules
 release:
 	@echo [Begin] [Release] [${ADDON_VERSION}]
