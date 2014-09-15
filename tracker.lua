@@ -522,7 +522,7 @@ function Tracker.Remove(lootArg)
     if type(lootArg) == "table" then
         loot = lootArg
     else
-        loot = Tracker.GetLootById(lootId)
+        loot = Tracker.GetLootById(lootArg)
     end
 
     if not loot then
