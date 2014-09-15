@@ -368,9 +368,6 @@ end
 function OnTrackerUpdate(args)
     --Debug.Event(args)
 
-    -- HUDTracker
-    HUDTracker.OnTrackerUpdate(args)
-
     -- Messages
     Messages.OnTrackerUpdate(args)
 end
@@ -388,6 +385,9 @@ function OnTrackerLooted(args)
 
     -- Panels
     PanelManager.OnTrackerLooted(args)
+
+    -- HUDTracker
+    HUDTracker.OnTrackerLooted(args)
 end
 
 --[[
