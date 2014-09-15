@@ -85,7 +85,7 @@ function OnComponentLoad()
     -- Setup Options
     Options.Setup() 
 
-    -- Setup Blacklist
+    -- Setup Blacklist - Fix for bug in versions 1.13 to v1.15
     if Component.GetSetting('Core_Blacklist') then
         Options['Blacklist'] = Component.GetSetting('Core_Blacklist')
 
@@ -104,6 +104,8 @@ function OnComponentLoad()
                 Options['Blacklist'][key] = {}
             end
         end
+
+        Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
     end
 end
 
