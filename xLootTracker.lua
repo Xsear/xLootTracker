@@ -125,7 +125,7 @@ function OnOptionsLoaded()
 
     -- Print version message
     if Options['Core']['VersionMessage'] then
-        Messages.SendChatMessage('system', 'Xsear\'s Loot Tracker v'..AddonInfo.version..' p'..AddonInfo.patch..' r'..AddonInfo.release..' Loaded')
+        Messages.SendSystemMessage('Xsear\'s Loot Tracker v'..AddonInfo.version..' p'..AddonInfo.patch..' r'..AddonInfo.release..' Loaded')
     end
 end
 
