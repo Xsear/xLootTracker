@@ -2,13 +2,10 @@
 v1.17
     Public Release 17
     2014-09-
-
-
-    - Fixed a bug that caused the HUDTracker Minimum Update Delay not to function as intended. This fix should improve performance.
-
-    - Rewrote the HUDTracker Update mechanism, this should result in a noticeable performance improvement.
+    - Rewrote the HUDTracker's update function, making it more efficient than before. This should result in a noticeable performance improvement during larger fights. As a side effect, the HUDTracker Update Interval and Minimum Update Delay options were rendered meaningless, and have been removed. 
     - Added the ability to append an item link to the chat input from the HUDTracker entries' right-click context menu.
     - Fixed an issue where the addon would not send the version message under certain conditions.
+    - Fixed a minor issue with detecting who looted items, caused by a change in a recent patch.
     - Various code improvements and enworsements.
 
 v1.16
