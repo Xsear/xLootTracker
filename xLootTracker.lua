@@ -301,23 +301,8 @@ end
 
 --[[
     OnLootPickup(args)
-    Event handler for ON_LOOT_PICKUP
+    Event handler for ON_LOOT_COLLECTED and MY_LOOT_COLLECTED
 ]]--
-function OnLootPickup(args)
-    -- Requires Core enabled
-    if not Options['Core']['Enabled'] then return end
-
-    -- Control types
-    args.itemTypeId = tostring(args.itemTypeId)
-
-    -- Forward
-    Tracker.OnLootEvent(args)
-end
-
---[[
-    OnLootCollected(args)
-    Event handler for ON_LOOT_COLLECTED
---]]
 function OnLootCollected(args)
     -- Requires Core enabled
     if not Options['Core']['Enabled'] then return end
@@ -325,16 +310,9 @@ function OnLootCollected(args)
     -- Control types
     args.itemTypeId = tostring(args.itemTypeId)
 
-    -- Ignore the event if it is for the local player, since then OnLootPickup should have occured.
-    if namecompare(args.lootedTo, Player.GetInfo()) and namecompare(args.lootedBy, Player.GetInfo()) then 
-        --Debug.Log('Skipping OnLootCollected event for '..tostring(args.itemTypeId)..' under the assumption that OnLootPickup occurs.')
-        return 
-    end
-
     -- Forward
     Tracker.OnLootEvent(args)
 end
-
 
 --[[
     OnTrackerNew(args)

@@ -24,7 +24,7 @@
         <Event name="ON_UI_ENTITY_AVAILABLE"       bind="OnEntityAvailable"   />
         <Event name="ON_UI_ENTITY_LOST"            bind="OnEntityLost"        />
         <Event name="ON_LOOT_COLLECTED"            bind="OnLootCollected"     />
-        <Event name="ON_LOOT_PICKUP"               bind="OnLootPickup"        />
+        <Event name="MY_LOOT_COLLECTED"            bind="OnLootCollected"     />
 
         <!-- Custom -->
         <Event name="XLT_ON_TRACKER_NEW"           bind="OnTrackerNew"        />
