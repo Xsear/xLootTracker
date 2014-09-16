@@ -1,9 +1,15 @@
 
 v1.17
-    Public Release 16
+    Public Release 17
     2014-09-
+
+
     - Fixed a bug that caused the HUDTracker Minimum Update Delay not to function as intended. This fix should improve performance.
 
+    - Rewrote the HUDTracker Update mechanism, this should result in a noticeable performance improvement.
+    - Added the ability to append an item link to the chat input from the HUDTracker entries' right-click context menu.
+    - Fixed an issue where the addon would not send the version message under certain conditions.
+    - Various code improvements and enworsements.
 
 v1.16
     Public Release 16
