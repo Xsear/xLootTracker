@@ -99,13 +99,6 @@ function HUDTracker.OnOptionChange(id, value)
         InterfaceOptions.ChangeFrameHeight(FRAME, value)
         SCROLLER:UpdateSize()
 
-    elseif id == 'HUDTracker_UpdateInterval' then
-        if CYCLE_HUDTrackerUpdate then
-            Debug.Log('Restarting HUDTrackerUpdate cycle with interval (s): ' .. tostring(tonumber(Options['HUDTracker']['UpdateInterval'])))
-            CYCLE_HUDTrackerUpdate:Stop()
-            CYCLE_HUDTrackerUpdate:Run(tonumber(Options['HUDTracker']['UpdateInterval']))
-        end
-
     -- For standard behavior options just update
     else
         --Debug.Log("Unhandled Option Id "..tostring(id))

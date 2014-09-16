@@ -186,9 +186,6 @@ Options = {
         ['PlateMode'] = HUDTrackerPlateModeOptions.Decorated,
         ['IconMode'] = HUDTrackerIconModeOptions.Decorated,
 
-        ['UpdateInterval'] = 5,
-        ['MinimumUpdateDelay'] = 1,
-
         ['EntrySize'] = 32,
         ['EntryFontType'] = OptionsFontTypes.UbuntuMedium,
         ['EntryFontSize'] = 10,
@@ -2950,34 +2947,6 @@ function BuildInterfaceOptions_HUDTracker()
         label   = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Label'),
         tooltip = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Tooltip'),
         subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
-    })
-
-    InterfaceOptions.AddSlider({
-        id      = 'HUDTracker_UpdateInterval',
-        min     = 0.5,
-        max     = 60.0,
-        inc     = 0.5,
-        suffix  = 's',
-        default = Options['HUDTracker']['UpdateInterval'],
-        label   = Lokii.GetString('Options_HUDTracker_UpdateInterval_Label'),
-        tooltip = Lokii.GetString('Options_HUDTracker_UpdateInterval_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Options_Subtab_HUDTracker')
-        },
-    })
-
-    InterfaceOptions.AddSlider({
-        id      = 'HUDTracker_MinimumUpdateDelay',
-        min     = 0.5,
-        max     = 60.0,
-        inc     = 0.5,
-        suffix  = 's',
-        default = Options['HUDTracker']['MinimumUpdateDelay'],
-        label   = Lokii.GetString('Options_HUDTracker_MinimumUpdateDelay_Label'),
-        tooltip = Lokii.GetString('Options_HUDTracker_MinimumUpdateDelay_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Options_Subtab_HUDTracker')
-        },
     })
 
     UIHELPER_Filtering('HUDTracker')
