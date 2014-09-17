@@ -16,6 +16,56 @@ MarkerType = {
     Group = "group",
 }
 
+
+
+
+
+function WaypointManager.Enable()
+    -- Create waypoints for available loot
+    local availableLoot = Tracker.GetAvailableLoot()
+    if not _table.empty(availableLoot) then
+        for i, loot in ipairs(availableLoot) do 
+            WaypointManager.OnTrackerNew({lootId = loot:GetId()})
+        end
+    end
+end
+
+function WaypointManager.Disable()
+    -- Clear existing waypoints
+    if not _table.empty(Private.waypointList) then
+        for i, waypoint in ipairs(Private.waypointList) do
+
+            if waypoint.MARKER then
+                waypoint.MARKER:Destroy()
+            end
+
+        end
+
+        Private.waypointList = {}
+    end
+end
+
+function WaypointManager.OnOptionChange(id, value)
+    if id == "Waypoints_Enabled" then
+        -- Enabled
+        if value then
+            WaypointManager.Enable()
+
+        -- Disabled
+        else
+            WaypointManager.Disable()
+        end
+    
+    else
+        -- Todo:
+    end
+end
+
+
+
+
+
+
 --[[
     WaypointManager.OnTrackerNew(args)
     Called when Tracker has added a new item.
@@ -106,6 +156,10 @@ function WaypointManager.Create(loot)
     -- Icon
     local MULTIART = MARKER:GetIcon()
     MULTIART:SetUrl(loot:GetWebIcon())
+
+    if Options['Waypoints']['IconGlow'] then
+        MULTIART:SetParam("glow", loot:GetColor())
+    end
 
     -- Visibility
     Private.SetHudVisibility(waypoint)
@@ -203,7 +257,7 @@ function Private.SetHudVisibility(waypoint)
     end
 
     -- Do we care?
-    if not Options['Waypoints']['ShowOnHud'] then
+    if Options['Waypoints']['ShowOnHud'] then
         
         -- Get loot
         local loot = Tracker.GetLootById(waypoint.lootId)

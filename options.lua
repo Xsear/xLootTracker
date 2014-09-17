@@ -68,6 +68,8 @@ Options = {
         ['ShowOnRadar'] = true,
         ['RadarEdgeMode'] = RadarEdgeModes.Icon,
 
+        ['IconGlow'] = true,
+
     },
 
     ['Messages'] = {
@@ -2161,6 +2163,10 @@ function OnOptionChange(args)
         elseif explodedId[1] == 'Tracker' then
             Tracker.OnOptionChange(args.id, args.val)
 
+        -- For Waypoints options
+        elseif explodedId[1] == 'Waypoints' then
+            WaypointManager.OnOptionChange(args.id, args.val) 
+
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
             -- Note: This could behave poorly if other sound options are added
@@ -2795,6 +2801,14 @@ function BuildInterfaceOptions_Waypoints()
     })
 
     UIHELPER_DropdownFromTable('Waypoints_RadarEdgeMode', 'Options_Waypoints_RadarEdgeMode', Options['Waypoints']['RadarEdgeMode'], OptionsRadarEdgeModesDropdown, 'RadarEdgeModes', Lokii.GetString('Options_Subtab_Waypoints'))
+
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_IconGlow',
+        default = Options['Waypoints']['IconGlow'],
+        label   = Lokii.GetString('Options_Waypoints_IconGlow_Label'),
+        tooltip = Lokii.GetString('Options_Waypoints_IconGlow_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_Waypoints')}
+    })
 
     UIHELPER_Filtering('Waypoints')
 end
