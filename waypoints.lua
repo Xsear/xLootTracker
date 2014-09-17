@@ -230,7 +230,8 @@ function WaypointManager.ToggleVisibility(args)
         -- Determine top rarity
         local topRarityValue = 0
         for i, waypoint in ipairs(Private.waypointList) do
-            local rarityValue = waypoint.lootId:GetRarityValue()
+            local loot = Tracker.GetLootById(waypoint.lootId)
+            local rarityValue = loot:GetRarityValue()
             if rarityValue > topRarityValue then
                 topRarityValue = rarityValue
             end
