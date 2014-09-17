@@ -1,7 +1,7 @@
 
 v1.17
     Public Release 17
-    2014-09-
+    2014-09-17
     - Rewrote the HUDTracker's update function, making it more efficient than before. This should result in a noticeable performance improvement during larger fights. As a side effect, the HUDTracker Update Interval and Minimum Update Delay options were rendered meaningless, and have been removed. 
     - Added the ability to append an item link to the chat input from the HUDTracker entries' right-click context menu.
     - Added Waypoint Icon Glow options (requires that you have UI Glow Effects enabled in the game Video settings).

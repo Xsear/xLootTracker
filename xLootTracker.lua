@@ -33,9 +33,9 @@ require './lootpanel'              -- Loot Panel object
 
 -- Addon Meta
 AddonInfo = {
-    release  = "BETA",
-    version = "1.17.B1",
-    patch = "1.0.1797",
+    release  = "2014-09-17",
+    version = "1.17",
+    patch = "1.1.1802",
     save = 1.0,
 }
 
