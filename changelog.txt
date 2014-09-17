@@ -4,6 +4,8 @@ v1.17
     2014-09-
     - Rewrote the HUDTracker's update function, making it more efficient than before. This should result in a noticeable performance improvement during larger fights. As a side effect, the HUDTracker Update Interval and Minimum Update Delay options were rendered meaningless, and have been removed. 
     - Added the ability to append an item link to the chat input from the HUDTracker entries' right-click context menu.
+    - Added Waypoint Icon Glow options (requires that you have UI Glow Effects enabled in the game Video settings).
+    - Improved behaviour of Waypoints when toggling the feature on and off. It will now clear Waypoints when it is disabled, and create Waypoints for existing loot when enabled.
     - Fixed an issue where the addon would not send the version message under certain conditions.
     - Fixed a minor issue with detecting who looted items, caused by a change in a recent patch.
     - Various code improvements and enworsements.
