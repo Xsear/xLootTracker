@@ -68,6 +68,8 @@ Options = {
         ['ShowOnRadar'] = true,
         ['RadarEdgeMode'] = RadarEdgeModes.Icon,
 
+        ['IconGlow'] = true,
+
     },
 
     ['Messages'] = {
@@ -185,9 +187,6 @@ Options = {
         },
         ['PlateMode'] = HUDTrackerPlateModeOptions.Decorated,
         ['IconMode'] = HUDTrackerIconModeOptions.Decorated,
-
-        ['UpdateInterval'] = 5,
-        ['MinimumUpdateDelay'] = 1,
 
         ['EntrySize'] = 32,
         ['EntryFontType'] = OptionsFontTypes.UbuntuMedium,
@@ -2164,6 +2163,10 @@ function OnOptionChange(args)
         elseif explodedId[1] == 'Tracker' then
             Tracker.OnOptionChange(args.id, args.val)
 
+        -- For Waypoints options
+        elseif explodedId[1] == 'Waypoints' then
+            WaypointManager.OnOptionChange(args.id, args.val) 
+
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
             -- Note: This could behave poorly if other sound options are added
@@ -2799,6 +2802,14 @@ function BuildInterfaceOptions_Waypoints()
 
     UIHELPER_DropdownFromTable('Waypoints_RadarEdgeMode', 'Options_Waypoints_RadarEdgeMode', Options['Waypoints']['RadarEdgeMode'], OptionsRadarEdgeModesDropdown, 'RadarEdgeModes', Lokii.GetString('Options_Subtab_Waypoints'))
 
+    InterfaceOptions.AddCheckBox({
+        id      = 'Waypoints_IconGlow',
+        default = Options['Waypoints']['IconGlow'],
+        label   = Lokii.GetString('Options_Waypoints_IconGlow_Label'),
+        tooltip = Lokii.GetString('Options_Waypoints_IconGlow_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_Waypoints')}
+    })
+
     UIHELPER_Filtering('Waypoints')
 end
 
@@ -2950,34 +2961,6 @@ function BuildInterfaceOptions_HUDTracker()
         label   = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Label'),
         tooltip = Lokii.GetString('Options_HUDTracker_ForceWebIcons_Tooltip'),
         subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
-    })
-
-    InterfaceOptions.AddSlider({
-        id      = 'HUDTracker_UpdateInterval',
-        min     = 0.5,
-        max     = 60.0,
-        inc     = 0.5,
-        suffix  = 's',
-        default = Options['HUDTracker']['UpdateInterval'],
-        label   = Lokii.GetString('Options_HUDTracker_UpdateInterval_Label'),
-        tooltip = Lokii.GetString('Options_HUDTracker_UpdateInterval_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Options_Subtab_HUDTracker')
-        },
-    })
-
-    InterfaceOptions.AddSlider({
-        id      = 'HUDTracker_MinimumUpdateDelay',
-        min     = 0.5,
-        max     = 60.0,
-        inc     = 0.5,
-        suffix  = 's',
-        default = Options['HUDTracker']['MinimumUpdateDelay'],
-        label   = Lokii.GetString('Options_HUDTracker_MinimumUpdateDelay_Label'),
-        tooltip = Lokii.GetString('Options_HUDTracker_MinimumUpdateDelay_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Options_Subtab_HUDTracker')
-        },
     })
 
     UIHELPER_Filtering('HUDTracker')

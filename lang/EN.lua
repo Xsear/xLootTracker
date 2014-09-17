@@ -287,6 +287,8 @@ LANG = {
     Options_Waypoints_RadarEdgeMode_Label                   =    "Radar Edge Mode",
     Options_Waypoints_RadarEdgeMode_Tooltip                 =    "Behavior for Waypoint icons on the radar when outside range and the icon attaches to the radar edge\nNone : Hidden \nArrow: Nonspecific arrow icon \nIcon : Keep showing the same icon",
 
+    Options_Waypoints_IconGlow_Label                = "Enable Icon Glow",
+    Options_Waypoints_IconGlow_Tooltip              = "If you have UI Glow Effects enabled in the game's Video settings, this will cause the icon displayed on your hud, worldmap and radar to glow in its rarities color.",
 
 
     Options_Debug_Enabled_Label                                                                 =    "Debug",
