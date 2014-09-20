@@ -223,6 +223,7 @@ Options = {
         ['LogLootableCollection'] = false,
         ['LogLootCreateData'] = false,
         ['LogOptionChange'] = false,
+        ['LogLootDetermineCategory'] = false,
     },
 
 }
@@ -2521,6 +2522,13 @@ function BuildInterfaceOptions_Front()
             default = Options['Debug']['LogOptionChange'],
             label   = Lokii.GetString('Options_Debug_LogOptionChange_Label'),
             tooltip = Lokii.GetString('Options_Debug_LogOptionChange_Tooltip'),
+        })
+
+        InterfaceOptions.AddCheckBox({
+            id      = 'Debug_LogLootDetermineCategory',
+            default = Options['Debug']['LogLootDetermineCategory'],
+            label   = Lokii.GetString('Options_Debug_LogLootDetermineCategory_Label'),
+            tooltip = Lokii.GetString('Options_Debug_LogLootDetermineCategory_Tooltip'),
         })
 
     InterfaceOptions.StopGroup()
