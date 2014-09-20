@@ -111,7 +111,7 @@ function Tracker.OnOptionChange(id, value)
         end
 
     else
-        --Debug.Log("Unhandled Option Id "..tostring(id))
+        --Debug.Log('Unhandled Option Id '..tostring(id))
     end
 end
 
@@ -172,7 +172,7 @@ function Tracker.OnEntityAvailable(args)
     if not args.entityId then
         return -- You were useless!
     -- Is it loot?
-    elseif args.type ~= "loot" then
+    elseif args.type ~= 'loot' then
         return -- Nobody cares!
     -- Are we tracking this?
     elseif Tracker.IsTrackedEntity(args.entityId) then
@@ -198,7 +198,7 @@ end
     Call when an OnEntityLost has occured.
 --]]
 function Tracker.OnEntityLost(args)
-    --Debug.Log("Tracker.OnEntityLost on entityId " .. tostring(args.entityId))
+    --Debug.Log('Tracker.OnEntityLost on entityId ' .. tostring(args.entityId))
     -- Do we have an entityId?
     if not args.entityId then
         return -- Nothing we could do!
@@ -268,7 +268,7 @@ function Tracker.OnLootEvent(args)
             local loot = nil
             local matches = {}
             -- So, are we tracking anything like this?
-            --Debug.Log("Scanning for match: Available and typeId " .. tostring(args.itemTypeId))
+            --Debug.Log('Scanning for match: Available and typeId ' .. tostring(args.itemTypeId))
             for id, item in pairs(Private.trackedLoot) do
                 if item.state == LootState.Available and tostring(item:GetTypeId()) == tostring(args.itemTypeId) then
                     loot = item
@@ -276,13 +276,13 @@ function Tracker.OnLootEvent(args)
                 end
             end
 
-            --Debug.Log("Scan Result: " .. tostring(#matches))
+            --Debug.Log('Scan Result: ' .. tostring(#matches))
 
             -- Do we have more than one matches?
             if #matches > 1 then
                 -- Shit.
                 -- Okay, we're gonna have to store this lootevent for now.
-                --Debug.Log("Tracker.OnLootEvent Multiple potential matches (" .. tostring(count) .. ") for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+                --Debug.Log('Tracker.OnLootEvent Multiple potential matches (' .. tostring(count) .. ') for ' .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
                 
                 -- If we haven't recently stored any lootevents of this type, create the table
                 if not Private.lootEventHistory[args.itemTypeId] then
@@ -321,7 +321,7 @@ function Tracker.OnLootEvent(args)
             -- No matches?
             else
                 -- Hmm, so we weren't tracking this item
-                Debug.Log("Tracker.OnLootEvent found no matches for " .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+                Debug.Log('Tracker.OnLootEvent found no matches for ' .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
             end
         end
     end
@@ -332,7 +332,7 @@ end
     Identifies entity, adding it to a list of items that have been seen
 ]]--
 function Tracker.Track(args)
-    args.event = "Tracker.Track"
+    args.event = 'Tracker.Track'
     --Debug.Event(args)
 
     -- Setup vars from args
@@ -343,7 +343,7 @@ function Tracker.Track(args)
     -- Check entityId
     if not entityId then
         -- We should have an entityId
-        Debug.Warn("Loot.Create called without an entityId")
+        Debug.Warn('Loot.Create called without an entityId')
     end
 
     -- Be sure it still exists
@@ -392,7 +392,7 @@ function Tracker.Track(args)
 
         -- We don't have a valid itemTypeId? Then what do we do...
         else
-            Debug.Log("Loot.Create called without itemInfo, and lacks target with itemTypeId")
+            Debug.Log('Loot.Create called without itemInfo, and lacks target with itemTypeId')
             Debug.Table({entityId, targetInfo, itemInfo})
             return
         end
@@ -433,10 +433,10 @@ function Tracker.Track(args)
 
 
     -- Create loot
-    --Debug.Log("About to create loot")
+    --Debug.Log('About to create loot')
     local loot = Loot(entityId, targetInfo, itemInfo)
 
-    --Debug.Log("Created new loot!" .. loot:ToString())
+    --Debug.Log('Created new loot!' .. loot:ToString())
 
     -- Save loot
     Private.trackedLoot[loot:GetId()] = loot
@@ -446,7 +446,7 @@ function Tracker.Track(args)
     Private.trackedLootCounter = Private.trackedLootCounter + 1
 
     -- Fire event
-    --Component.GenerateEvent("XLT_ON_TRACKER_NEW", {lootId = loot:GetId()})
+    --Component.GenerateEvent('XLT_ON_TRACKER_NEW', {lootId = loot:GetId()})
     OnTrackerNew({lootId = loot:GetId()})
 
     -- Setup indivdual updates
@@ -470,14 +470,14 @@ end
 function Tracker.Update(lootArg)
     -- Handle argument
     local loot = nil
-    if type(lootArg) == "table" then
+    if type(lootArg) == 'table' then
         loot = lootArg
     else
         loot = Tracker.GetLootById(lootArg)
     end
 
     if not loot then
-        Debug.Warn("Tracker.Update called with invalid loot argument " .. tostring(lootArg))
+        Debug.Warn('Tracker.Update called with invalid loot argument ' .. tostring(lootArg))
         return
     end
 
@@ -494,12 +494,12 @@ function Tracker.Update(lootArg)
     if newState ~= previousState then
 
         -- XLT_ON_TRACKER_UPDATE is always triggered when the state changes
-        --Component.GenerateEvent("XLT_ON_TRACKER_UPDATE", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+        --Component.GenerateEvent('XLT_ON_TRACKER_UPDATE', {lootId = loot:GetId(), previousState = previousState, newState = newState})
         OnTrackerUpdate({lootId = loot:GetId(), previousState = previousState, newState = newState})
         
         -- XLT_ON_TRACKER_LOOTED is triggered when an item that was available changes to having been looted
         if previousState == LootState.Available and newState == LootState.Looted then
-            --Component.GenerateEvent("XLT_ON_TRACKER_LOOTED", {lootId = loot:GetId(), previousState = previousState, newState = newState})
+            --Component.GenerateEvent('XLT_ON_TRACKER_LOOTED', {lootId = loot:GetId(), previousState = previousState, newState = newState})
             OnTrackerLooted({lootId = loot:GetId(), previousState = previousState, newState = newState})
         end
 
@@ -519,14 +519,14 @@ end
 --]]
 function Tracker.Remove(lootArg)
     local loot = nil
-    if type(lootArg) == "table" then
+    if type(lootArg) == 'table' then
         loot = lootArg
     else
         loot = Tracker.GetLootById(lootArg)
     end
 
     if not loot then
-        Debug.Warn("Tracker.Remove called with invalid loot argument " .. tostring(lootArg))
+        Debug.Warn('Tracker.Remove called with invalid loot argument ' .. tostring(lootArg))
         return
     end
 
@@ -554,7 +554,7 @@ function Tracker.Remove(lootArg)
     loot:Destroy()
 
     -- Fire Event
-    --Component.GenerateEvent("XLT_ON_TRACKER_REMOVE", {lootId = lootId})
+    --Component.GenerateEvent('XLT_ON_TRACKER_REMOVE', {lootId = lootId})
     OnTrackerRemove({lootId = lootId})
 end
 
@@ -581,7 +581,7 @@ function Tracker.GetLootById(lootId)
     local loot = Private.trackedLoot[lootId]
 
     if not loot then
-        Debug.Log("Tracker.GetLootById returning nil because it did not find any matching loot for lootId: " .. tostring(lootId))
+        Debug.Log('Tracker.GetLootById returning nil because it did not find any matching loot for lootId: ' .. tostring(lootId))
     end
 
     return loot
@@ -595,7 +595,7 @@ function Tracker.GetLootByEntityId(entityId)
     local loot = Private.trackedLoot[Private.identityByEntity[entityId]]
 
     if not loot then
-        Debug.Log("Tracker.GetLootByEntityId returning nil because it did not find any matching loot for entityId " .. tostring(entityId))
+        Debug.Log('Tracker.GetLootByEntityId returning nil because it did not find any matching loot for entityId ' .. tostring(entityId))
     end
 
     return loot
@@ -625,9 +625,9 @@ end
     Debug output for the Stat slash command.
 --]]
 function Tracker.Stat()
-    --Debug.Table("trackedLoot", Private.trackedLoot)
-    --Debug.Table("lootEventHistory", Private.lootEventHistory)
-    Debug.Log("Tracker.GetCount(): " .. tostring(Tracker.GetCount()))
+    --Debug.Table('trackedLoot', Private.trackedLoot)
+    --Debug.Table('lootEventHistory', Private.lootEventHistory)
+    Debug.Log('Tracker.GetCount(): ' .. tostring(Tracker.GetCount()))
 end
 
 --[[
@@ -718,10 +718,10 @@ end
 
 function IsComponent(itemInfo)
     -- SubTypeIds.Resource should be 15 and represent Crafting Components
-    local old = (itemInfo.type == "crafting_component")
-    local new = (itemInfo.type == "resource_item" and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, SubTypeIds.Resource))
+    local old = (itemInfo.type == 'crafting_component')
+    local new = (itemInfo.type == 'resource_item' and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, SubTypeIds.Resource))
 
-    local extra = (itemInfo.type == "basic" and itemInfo.flags.resource and itemInfo.flags.is_tradable)
+    local extra = (itemInfo.type == 'basic' and itemInfo.flags.resource and itemInfo.flags.is_tradable)
 
     return (new or extra or old)
 end
@@ -729,7 +729,7 @@ end
 function IsMetal(itemInfo)
     local rawMetalsSubTypeId = 3288
 
-    local metals = (itemInfo.type == "resource_item" and itemInfo.flags.resource and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, rawMetalsSubTypeId))
+    local metals = (itemInfo.type == 'resource_item' and itemInfo.flags.resource and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, rawMetalsSubTypeId))
 
     return (metals)
 end
@@ -737,7 +737,7 @@ end
 function IsBioMaterial(itemInfo)
     local rawBioMaterialsSubTypeId = 3291
 
-    local biomaterials = (itemInfo.type == "resource_item" and itemInfo.flags.resource and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, rawBioMaterialsSubTypeId))
+    local biomaterials = (itemInfo.type == 'resource_item' and itemInfo.flags.resource and itemInfo.subTypeId and Game.IsItemOfType(itemInfo.itemTypeId, rawBioMaterialsSubTypeId))
 
     return (biomaterials)
 end
@@ -748,19 +748,19 @@ function IsCurrency(itemInfo)
 end
 
 function IsSalvage(itemInfo)
-    local cond1 = (itemInfo.type == "basic" or itemInfo.type == "resource_item")
-    local cond2 = (itemInfo.rarity == "salvage")
+    local cond1 = (itemInfo.type == 'basic' or itemInfo.type == 'resource_item')
+    local cond2 = (itemInfo.rarity == 'salvage')
     local cond3 = (itemInfo.flags and itemInfo.flags.is_salvageable)
 
     return ((cond1 or cond2) and cond3)
 end
 
 function IsModule(itemInfo)
-    return (itemInfo.type == "item_module")
+    return (itemInfo.type == 'item_module')
 end
 
 function IsConsumable(itemInfo)
-    return (itemInfo.type == "consumable")
+    return (itemInfo.type == 'consumable')
 end
 
 

@@ -340,7 +340,7 @@ PRIVATE.uiSounds = {
     },
     {
         label='Sounds_Option_SFX_UI_GeneralAnnouncement',
-        val="Play_SFX_UI_GeneralAnnouncement",
+        val='Play_SFX_UI_GeneralAnnouncement',
     },
     {
         label='Sounds_Option_SFX_UI_GeneralConfirm14_v2',
@@ -348,35 +348,35 @@ PRIVATE.uiSounds = {
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Abilities',
-        val="Play_SFX_UI_Loot_Abilities",
+        val='Play_SFX_UI_Loot_Abilities',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Backpack_Pickup',
-        val="Play_SFX_UI_Loot_Backpack_Pickup",
+        val='Play_SFX_UI_Loot_Backpack_Pickup',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Basic',
-        val="Play_SFX_UI_Loot_Basic",
+        val='Play_SFX_UI_Loot_Basic',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Battleframe_Pickup',
-        val="Play_SFX_UI_Loot_Battleframe_Pickup",
+        val='Play_SFX_UI_Loot_Battleframe_Pickup',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Crystite',
-        val="Play_SFX_UI_Loot_Crystite",
+        val='Play_SFX_UI_Loot_Crystite',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Flyover',
-        val="Play_SFX_UI_Loot_Flyover",
+        val='Play_SFX_UI_Loot_Flyover',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_PowerUp',
-        val="Play_SFX_UI_Loot_PowerUp",
+        val='Play_SFX_UI_Loot_PowerUp',
     },
     {
         label='Sounds_Option_SFX_UI_Loot_Weapon_Pickup',
-        val="Play_SFX_UI_Loot_Weapon_Pickup",
+        val='Play_SFX_UI_Loot_Weapon_Pickup',
     },
     {
         label='Sounds_Option_SFX_UI_OCT_1MinWarning',

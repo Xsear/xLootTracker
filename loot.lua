@@ -9,7 +9,7 @@ Loot = {}
 Loot.__index = Loot -- When calling functions on the instance tables, fallback to the one Loot table.
 
 setmetatable(Loot, {
-             -- Makes it possible to create instances like this: "local loot = Loot(args)"
+             -- Makes it possible to create instances like this: 'local loot = Loot(args)'
              __call = function(class, ...)
                         return class.Create(...)
                       end,
@@ -35,10 +35,10 @@ local Private = {
 --]]
 function Loot.Create(entityId, targetInfo, itemInfo)
     if Options['Debug']['LogLootCreateData'] then
-        Debug.Log("Loot.Create on " .. tostring(targetInfo.name))
-        Debug.Log("entityId " .. tostring(entityId))
-        Debug.Table("targetInfo", targetInfo)
-        Debug.Table("itemInfo", itemInfo)
+        Debug.Log('Loot.Create on ' .. tostring(targetInfo.name))
+        Debug.Log('entityId ' .. tostring(entityId))
+        Debug.Table('targetInfo', targetInfo)
+        Debug.Table('itemInfo', itemInfo)
     end
 
     -- Create instance
@@ -89,8 +89,8 @@ function Loot.DetermineCategory(targetInfo, itemInfo)
     end
 
     if category == LootCategory.Unknown then
-        --Debug.Warn("Private.Identify LootCategory.Unknown", targetInfo, itemInfo)
-        -- Well this is basically the "shit we dont care about category" now ;o
+        --Debug.Warn('Private.Identify LootCategory.Unknown', targetInfo, itemInfo)
+        -- Well this is basically the 'shit we dont care about category' now ;o
     end
 
     Debug.Log(tostring(targetInfo.name) .. ' identified as ' .. tostring(category))
@@ -103,7 +103,7 @@ end
     Some shit right here...
 --]]
 function Loot.GetDisplayNameOfRarity(rarity)
-    return ucfirst(rarity) or "ukwn"
+    return ucfirst(rarity) or 'ukwn'
 end
 
 --[[
@@ -128,7 +128,7 @@ function Loot:Update()
 end
 
 function Loot:Destroy()
-    --Debug.Log("Loot:Destroy for " ..self.id.. " "..self:GetName())
+    --Debug.Log('Loot:Destroy for ' ..self.id.. ' '..self:GetName())
         
     self = nil
 end
@@ -204,7 +204,7 @@ function Loot:GetMultiArt(PARENT, forceWebIcon)
     local ICON = MultiArt.Create(PARENT)
 
     -- If ability, use ability icon
-    if not forceWebIcon and self.itemInfo.type == "ability_module" and self.itemInfo.abilityId then
+    if not forceWebIcon and self.itemInfo.type == 'ability_module' and self.itemInfo.abilityId then
         local abilityinfo = Player.GetAbilityInfo(tonumber(self.itemInfo.abilityId))
         if abilityinfo and abilityinfo.iconId then
             ICON:SetIcon(abilityinfo.iconId)
@@ -234,7 +234,7 @@ function Loot:SetLootedTo(input)
 end
 
 function Loot:GetAsText()
-    --Debug.Log("Loot:GetAsText not yet implemented")
+    --Debug.Log('Loot:GetAsText not yet implemented')
     -- Todo: Fixme: Remove?
     return self:GetName()
 end
@@ -260,22 +260,22 @@ end
 function Loot:ToString()
 
     local output = {}
-    table.insert(output, "Loot")
+    table.insert(output, 'Loot')
     table.insert(output, tostring(self:GetName()))
-    table.insert(output, "Category:" .. tostring(self:GetCategory()))
-    table.insert(output, "Id:" .. tostring(self:GetId()))
-    table.insert(output, "TypeId:" .. tostring(self:GetTypeId()))
-    table.insert(output, "State:" .. tostring(self:GetState()))
+    table.insert(output, 'Category:' .. tostring(self:GetCategory()))
+    table.insert(output, 'Id:' .. tostring(self:GetId()))
+    table.insert(output, 'TypeId:' .. tostring(self:GetTypeId()))
+    table.insert(output, 'State:' .. tostring(self:GetState()))
 
     if(self:GetState() == LootState.Available) then
-        table.insert(output, "Entity:" .. tostring(self:GetEntityId()))
+        table.insert(output, 'Entity:' .. tostring(self:GetEntityId()))
     elseif(self:GetState() == LootState.Looted) then
-        table.insert(output, "LootedBy:" .. tostring(self.lootedBy))
-        table.insert(output, "LootedTo:" .. tostring(self.lootedTo))
+        table.insert(output, 'LootedBy:' .. tostring(self.lootedBy))
+        table.insert(output, 'LootedTo:' .. tostring(self.lootedTo))
     end
 
 
-    return table.concat(output, " | ")
+    return table.concat(output, ' | ')
 end
 
 
@@ -323,7 +323,7 @@ function Private.DetermineState(loot)
         end
     end
 
-    if not state then Debug.Warn("dafaq, determine state returning nil, why?") Debug.Table("determinestate loot", loot) end
+    if not state then Debug.Warn('dafaq, determine state returning nil, why?') Debug.Table('determinestate loot', loot) end
 
     return state
 end

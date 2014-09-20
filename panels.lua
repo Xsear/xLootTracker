@@ -37,7 +37,7 @@ end
 --]]
 function PanelManager.OnTrackerLooted(args)
     if not Options['Panels']['Enabled'] then return end
-    --Debug.Log("PanelManager.OnTrackerLooted calling Remove")
+    --Debug.Log('PanelManager.OnTrackerLooted calling Remove')
     PanelManager.Remove(args.lootId)
 end
 
@@ -48,7 +48,7 @@ end
 --]]
 function PanelManager.OnTrackerRemove(args)
     if not Options['Panels']['Enabled'] then return end
-    --Debug.Log("PanelManager.OnTrackerRemove calling Remove")
+    --Debug.Log('PanelManager.OnTrackerRemove calling Remove')
     PanelManager.Remove(args.lootId)
 end
 
@@ -60,7 +60,7 @@ end
 --]]
 function PanelManager.Create(loot)
     -- Check Args
-    if not loot or type(loot) ~= "table" then
+    if not loot or type(loot) ~= 'table' then
         Debug.Log('PanelManager.Create called with invalid argument: ' .. tostring(loot))
         return
     end
@@ -136,7 +136,7 @@ function PanelManager.Create(loot)
             end
 
             -- Set header color
-            LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam("tint", headerBarColor)
+            LOOT_PANEL_HEADER:GetChild('headerBar'):SetParam('tint', headerBarColor)
             LOOT_PANEL_HEADER:GetChild('itemName'):SetTextColor(itemNameColor)
 
 
@@ -155,10 +155,10 @@ function PanelManager.Create(loot)
                 LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
 
                 LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseEnter", function(args)
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseEnter', function(args)
                     Tooltip.Show(args.widget:GetTag())
                 end);
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent("OnMouseLeave", function(args)
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseLeave', function(args)
                     Tooltip.Show(false)
                 end);
             end
@@ -205,5 +205,5 @@ end
     Debug output for the Stat slash command.
 --]]
 function PanelManager.Stat()
-    Debug.Table("PanelManager Private.panelList", Private.panelList)
+    Debug.Table('PanelManager Private.panelList', Private.panelList)
 end

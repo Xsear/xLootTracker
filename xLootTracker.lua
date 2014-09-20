@@ -52,7 +52,7 @@ State = {
     inPlatoon     = false,   -- Whether we are currently in a platoon or not
     isPlatoonLeader = false, -- Whether we are currently the platoon leader or not
     zoneId        = -1,      -- The local zone id
-    playerName    = "",      -- The name of the local player
+    playerName    = '',      -- The name of the local player
 }
 
 -- Addon
@@ -244,23 +244,23 @@ function OnSlash(args)
     elseif args[1] == 'wayman' then
         WaypointManager.ToggleVisibility()
 
-    elseif args[1] == "t" or args[1] == "toggle" then
+    elseif args[1] == 't' or args[1] == 'toggle' then
         if not args[2] then
             Options['Core']['Enabled'] = not Options['Core']['Enabled']
 
-        elseif args[2] == "wp" or args[2] == "wps" or args[2] == "waypoints" or args[2] == "wayman" or args[2] == "way" then
+        elseif args[2] == 'wp' or args[2] == 'wps' or args[2] == 'waypoints' or args[2] == 'wayman' or args[2] == 'way' then
             Options['Waypoints']['Enabled'] = not Options['Waypoints']['Enabled']
 
-        elseif args[2] == "hud" or args[2] == "hudtracker" or args[2] == "tracker" then
+        elseif args[2] == 'hud' or args[2] == 'hudtracker' or args[2] == 'tracker' then
             Options['HUDTracker']['Enabled'] = not Options['HUDTracker']['Enabled']
 
-        elseif args[2] == "sound" or args[2] == "sounds" or args[2] == "snd" then
+        elseif args[2] == 'sound' or args[2] == 'sounds' or args[2] == 'snd' then
             Options['Sounds']['Enabled'] = not Options['Sounds']['Enabled']
 
-        elseif args[2] == "messages" or args[2] == "msg" or args[2] == "msgs" or args[2] == "message" then
+        elseif args[2] == 'messages' or args[2] == 'msg' or args[2] == 'msgs' or args[2] == 'message' then
             Options['Messages']['Enabled'] = not Options['Messages']['Enabled']
 
-        elseif args[2] == "panels" or args[2] == "pan" or args[2] == "panman" or args[2] == "pans" then
+        elseif args[2] == 'panels' or args[2] == 'pan' or args[2] == 'panman' or args[2] == 'pans' then
             Options['Panels']['Enabled'] = not Options['Panels']['Enabled']
 
         end
@@ -428,7 +428,7 @@ end
     Allows for blacklisting specific items from specific parts of the addon.
 --]]
 function Slash_Blacklist(args)
-    Debug.Table("Slash_Blacklist", args)
+    Debug.Table('Slash_Blacklist', args)
     Messages.SendSystemMessage('Blacklist')
     -- args[2] == action
     -- args[3] == scope
@@ -441,7 +441,7 @@ function Slash_Blacklist(args)
     end
 
     local success = false
-    local reason = ""
+    local reason = ''
     local itemInfo = nil
 
     -- Validate actionKey
@@ -495,7 +495,7 @@ function Slash_Blacklist(args)
             if actionKey == 'list' or actionKey == 'view' then
 
                 if not _table.empty(Options['Blacklist'][scopeKey]) then
-                    local results = {"Viewing blacklist entries in scope " .. tostring(scopeKey)}
+                    local results = {'Viewing blacklist entries in scope ' .. tostring(scopeKey)}
 
                     Debug.Table(Options['Blacklist'][scopeKey])
 
@@ -548,7 +548,7 @@ function Slash_Blacklist(args)
 
                     local haveItemTypeId = false
 
-                    local lookupString = ""
+                    local lookupString = ''
                     
 
                     if not args[5] then
@@ -561,8 +561,8 @@ function Slash_Blacklist(args)
                     -- Itterate all ids and see if the name exactly matches? ;3
                     if not haveItemTypeId then
                         local previousArgs = args[1] .. ' ' .. args[2] .. ' ' .. args[3] .. ' '
-                        Debug.Log("PreviousArgs: " .. previousArgs)
-                        Debug.Log("unicode.len(previousArgs): " .. tostring(unicode.len(previousArgs)))
+                        Debug.Log('PreviousArgs: ' .. previousArgs)
+                        Debug.Log('unicode.len(previousArgs): ' .. tostring(unicode.len(previousArgs)))
                         searchName = unicode.sub(args.text, unicode.len(previousArgs) + 1)
                         
                         local maxNum = 300000
@@ -590,14 +590,14 @@ function Slash_Blacklist(args)
                     -- If we have itemInfo, add to blacklist.
                     if itemInfo then
 
-                        if actionKey == "add" then
+                        if actionKey == 'add' then
                             if not Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] then
                                 Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] = true
                                 success = true
                             else
                                 reason = 'Already blacklisted in this scope'
                             end
-                        elseif actionKey == "remove" or actionKey == 'rem' then
+                        elseif actionKey == 'remove' or actionKey == 'rem' then
                             if Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] then
                                 Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] = nil
                                 success = true
@@ -611,10 +611,10 @@ function Slash_Blacklist(args)
                         -- Save
                         Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
 
-                        if actionKey == "add" then
+                        if actionKey == 'add' then
                             Messages.SendSystemMessage('Success! Added ' .. tostring(itemInfo.name) .. '(' .. tostring(itemInfo.itemTypeId) .. ') to the ' .. tostring(scopeKey) .. ' blacklist.')
 
-                        elseif actionKey == "remove" or actionKey == 'rem' then
+                        elseif actionKey == 'remove' or actionKey == 'rem' then
                             Messages.SendSystemMessage('Success! Removed ' .. tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) .. ') from the ' .. tostring(scopeKey) .. ' blacklist.')
                         end
                         return
@@ -644,7 +644,7 @@ end
     Attempts to update all tracked items so that their status is refreshed.
 --]]
 function Slash_Refresh(args)
-    Debug.Log("Slash_Refresh")
+    Debug.Log('Slash_Refresh')
     Tracker.Refresh()
     Messages.SendSystemMessage('Refresh')
 end
@@ -724,8 +724,8 @@ function Slash_Test(args)
             args.targetInfo.lootPos.x = args.targetInfo.lootPos.x - posMod
 
             -- Set loot property
-            args.type = "loot"
-            args.targetInfo.type = "loot"
+            args.type = 'loot'
+            args.targetInfo.type = 'loot'
 
 
             --Messages.SendSystemMessage('Test Loot: ' .. tostring(args.targetInfo.itemTypeId))

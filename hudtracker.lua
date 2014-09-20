@@ -25,8 +25,8 @@ local DimensionOptions = {
     ScrollerSpacing = 8,
     ScrollerSliderMarginVisible = 5,
     ScrollerSliderMarginHidden = 5,
-    EntryDimsWidth = "100%",
-    EntryDimsHeight = "32",
+    EntryDimsWidth = '100%',
+    EntryDimsHeight = '32',
     MaxEntriesBeforeScroller = 3,
 }
 
@@ -75,7 +75,7 @@ function HUDTracker.Disable()
 end
 
 function HUDTracker.OnOptionChange(id, value)
-    if id == "HUDTracker_Enabled" then
+    if id == 'HUDTracker_Enabled' then
         -- Enabled
         if value then
             HUDTracker.Enable()
@@ -86,7 +86,7 @@ function HUDTracker.OnOptionChange(id, value)
     
     elseif id == 'HUDTracker_Frame_Width'
     then
-        Debug.Log("Updating HUDTracker Frame Width")
+        Debug.Log('Updating HUDTracker Frame Width')
         InterfaceOptions.ChangeFrameWidth(FRAME, value)
         SCROLLER:UpdateSize()
 
@@ -97,7 +97,7 @@ function HUDTracker.OnOptionChange(id, value)
 
     -- For standard behavior options just update
     else
-        --Debug.Log("Unhandled Option Id "..tostring(id))
+        --Debug.Log('Unhandled Option Id '..tostring(id))
         HUDTracker.Rebuild()
     end
 end
@@ -107,29 +107,29 @@ end
 
 
 local c_ENTRY_PRINT = [[
-    <Group name="EntryGroup" dimensions="width:100%; height:32;">
+    <Group name='EntryGroup' dimensions='width:100%; height:32;'>
 
         <!-- Plate -->
-        <FocusBox name="plate" dimensions="width:100%-30; height:28; left:30; top:2;">
-            <StillArt name="bg" dimensions="width:100%-2.2; height:99%-2;" style="texture:colors; region:white; tint:#000000; alpha:0.7;"/>
-            <Border name="outer" dimensions="dock:fill" class="Tracker_PlateBorder"/>
-            <Border name="shade" dimensions="dock:fill" class="ButtonFade"/>
+        <FocusBox name='plate' dimensions='width:100%-30; height:28; left:30; top:2;'>
+            <StillArt name='bg' dimensions='width:100%-2.2; height:99%-2;' style='texture:colors; region:white; tint:#000000; alpha:0.7;'/>
+            <Border name='outer' dimensions='dock:fill' class='Tracker_PlateBorder'/>
+            <Border name='shade' dimensions='dock:fill' class='ButtonFade'/>
         </FocusBox>
 
         <!-- Box -->
-        <Group name="box" dimensions="width:32; height:32; left:0; top:0;">
-            <StillArt name="bg" dimensions="width:96%; height:96%;" style="texture:colors; region:white; tint:#000000; alpha:1;"/>
-            <StillArt name="backplate" dimensions="width:99%; height:99%;" style="texture:ItemPlates; region:common;"/>
-            <Border name="outer" dimensions="dock:fill;" class="ButtonBorder"/>
-            <Border name="shade" dimensions="width:0;height:0;" class="ButtonFade"/>
-            <Group name="icon" dimensions="dock:fill;" style="fixed-bounds:true; valign:center;"/>
+        <Group name='box' dimensions='width:32; height:32; left:0; top:0;'>
+            <StillArt name='bg' dimensions='width:96%; height:96%;' style='texture:colors; region:white; tint:#000000; alpha:1;'/>
+            <StillArt name='backplate' dimensions='width:99%; height:99%;' style='texture:ItemPlates; region:common;'/>
+            <Border name='outer' dimensions='dock:fill;' class='ButtonBorder'/>
+            <Border name='shade' dimensions='width:0;height:0;' class='ButtonFade'/>
+            <Group name='icon' dimensions='dock:fill;' style='fixed-bounds:true; valign:center;'/>
         </Group>
 
         <!-- Stack -->
-        <Text name="stack" dimensions="width:4%; height:100%-2; top:2; left:10%;" class="Tracker_Text"/>
+        <Text name='stack' dimensions='width:4%; height:100%-2; top:2; left:10%;' class='Tracker_Text'/>
         
         <!-- Title -->
-        <Text name="title" dimensions="width:80%; height:100%-2; top:2; left:20%;" class="Tracker_Text"/>
+        <Text name='title' dimensions='width:80%; height:100%-2; top:2; left:20%;' class='Tracker_Text'/>
     </Group>
 ]]
 
@@ -177,39 +177,39 @@ function Private.CreateEntry(loot, stackInfo)
             local lootId = args.widget:GetTag()
             local loot = Tracker.GetLootById(lootId)
             if not loot then
-                Debug.Warn("HUDTracker Context Menu could not get loot.")
+                Debug.Warn('HUDTracker Context Menu could not get loot.')
                 return
             end
 
             local MENU = ContextMenu.Create()
             MENU:BindOnRequest(function(MENU, id)
-                if id == "root" then
+                if id == 'root' then
 
                     -- Waypoints
-                    MENU:AddButton({id="self_waypoint", label_key="SET_WAYPOINT"})
+                    MENU:AddButton({id='self_waypoint', label_key='SET_WAYPOINT'})
                     
                     if State.isSquadLeader then
-                        MENU:AddButton({id="squad_waypoint", label_key="SET_SQUAD_WAYPOINT"})
+                        MENU:AddButton({id='squad_waypoint', label_key='SET_SQUAD_WAYPOINT'})
                     end
 
                     -- Append link to Chat
-                    MENU:AddButton({id="add_item_link", label_key="ADD_ITEM_LINK"})
+                    MENU:AddButton({id='add_item_link', label_key='ADD_ITEM_LINK'})
 
                     -- Debug
                     if Options['Debug']['Enabled'] then
-                        MENU:AddButton({id="debug_remove", label="Debug - Remove"})
+                        MENU:AddButton({id='debug_remove', label='Debug - Remove'})
                     end
 
                 end
             end)
             MENU:BindOnSelect(function(args)
-                if args.menu == "root" then
+                if args.menu == 'root' then
 
                     -- Waypoints
                     local lootPos = loot:GetPos()
-                    if args.id == "self_waypoint" then
-                        Component.GenerateEvent("MY_PERSONAL_WAYPOINT_SET", {x=lootPos.x, y=lootPos.y, z=lootPos.z+1})
-                    elseif args.id == "squad_waypoint" then
+                    if args.id == 'self_waypoint' then
+                        Component.GenerateEvent('MY_PERSONAL_WAYPOINT_SET', {x=lootPos.x, y=lootPos.y, z=lootPos.z+1})
+                    elseif args.id == 'squad_waypoint' then
                         Squad.SetWayPoint(lootPos.x, lootPos.y, lootPos.z+1)
 
 
@@ -218,7 +218,7 @@ function Private.CreateEntry(loot, stackInfo)
                         loot:AppendToChat()
 
                     -- Debug - Remove
-                    elseif args.id == "debug_remove" then
+                    elseif args.id == 'debug_remove' then
                         Tracker.Remove(lootId)
                     end
                 end
@@ -244,7 +244,7 @@ function Private.CreateEntry(loot, stackInfo)
     ENTRY.BOX:GetChild('backplate'):SetRegion(loot:GetRarity())
 
     -- Setup icon
-    local ICON_PARENT = ENTRY.BOX:GetChild("icon")
+    local ICON_PARENT = ENTRY.BOX:GetChild('icon')
     ENTRY.ICON = loot:GetMultiArt(ICON_PARENT, Options['HUDTracker']['ForceWebIcons'])
     
     -- Setup stack
@@ -253,7 +253,7 @@ function Private.CreateEntry(loot, stackInfo)
         -- We want to see the count if it is higher than 1
         -- OR if the quantity is higher than 1 (we want to see that it is 3 crystite on the ground).
         -- Since quantity can not be lower then count (quantity is either 1 or higher, there are no half items), we only check quantity here
-        local stackText = ""
+        local stackText = ''
         if stackInfo.quantity > 1 then
             stackText = tostring(stackInfo.count)
         end
@@ -293,7 +293,7 @@ function Private.UpdateEntry(ENTRY)
         -- We want to see the count if it is higher than 1
         -- OR if the quantity is higher than 1 (we want to see that it is 3 crystite on the ground).
         -- Since quantity can not be lower then count (quantity is either 1 or higher, there are no half items), we only check quantity here
-        local stackText = ""
+        local stackText = ''
         if stackInfo.quantity > 1 then
             stackText = tostring(stackInfo.count)
         end
@@ -315,15 +315,15 @@ function Private.SetEntrySize(ENTRY)
     local height = tostring(newHeight)
 
     -- Entry
-    ENTRY.GROUP:SetDims("width:100%; height:"..height..";")
+    ENTRY.GROUP:SetDims('width:100%; height:'..height..';')
 
     -- Plate
     local plateLeftOffset = tostring(newHeight - 4) -- (width of box - px for overlap)
     local plateHeightReduced = tostring(height - 4); -- 2 top and 2 bot to free up space for the bottom borders of the plate
-    ENTRY.PLATE:SetDims("width:100%-"..plateLeftOffset.."; height:"..plateHeightReduced..";top:2;left:"..plateLeftOffset)
+    ENTRY.PLATE:SetDims('width:100%-'..plateLeftOffset..'; height:'..plateHeightReduced..';top:2;left:'..plateLeftOffset)
 
     -- Box (affecting Icon)
-    local boxDimms = "width:"..height.."; height:"..height..";" .. "left:0; top:0;"
+    local boxDimms = 'width:'..height..'; height:'..height..';' .. 'left:0; top:0;'
     ENTRY.BOX:SetDims(boxDimms)
 end
 
@@ -333,13 +333,13 @@ function Private.SetEntryFont(ENTRY)
     local fontType = tostring(Options['HUDTracker']['EntryFontType'])
     local fontSize = tostring(Options['HUDTracker']['EntryFontSize'])
 
-    local suffix = ""
+    local suffix = ''
     if fontType == OptionsFontTypes.Wide then
-        suffix = "B"
+        suffix = 'B'
     end
 
 
-    local font = fontType .. "_" .. fontSize..suffix 
+    local font = fontType .. '_' .. fontSize..suffix 
 
     ENTRY.TITLE:SetFont(font)
 end
@@ -560,12 +560,12 @@ end
 
 function HUDTracker.Rebuild(args)
     args = args or {}
-    args.event = "HUDTracker.Rebuild"
+    args.event = 'HUDTracker.Rebuild'
     Debug.Event(args)
 
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
-        --Debug.Log("HUDTracker Update called and HUDTracker is enabled")
+        --Debug.Log('HUDTracker Update called and HUDTracker is enabled')
 
         -- Stop scroller updates whilst we update
         SCROLLER:LockUpdates()  
@@ -644,7 +644,7 @@ function HUDTracker.UpdateTooltip(lootId)
 
     -- Setup Tooltip
     TOOLTIP_ITEM:DisplayInfo(loot.itemInfo)
-    TOOLTIP_ITEM.GROUP:SetDims("top:0; left:0; width:200; height:200")
+    TOOLTIP_ITEM.GROUP:SetDims('top:0; left:0; width:200; height:200')
 
     -- Add compare info
     local compare_info = LIB_ITEMS.GetMatchingEquippedItemInfo(loot.itemInfo)
@@ -661,7 +661,7 @@ end
 
 -- Fix text size
 function AutosizeText(TEXT)
-    TEXT:SetDims("top:_; height:"..(TEXT:GetTextDims().height+20)) -- Fixme: Magic number
+    TEXT:SetDims('top:_; height:'..(TEXT:GetTextDims().height+20)) -- Fixme: Magic number
 end
 
 
@@ -676,34 +676,34 @@ end
 function HUDTrackerSort(lootA, lootB)
 
 
-    --Debug.Log("************** HUDTrackerSort *********** ")
+    --Debug.Log('************** HUDTrackerSort *********** ')
     -- Handle nil values
     if lootA == nil and lootB == nil then
-        --Debug.Log("A and B are nil, result: false")
+        --Debug.Log('A and B are nil, result: false')
         return false
     end
     if lootA == nil then
-        --Debug.Log("A is nil, result: false")
+        --Debug.Log('A is nil, result: false')
         return false
     end
     if lootB == nil then
-        --Debug.Log("B is nil, result: true")
+        --Debug.Log('B is nil, result: true')
         return true
     end
 
     -- Non Nil Results
-    --Debug.Log("A: "..tostring(lootA:ToString()).." | Rarity:"..tostring(lootA:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootA:GetItemLevel()))
-    --Debug.Log("B: "..tostring(lootB:ToString()).." | Rarity:"..tostring(lootB:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootB:GetItemLevel()))
+    --Debug.Log('A: '..tostring(lootA:ToString())..' | Rarity:'..tostring(lootA:GetRarityValue()) .. ' | ItemLevel:' .. tostring(lootA:GetItemLevel()))
+    --Debug.Log('B: '..tostring(lootB:ToString())..' | Rarity:'..tostring(lootB:GetRarityValue()) .. ' | ItemLevel:' .. tostring(lootB:GetItemLevel()))
     
     -- Rarer items first
     local rarityA = lootA:GetRarityValue()
     local rarityB = lootB:GetRarityValue()
 
     if rarityA ~= rarityB then
-        --Debug.Log("Prioritizing rarity")
-        --Debug.Log("A: Rarity " .. tostring(rarityA))
-        --Debug.Log("B: Rarity " .. tostring(rarityB))
-        --Debug.Log("A before B? : " .. tostring((rarityA > rarityB)))
+        --Debug.Log('Prioritizing rarity')
+        --Debug.Log('A: Rarity ' .. tostring(rarityA))
+        --Debug.Log('B: Rarity ' .. tostring(rarityB))
+        --Debug.Log('A before B? : ' .. tostring((rarityA > rarityB)))
         return (rarityA > rarityB)
     end
 
@@ -711,15 +711,15 @@ function HUDTrackerSort(lootA, lootB)
     local ilvlA = lootA:GetItemLevel()
     local ilvlB = lootB:GetItemLevel()
     if ilvlA ~= ilvlB then
-        --Debug.Log("Prioritizing ItemLevel")
-        --Debug.Log("A: ItemLevel " .. tostring(ilvlA))
-        --Debug.Log("B: ItemLevel " .. tostring(ilvlB))
-        --Debug.Log("A before B? : " .. tostring((ilvlA > ilvlB)))
+        --Debug.Log('Prioritizing ItemLevel')
+        --Debug.Log('A: ItemLevel ' .. tostring(ilvlA))
+        --Debug.Log('B: ItemLevel ' .. tostring(ilvlB))
+        --Debug.Log('A before B? : ' .. tostring((ilvlA > ilvlB)))
         return (ilvlA > ilvlB)
     end
 
     -- Alphabetic third
-    --Debug.Log("Prioritizing alphabetic")
+    --Debug.Log('Prioritizing alphabetic')
     return (lootA:GetName() < lootB:GetName())
 end
 
@@ -728,24 +728,24 @@ end
 function HUDTrackerSort2(lootA, lootB)
 
 
-    --Debug.Log("************** HUDTrackerSort *********** ")
+    --Debug.Log('************** HUDTrackerSort *********** ')
     -- Handle nil values
     if lootA == nil and lootB == nil then
-        --Debug.Log("A and B are nil, result: false")
+        --Debug.Log('A and B are nil, result: false')
         return false
     end
     if lootA == nil then
-        --Debug.Log("A is nil, result: false")
+        --Debug.Log('A is nil, result: false')
         return false
     end
     if lootB == nil then
-        --Debug.Log("B is nil, result: true")
+        --Debug.Log('B is nil, result: true')
         return true
     end
 
     -- Non Nil Results
-    --Debug.Log("A: "..tostring(lootA:ToString()).." | Rarity:"..tostring(lootA:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootA:GetItemLevel()))
-    --Debug.Log("B: "..tostring(lootB:ToString()).." | Rarity:"..tostring(lootB:GetRarityValue()) .. " | ItemLevel:" .. tostring(lootB:GetItemLevel()))
+    --Debug.Log('A: '..tostring(lootA:ToString())..' | Rarity:'..tostring(lootA:GetRarityValue()) .. ' | ItemLevel:' .. tostring(lootA:GetItemLevel()))
+    --Debug.Log('B: '..tostring(lootB:ToString())..' | Rarity:'..tostring(lootB:GetRarityValue()) .. ' | ItemLevel:' .. tostring(lootB:GetItemLevel()))
 
     lootA = lootA.stackInfo.sortProfile
     lootB = lootB.stackInfo.sortProfile
@@ -755,10 +755,10 @@ function HUDTrackerSort2(lootA, lootB)
     local rarityB = lootB.rarityValue
 
     if rarityA ~= rarityB then
-        --Debug.Log("Prioritizing rarity")
-        --Debug.Log("A: Rarity " .. tostring(rarityA))
-        --Debug.Log("B: Rarity " .. tostring(rarityB))
-        --Debug.Log("A before B? : " .. tostring((rarityA > rarityB)))
+        --Debug.Log('Prioritizing rarity')
+        --Debug.Log('A: Rarity ' .. tostring(rarityA))
+        --Debug.Log('B: Rarity ' .. tostring(rarityB))
+        --Debug.Log('A before B? : ' .. tostring((rarityA > rarityB)))
         return (rarityA > rarityB)
     end
 
@@ -766,14 +766,14 @@ function HUDTrackerSort2(lootA, lootB)
     local ilvlA = lootA.itemLevel
     local ilvlB = lootB.itemLevel
     if ilvlA ~= ilvlB then
-        --Debug.Log("Prioritizing ItemLevel")
-        --Debug.Log("A: ItemLevel " .. tostring(ilvlA))
-        --Debug.Log("B: ItemLevel " .. tostring(ilvlB))
-        --Debug.Log("A before B? : " .. tostring((ilvlA > ilvlB)))
+        --Debug.Log('Prioritizing ItemLevel')
+        --Debug.Log('A: ItemLevel ' .. tostring(ilvlA))
+        --Debug.Log('B: ItemLevel ' .. tostring(ilvlB))
+        --Debug.Log('A before B? : ' .. tostring((ilvlA > ilvlB)))
         return (ilvlA > ilvlB)
     end
 
     -- Alphabetic third
-    --Debug.Log("Prioritizing alphabetic")
+    --Debug.Log('Prioritizing alphabetic')
     return (lootA.name < lootB.name)
 end

@@ -50,7 +50,7 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs)
 
                 -- Filtering Check
                 if not LootFiltering(loot, Options['Messages']['Events'][eventClass][eventName]) then
-                    --Debug.Log("Not sending message because it did not pass filters")
+                    --Debug.Log('Not sending message because it did not pass filters')
                     return
                 end
 
@@ -174,7 +174,7 @@ end
 --]]
 function Messages.SendSystemMessage(message)
     local prefix = Lokii.GetString('SystemMessage_Prefix')
-    Messages.SendMessageToChat("system", prefix..message)
+    Messages.SendMessageToChat('system', prefix..message)
 end
 
 --[[
@@ -186,7 +186,7 @@ function Messages.SendMessageToChat(channel, message, alert)
     channel = unicode.lower(channel)
     if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
     local alertprefix = ''
-    if alert and (channel == "squad" or channel == "platoon") then alertprefix = '!' end
+    if alert and (channel == 'squad' or channel == 'platoon') then alertprefix = '!' end
     if channel == 'system' then
         ChatLib.SystemMessage({text=message})
     elseif channel == 'notification' or channel == 'notifications' then
@@ -202,15 +202,15 @@ end
     Pretty poorly implemented at the moment.
 ]]--
 function Messages.TextFilters(formatString, args)
-    --Debug.Table("Messages.TextFilters called on string "..tostring(formatString) .. " with args: ", args)
+    --Debug.Table('Messages.TextFilters called on string '..tostring(formatString) .. ' with args: ', args)
     if not formatString then
-        Debug.Log("Messages.TextFilters did not receive a formatString")
+        Debug.Log('Messages.TextFilters did not receive a formatString')
         return
     end
     local loot = args.loot or Tracker.GetLootById(args.lootId)
     if not loot then
-        Debug.Warn("Messages.TextFilters NODATAERROR")
-        return "NODATAERROR"
+        Debug.Warn('Messages.TextFilters NODATAERROR')
+        return 'NODATAERROR'
     end
 
     local replacementVars = {
@@ -228,8 +228,8 @@ function Messages.TextFilters(formatString, args)
     }
 
     for key, value in pairs(replacementVars) do
-        if type(value) == "table" then
-            Debug.Warn("Replacement key " .. tostring(key) .. " has table value : " .. tostring(value))
+        if type(value) == 'table' then
+            Debug.Warn('Replacement key ' .. tostring(key) .. ' has table value : ' .. tostring(value))
         end
     end
 
@@ -244,7 +244,7 @@ function Private.replace_vars(str, vars)
     vars = str
     str = vars[1]
   end
-  return (string.gsub(str, "({([^}]+)})",
+  return (string.gsub(str, '({([^}]+)})',
     function(whole,i)
       return vars[i] or whole
     end))

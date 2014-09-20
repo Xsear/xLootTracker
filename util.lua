@@ -67,7 +67,7 @@ function splitExplode(d,p)
   if(#p == 1) then return {p} end
     while true do
       l=string.find(p,d,ll,true) -- find the next d in the string
-      if l~=nil then -- if "not not" found then..
+      if l~=nil then -- if 'not not' found then..
         table.insert(t, string.sub(p,ll,l-1)) -- Save it in our array.
         ll=l+1 -- save just after where we found it for searching next time.
       else
@@ -80,5 +80,5 @@ end
 
 --http://stackoverflow.com/questions/2421695/first-character-uppercase-lua
 function ucfirst(str)
-    return (string.gsub(str, "^%l", string.upper))
+    return (string.gsub(str, '^%l', string.upper))
 end

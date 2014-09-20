@@ -12,8 +12,8 @@ local Private = {
 }
 
 MarkerType = {
-    Loot = "loot",
-    Group = "group",
+    Loot = 'loot',
+    Group = 'group',
 }
 
 
@@ -46,7 +46,7 @@ function WaypointManager.Disable()
 end
 
 function WaypointManager.OnOptionChange(id, value)
-    if id == "Waypoints_Enabled" then
+    if id == 'Waypoints_Enabled' then
         -- Enabled
         if value then
             WaypointManager.Enable()
@@ -111,27 +111,27 @@ end
 --]]
 function WaypointManager.Create(loot)
     -- Check Args
-    if not loot or type(loot) ~= "table" then
-        Debug.Log("WaypointManager.Create called with invalid argument: " .. tostring(loot))
+    if not loot or type(loot) ~= 'table' then
+        Debug.Log('WaypointManager.Create called with invalid argument: ' .. tostring(loot))
         return
     end
 
     -- Check Available
     if loot:GetState() ~= LootState.Available then
-        Debug.Log("Cannot create waypoint for unavailable " .. loot:ToString())
+        Debug.Log('Cannot create waypoint for unavailable ' .. loot:ToString())
         return
     end
 
     -- Check Entity
     --[[
     if not loot:GetEntityId() or not Game.IsTargetAvailable(loot:GetEntityId()) then
-        Debug.Warn("Attempt to create waypoint for loot with state available but no available entity")
+        Debug.Warn('Attempt to create waypoint for loot with state available but no available entity')
         return
     end
     --]]
 
     -- Create Marker
-    local markerId = "xlt_"..tostring(loot:GetEntityId()).."_waypoint"
+    local markerId = 'xlt_'..tostring(loot:GetEntityId())..'_waypoint'
     local MARKER = MapMarker.Create(markerId)
 
     -- Setup waypoint table
@@ -158,7 +158,7 @@ function WaypointManager.Create(loot)
     MULTIART:SetUrl(loot:GetWebIcon())
 
     if Options['Waypoints']['IconGlow'] then
-        MULTIART:SetParam("glow", loot:GetColor())
+        MULTIART:SetParam('glow', loot:GetColor())
     end
 
     -- Visibility

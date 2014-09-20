@@ -11,10 +11,10 @@ TornadoPocketZoneIds = {
 }
 
 LootState = {
-    Available  = "available", -- Has a valid entityId
-    Looted     = "looted",    -- Was Available, then looted
-    Lost       = "lost",      -- Was Available, then hit by OnEntityLost
-    Unknown    = "unknown",
+    Available  = 'available', -- Has a valid entityId
+    Looted     = 'looted',    -- Was Available, then looted
+    Lost       = 'lost',      -- Was Available, then hit by OnEntityLost
+    Unknown    = 'unknown',
 }
 
 LootCategory = {
@@ -40,13 +40,13 @@ FilterableLootCategories = { -- Used by options to generate filtering options
 }
 
 LootRarity = {
-    Salvage = "salvage",
-    Common = "common",
-    Uncommon = "uncommon",
-    Rare = "rare",
-    Epic = "epic",
-    Prototype = "prototype",
-    Legendary = "legendary",
+    Salvage = 'salvage',
+    Common = 'common',
+    Uncommon = 'uncommon',
+    Rare = 'rare',
+    Epic = 'epic',
+    Prototype = 'prototype',
+    Legendary = 'legendary',
 }
 
 OptionsLootRarityDropdown = {
