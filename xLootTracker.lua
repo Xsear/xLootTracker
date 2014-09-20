@@ -18,7 +18,8 @@ require 'lib/lib_Colors'           -- Colors, used by markers
 require 'lib/lib_RowScroller'      -- Row Scroller, used by Tacker
 require 'lib/lib_MultiArt'         -- Used for icons
 require 'lib/lib_SubTypeIds'       -- Used for determining loot categories
-require "lib/lib_ContextMenu"      -- Used for hudtracker context menu
+require 'lib/lib_ContextMenu'      -- Used for hudtracker context menu
+require 'lib/lib_HudManager'       -- Used to handle HUD visibility state
 
 -- Custom Libs
 require './lib/Lokii'              -- Localization
@@ -33,16 +34,16 @@ require './lootpanel'              -- Loot Panel object
 
 -- Addon Meta
 AddonInfo = {
-    release  = "2014-09-17",
-    version = "1.17",
-    patch = "1.1.1802",
+    release  = '2014-09-17',
+    version = '1.17',
+    patch = '1.1.1802',
     save = 1.0,
 }
 
 -- Global state
 State = {
     loaded        = false,   -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
-    hud           = false,   -- Whether game wants HUD to be displayed or not, updated by OnHudShow
+    hud           = true,   -- Whether game wants HUD to be displayed or not, updated by OnHudShow
     cursor        = false,   -- Whether game is in cursor mode or not, updated by OnInputModeChanged
     sin           = false,   -- Whether game is in Sin view or not, updated by OnSinView
     tooltipActive = false,   -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.
@@ -82,6 +83,11 @@ function OnComponentLoad()
         
     -- Setup Debug
     Debug.EnableLogging(Component.GetSetting('Debug_Enabled'))
+
+    -- Setup HudManager
+    --HudManager.WhitelistReasons({})
+    --HudManager.BlacklistReasons({})
+    HudManager.BindOnShow(OnHudShow)
 
     -- Setup Options
     Options.Setup() 
@@ -148,21 +154,13 @@ end
 
 --[[
     OnHudShow(args)
-    Event handler for MY_HUD_SHOW
+    Handler for HudManager.BindOnShow
 ]]--
-function OnHudShow(args)
-    local hide = args.loading_screen or args.logout_bonus or args.freecamera or args.sinvironment
-    State.hud = not hide
-    HUDTracker.UpdateVisibility()
-end
-
---[[
-    OnHudShow(args)
-    Event handler for MY_HUD_HIDE_REQUEST
-]]--
-function OnHideHudRequest(args)
-    State.hud = not args.hide
-    HUDTracker.UpdateVisibility()
+function OnHudShow(show, dur)
+    State.hud = show
+    if State.loaded then
+        HUDTracker.UpdateVisibility()
+    end
 end
 
 --[[
@@ -171,7 +169,9 @@ end
 ]]--
 function OnInputModeChanged(args)
     State.cursor = (args.mode == 'cursor')
-    HUDTracker.UpdateVisibility()
+    if State.loaded then
+        HUDTracker.UpdateVisibility()
+    end
 end
 
 --[[
@@ -180,7 +180,9 @@ end
 ]]--
 function OnSinView(args)
     State.sin = args.sinView
-    HUDTracker.UpdateVisibility()
+    if State.loaded then
+        HUDTracker.UpdateVisibility()
+    end
 end
 
 --[[

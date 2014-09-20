@@ -71,6 +71,7 @@ function HUDTracker.Disable()
     -- Clear
     SCROLLER:Reset()
     Private.entries = {}
+    HUDTracker.UpdateVisibility()
 end
 
 function HUDTracker.OnOptionChange(id, value)
@@ -598,7 +599,8 @@ function HUDTracker.UpdateVisibility()
         --Debug.Log('Options Tracker Visibility == '..Options['HUDTracker']['Visibility'])
         --Debug.Log('State.hud == '..tostring(State.hud))
         --Debug.Log('State.cursor == '..tostring(State.cursor))
-        if SCROLLER and SCROLLER:GetRowCount() > 0 and (
+        --Debug.Log('State.sin == '..tostring(State.sin))
+        if SCROLLER:GetRowCount() > 0 and (
                (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.MouseMode and State.cursor and State.hud)

@@ -336,8 +336,7 @@ LANG = {
     Options_HUDTracker_Enabled_Tooltip                         =    "The addon will display information about currently tracked item drops, allowing you to keep track of things at a glance, as well as to perform actions with ease, or inspect the items in more detail, when in mousemode.",
 
     Options_HUDTracker_Visibility_Label                        =    "Visibility",
-    Options_HUDTracker_Visibility_Tooltip                      =    "When to display the HUDTracker, granted that it has something to display.\nHUD - Behave like any other HUD element (hidden in cinematics, loadscreens etc.)\nMouse Mode - Like HUD, but also requires Mouse Mode\nSin View - Like HUD, but also requires Full Sin View\nAlways - Disregard normal HUD rules.",
-
+    Options_HUDTracker_Visibility_Tooltip                      =    "When to display the HUDTracker.\nHUD - Standard HUD behavior (hidden in cinematics, loadscreens etc.)\nMouse Mode - Like HUD, but also requires Mouse Mode\nSin View - Like HUD, but also requires Sin View\nAlways - Remains visible as long as there is loot to display.",
 
     Options_HUDTracker_Tooltip_Enabled_Label           =  "Enable Tooltips",
     Options_HUDTracker_Tooltip_Enabled_Tooltip         =  "When hovering over an entry in the Tracker list, a tooltip representation of the item will be displayed on the cursor.",
