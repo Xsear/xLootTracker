@@ -598,10 +598,11 @@ function HUDTracker.UpdateVisibility()
         --Debug.Log('Options Tracker Visibility == '..Options['HUDTracker']['Visibility'])
         --Debug.Log('State.hud == '..tostring(State.hud))
         --Debug.Log('State.cursor == '..tostring(State.cursor))
-        if SCROLLER:GetRowCount() > 0 and (
+        if SCROLLER and SCROLLER:GetRowCount() > 0 and (
                (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.MouseMode and State.cursor and State.hud)
+            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.SinMode and State.sin and State.hud)
             )
         then
             --Debug.Log('Yes, display the tracker')

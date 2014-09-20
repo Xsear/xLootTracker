@@ -103,13 +103,15 @@ OptionsColorModesDropdown = {
 HUDTrackerVisibilityOptions = {
     Always = 'always',
     HUD = 'hud',
-    Mousemode = 'mousemode',
+    MouseMode = 'mousemode',
+    SinMode = 'sinmode',
 }
 
 OptionsHUDTrackerVisibilityDropdown = {
     [1] = HUDTrackerVisibilityOptions.HUD,
-    [2] = HUDTrackerVisibilityOptions.Mousemode,
-    [3] = HUDTrackerVisibilityOptions.Always,
+    [2] = HUDTrackerVisibilityOptions.MouseMode,
+    [3] = HUDTrackerVisibilityOptions.SinMode,
+    [4] = HUDTrackerVisibilityOptions.Always,
 }
 
 HUDTrackerPlateModeOptions = {

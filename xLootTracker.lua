@@ -44,6 +44,7 @@ State = {
     loaded        = false,   -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
     hud           = false,   -- Whether game wants HUD to be displayed or not, updated by OnHudShow
     cursor        = false,   -- Whether game is in cursor mode or not, updated by OnInputModeChanged
+    sin           = false,   -- Whether game is in Sin view or not, updated by OnSinView
     tooltipActive = false,   -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.
     inSquad       = false,   -- Whether we are currently in a squad or not
     isSquadLeader = false,   -- Whether we are currently the squad leader or not
@@ -170,6 +171,15 @@ end
 ]]--
 function OnInputModeChanged(args)
     State.cursor = (args.mode == 'cursor')
+    HUDTracker.UpdateVisibility()
+end
+
+--[[
+    OnInputModeChanged(args)
+    Event handler for ON_SIN_VIEW
+]]--
+function OnSinView(args)
+    State.sin = args.sinView
     HUDTracker.UpdateVisibility()
 end
 
