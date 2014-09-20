@@ -436,14 +436,17 @@ function Tracker.Track(args)
     --Debug.Log('About to create loot')
     local loot = Loot(entityId, targetInfo, itemInfo)
 
-    --Debug.Log('Created new loot!' .. loot:ToString())
-
     -- Save loot
     Private.trackedLoot[loot:GetId()] = loot
     Private.identityByEntity[loot:GetEntityId()] = loot:GetId()
 
     -- Increment counter
     Private.trackedLootCounter = Private.trackedLootCounter + 1
+
+    -- Debug
+    if Options['Debug']['LogTrackerLight'] then
+        Debug.Log('Tracker.Track: ' .. loot:ToString())
+    end
 
     -- Fire event
     --Component.GenerateEvent('XLT_ON_TRACKER_NEW', {lootId = loot:GetId()})
@@ -528,6 +531,11 @@ function Tracker.Remove(lootArg)
     if not loot then
         Debug.Warn('Tracker.Remove called with invalid loot argument ' .. tostring(lootArg))
         return
+    end
+
+    -- Debug
+    if Options['Debug']['LogTrackerLight'] then
+        Debug.Log('Tracker.Remove: ' .. loot:ToString())
     end
 
     local lootId = loot:GetId()

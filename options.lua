@@ -224,6 +224,7 @@ Options = {
         ['LogLootCreateData'] = false,
         ['LogOptionChange'] = false,
         ['LogLootDetermineCategory'] = false,
+        ['LogTrackerLight'] = true,
     },
 
 }
