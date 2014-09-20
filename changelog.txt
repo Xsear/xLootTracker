@@ -2,6 +2,8 @@
 v1.18
     Public Release 18
     2014-
+    - Added "Sin View" HUDTracker visibility choice.
+    - Switched to using HUDManager for determining whether or not to display HUD elements.
     - Fixed an issue that caused the HUDTracker to impede the usage of other UI elements despite not having any loot in it.
 
 v1.17
