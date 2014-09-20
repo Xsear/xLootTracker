@@ -152,6 +152,7 @@ end
 function OnHudShow(args)
     local hide = args.loading_screen or args.logout_bonus or args.freecamera or args.sinvironment
     State.hud = not hide
+    HUDTracker.UpdateVisibility()
 end
 
 --[[
@@ -160,6 +161,7 @@ end
 ]]--
 function OnHideHudRequest(args)
     State.hud = not args.hide
+    HUDTracker.UpdateVisibility()
 end
 
 --[[
@@ -168,6 +170,7 @@ end
 ]]--
 function OnInputModeChanged(args)
     State.cursor = (args.mode == 'cursor')
+    HUDTracker.UpdateVisibility()
 end
 
 --[[

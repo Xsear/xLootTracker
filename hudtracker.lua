@@ -540,6 +540,7 @@ function HUDTracker.OnTrackerRemove(args)
         end
     end
 
+    HUDTracker.UpdateVisibility()
 end
 
 
