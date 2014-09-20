@@ -3002,7 +3002,7 @@ function UIHELPER_Filtering(moduleArg)
 end
 
 function UIHELPER_FilterCategory(moduleKey, moduleRef, category, moduleParent)
-    Debug.Log("UIHELPER_FilterCategory", tostring(moduleKey), tostring(category))
+    --Debug.Log("UIHELPER_FilterCategory", tostring(moduleKey), tostring(category))
 
     local subtab = {}
     if moduleParent then
@@ -3235,9 +3235,6 @@ function UIHELPER_DropdownFromTable(id, key, default, table, optionKey, subtab)
                 tooltip = Lokii.GetString('Options_Dropdown_'..optionKey..'_Choice_'..tableValue..'_Tooltip'),
                 subtab  = subtab,
             })
-            if optionKey == "OptionsFontTypes" then
-                Debug.Log('Options_Dropdown_'..optionKey..'_Choice_'..tableValue..'_Label', 'Options_Dropdown_'..optionKey..'_Choice_'..tableValue..'_Tooltip')
-            end
         end
 end
 
