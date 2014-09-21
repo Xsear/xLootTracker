@@ -8,6 +8,8 @@ PanelManager = {
 
 local Private = {
     panelList = {},
+    webAssetHost,
+    webAssetURLFormat = "%s/assets/items/%s/%s.png",
 }
 
 
@@ -80,13 +82,11 @@ function PanelManager.Create(loot)
     panel.pos:SetParam('Translation', translationVector)
     panel.pos:SetParam('Rotation', {axis={x=0,y=0,z=1},angle=0})
 
-
     -- Get some handles
     local RenderTarget = panel.panel_rt
     local LOOT_PANEL_CONTENT = RenderTarget:GetChild('Panel'):GetChild('Content')
     local LOOT_PANEL_HEADER = LOOT_PANEL_CONTENT:GetChild('Header')
     local LOOT_PANEL_ICONBAR = LOOT_PANEL_CONTENT:GetChild('IconBar')
-
 
     -- Setup panel timer
     if Options['Panels']['TimerMode'] == PanelsTimerMode.Countdown then
@@ -143,29 +143,53 @@ function PanelManager.Create(loot)
     -- Build Iconbar
         LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetUrl(loot:GetWebIcon())
 
-   
         -- Battleframe icon
-        --[[
-        if itemInfo.craftingTypeId then
-            local itemArchetype, itemFrame = DWFrameIDX.ItemIdxString(tostring(itemInfo.craftingTypeId))
-            if itemFrame == nil then
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
-            else
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(GetFrameWebIconByName(itemFrame))
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
+        -- Only for equipment
+        if loot:GetCategory() == LootCategory.Equipment then
+            
+            local frameCerts = loot:GetCerts()
 
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(itemFrame)
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseEnter', function(args)
-                    Tooltip.Show(args.widget:GetTag())
-                end);
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseLeave', function(args)
-                    Tooltip.Show(false)
-                end);
+            -- Can't get it without a cert, but if there are more than one, idk what's up, so ignore it.
+            if frameCerts and #frameCerts == 1 then
+
+                -- Get the certInfo
+                local certInfo = Game.GetCertificationInfo(frameCerts[1])
+
+                -- Note: Maybe check if cert_type is 0, not sure if that's battleframes only or just not used
+
+                if not _table.empty(certInfo) then
+
+                    local webIcon = certInfo.web_icon or ''
+                    local webUrl = GetIconUrl(webIcon, 96)
+
+                    local name = certInfo.name or 'I broke :('
+                    local description = certInfo.description or ''
+
+                    if webUrl and name and description then
+
+                        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(webUrl)
+                        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
+
+                        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(name..'\n'..description)
+                        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseEnter', function(args)
+                            Tooltip.Show(args.widget:GetTag())
+                        end)
+                        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseLeave', function(args)
+                            Tooltip.Show(false)
+                        end)
+                    end
+
+                end
+
+            else
+                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
             end
+
         else
             LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
         end
-        --]]
+        
+        
 
     -- Timer text
         LOOT_PANEL_ICONBAR:GetChild('timer'):SetText('00:00')
@@ -206,4 +230,22 @@ end
 --]]
 function PanelManager.Stat()
     Debug.Table('PanelManager Private.panelList', Private.panelList)
+end
+
+
+
+
+
+
+
+function GetIconUrl(stem, size)
+    size = size or 64
+    return unicode.format(Private.webAssetURLFormat, GetWebAssetHost(), size, stem)
+end
+
+function GetWebAssetHost()
+    if not Private.webAssetHost then
+        Private.webAssetHost = System.GetOperatorSetting("web_asset_host")
+    end
+    return Private.webAssetHost
 end

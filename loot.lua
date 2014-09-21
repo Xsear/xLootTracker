@@ -235,6 +235,11 @@ function Loot:SetLootedTo(input)
     self.lootedTo = input
 end
 
+function Loot:GetCerts()
+    return self.itemInfo.certifications or false
+end
+
+
 function Loot:GetAsText()
     --Debug.Log('Loot:GetAsText not yet implemented')
     -- Todo: Fixme: Remove?
