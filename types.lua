@@ -29,6 +29,18 @@ LootCategory = {
     Unknown      = 'unknown',
 }
 
+
+LootCategoryIconsRegion = {
+    [LootCategory.Equipment]   = 'armory',
+    [LootCategory.Modules]     = 'spawn', -- 'comet'
+    [LootCategory.Salvage]     = 'power',
+    [LootCategory.Components]  = 'refining',
+    [LootCategory.Metals]      = 'raw_resource',
+    [LootCategory.Consumable]  = 'aid',
+    [LootCategory.Currency]    = 'crystite',
+    [LootCategory.Unknown]     = 'mystery',
+}
+
 FilterableLootCategories = { -- Used by options to generate filtering options
     Equipment  = LootCategory.Equipment,
     Modules    = LootCategory.Modules,

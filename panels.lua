@@ -141,10 +141,15 @@ function PanelManager.Create(loot)
 
 
     -- Build Iconbar
+
+        -- Item Icon
         LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetUrl(loot:GetWebIcon())
 
-        -- Battleframe icon
-        -- Only for equipment
+        -- Category / Battleframe Icon
+        local MUTLIART = MultiArt.Create(LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('icon'))
+
+        -- Check for battleframe
+        local isUsingBattleframeIcon = false
         if loot:GetCategory() == LootCategory.Equipment then
             
             local frameCerts = loot:GetCerts()
@@ -167,7 +172,7 @@ function PanelManager.Create(loot)
 
                     if webUrl and name and description then
 
-                        LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):SetUrl(webUrl)
+                        MUTLIART:SetUrl(webUrl)
                         LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
 
                         LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(name..'\n'..description)
@@ -177,18 +182,25 @@ function PanelManager.Create(loot)
                         LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseLeave', function(args)
                             Tooltip.Show(false)
                         end)
+                        isUsingBattleframeIcon = true
                     end
 
                 end
-
-            else
-                LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
             end
-
-        else
-            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(false)
         end
         
+        if not isUsingBattleframeIcon then
+            MUTLIART:SetTexture('icons')
+            MUTLIART:SetRegion(LootCategoryIconsRegion[loot:GetCategory()])
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(ucfirst(loot:GetCategory()))
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseEnter', function(args)
+                Tooltip.Show(args.widget:GetTag())
+            end)
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):BindEvent('OnMouseLeave', function(args)
+                Tooltip.Show(false)
+            end)
+            LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
+        end
         
 
     -- Timer text

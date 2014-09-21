@@ -46,9 +46,11 @@ LOOTPANEL =
 						</WebImage>
 
 						<!-- width:20%; height:30%;-->
-						<WebImage name='battleframeIcon'         dimensions='left:40%+60; width:80; height:80;' style='fixed-bounds:true; valign:center;'>
+						<Group name='battleframeIcon' dimensions='left:40%+60; width:80; height:80;' style='fixed-bounds:true; valign:center;'>
+							<Group name='icon' dimensions='dock:fill;' style='fixed-bounds:true; valign:center;'/>
 							<FocusBox name='fb' dimensions='dock:fill'/>
-						</WebImage>
+						</Group>
+
 						<!--<StillArt name='timerBackground'            dimensions='left:70%; width:20%; height:30%;' style='texture:colors; region:white; tint:#000000; alpha:0.8;'/>-->
 						<Text name='timer' dimensions='left:70%; width:20%; height:30%;' class='LootPanel_Text_Timer'/>
 
