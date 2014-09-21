@@ -5,6 +5,7 @@ v1.18
     - Added "Sin View" HUDTracker visibility choice.
     - Switched to using HUDManager for determining whether or not to display HUD elements.
     - Fixed an issue that caused the HUDTracker to impede the usage of other UI elements despite not having any loot in it.
+    - Lowered default Tracker Delay, increased default Tracker Limit to accommodate for the new Pinata Frenzy event.
 
 v1.17
     Public Release 17

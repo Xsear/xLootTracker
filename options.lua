@@ -7,14 +7,14 @@ Options = {
 
     ['Tracker'] = {
         ['Enabled'] = true,
-        ['TrackDelay'] = 1,
+        ['TrackDelay'] = 0.5,
         ['UpdateDelay'] = 0,
         ['RemoveDelay'] = 0.5,
         ['RefreshInterval'] = 10,
         ['LootUpdateInterval'] = 2,
         ['LootEventHistoryCleanupInterval'] = 2,
         ['LootEventHistoryLifetime'] = 3 * 1000,
-        ['Limit'] = 50,
+        ['Limit'] = 100,
         ['IgnoreCrystite'] = true,
         ['IgnoreMetalsTornado'] = true,
         ['UpdateMode'] = TrackerUpdateMode.Global,
