@@ -13,6 +13,45 @@ local Private = {
 }
 
 
+
+function PanelManager.Enable()
+    -- Create panels for available loot
+    local availableLoot = Tracker.GetAvailableLoot()
+    if not _table.empty(availableLoot) then
+        for i, loot in ipairs(availableLoot) do 
+            PanelManager.OnTrackerNew({lootId = loot:GetId()})
+        end
+    end
+end
+
+function PanelManager.Disable()
+    -- Clear all panels
+    if not _table.empty(Private.panelList) then
+        for looptId, panel in pairs(Private.panelList) do
+            PanelManager.Remove(lootId)
+        end
+    end
+end
+
+function PanelManager.OnOptionChange(id, value)
+    if id == 'Panels_Enabled' then
+        -- Enabled
+        if value then
+            PanelManager.Enable()
+
+        -- Disabled
+        else
+            PanelManager.Disable()
+        end
+    
+    else
+        -- Todo:
+    end
+end
+
+
+
+
 --[[
     PanelManager.OnTrackerNew(args)
     Called when Tracker has added a new item.
@@ -23,10 +62,17 @@ function PanelManager.OnTrackerNew(args)
 
     local loot = Tracker.GetLootById(args.lootId)
 
+    -- Exit if blacklisted
     if Options['Blacklist']['Waypoints'][tostring(loot:GetTypeId())] then
         return
     end
 
+    -- Exit if a panel for this loot has already been made
+    if Private.panelList[loot:GetId()] then
+        return
+    end
+
+    -- Continue if passes filtering options
     if LootFiltering(loot, Options['Panels']) then
         PanelManager.Create(loot)
     end

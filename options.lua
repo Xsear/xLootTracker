@@ -2169,6 +2169,10 @@ function OnOptionChange(args)
         elseif explodedId[1] == 'Waypoints' then
             WaypointManager.OnOptionChange(args.id, args.val) 
 
+        -- For Panels options
+        elseif explodedId[1] == 'Panels' then
+            Panels.OnOptionChange(args.id, args.val) 
+
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
             -- Note: This could behave poorly if other sound options are added
