@@ -5,6 +5,8 @@ v1.18
     - Added "Sin View" HUDTracker visibility choice.
     - Switched to using HUDManager for determining whether or not to display HUD elements.
     - Fixed an issue that caused the HUDTracker to impede the usage of other UI elements despite not having any loot in it.
+    - Improved behavior of Panels when toggling the feature on and off, creating and removing panels for existing loot.
+    - Reimplemenated the battleframe icon display on Panels. When not applicable, it will display an icon indicative of the category of the loot instead.
     - Lowered default Tracker Delay, increased default Tracker Limit to accommodate for the new Pinata Frenzy event.
 
 v1.17
