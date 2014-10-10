@@ -22,6 +22,7 @@ Slash Commands:
     /lt blacklist <action> <scope> [itemName|itemTypeId]
 
         This command allows you to blacklist (filter away) specific items.
+        Note that this is meant to be used as a last resort, the Filtering options found in the Interface Options are meant to be the primary way to filter stuff.
 
         The first argument is where you decide what you want to do with the blacklist.
         The following actions are possible: add, remove, view, clear

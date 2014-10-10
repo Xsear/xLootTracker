@@ -1,5 +1,5 @@
 # Version
-ADDON_VERSION = v1.17
+ADDON_VERSION = v1.18
 ADDON_NAME = xLootTracker
 
 # Paths
