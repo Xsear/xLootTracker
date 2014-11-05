@@ -363,8 +363,8 @@ function Private.SetEntryVisibility(ENTRY)
                                     or boxMode == HUDTrackerIconModeOptions.Simple) )
     ENTRY.BOX:GetChild('backplate'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
                                            or boxMode == HUDTrackerIconModeOptions.Simple) )
-    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
-    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) )
+    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) ) -- Fixme: not sure if this should really be platemodeoptions
+    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) ) -- ^ this too.
     ENTRY.BOX:GetChild('icon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
 end
 
@@ -422,7 +422,7 @@ function HUDTracker.OnTrackerNew(args)
                 indexList[index] = ENTRY_OTHER
             end
 
-            -- Determine which inded our new entry should have
+            -- Determine which index our new entry should have
             local ourEntryIndex = nil
             for index, ENTRY_OTHER in pairs(indexList) do
                 if HUDTrackerSort2(ENTRY, ENTRY_OTHER) then

@@ -16,7 +16,7 @@ local Private = {
     canSendLimitWarning = true,
     limitWarningTimeout = 60, -- seconds before canSendLimitWarning is reset
 
-    crystiteTypeId = tostring(10),
+    crystiteTypeId = tostring(10), -- Fixme: maybe put this elsewhere
 
 
     trackedLootCounter = 0,
