@@ -37,7 +37,7 @@ Slash Commands:
             Waypoints  >      'waypoints', 'waypoint', 'way', 'wp',
 
 
-        The third arugment is required for the Add and Remove actions, but not for the others.
+        The third argument is required for the Add and Remove actions, but not for the others.
 
 
         So I don't think I have to explain what the actions do, I'll just give some examples:
@@ -52,7 +52,7 @@ Slash Commands:
 
         > /lt blacklist view all
         This lists all entries that fall into the all scope, that is the Trackers blacklist.
-        So whilst you might think this would include our Crystite Resonator, it does not.
+        So whilst you might think this would include our Recovered Chosen Tech ban, it does not.
         By the way, you can use list instead of view, I decided not to use that as the standard because it seemed silly to type list twice. ;3
 
         > /lt blacklist clear all
