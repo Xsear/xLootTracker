@@ -7,7 +7,7 @@ Sounds = {}
 local Private = {}
 
 --[[
-    Messages.OnTrackerNew(args)
+    Sounds.OnTrackerNew(args)
     Called when Tracker has added a new item.
     Plays the New Loot sound as configured for the item.
 --]]
