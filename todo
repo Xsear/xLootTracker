@@ -1,0 +1,44 @@
+SLM TODO
+
+    Look intos
+
+        Biomass Sampels - Does it not color waypoint glow properly?
+
+
+    Improvements
+
+        Add option to strip army tags from player names
+
+
+        HUDTracker - Icon Mode - None looks bad
+
+        Panels still don't display anything interesting
+
+
+
+
+    Reworks
+
+        Filtering2
+
+
+    New Features
+
+        Keybinds
+
+            Clear / Toggle Waypoints
+
+
+        Waypoint Smart Visibility Hotkey
+
+            The problem: When lots of loot is on the ground, even though I know there is an epic thanks to the HUDTracker, I can't find it easily in the forest of Waypoints.
+            The solution I have in mind: Add a hotkey that when pressed toggles between different visibility modes for the Waypoints.
+            It would just be a simple show/hide call on existing waypoints (needs to handle the addition of new waypoints whilst filtered too of course)
+            Ideally it should only be a few modes, perhaps even just toggle between non-filtered and \"the most rare of the current item/s only\"
+
+
+
+        Item Rolls Support
+
+            Add new state/s \"Rolling\" / \"Rolled\"
+            Detect when looted item is rolled for and update state (or directly determin that it is in roll)
