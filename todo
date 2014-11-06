@@ -4,6 +4,7 @@ SLM TODO
 
         Biomass Sampels - Does it not color waypoint glow properly?
 
+        Test that version message disabling works
 
     Improvements
 
@@ -15,7 +16,7 @@ SLM TODO
         Panels still don't display anything interesting
 
 
-
+        Add option to toggle the prefix of system messages - use long prefix xLootTracker by default?
 
     Reworks
 

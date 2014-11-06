@@ -40,7 +40,7 @@ AddonInfo = {
     save = 1.0,
 }
 
--- Global state
+-- Global State
 State = {
     loaded        = false,   -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
     hud           = true,   -- Whether game wants HUD to be displayed or not, updated by OnHudShow
