@@ -119,7 +119,7 @@ local c_ENTRY_PRINT = [[
         <!-- Box -->
         <Group name='box' dimensions='width:32; height:32; left:0; top:0;'>
             <StillArt name='bg' dimensions='width:96%; height:96%;' style='texture:colors; region:white; tint:#000000; alpha:1;'/>
-            <StillArt name='backplate' dimensions='width:99%; height:99%;' style='texture:ItemPlates; region:common;'/>
+            <StillArt name='backplate' dimensions='width:99%; height:99%;' style='texture:ItemPlate; region:Square;'/>
             <Border name='outer' dimensions='dock:fill;' class='ButtonBorder'/>
             <Border name='shade' dimensions='width:0;height:0;' class='ButtonFade'/>
             <Group name='icon' dimensions='dock:fill;' style='fixed-bounds:true; valign:center;'/>
@@ -241,7 +241,7 @@ function Private.CreateEntry(loot, stackInfo)
     ENTRY.BOX:GetChild('shade'):SetParam('tint', lootColor)
 
     -- Setup box
-    ENTRY.BOX:GetChild('backplate'):SetRegion(loot:GetRarity())
+    ENTRY.BOX:GetChild('backplate'):SetParam('tint', lootColor)
 
     -- Setup icon
     local ICON_PARENT = ENTRY.BOX:GetChild('icon')
