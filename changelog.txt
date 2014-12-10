@@ -1,9 +1,9 @@
 
 v1.19
     Public Release 19
-    2014-
-    -
-
+    2014-12-10
+    - Fixed two errors related to the HUDTracker, caused by changes in a recent patch.
+    - Fixed a missing options label.
 
 v1.18
     Public Release 18
