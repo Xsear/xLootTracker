@@ -137,7 +137,7 @@ function Tracker.GetAvailableLoot()
             result[#result + 1] = loot
         end
     end
-    return _table.copy(result)
+    return _table.copy(result) -- Fixme: I think I derped here, this is just a copy of all the loot references rather than a copy of the loot data, right? If so then this copy is just a waste of time, but as for the intended purpose there may be code relying on this oversight...
 end
 
 --[[
