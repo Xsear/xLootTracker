@@ -319,8 +319,8 @@ LANG = {
     Options_Debug_RoundRobin_Label                                                      =    "Log Round Robin",
     Options_Debug_RoundRobin_Tooltip                                                    =    "Extra logging for Round Robin, spammy.\nDetailed logging of Round Robin logic, helpful if its giving out unexpected results.",
 
-
-
+    Options_Debug_LogLootDetermineCategory_Label                                        =        "Log Loot Determine Category",
+    Options_Debug_LogLootDetermineCategory_Tooltip                                      =        "Extra debug messages, spammy.\nLogs info on the process of determining what category an item is, helpful when items are not of the category you expect.",
 
     Options_Sounds_Enabled_Label                                                                =    "Enable Sounds",
     Options_Sounds_Enabled_Tooltip                                                              =    "The addon will play sounds in order to notify you when certain events occur.",
