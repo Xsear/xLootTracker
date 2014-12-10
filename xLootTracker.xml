@@ -75,7 +75,7 @@
             valign:middle;
             color:FFFFFF;
             alpha:1.0;
-            shadow:0;
+            drop-shadow:0;
         </StyleSheet>
 
         <StyleSheet name="Tracker_Slider" parent="#Slider">
