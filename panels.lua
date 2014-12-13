@@ -63,7 +63,7 @@ function PanelManager.OnTrackerNew(args)
     local loot = Tracker.GetLootById(args.lootId)
 
     -- Exit if blacklisted
-    if Options['Blacklist']['Waypoints'][tostring(loot:GetTypeId())] then
+    if Options['Blacklist']['Panels'][tostring(loot:GetTypeId())] then
         return
     end
 
