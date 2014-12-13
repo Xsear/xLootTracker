@@ -268,7 +268,7 @@ function OnSlash(args)
         Messages.SendSystemMessage('Toggled.')
 
     elseif args[1] == 'stop' then
-        Messages.SendSystemMessage(':\'(')
+        Messages.SendSystemMessage('Stopping')
         Options['Core']['Enabled'] = false
         Options['Tracker']['Enabled'] = false
         Options['Waypoints']['Enabled'] = false
