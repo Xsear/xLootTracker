@@ -2171,7 +2171,7 @@ function OnOptionChange(args)
 
         -- For Panels options
         elseif explodedId[1] == 'Panels' then
-            Panels.OnOptionChange(args.id, args.val) 
+            PanelManager.OnOptionChange(args.id, args.val) 
 
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
