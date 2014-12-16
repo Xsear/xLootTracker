@@ -28,8 +28,13 @@ local DimensionOptions = {
     ScrollerSliderMarginHidden = 5,
     EntryDimsWidth = '100%',
     EntryDimsHeight = '32',
-    MaxEntriesBeforeScroller = 3,
+
+    plateLeftOverlap = 4, -- Plate is offset by the size of the icon subtracted by this value, in order to have the icon overlap the edge of the plate
+    plateHeightBorderReduction = 2, -- Plate height is reduced by 2 times this value, in order to free up space for the top and bottom borders.
+
 }
+
+
 
 
 --[[
@@ -437,7 +442,7 @@ end
 
 
 -- Blueprint for the HUDTracker Entries
-local c_ENTRY_PRINT = [[
+local bp_ENTRY = [[
     <Group name='EntryGroup' dimensions='width:100%; height:32;'>
 
         <!-- Plate -->
@@ -471,7 +476,7 @@ function Private.CreateEntry(loot, stackInfo)
     --Debug.Table('Private.CreatEntry stackInfo', stackInfo)
 
     -- Create
-    local GROUP = Component.CreateWidget(c_ENTRY_PRINT, LIST)
+    local GROUP = Component.CreateWidget(bp_ENTRY, LIST)
 
     -- Setup entry
     local ENTRY = {
@@ -640,21 +645,20 @@ end
 
 
 function Private.SetEntrySize(ENTRY)
-
-    local newHeight = tonumber(Options['HUDTracker']['EntrySize']) -- ugh this var name
-
-    local height = tostring(newHeight)
+    -- Get height from options
+    local sizeAsNumber = tonumber(Options['HUDTracker']['EntrySize'])
+    local sizeAsText = tostring(sizeAsNumber)
 
     -- Entry
-    ENTRY.GROUP:SetDims('width:100%; height:'..height..';')
+    ENTRY.GROUP:SetDims('width:100%; height:'..sizeAsText..';')
 
     -- Plate
-    local plateLeftOffset = tostring(newHeight - 4) -- (width of box - px for overlap)
-    local plateHeightReduced = tostring(height - 4); -- 2 top and 2 bot to free up space for the bottom borders of the plate
-    ENTRY.PLATE:SetDims('width:100%-'..plateLeftOffset..'; height:'..plateHeightReduced..';top:2;left:'..plateLeftOffset)
+    local plateLeftOffset = tostring(0) -- tostring(sizeAsNumber - DimensionOptions.plateLeftOverlap) -- (width of box - px for overlap)
+    local plateHeightReduced = tostring(sizeAsText - (2*DimensionOptions.plateHeightBorderReduction)); -- 2 top and 2 bot to free up space for the bottom borders of the plate
+    ENTRY.PLATE:SetDims('width:100%-'..plateLeftOffset..'; height:'..plateHeightReduced..';top:'..tostring(DimensionOptions.plateHeightBorderReduction)..';left:'..plateLeftOffset)
 
     -- Box (affecting Icon)
-    local boxDimms = 'width:'..height..'; height:'..height..';' .. 'left:0; top:0;'
+    local boxDimms = 'width:'..sizeAsText..'; height:'..sizeAsText..';' .. 'left:0; top:0;'
     ENTRY.BOX:SetDims(boxDimms)
 end
 
