@@ -117,7 +117,7 @@
                 <!--<StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>-->
                 
                     <!-- List -->
-                    <Group name="List" dimensions="width:100%; height:100%; top:0%; center-x:50%;" style="vertical:true; vpadding:9; clip-children:false;">
+                    <Group name="List" dimensions="width:100%; height:100%; top:0%; center-x:50%;" style="clip-children:false;">
                         <!-- Tracker_List_Entry:ies go in here -->
                     </Group>
 
