@@ -84,16 +84,17 @@ LANG = {
     Options_Tracker_RemoveDelay_Label  = "Remove Delay",
     Options_Tracker_RemoveDelay_Tooltip = "How long to wait before removing an item after it has been looted or has despawned. A short delay is neccessary for other parts of the addon to work properly. A long delay serves no real purpose at this point.",
     Options_Tracker_Limit_Label = "Limit",
-    Options_Tracker_Limit_Tooltip = "The maximum number of loot drops to be tracking at once.", 
+    Options_Tracker_Limit_Tooltip = "The maximum number of loot drops to be tracking at once. As long as the number of loot drops on the ground exceeds this Limit, the Tracker will ignore new loot drops. The purpose of this setting is to serve as a safeguard in the event that something ridiculous happens. The ideal limit is therefore a value for which during normal gameplay is either just high enough not to bother you, or low enough to stop you from lagging.", 
 
-    Options_Tracker_RefreshInterval_Label  = "Refresh Interval",
-    Options_Tracker_RefreshInterval_Tooltip = "<<WRITE ME>>",
+    Options_Tracker_RefreshInterval_Label  = "Unified Update Interval",
+    Options_Tracker_RefreshInterval_Tooltip = "How often to verify the continued availability of all tracked loot drops. If everything is working properly, a short delay serves little purpose and a longer delay should be used. However, with a shorter delay, potential missdetections will be cleared more swiftly.",
 
-    Options_Tracker_LootUpdateInterval_Label  = "Loot Update Interval",
-    Options_Tracker_LootUpdateInterval_Tooltip = "How often to verify the continued availability of a tracked loot drop individually. If everything is working properly, a short delay serves little purpose and a longer delay could be used. However, with a shorter delay, potential missdetections will be cleared up more swiftly.",
-    Options_Tracker_LootEventHistoryCleanupInterval_Label  = "LootEvent History Cleanup Interval",
+    Options_Tracker_LootUpdateInterval_Label  = "Individual Update Interval",
+    Options_Tracker_LootUpdateInterval_Tooltip = "How often to verify the continued availability of each tracked loot drop. If everything is working properly, a short delay serves little purpose and a longer delay could be used. However, with a shorter delay, potential missdetections will be cleared more swiftly.",
+
+    Options_Tracker_LootEventHistoryCleanupInterval_Label  = "Loot Event History Cleanup Interval",
     Options_Tracker_LootEventHistoryCleanupInterval_Tooltip = "How often to check the history of lootevents and cleanup those that have expired. A longer interval might be more performance efficient, but it could cause issues with the tracking of items.",
-    Options_Tracker_LootEventHistoryLifetime_Label  = "LootEvent History Lifetime",
+    Options_Tracker_LootEventHistoryLifetime_Label  = "Loot Event History Lifetime",
     Options_Tracker_LootEventHistoryLifetime_Tooltip = "How long a lootevent should be valid for. A shorter lifetime should result in better accuracy when multiple items of the same kind are picked up in a short timespan, but too short may cause the addon to think items have despawned when they were looted. Longer timespans prevent the aforementioned issue, but may result in reduced accuracy in the aforementioned scenario.",
 
 
