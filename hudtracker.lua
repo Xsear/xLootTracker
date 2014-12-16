@@ -1,26 +1,27 @@
-
-
+--[[
+    HUDTracker
+    The on-screen hud-tracker
+--]]
 HUDTracker = {}
 
+-- Lots of stuff that should be in Private that isn't yet
+local Private = {
+    lastUpdate = 0,
+    minUpdateCB = nil,
+    entries = {}
+}   
 
 -- Frames
 local FRAME = Component.GetFrame('Tracker')
 local SLIDER = FRAME:GetChild('Slider')
 local LIST = FRAME:GetChild('List')
 local SCROLLER = nil
-
 local TOOLTIP_ITEM = nil
 
-local CYCLE_HUDTrackerUpdate = nil
+-- Callback cycles
+local CYCLE_HUDTrackerUpdate = nil 
 
-local Private = {
-    lastUpdate = 0,
-    minUpdateCB = nil,
-
-    entries = {}
-}   
-
-
+-- y u no options D:
 local DimensionOptions = {
     ScrollerSpacing = 8,
     ScrollerSliderMarginVisible = 5,
@@ -31,13 +32,18 @@ local DimensionOptions = {
 }
 
 
-
-
-
+--[[
+    HUDTracker.GetFrame()
+    Returns a reference to the Tracker Frame.
+--]]
 function HUDTracker.GetFrame()
     return FRAME
 end
 
+--[[
+    HUDTracker.Setup()
+    Performs OnComponentLoad tasks.
+--]]
 function HUDTracker.Setup()
     -- Scroller
     SCROLLER = RowScroller.Create(LIST)
@@ -56,11 +62,20 @@ function HUDTracker.Setup()
     SCROLLER:UpdateSize()
 end
 
+
+--[[
+    HUDTracker.Enable()
+    Called when HUDTracker is Enabled in the Options, populates the HUDTracker.
+--]]
 function HUDTracker.Enable()
     -- Build
     HUDTracker.Rebuild()
 end
 
+--[[
+    HUDTracker.Disable()
+    Called when HUDTracker is Disabled in the Options, cleans up.
+--]]
 function HUDTracker.Disable()
     -- Hide tooltip if is currently being displayed
     if State.tooltipActive then
@@ -74,6 +89,11 @@ function HUDTracker.Disable()
     HUDTracker.UpdateVisibility()
 end
 
+--[[
+    HUDTracker.OnOptionChange(id, value)
+    Called by Options when a HUDTracker Option is changed.
+    Used to rebuild the HUDTracker so that it is always displayed as per the configuration, as well as to handle enable-disable. Calls InterfaceOptions functions to handle changing of the size of the Frame itself (might want to move some of that to Options later)
+--]]
 function HUDTracker.OnOptionChange(id, value)
     if id == 'HUDTracker_Enabled' then
         -- Enabled
@@ -102,10 +122,321 @@ function HUDTracker.OnOptionChange(id, value)
     end
 end
 
+--[[
+    HUDTracker.OnTrackerNew(args)
+    Called when Tracker has added a new item.
+    Updates the HUDTracker to reflect the new state, creating an entry if applicable.
+--]]
+function HUDTracker.OnTrackerNew(args)
+    
+    local loot = Tracker.GetLootById(args.lootId)
+
+    if Options['Blacklist']['HUDTracker'][tostring(loot:GetTypeId())] then
+        return
+    end
+
+    if LootFiltering(loot, Options['HUDTracker']) then
+
+        -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
+        if State.tooltipActive then
+            Tooltip.Show(false)
+            TOOLTIP_ITEM.GROUP:Show(false)
+        end
+
+        -- Check for existing row
+        local ENTRY = Private.entries[tostring(loot:GetTypeId())]
+
+        -- If there is an existing entry
+        if ENTRY then
+
+            --Debug.Table('OnTrackerNew found existing entry: ' , ENTRY)
+
+            -- Retrieve existing stackInfo
+            local stackInfo = ENTRY.stackInfo
+            
+            -- Add this new loot to the stack
+            stackInfo.quantity = stackInfo.quantity + loot:GetQuantity()
+            stackInfo.count = stackInfo.count + 1
+            stackInfo.ids[loot:GetId()] = {quantity=loot:GetQuantity()}
+            
+            -- Update entry
+            Private.UpdateEntry(ENTRY)
+
+        -- There is not an existing row, create a completely new one
+        else
+            
+            -- Create entry
+            ENTRY = Private.CreateEntry(loot)
+
+            -- Get the index of each entry in the rowscroller
+            local indexList = {}
+            for typeId, ENTRY_OTHER in pairs(Private.entries) do
+                local index = ENTRY_OTHER.ROW:GetIdx()
+                indexList[index] = ENTRY_OTHER
+            end
+
+            -- Determine which index our new entry should have
+            local ourEntryIndex = nil
+            for index, ENTRY_OTHER in pairs(indexList) do
+                if HUDTrackerSort2(ENTRY, ENTRY_OTHER) then
+                    ourEntryIndex = index
+                    break
+                end
+            end
+
+            -- Insert entry as row
+            local ROW = SCROLLER:AddRow(ENTRY.GROUP, ourEntryIndex)
+
+            -- Save a row reference
+            ENTRY.ROW = ROW
+            
+            -- Store entry
+            Private.entries[tostring(loot:GetTypeId())] = ENTRY
+        end
+
+    end
+
+    HUDTracker.UpdateVisibility()
+
+end
+
+--[[
+    HUDTracker.OnTrackerUpdate(args)
+    Called when Tracker thinks an item was looted.
+    Updates the HUDTracker to reflect the new state, removing an entry if applicable.
+--]]
+function HUDTracker.OnTrackerLooted(args)
+
+    local loot = Tracker.GetLootById(args.lootId)
+
+    if not loot then return end
+
+    -- Check for existing row
+    local ENTRY = Private.entries[tostring(loot:GetTypeId())]
+
+    -- If there is an existing entry
+    if ENTRY then
+
+        -- Retrieve existing stackInfo
+        local stackInfo = ENTRY.stackInfo
+        
+        -- Check that this loot is actually in this stack
+        if stackInfo.ids[loot:GetId()] then
+
+            -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
+            if State.tooltipActive then
+                Tooltip.Show(false)
+                TOOLTIP_ITEM.GROUP:Show(false)
+            end
+
+            -- If this is a stacked entry, we update it
+            if stackInfo.count > 1 then
+
+                -- Remove this loot from the stack
+                stackInfo.quantity = stackInfo.quantity - stackInfo.ids[loot:GetId()].quantity
+                stackInfo.count = stackInfo.count - 1
+                stackInfo.ids[loot:GetId()] = nil
+
+                -- Update entry
+                Private.UpdateEntry(ENTRY)
+
+            -- Otherwise, just remove
+            else
+                Component.RemoveWidget(ENTRY.GROUP)
+                ENTRY.ROW:Remove()
+                ENTRY = nil
+                Private.entries[tostring(loot:GetTypeId())] = nil
+            end
+        end
+    end
+            
+    HUDTracker.UpdateVisibility()
+end
+
+--[[
+    HUDTracker.OnTrackerRemove(args)
+    Called when Tracker has removed an item.
+    Updates the HUDTracker to reflect the new state.
+--]]
+function HUDTracker.OnTrackerRemove(args)
+    --args.event = 'HUDTracker.OnTrackerRemove'
+    --Debug.Event(args)
+
+    --Debug.Table('HUDTracker Private.entries', Private.entries)
+
+    for typeId, ENTRY in pairs(Private.entries) do
+
+        local stackInfo = ENTRY.stackInfo
+
+        --Debug.Table('Entry ' .. tostring(typeId) .. ' stackInfo', stackInfo)
+
+        --Debug.Log('stackInfo.ids[args.lootId] : ' .. tostring(stackInfo.ids[args.lootId]))
+
+        if stackInfo.ids[args.lootId] then
+
+            -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
+            if State.tooltipActive then
+                Tooltip.Show(false)
+                TOOLTIP_ITEM.GROUP:Show(false)
+            end
+
+            -- If this is a stacked entry, we update it
+            if stackInfo.count > 1 then
+
+                -- Remove this loot from the stack
+                stackInfo.quantity = stackInfo.quantity - stackInfo.ids[args.lootId].quantity
+                stackInfo.count = stackInfo.count - 1
+                stackInfo.ids[args.lootId] = nil
+
+                -- Update entry
+                Private.UpdateEntry(ENTRY)
+
+            -- Otherwise, just remove
+            else
+                Component.RemoveWidget(ENTRY.GROUP)
+                ENTRY.ROW:Remove()
+                ENTRY = nil
+                Private.entries[typeId] = nil
+            end
+            
+            -- Exit
+            break
+        end
+    end
+
+    HUDTracker.UpdateVisibility()
+end
+
+-- For visual refresh / settings changes only
+-- Breaks when size settings are changed (doesnt update row size?)
+-- No longer used / to be deprecated?
+function HUDTracker.Update(args)
+    Debug.Log('HUDTracker.Update called, this shouldnt be often unless settings are being changed')
+    for typeId, ENTRY in pairs(Private.entries) do
+        Private.UpdateEntry(ENTRY)
+        Private.SetEntrySize(ENTRY)
+        Private.SetEntryFont(ENTRY)
+        Private.SetEntryVisibility(ENTRY)
+    end 
+end
+
+--[[
+    HUDTracker.Rebuild(args)
+    Rebuilds the HUDTracker entries, removing them and recreating entries for available loot.
+    Primarily used when Options are changed.
+--]]
+function HUDTracker.Rebuild(args)
+    args = args or {}
+    args.event = 'HUDTracker.Rebuild'
+    Debug.Event(args)
+
+    -- Only update and show tracker if enabled
+    if Options['HUDTracker']['Enabled'] then
+        --Debug.Log('HUDTracker Update called and HUDTracker is enabled')
+
+        -- Stop scroller updates whilst we update
+        SCROLLER:LockUpdates()  
+
+        -- Clear
+        for typeId, ENTRY in pairs(Private.entries) do
+            ENTRY = nil
+            Private.entries[typeId] = nil
+        end
+        SCROLLER:Reset()
+
+        -- Get loot
+        local trackedLoot = Tracker.GetAvailableLoot()
+
+        -- Populate
+        if not _table.empty(trackedLoot) then
+            for i, loot in ipairs(trackedLoot) do
+                HUDTracker.OnTrackerNew({lootId = loot:GetId()})
+            end
+        end
+
+        SCROLLER:UnlockUpdates()
+        HUDTracker.UpdateVisibility()
+    end
+end
+
+--[[
+    HUDTracker.UpdateVisibility()
+    Reads current state, determines and updates the visibility of the HUDTracker.
+--]]
+function HUDTracker.UpdateVisibility()
+    if Options['HUDTracker']['Enabled'] then
+     -- Should we display the tracker?
+        --Debug.Log('Should we display the Tracker?')
+        --Debug.Log('Options Tracker Visibility == '..Options['HUDTracker']['Visibility'])
+        --Debug.Log('State.hud == '..tostring(State.hud))
+        --Debug.Log('State.cursor == '..tostring(State.cursor))
+        --Debug.Log('State.sin == '..tostring(State.sin))
+        if SCROLLER:GetRowCount() > 0 and (
+               (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
+            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
+            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.MouseMode and State.cursor and State.hud)
+            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.SinMode and State.sin and State.hud)
+            )
+        then
+            --Debug.Log('Yes, display the tracker')
+            -- Yes, display tracker
+            FRAME:Show(true)
+
+        else
+            --Debug.Log('No, hide the tracker')
+            -- No, hide the tracker
+            FRAME:Show(false)
+
+            -- Ensure no tooltip is displayed
+            TOOLTIP_ITEM.GROUP:Show(false)
+            Tooltip.Show(false)
+            State.tooltipActive = false
+        end
+
+    -- Tracker not enabled, so do nothing but make sure it's hidden.
+    else
+        --Debug.Log('Tracker not enabled, hide')
+        -- Hide tracker
+        FRAME:Show(false)
+
+        -- Ensure no tooltip is displayed
+        TOOLTIP_ITEM.GROUP:Show(false)
+        Tooltip.Show(false)
+        State.tooltipActive = false
+    end
+
+end
+
+--[[
+    HUDTracker.UpdateTooltip(lootId)
+    Returns updated item tooltip widget matching the provided lootId.
+--]]
+function HUDTracker.UpdateTooltip(lootId)
+    -- Get info
+    --Debug.Log('UpdateTrackerTooltip called for lootId '..tostring(lootId))
+    local loot = Tracker.GetLootById(lootId)
+    if loot == nil or loot == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
+
+    -- Setup Tooltip
+    TOOLTIP_ITEM:DisplayInfo(loot.itemInfo)
+    TOOLTIP_ITEM.GROUP:SetDims('top:0; left:0; width:200; height:200')
+
+    -- Add compare info
+    local compare_info = LIB_ITEMS.GetMatchingEquippedItemInfo(loot.itemInfo)
+    if compare_info then
+        TOOLTIP_ITEM:CompareAgainst(compare_info)
+    end
+
+    -- Return Tooltip
+    local tip_args = TOOLTIP_ITEM:GetBounds()
+    tip_args.frame_color = loot:GetColor()
+
+    return TOOLTIP_ITEM.GROUP, tip_args
+end
 
 
 
-
+-- Blueprint for the HUDTracker Entries
 local c_ENTRY_PRINT = [[
     <Group name='EntryGroup' dimensions='width:100%; height:32;'>
 
@@ -374,290 +705,9 @@ end
 
 
 
-function HUDTracker.OnTrackerNew(args)
-    
-    local loot = Tracker.GetLootById(args.lootId)
-
-    if Options['Blacklist']['HUDTracker'][tostring(loot:GetTypeId())] then
-        return
-    end
-
-    if LootFiltering(loot, Options['HUDTracker']) then
-
-        -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
-        if State.tooltipActive then
-            Tooltip.Show(false)
-            TOOLTIP_ITEM.GROUP:Show(false)
-        end
-
-        -- Check for existing row
-        local ENTRY = Private.entries[tostring(loot:GetTypeId())]
-
-        -- If there is an existing entry
-        if ENTRY then
-
-            --Debug.Table('OnTrackerNew found existing entry: ' , ENTRY)
-
-            -- Retrieve existing stackInfo
-            local stackInfo = ENTRY.stackInfo
-            
-            -- Add this new loot to the stack
-            stackInfo.quantity = stackInfo.quantity + loot:GetQuantity()
-            stackInfo.count = stackInfo.count + 1
-            stackInfo.ids[loot:GetId()] = {quantity=loot:GetQuantity()}
-            
-            -- Update entry
-            Private.UpdateEntry(ENTRY)
-
-        -- There is not an existing row, create a completely new one
-        else
-            
-            -- Create entry
-            ENTRY = Private.CreateEntry(loot)
-
-            -- Get the index of each entry in the rowscroller
-            local indexList = {}
-            for typeId, ENTRY_OTHER in pairs(Private.entries) do
-                local index = ENTRY_OTHER.ROW:GetIdx()
-                indexList[index] = ENTRY_OTHER
-            end
-
-            -- Determine which index our new entry should have
-            local ourEntryIndex = nil
-            for index, ENTRY_OTHER in pairs(indexList) do
-                if HUDTrackerSort2(ENTRY, ENTRY_OTHER) then
-                    ourEntryIndex = index
-                    break
-                end
-            end
-
-            -- Insert entry as row
-            local ROW = SCROLLER:AddRow(ENTRY.GROUP, ourEntryIndex)
-
-            -- Save a row reference
-            ENTRY.ROW = ROW
-            
-            -- Store entry
-            Private.entries[tostring(loot:GetTypeId())] = ENTRY
-        end
-
-    end
-
-    HUDTracker.UpdateVisibility()
-
-end
-
-function HUDTracker.OnTrackerLooted(args)
-
-    local loot = Tracker.GetLootById(args.lootId)
-
-    if not loot then return end
-
-    -- Check for existing row
-    local ENTRY = Private.entries[tostring(loot:GetTypeId())]
-
-    -- If there is an existing entry
-    if ENTRY then
-
-        -- Retrieve existing stackInfo
-        local stackInfo = ENTRY.stackInfo
-        
-        -- Check that this loot is actually in this stack
-        if stackInfo.ids[loot:GetId()] then
-
-            -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
-            if State.tooltipActive then
-                Tooltip.Show(false)
-                TOOLTIP_ITEM.GROUP:Show(false)
-            end
-
-            -- If this is a stacked entry, we update it
-            if stackInfo.count > 1 then
-
-                -- Remove this loot from the stack
-                stackInfo.quantity = stackInfo.quantity - stackInfo.ids[loot:GetId()].quantity
-                stackInfo.count = stackInfo.count - 1
-                stackInfo.ids[loot:GetId()] = nil
-
-                -- Update entry
-                Private.UpdateEntry(ENTRY)
-
-            -- Otherwise, just remove
-            else
-                Component.RemoveWidget(ENTRY.GROUP)
-                ENTRY.ROW:Remove()
-                ENTRY = nil
-                Private.entries[tostring(loot:GetTypeId())] = nil
-            end
-        end
-    end
-            
-    HUDTracker.UpdateVisibility()
-end
-
-function HUDTracker.OnTrackerRemove(args)
-    --args.event = 'HUDTracker.OnTrackerRemove'
-    --Debug.Event(args)
-
-    --Debug.Table('HUDTracker Private.entries', Private.entries)
-
-    for typeId, ENTRY in pairs(Private.entries) do
-
-        local stackInfo = ENTRY.stackInfo
-
-        --Debug.Table('Entry ' .. tostring(typeId) .. ' stackInfo', stackInfo)
-
-        --Debug.Log('stackInfo.ids[args.lootId] : ' .. tostring(stackInfo.ids[args.lootId]))
-
-        if stackInfo.ids[args.lootId] then
-
-            -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
-            if State.tooltipActive then
-                Tooltip.Show(false)
-                TOOLTIP_ITEM.GROUP:Show(false)
-            end
-
-            -- If this is a stacked entry, we update it
-            if stackInfo.count > 1 then
-
-                -- Remove this loot from the stack
-                stackInfo.quantity = stackInfo.quantity - stackInfo.ids[args.lootId].quantity
-                stackInfo.count = stackInfo.count - 1
-                stackInfo.ids[args.lootId] = nil
-
-                -- Update entry
-                Private.UpdateEntry(ENTRY)
-
-            -- Otherwise, just remove
-            else
-                Component.RemoveWidget(ENTRY.GROUP)
-                ENTRY.ROW:Remove()
-                ENTRY = nil
-                Private.entries[typeId] = nil
-            end
-            
-            -- Exit
-            break
-        end
-    end
-
-    HUDTracker.UpdateVisibility()
-end
 
 
--- For visual refresh / settings changes only
--- Breaks when size settings are changed (doesnt update row size?)
-function HUDTracker.Update(args)
-    Debug.Log('HUDTracker.Update called, this shouldnt be often unless settings are being changed')
-    for typeId, ENTRY in pairs(Private.entries) do
-        Private.UpdateEntry(ENTRY)
-        Private.SetEntrySize(ENTRY)
-        Private.SetEntryFont(ENTRY)
-        Private.SetEntryVisibility(ENTRY)
-    end 
-end
 
-
-function HUDTracker.Rebuild(args)
-    args = args or {}
-    args.event = 'HUDTracker.Rebuild'
-    Debug.Event(args)
-
-    -- Only update and show tracker if enabled
-    if Options['HUDTracker']['Enabled'] then
-        --Debug.Log('HUDTracker Update called and HUDTracker is enabled')
-
-        -- Stop scroller updates whilst we update
-        SCROLLER:LockUpdates()  
-
-        -- Clear
-        for typeId, ENTRY in pairs(Private.entries) do
-            ENTRY = nil
-            Private.entries[typeId] = nil
-        end
-        SCROLLER:Reset()
-
-        -- Get loot
-        local trackedLoot = Tracker.GetAvailableLoot()
-
-        -- Populate
-        if not _table.empty(trackedLoot) then
-            for i, loot in ipairs(trackedLoot) do
-                HUDTracker.OnTrackerNew({lootId = loot:GetId()})
-            end
-        end
-
-        SCROLLER:UnlockUpdates()
-        HUDTracker.UpdateVisibility()
-    end
-end
-
-function HUDTracker.UpdateVisibility()
-    if Options['HUDTracker']['Enabled'] then
-     -- Should we display the tracker?
-        --Debug.Log('Should we display the Tracker?')
-        --Debug.Log('Options Tracker Visibility == '..Options['HUDTracker']['Visibility'])
-        --Debug.Log('State.hud == '..tostring(State.hud))
-        --Debug.Log('State.cursor == '..tostring(State.cursor))
-        --Debug.Log('State.sin == '..tostring(State.sin))
-        if SCROLLER:GetRowCount() > 0 and (
-               (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
-            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
-            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.MouseMode and State.cursor and State.hud)
-            or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.SinMode and State.sin and State.hud)
-            )
-        then
-            --Debug.Log('Yes, display the tracker')
-            -- Yes, display tracker
-            FRAME:Show(true)
-
-        else
-            --Debug.Log('No, hide the tracker')
-            -- No, hide the tracker
-            FRAME:Show(false)
-
-            -- Ensure no tooltip is displayed
-            TOOLTIP_ITEM.GROUP:Show(false)
-            Tooltip.Show(false)
-            State.tooltipActive = false
-        end
-
-    -- Tracker not enabled, so do nothing but make sure it's hidden.
-    else
-        --Debug.Log('Tracker not enabled, hide')
-        -- Hide tracker
-        FRAME:Show(false)
-
-        -- Ensure no tooltip is displayed
-        TOOLTIP_ITEM.GROUP:Show(false)
-        Tooltip.Show(false)
-        State.tooltipActive = false
-    end
-
-end
-
-function HUDTracker.UpdateTooltip(lootId)
-    -- Get info
-    --Debug.Log('UpdateTrackerTooltip called for lootId '..tostring(lootId))
-    local loot = Tracker.GetLootById(lootId)
-    if loot == nil or loot == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
-
-    -- Setup Tooltip
-    TOOLTIP_ITEM:DisplayInfo(loot.itemInfo)
-    TOOLTIP_ITEM.GROUP:SetDims('top:0; left:0; width:200; height:200')
-
-    -- Add compare info
-    local compare_info = LIB_ITEMS.GetMatchingEquippedItemInfo(loot.itemInfo)
-    if compare_info then
-        TOOLTIP_ITEM:CompareAgainst(compare_info)
-    end
-
-    -- Return Tooltip
-    local tip_args = TOOLTIP_ITEM:GetBounds()
-    tip_args.frame_color = loot:GetColor()
-
-    return TOOLTIP_ITEM.GROUP, tip_args
-end
 
 -- Fix text size
 function AutosizeText(TEXT)
@@ -777,3 +827,4 @@ function HUDTrackerSort2(lootA, lootB)
     --Debug.Log('Prioritizing alphabetic')
     return (lootA.name < lootB.name)
 end
+
