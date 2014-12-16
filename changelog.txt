@@ -1,4 +1,11 @@
 
+v1.20
+    Public Release 20
+    2014-
+    - Fixed error preventing Panel options from saving properly.
+    - Fixed a bug where Panels were following the Waypoints blacklist.
+    - Fixed a display issue when setting HUDTracker Icon mode to none.
+
 v1.19
     Public Release 19
     2014-12-10
