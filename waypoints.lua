@@ -8,16 +8,13 @@ WaypointManager = {
 
 local Private = {
     waypointList = {},
-    hudVisibilityRarity = 0,
+    hudVisible = true,
 }
 
 MarkerType = {
     Loot = 'loot',
     Group = 'group',
 }
-
-
-
 
 
 function WaypointManager.Enable()
@@ -223,27 +220,8 @@ end
     First call - Hides all waypoints that are not of the same rarity as the rarest item in the tracker. Second call (when such a threhsold is set) - reset to 0, show all.
 --]]
 function WaypointManager.ToggleVisibility(args)
-
-
-    -- If not filtering, determine and set.
-    if Private.hudVisibilityRarity == 0 then
-        -- Determine top rarity
-        local topRarityValue = 0
-        for i, waypoint in ipairs(Private.waypointList) do
-            local loot = Tracker.GetLootById(waypoint.lootId)
-            local rarityValue = loot:GetRarityValue()
-            if rarityValue > topRarityValue then
-                topRarityValue = rarityValue
-            end
-        end
-
-        -- Set rarity
-        Private.hudVisibilityRarity = topRarityValue
-
-    -- If already filtering, reset.
-    else
-        Private.hudVisibilityRarity = 0
-    end
+    -- Toggle hudVisible
+    Private.hudVisible = not Private.hudVisible
 
     -- Update visibilty
     for i, waypoint in ipairs(Private.waypointList) do
@@ -257,25 +235,9 @@ function Private.SetHudVisibility(waypoint)
         return
     end
 
-    -- Do we care?
-    if Options['Waypoints']['ShowOnHud'] then
-        
-        -- Get loot
-        local loot = Tracker.GetLootById(waypoint.lootId)
-        if loot then
-            -- Get rarityValue
-            local rarityValue = loot:GetRarityValue()
+    -- Determine if visible or not
+    local isVisible = Options['Waypoints']['ShowOnHud'] and Private.hudVisible
 
-            -- If rare enough
-            if rarityValue >= Private.hudVisibilityRarity then
-                -- Able to show
-                waypoint.MARKER:ShowOnHud(true)
-                return -- Exit, we're done.
-            end
-        end
-   
-    end
- 
-    -- Otherwise, hide
-    waypoint.MARKER:ShowOnHud(false)
+    -- Set visibility
+    waypoint.MARKER:ShowOnHud(isVisible)
 end
