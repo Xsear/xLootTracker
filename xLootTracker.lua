@@ -241,8 +241,10 @@ function OnSlash(args)
     elseif args[1] == 'stat' then
         Slash_Stat(args)
 
-    elseif args[1] == 'wayman' then
-        WaypointManager.ToggleVisibility()
+    elseif args[1] == 'wp' or args[1] == 'wps' or args[1] == 'waypoints' or args[1] == 'wayman' or args[1] == 'way' then
+        if not args[2] then
+            WaypointManager.ToggleVisibility()
+        end
 
     elseif args[1] == 't' or args[1] == 'toggle' then
         if not args[2] then
