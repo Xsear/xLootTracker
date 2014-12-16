@@ -94,19 +94,7 @@
         </StyleSheet>
 
 
-        <StyleSheet name="Tracker_PlateBorder" parent="standard">
-            texture:ButtonSkin;
-            region-topleft:;
-            region-top:border_horz;
-            region-topright:border_corner_mh;
-            region-left:;
-            region-center:border_center;
-            region-right:border_vert_mh;
-            region-bottomleft:;
-            region-bottom:border_horz_mv;
-            region-bottomright:border_corner_md;
-            exposure:0.2
-            padding:4;
+        <StyleSheet name="Tracker_PlateBorder" parent="ButtonBorder">
         </StyleSheet>
 
     </Styles>
