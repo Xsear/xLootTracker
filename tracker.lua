@@ -25,7 +25,7 @@ local Private = {
 
 --[[
     Tracker.Setup()
-    Performs OnComponentLoad tasks.
+    Performs OnOptionsLoaded tasks.
 --]]
 function Tracker.Setup()
     if Options['Tracker']['UpdateMode'] == TrackerUpdateMode.Global then

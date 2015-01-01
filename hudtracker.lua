@@ -47,7 +47,7 @@ end
 
 --[[
     HUDTracker.Setup()
-    Performs OnComponentLoad tasks.
+    Performs OnOptionsLoaded tasks.
 --]]
 function HUDTracker.Setup()
     -- Scroller
