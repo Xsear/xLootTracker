@@ -2,7 +2,7 @@
     Panels
     Handles the lootpanels.
 --]]
-PanelManager = {
+LootPanelManager = {
     
 }
 
@@ -14,34 +14,34 @@ local Private = {
 
 
 
-function PanelManager.Enable()
+function LootPanelManager.Enable()
     -- Create panels for available loot
     local availableLoot = Tracker.GetAvailableLoot()
     if not _table.empty(availableLoot) then
         for i, loot in ipairs(availableLoot) do 
-            PanelManager.OnTrackerNew({lootId = loot:GetId()})
+            LootPanelManager.OnTrackerNew({lootId = loot:GetId()})
         end
     end
 end
 
-function PanelManager.Disable()
+function LootPanelManager.Disable()
     -- Clear all panels
     if not _table.empty(Private.panelList) then
         for looptId, panel in pairs(Private.panelList) do
-            PanelManager.Remove(lootId)
+            LootPanelManager.Remove(lootId)
         end
     end
 end
 
-function PanelManager.OnOptionChange(id, value)
+function LootPanelManager.OnOptionChange(id, value)
     if id == 'Panels_Enabled' then
         -- Enabled
         if value then
-            PanelManager.Enable()
+            LootPanelManager.Enable()
 
         -- Disabled
         else
-            PanelManager.Disable()
+            LootPanelManager.Disable()
         end
     
     else
@@ -53,11 +53,11 @@ end
 
 
 --[[
-    PanelManager.OnTrackerNew(args)
+    LootPanelManager.OnTrackerNew(args)
     Called when Tracker has added a new item.
     Triggers the creation of a panel for that item.
 --]]
-function PanelManager.OnTrackerNew(args)
+function LootPanelManager.OnTrackerNew(args)
     if not Options['Panels']['Enabled'] then return end
 
     local loot = Tracker.GetLootById(args.lootId)
@@ -74,48 +74,48 @@ function PanelManager.OnTrackerNew(args)
 
     -- Continue if passes filtering options
     if LootFiltering(loot, Options['Panels']) then
-        PanelManager.Create(loot)
+        LootPanelManager.Create(loot)
     end
 end
 
 --[[
-    PanelManager.OnTrackerLooted(args)
+    LootPanelManager.OnTrackerLooted(args)
     Called when Tracker thinks an item was looted.
     Triggers the removal of the Panel for that item.
 --]]
-function PanelManager.OnTrackerLooted(args)
+function LootPanelManager.OnTrackerLooted(args)
     if not Options['Panels']['Enabled'] then return end
-    --Debug.Log('PanelManager.OnTrackerLooted calling Remove')
-    PanelManager.Remove(args.lootId)
+    --Debug.Log('LootPanelManager.OnTrackerLooted calling Remove')
+    LootPanelManager.Remove(args.lootId)
 end
 
 --[[
-    PanelManager.OnTrackerRemove(args)
+    LootPanelManager.OnTrackerRemove(args)
     Called when Tracker has removed an item.
     Triggers the removal of the Panel for that item.
 --]]
-function PanelManager.OnTrackerRemove(args)
+function LootPanelManager.OnTrackerRemove(args)
     if not Options['Panels']['Enabled'] then return end
-    --Debug.Log('PanelManager.OnTrackerRemove calling Remove')
-    PanelManager.Remove(args.lootId)
+    --Debug.Log('LootPanelManager.OnTrackerRemove calling Remove')
+    LootPanelManager.Remove(args.lootId)
 end
 
 
 
 --[[
-    PanelManager.Create(loot)
+    LootPanelManager.Create(loot)
     Creates a Panel for loot.
 --]]
-function PanelManager.Create(loot)
+function LootPanelManager.Create(loot)
     -- Check Args
     if not loot or type(loot) ~= 'table' then
-        Debug.Log('PanelManager.Create called with invalid argument: ' .. tostring(loot))
+        Debug.Log('LootPanelManager.Create called with invalid argument: ' .. tostring(loot))
         return
     end
 
     -- Check Available
     if loot:GetState() ~= LootState.Available then
-        Debug.Warn('PanelManager.Create called for unavailable ' .. loot:ToString())
+        Debug.Warn('LootPanelManager.Create called for unavailable ' .. loot:ToString())
         return
     end
 
@@ -272,10 +272,10 @@ function PanelManager.Create(loot)
 end
 
 --[[
-    PanelManager.Remove(lootId)
+    LootPanelManager.Remove(lootId)
     Removes the Panel for the specified lootId.
 --]]
-function PanelManager.Remove(lootId)
+function LootPanelManager.Remove(lootId)
     if Private.panelList[lootId] then
         LKObjects.Destroy(Private.panelList[lootId])
         Private.panelList[lootId] = nil
@@ -283,11 +283,11 @@ function PanelManager.Remove(lootId)
 end
 
 --[[
-    PanelManager.Stat()
+    LootPanelManager.Stat()
     Debug output for the Stat slash command.
 --]]
-function PanelManager.Stat()
-    Debug.Table('PanelManager Private.panelList', Private.panelList)
+function LootPanelManager.Stat()
+    Debug.Table('LootPanelManager Private.panelList', Private.panelList)
 end
 
 

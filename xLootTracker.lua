@@ -21,6 +21,10 @@ require 'lib/lib_SubTypeIds'       -- Used for determining loot categories
 require 'lib/lib_ContextMenu'      -- Used for hudtracker context menu
 require 'lib/lib_HudManager'       -- Used to handle HUD visibility state
 
+require "lib/lib_MovablePanel";
+require "lib/lib_PanelManager";
+
+
 -- Custom Libs
 require './lib/Lokii'              -- Localization
 require './lib/lib_GTimer'         -- Timer for rolltimeout
@@ -114,6 +118,10 @@ function OnComponentLoad()
 
         Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
     end
+end
+
+function OnClose(args)
+    ToggleWindow(false);
 end
 
 --[[
@@ -233,6 +241,10 @@ function OnSlash(args)
     elseif args[1] == 'blacklist' then
         Slash_Blacklist(args)
 
+    -- Filtering
+    elseif args[1] == 'filtering' or args[1] == 'f2' then
+        Slash_Filtering(args)
+
 
     -- Debug/testing commands, subject to change
     elseif args[1] == 'test' then
@@ -346,7 +358,7 @@ function OnTrackerNew(args)
     WaypointManager.OnTrackerNew(args)
 
     -- Panels
-    PanelManager.OnTrackerNew(args)
+    LootPanelManager.OnTrackerNew(args)
 
     -- HUDTracker
     HUDTracker.OnTrackerNew(args)
@@ -379,7 +391,7 @@ function OnTrackerLooted(args)
     WaypointManager.OnTrackerLooted(args)
 
     -- Panels
-    PanelManager.OnTrackerLooted(args)
+    LootPanelManager.OnTrackerLooted(args)
 
     -- HUDTracker
     HUDTracker.OnTrackerLooted(args)
@@ -397,7 +409,7 @@ function OnTrackerRemove(args)
     WaypointManager.OnTrackerRemove(args)
 
     -- Panels
-    PanelManager.OnTrackerRemove(args)
+    LootPanelManager.OnTrackerRemove(args)
 
     -- HUDTracker
     HUDTracker.OnTrackerRemove(args)
@@ -652,6 +664,11 @@ function Slash_Refresh(args)
 end
 
 
+function Slash_Filtering(args)
+    Debug.Log('Slash_Filtering')
+    Options.ToggleFilteringUI(args)
+    Messages.SendSystemMessage('Filtering')
+end
 
 
 
