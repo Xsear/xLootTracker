@@ -1,7 +1,7 @@
 --[[
     Loot class
     An attempt to gather all the loot info in one object so that it can be retrieved identically and safely.
-    In the event of changes to targetInfo/itemInfo, I hope this class will prove it's worth.
+    In the event of changes to targetInfo/itemInfo, I hope this class will prove its worth.
     I still let it give out the full targetInfo and itemInfo tables though, as that can be useful when using libraries and stuff.
 --]]
 

@@ -2171,7 +2171,7 @@ function OnOptionChange(args)
 
         -- For Panels options
         elseif explodedId[1] == 'Panels' then
-            PanelManager.OnOptionChange(args.id, args.val) 
+            LootPanelManager.OnOptionChange(args.id, args.val) 
 
         -- For Sound option changes, play the sound
         elseif explodedId[1] == 'Sounds' then
@@ -2389,9 +2389,12 @@ function Options.Setup()
         scalable = true
     })
 
-
+    
     -- Build the interface options
     BuildInterfaceOptions()
+
+    --
+    Options.SetupFilteringUI()
 end
 
 
@@ -3368,5 +3371,215 @@ function UIHELPER_MessageEventOptions(rootKey, eventKey, defaults, subtab)
             subtab = subtab,
         })
 
+
+end
+
+
+
+
+
+
+
+FiltUI = {}
+
+FiltUIref = {
+    MAIN = Component.GetFrame("Options"),
+    WINDOW = Component.GetWidget("Window"),
+    MOVABLE_PARENT = Component.GetWidget("MovableParent"),
+    CLOSE_BUTTON = Component.GetWidget("close"),
+    TITLE_TEXT = Component.GetWidget("title"),
+
+    LEFT_COLUMN = Component.GetWidget("LeftColumn"),
+    MAIN_AREA = Component.GetWidget("MainArea"),
+    FILTER_LIST = Component.GetWidget("FilterList"),
+
+    BUTTON_ADD = Component.GetWidget("ButtonAdd"),
+    BUTTON_DEL = Component.GetWidget("ButtonDel"),
+
+}
+
+FiltUI.State = {
+    page = "Blacklist",
+    section = "all"
+}
+
+FiltUI.Instance = {
+    filterList,
+}
+
+function Options.SetupFilteringUI(args)
+
+    
+    
+    MovablePanel.ConfigFrame({
+        frame = FiltUIref.MAIN,
+        MOVABLE_PARENT = FiltUIref.MOVABLE_PARENT
+    })
+
+    PanelManager.RegisterFrame(FiltUIref.MAIN, ToggleWindow, {show=false})
+
+    -- Setup close button
+    FiltUIref.CLOSE_BUTTON:BindEvent("OnMouseDown", function() FiltUI.Show(false) end)
+    local X = FiltUIref.CLOSE_BUTTON:GetChild("X");
+    FiltUIref.CLOSE_BUTTON:BindEvent("OnMouseEnter", function()
+        X:ParamTo("tint", Component.LookupColor("red"), 0.15);
+        X:ParamTo("glow", "#30991111", 0.15);
+    end)
+    FiltUIref.CLOSE_BUTTON:BindEvent("OnMouseLeave", function()
+        X:ParamTo("tint", Component.LookupColor("white"), 0.15);
+        X:ParamTo("glow", "#00000000", 0.15);
+    end)
+
+    FiltUIref.TITLE_TEXT:SetText("Loot Tracker - Filtering") -- fixme: hardcoded
+
+    
+    Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
+
+
+    local addButton = Button.Create(FiltUIref.BUTTON_ADD);
+    addButton:SetText("Change Scope");
+    addButton:TintPlate(Button.DEFAULT_GREEN_COLOR);
+    addButton:Bind(function()
+        
+        FiltUI.ChangeView("Blacklist", (FiltUI.State.section == "Tracker" and "Waypoints") or "Tracker") -- Debug input, toggles between "all" and "tracker"
+
+        
+
+    end);
+
+    
+    local delButton = Button.Create(FiltUIref.BUTTON_DEL);
+    delButton:SetText("Debug Blacklist");
+    delButton:TintPlate(Button.DEFAULT_RED_COLOR);
+    delButton:Bind(function()
+        Debug.Table(Options['Blacklist'])
+        --[[
+
+        Private.ShowDialog(
+        {
+            body = Component.LookupText("DELETE_FILTER_SET"):format(activeFilterSet or ""),
+            onYes = DeleteFilterSet,
+            onNo = function()
+            
+            end
+        });
+        --]]
+    end);
+
+    
+    -- init
+    FiltUI.Instance.filterList = RowScroller.Create(FiltUIref.FILTER_LIST);
+    FiltUI.Instance.filterList:SetSpacing(2);
+    FiltUI.Instance.filterList:ShowSlider(true);
+
+    FiltUI.ChangeView("Blacklist", "all")
+
+end
+
+function Options.ToggleFilteringUI(args)
+    ToggleWindow(true)
+end
+
+
+function ToggleWindow(show)
+    FiltUI.Show(show);
+end
+
+
+function FiltUI.ChangeView(page, section)
+
+    -- Save previous values for reference
+    local oldPage = FiltUI.State.page
+    local oldSection = FiltUI.State.section
+
+    -- Update to new values
+    FiltUI.State.page = page
+    FiltUI.State.section = section
+
+
+    -- Update path
+    Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
+
+
+
+    
+
+
+    -- Do stuffz
+    if page == "Blacklist" then
+
+
+        FiltUI.Instance.filterList:LockUpdates()
+
+        -- clear
+        FiltUI.Instance.filterList:Reset()
+
+        -- list active stuff
+        if not _table.empty(Options['Blacklist'][section]) then
+
+
+
+            for itemTypeId, value in pairs(Options['Blacklist'][section]) do
+                local itemInfo = Game.GetItemInfoByType(itemTypeId)
+                if not itemInfo then
+                    Debug.Warn('Invalid itemTypeId in blacklist') 
+                else
+                    --results[#results + 1] = tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) ..')'
+
+
+                    widget = Component.CreateWidget("BlacklistRow", FiltUIref.FILTER_LIST)
+                    widget:SetDims("width:100%; height:64;")
+                    local content = widget:GetChild("content");
+                    local focus = widget:GetChild("focusBox");
+                    local bg = widget:GetChild("bg");
+                    local defaultBgAlpha = 0.4;
+                    focus:BindEvent("OnMouseEnter", function()
+                        bg:ParamTo("tint", Component.LookupColor("RowHover"), 0.15);
+                        bg:ParamTo("alpha", 0.3, 0.15);
+                    end);
+                    focus:BindEvent("OnMouseLeave", function()
+                        bg:ParamTo("tint", Component.LookupColor("RowDefault"), 0.15);
+                        bg:ParamTo("alpha", defaultBgAlpha, 0.15);
+                    end);
+
+
+                    local ICON = MultiArt.Create(content:GetChild("icon"))
+                    ICON:SetUrl(itemInfo.web_icon)
+
+                    Component.CreateWidget("RowField", content:GetChild("name")):GetChild("text"):SetText(tostring(itemInfo.name));
+                    Component.CreateWidget("RowField", content:GetChild("typeid")):GetChild("text"):SetText(tostring(itemInfo.itemTypeId));
+
+
+
+
+                    FiltUI.Instance.filterList:AddRow(widget)
+
+                end
+
+            end
+            
+             
+
+        end
+
+
+        FiltUI.Instance.filterList:UnlockUpdates()
+
+
+
+    end
+
+end
+
+function FiltUI.Show(show) 
+
+    FiltUIref.MAIN:Show(show)
+
+    Component.SetInputMode(show and "cursor" or "none");
+    if (show) then
+        PanelManager.OnShow(FiltUIref.MAIN)
+    else
+        PanelManager.OnHide(FiltUIref.MAIN)
+    end
 
 end
