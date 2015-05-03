@@ -1,33 +1,62 @@
-This thing isn't exactly fully fleshed out yet but I'll keep working on it.
+Loot Tracker
+=========
+
+Loot Tracker is Firefall addon focused on keeping the user informed on all the shiny (and less so) loot that drops while playing. 
+
+
+Note: This readme isn't particularily complete.
+
 
 
 Slash Commands:
+---------
+
+    Whilst most configuration is done through visible interfaces, there are a couple of features accesible by typing input through the chat.
+
+    To begin a slash command, you must start your chat message with a slash (/), followed by a "slash handle" registered by the addon.
+    By default, Loot Tracker registers "lt" and "xlt" as its slash handlers, but you can also configure the slash handles to be used in the interface options.
     
-    First of, the slash handle is configurable in the Options, I'll use /lt since it's one of the defaults but I personally still use /slm :)
+    In the listing below, I describe the available commands and show examples on how they can be used.
+    Please note that for some commands, you may or must supply arguments to control that which you wish to do, and I have followed what I percieve to be a semi-universal standard where by surrounding text in <tags> implies that you must provide the argument, and [brackets] to imply that it is optional.
+    
+
+
 
     These are commands that I added with the intention of keeping.
     Also, some commands and arguments have alternative shorthands that I added because I couldn't remember what it was supposed to be.
 
-    /lt [help|?]
+    
+    
 
-        Just calling the slash handler with help, ? or nothing as the only argument, will trigger a listing of commands.
+    Feature: Help / in-game command listing
+    Command: /lt [help|?]
+    Example: "/lt help"
+    Result: The addon will send a series of system messages briefly describing available commands.
+    Description:    
+        Just calling the slash handler with help or ? (or nothing) as the only argument, will trigger a listing of commands.
         It will include the ones listed in this file, but does not go in depth on them.
         If you turn on Debug mode in the options, this list may include a few more slash commands. Those commands are not intended for normal usage and can change/break a lot between versions. Therefore they are not listed here.
 
-    /lt clear
-
+    Feature: Clear the tracking system
+    Command: /lt clear
+    Example: "/lt clear"
+    Result: The addon will attempt to remove everything it is tracking.
+    Description:
         This command immediately causes the tracker to remove its entries.
         It does so through relatively normal procedures though, so it can be affected by settings (which typically bites you in the ass).
-
-    /lt blacklist <action> <scope> [itemName|itemTypeId]
-
+    
+    Feature: Prevent a specific kind of item from being tracked or handled by a specific part of the addon.
+    Command: /lt blacklist <action> <scope> [itemName|itemTypeId]
+    Example: "/lt blacklist add pan Recovered Chosen Tech"
+    Result: Regardless of other options, the Panels will ignore the Recovered Chosen Tech items drops.
+    Description:
         This command allows you to blacklist (filter away) specific items.
         Note that this is meant to be used as a last resort, the Filtering options found in the Interface Options are meant to be the primary way to filter stuff.
 
-        The first argument is where you decide what you want to do with the blacklist.
+        The first, action argument is where you decide what you want to do with the blacklist.
         The following actions are possible: add, remove, view, clear
 
-        The second argument is where you specify which feature to affect.
+        The second, scope argument is where you specify which feature to affect.
         I'll just drop it all in. One of the inputs on the right corresponds to the feature on the left.
             Tracker    >      'tracker', 'core', 'all',
             Panels     >      'panels', 'panel', 'pan',
@@ -48,7 +77,7 @@ Slash Commands:
 
         > /lt blacklist add all Crystite Resonator
         This will add Crystite Resonator to the Trackers blacklist.
-        The Tracking system will ignore this item, preventing it from entering the system entirely. (Though if I wasn't careful something might leak in through the loot events...)
+        The Tracking system will ignore this item, preventing it from entering the system entirely.
 
         > /lt blacklist view all
         This lists all entries that fall into the all scope, that is the Trackers blacklist.
@@ -68,6 +97,3 @@ Slash Commands:
 
         This command just causes the Tracker to immediately update the state of all tracked loot.
         If something breaks, it might come in handy. Or you could just clear. You'll probably have to clear.
-
-
-
