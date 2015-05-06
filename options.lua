@@ -3378,7 +3378,7 @@ end
 
 
 
-
+require "lib/lib_Tabs"
 
 FiltUI = {}
 
@@ -3396,7 +3396,14 @@ FiltUIref = {
     BUTTON_ADD = Component.GetWidget("ButtonAdd"),
     BUTTON_DEL = Component.GetWidget("ButtonDel"),
 
+
+
+    PANES = Component.GetWidget("Tabs"),
+    
+    BODY = Component.GetWidget("Body"),
+
 }
+FiltUIref.TABS = Tabs.Create(3, FiltUIref.PANES)
 
 FiltUI.State = {
     page = "Blacklist",
@@ -3408,7 +3415,6 @@ FiltUI.Instance = {
 }
 
 function Options.SetupFilteringUI(args)
-
     
     
     MovablePanel.ConfigFrame({
@@ -3430,10 +3436,24 @@ function Options.SetupFilteringUI(args)
         X:ParamTo("glow", "#00000000", 0.15);
     end)
 
-    FiltUIref.TITLE_TEXT:SetText("Loot Tracker - Filtering") -- fixme: hardcoded
+    FiltUIref.TITLE_TEXT:SetText("Loot Tracker") -- fixme: hardcoded
+
+
+    -- Setup Tabs
+    FiltUIref.TABS:SetTab(1, {label="Blacklist"})
+    FiltUIref.TABS:SetTab(2, {label="Filtering"})
+    FiltUIref.TABS:SetTab(3, {label="Keybinds"})
+
+    FiltUIref.TABS:Select(1)
+
+
+
+
+
+
 
     
-    Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
+    --Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
 
 
     local addButton = Button.Create(FiltUIref.BUTTON_ADD);
@@ -3498,7 +3518,7 @@ function FiltUI.ChangeView(page, section)
 
 
     -- Update path
-    Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
+    --Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
 
 
 
