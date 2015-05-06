@@ -2,25 +2,28 @@ SLM TODO
 
     Look intos
 
-        Biomass Sampels - Does it not color waypoint glow properly?
-
         Test that version message disabling works
 
     Improvements
 
-        Add option to strip army tags from player names
+        HUDTracker
+            Add support for new PTE font in hud tracker :D
+        
+            Add options to make hudtracker similar to that guy who requested stuffz in the thread, it will be nice
 
+        Messages
 
-        HUDTracker - Icon Mode - None looks bad
+            Move "Send on Squad/Platoon only" options to underneath the masterswitches, and disable them if master is not checked
 
-        Panels still don't display anything interesting
+            Add option to toggle the prefix of system messages - use long prefix xLootTracker by default?
 
-
-        Add option to toggle the prefix of system messages - use long prefix xLootTracker by default?
+            Add option to strip army tags from player names
 
     Reworks
 
         Filtering2
+
+        Panels still don't display anything interesting
 
 
     New Features
@@ -29,17 +32,20 @@ SLM TODO
 
             Clear / Toggle Waypoints
 
+                Update: Added this in Keybinds branch, but need better handling for options for it keycatcher widget or something
 
-        Waypoint Smart Visibility Hotkey
+
+        Waypoint Smart Visibility Hotkey (probably not)
 
             The problem: When lots of loot is on the ground, even though I know there is an epic thanks to the HUDTracker, I can't find it easily in the forest of Waypoints.
             The solution I have in mind: Add a hotkey that when pressed toggles between different visibility modes for the Waypoints.
             It would just be a simple show/hide call on existing waypoints (needs to handle the addition of new waypoints whilst filtered too of course)
             Ideally it should only be a few modes, perhaps even just toggle between non-filtered and \"the most rare of the current item/s only\"
 
+            Note: wip exists in oldwaypointvisibility branch
 
-
-        Item Rolls Support
+        Item Rolls Support (maybe)
 
             Add new state/s \"Rolling\" / \"Rolled\"
             Detect when looted item is rolled for and update state (or directly determin that it is in roll)
+            New message event - is being rolled
