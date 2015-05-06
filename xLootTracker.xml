@@ -135,16 +135,38 @@
     </Styles>
     
     <BluePrints>
+        
+        <!-- Loot Panels -->
         <BluePrint name="LootPanel_Stat" instantiable="true">
             <StillArt dimensions="top:0; left:10%; width:40% -8; height:100%;" style="texture:colors; region:white; tint:#000000; alpha:0.5;"/>
             <StillArt dimensions="top:0; left:50%; width:40%; height:100%;" style="texture:colors; region:white; tint:#000000; alpha:0.5;"/>
             <Text name="statName" dimensions="top:0; left:10%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
             <Text name="statValue" dimensions="top:0; left:50%; width:40%; height:100%;" class="LootPanel_Text_Small"/>
         </BluePrint>
-
-
+        
+    
+        <!-- Filtering UI -->
         <BluePrint name="Panel" >
-            <Border dimensions="dock:fill" class="panelBG" style="clip-children:false;"/>
+            <Border dimensions="dock:fill" class="PanelBackDrop" />
+        </BluePrint>
+
+        <BluePrint name="Tab" > <!-- originally Tab_Left from Inventory -->
+            <Group name="background" dimensions="dock:fill">
+                <Group name="solid" dimensions="dock:fill" >
+                    <StillArt dimensions="left:1; top:1; height:5; width:5;" style="texture:PanelParts; region:Circle_TL; tint:000000"/>
+                    <StillArt dimensions="left:6; top:1; height:5; right:100%-1;" style="texture:colors; region:white; tint:000000"/>
+                    <StillArt dimensions="left:1; top:6; bottom:100%-6; width:5;" style="texture:colors; region:white; tint:000000"/>
+                    <StillArt dimensions="left:1; right:100%-1; bottom:100%-1; height:5;" style="texture:colors; region:white; tint:000000"/>
+                    <StillArt dimensions="left:6; right:100%-1; top:6; bottom:100%-6;" style="texture:colors; region:white; tint:000000"/>
+                </Group>
+                <Group name="outline" dimensions="dock:fill" style="alpha:0.15" >
+                    <StillArt dimensions="right:100%; top:0; height:100%-1; width:1;" style="texture:colors; region:white"/>
+                    <StillArt dimensions="left:0; right:100%; bottom:100%; height:1;" style="texture:colors; region:white"/>
+                </Group>
+            </Group>
+            <StillArt name="glow" dimensions="left:-10; width:100%; top:1; height:100" style="texture:GarageParts; region:topBattleFrameNameGlow; alpha:0"/>
+            <Text name="label" dimensions="dock:fill" style="font:UbuntuMedium_12; halign:center; valign:center"/>
+            <FocusBox name="button" dimensions="dock:fill" class="ui_button" />
         </BluePrint>
 
         <BluePrint name="BlacklistRow" instantiable="true">
@@ -158,37 +180,11 @@
                 <FocusBox name="focusBox"   dimensions="dock:fill" />
         </BluePrint>
 
-        <BluePrint name="FilterRow" instantiable="true">
-            <Group name="type" dimensions="left:0; top:0; height:100%; width:20%-4"/>
-            <Group name="frame" dimensions="left:20%; top:0; height:100%; width:15%-4"/>
-            <Group name="levelRange" dimensions="left:35%; top:0; height:100%; width:20%-4"/>
-            <Group name="color" dimensions="left:55%; top:0; height:100%; width:15%-4"/>
-            <Group name="when" dimensions="left:70%; top:0; height:100%; width:15%-4"/>
-            <Group name="action" dimensions="left:85%; top:0; height:100%; width:15%-4"/>
-        </BluePrint>
-        
-        <BluePrint name="FilterHeaderTab" instantiable="true">
-            <Text name="text" dimensions="left:5; right:100%-20; top:0%; height:100%" style="font:Demi_9; halign:center; valign:center; eatsmice:false; clip:true;"/>
-            <StillArt name="icon" dimensions="left:100%-20; top:50%-6; height:11; width:15;" style="texture:filterArrow; region:normal; eatsmice:false"/>
-        </BluePrint>
-        
-        <BluePrint name="Header" instantiable="true">
-            <StillArt name="Divider" dimensions="left:0%; right:100%; top:4; height:7" style="texture:Divider; exposure:1"/>
-            <StillArt name="Divider2" dimensions="left:0%; right:100%; top:9; height:7" style="texture:Divider; exposure:1"/>
-            <Border name="textBG" class="FadedBorder" dimensions="center-x:50%; top:2; height:18; width:50" style="alpha:.4; tint:#0B0B0B; exposure:1"/>
-            <Text     name="name"   key="WINDOW_TITE"       dimensions="top:3; left:0; width:100%; height:16" class="HeaderText" />
-        </BluePrint>
-        
         <BluePrint name="RowField" instantiable="true">
             <StillArt name="bg" dimensions="dock:fill" style="texture:colors; tint:#ff000000; region:white; alpha:0.2;"/>
             <Text    name="text"   key="WINDOW_TITE"  dimensions="dock:fill" class="FilterRowText" />
         </BluePrint>
-        
-        <BluePrint name="ListRow" instantiable="true">
-            <StillArt name="bg" dimensions="dock:fill" style="texture:colors; tint:RowDefault; region:white; alpha:0.4;"/>
-            <Group name="content" dimensions="dock:fill" blueprint="FilterRow"/>
-            <FocusBox name="focusBox"   dimensions="dock:fill" />
-        </BluePrint>
+
 
     </BluePrints>
 
@@ -196,24 +192,23 @@
         <!-- Tracker -->
         <PanelFrame name="Tracker" dimensions="left:0; right:50%-450; height:150; center-y:74%;" permanent="true" visible="true" depth="10">
             <Children>
-                    <!--
-                    <StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>
-                    -->
-                
-                    <!-- List -->
-                    <Group name="List" dimensions="width:100%; height:100%; top:0%; center-x:50%;" style="clip-children:false;">
-                        <!-- Entries go in here -->
-                    </Group>
+                <!--
+                <StillArt name="Background" dimensions="dock:fill" style="texture:colors; region:white; tint:#000000; alpha:0.3;"/>
+                -->
+            
+                <!-- List -->
+                <Group name="List" dimensions="width:100%; height:100%; top:0%; center-x:50%;" style="clip-children:false;">
+                    <!-- Entries go in here -->
+                </Group>
 
-                    <!-- Slider -->
-                    <Slider name="Slider" dimensions="width:3; right:100%; top:0; bottom:100%" class="Tracker_Slider"/>
+                <!-- Slider -->
+                <Slider name="Slider" dimensions="width:3; right:100%; top:0; bottom:100%" class="Tracker_Slider"/>
             </Children>
         </PanelFrame>
 
-
+        <!-- Options -->
         <PanelFrame name="Options" dimensions="center-x:36%; center-y:40%; width:70%; height:60%" visible="false" depth="0">
             <Children>
-
                 <Group id="Window" dimensions="right:100%; top:0; height:100%; left:0" style="alpha:1">
                     <!-- Title -->
                     <Group dimensions="left:0; top:0; height:38; width:100%" blueprint="Panel">
@@ -224,43 +219,23 @@
                             <StillArt name="X" dimensions="center-x:50%; center-y:50%; width:16; height:16" style="texture:DialogWidgets; region:close; eatsmice:false"/>
                         </FocusBox>
                     </Group>
-                    <!-- Title -->
-                    
+
                     <!-- Body -->
-                    <Group dimensions="left:0; top:40; height:100%; width:100%">
-                        <!-- Header -->
-                         <Group dimensions="left:0; top:0; height:60; width:100%" blueprint="">
-                            <Group name="Path" dimensions="left:0; top:0; height:100%; width:100%;" blueprint="Panel">
-                                <Text id="pathText" dimensions="top:0; left:0; width:100%; height:38" style="font:Demi_15; halign:center; valign:center;  color:PanelTitle;"/>
+                    <Group dimensions="left:0; top:40; height:100%; width:100%">                        
+                        <Group dimensions="left:0; top:0; height:100%; width:100%" blueprint="Panel">
+                            <Group id="Tabs" dimensions="left:0; top:0; bottom:45; right:100%"/>
+                            <Group id="Body" dimensions="left:0; top:0; bottom:100%; right:100%">
+                                <Group id="LeftColumn" dimensions="left:0; top:52; height:100%; width:25%;" blueprint="Panel">
+                                    <Group id="ButtonAdd" dimensions="right:50%-5; top:0%+9; height:24; width:120"/>
+                                    <Group id="ButtonDel" dimensions="right:50%-5; top:0%+38; height:24; width:120"/>
+                                </Group>
+                                <Group id="MainArea" dimensions="left:25%+1; top:52; height:100%; width:75%;" blueprint="Panel">
+                                    <Group id="FilterList" dimensions="dock:fill;"/>
+                                </Group>
                             </Group>
-                        </Group>
-                        <!-- Header -->
-                        
-                        <!-- Content -->
-                        <Group dimensions="left:0; top:62; height:100%; width:100%" blueprint="Panel">
-
-                            <Group id="LeftColumn" dimensions="left:0; top:0; height:100%; width:25%;" blueprint="Panel">
-
-                                <Group id="ButtonAdd" dimensions="right:50%-5; top:0%+9; height:24; width:120"/>
-                                <Group id="ButtonDel" dimensions="right:50%-5; top:0%+38; height:24; width:120"/>
-
-
-                            </Group>
-
-                            <Group id="MainArea" dimensions="left:25%+1; top:0; height:100%; width:75%;" blueprint="Panel">
-    
-                                <Group id="FilterList" dimensions="dock:fill;"/>
-
-                            </Group>
-
-
-                        <!-- Content -->
                         </Group>
                     </Group>
-                    <!-- Body -->
                 </Group>
-                                
-    
             </Children>
             <OnClose bind="OnClose"/>
             <OnEscape bind="OnClose"/>
