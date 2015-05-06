@@ -2,9 +2,6 @@ Ignore
 Makefile
 .git
 .gitignore
+doc\
 xLootTracker.sublime-project
 xLootTracker.sublime-workspace
-thread
-curse
-other
-todo
