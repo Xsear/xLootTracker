@@ -70,7 +70,7 @@ require './panels'     -- Panels
 require './waypoints'  -- Waypoints
 require './hudtracker' -- HUDTracker
 require './sounds'     -- Sounds
-
+require './blacklist' -- Blacklist
 -- Functions
 --[[
     OnComponentLoad()
@@ -96,28 +96,8 @@ function OnComponentLoad()
     -- Setup Options
     Options.Setup() 
 
-    -- Setup Blacklist - Fix for bug in versions 1.13 to v1.15
-    if Component.GetSetting('Core_Blacklist') then
-        Options['Blacklist'] = Component.GetSetting('Core_Blacklist')
-
-        local blacklistStructure = {
-                ['Tracker'] = {},
-                ['Panels'] = {},
-                ['Sounds'] = {},
-                ['HUDTracker'] = {},
-                ['Messages'] = {},
-                ['Waypoints'] = {},
-        }
-
-        for key, table in pairs(blacklistStructure) do
-            if not Options['Blacklist'][key] then
-                Debug.Log('Restoring Blacklist Structure: Adding key ' .. tostring(key))
-                Options['Blacklist'][key] = {}
-            end
-        end
-
-        Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
-    end
+    -- Setup Blacklist
+    Blacklist.Setup()
 end
 
 function OnClose(args)
@@ -508,12 +488,13 @@ function Slash_Blacklist(args)
 
             if actionKey == 'list' or actionKey == 'view' then
 
-                if not _table.empty(Options['Blacklist'][scopeKey]) then
+                local data = Blacklist.Get({scopeKey=scopeKey})
+                if not _table.empty(data) then
                     local results = {'Viewing blacklist entries in scope ' .. tostring(scopeKey)}
 
-                    Debug.Table(Options['Blacklist'][scopeKey])
+                    Debug.Table(data)
 
-                    for itemTypeId, value in pairs(Options['Blacklist'][scopeKey]) do
+                    for itemTypeId, value in pairs(data) do
                         local itemInfo = Game.GetItemInfoByType(itemTypeId)
                         if not itemInfo then
                             Debug.Warn('Invalid itemTypeId in blacklist') 
@@ -525,7 +506,7 @@ function Slash_Blacklist(args)
 
                     local message = table.concat(results, '\n')
 
-                    Messages.SendChatMessage('system', message)
+                    Messages.SendSystemMessage(message)
                     return
 
                 else
@@ -535,22 +516,14 @@ function Slash_Blacklist(args)
 
             elseif actionKey == 'clear' then
 
-                if not _table.empty(Options['Blacklist'][scopeKey]) then
-                    local count = 0
-                    for itemTypeId, value in pairs(Options['Blacklist'][scopeKey]) do
-                        Options['Blacklist'][scopeKey][itemTypeId] = nil
-                        count = count + 1
-                    end
-                        
-                    -- Save
-                    Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
 
+                local count = Blacklist.Clear({scopeKey=scopeKey})
+                if count > 0 then
                     Messages.SendSystemMessage('Success! Cleared ' .. tostring(count) .. ' entries from the ' .. tostring(scopeKey) .. ' scope.')
                     return
                 else
                     reason = 'The scope is bloody empty!'
                 end
-
 
             else
 
@@ -605,26 +578,27 @@ function Slash_Blacklist(args)
                     if itemInfo then
 
                         if actionKey == 'add' then
-                            if not Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] then
-                                Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] = true
+                            local result = Blacklist.Add({scopeKey=scopeKey, itemTypeId=itemInfo.itemTypeId})
+                            if result then
                                 success = true
-                            else
+                            elseif result == false then
                                 reason = 'Already blacklisted in this scope'
+                            else
+                                reason = 'Unexpected error'
                             end
                         elseif actionKey == 'remove' or actionKey == 'rem' then
-                            if Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] then
-                                Options['Blacklist'][scopeKey][tostring(itemInfo.itemTypeId)] = nil
+                            local result = Blacklist.Remove({scopeKey=scopeKey, itemTypeId=itemInfo.itemTypeId})
+                            if result then
                                 success = true
-                            else
+                            elseif result == false then
                                 reason = 'This typeId was not blacklisted in this scope'
+                            else
+                                reason = 'Unexpected error'
                             end
                         end
                     end
 
                     if success then
-                        -- Save
-                        Component.SaveSetting('Core_Blacklist', Options['Blacklist'])
-
                         if actionKey == 'add' then
                             Messages.SendSystemMessage('Success! Added ' .. tostring(itemInfo.name) .. '(' .. tostring(itemInfo.itemTypeId) .. ') to the ' .. tostring(scopeKey) .. ' blacklist.')
 
