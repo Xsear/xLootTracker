@@ -2389,11 +2389,10 @@ function Options.Setup()
         scalable = true
     })
 
-    
     -- Build the interface options
     BuildInterfaceOptions()
 
-    --
+    -- Configure the filtering ui
     Options.SetupFilteringUI()
 end
 
@@ -3407,7 +3406,7 @@ FiltUIref.TABS = Tabs.Create(3, FiltUIref.PANES)
 
 FiltUI.State = {
     page = "Blacklist",
-    section = "all"
+    section = "Tracker"
 }
 
 FiltUI.Instance = {
@@ -3492,7 +3491,7 @@ function Options.SetupFilteringUI(args)
     FiltUI.Instance.filterList:SetSpacing(2);
     FiltUI.Instance.filterList:ShowSlider(true);
 
-    FiltUI.ChangeView("Blacklist", "all")
+    FiltUI.ChangeView("Blacklist", "Tracker")
 
 end
 
