@@ -77,7 +77,7 @@ function WaypointManager.OnTrackerNew(args)
         return
     end
 
-    if LootFiltering(loot, Options['Waypoints']) then
+    if Filtering.Filter(loot, Options['Waypoints']) then
         WaypointManager.Create(loot)
     end
 end
@@ -199,7 +199,7 @@ end
     Returns a formatted title for the Waypoint matching the filters of the loot.
 --]]
 function Private.GetWaypointTitle(loot)
-    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Waypoints']['Filtering'])
+    local categoryKey, rarityKey = Filtering.GetFilteringOptionsKeys(loot, Options['Waypoints']['Filtering'])
     local formatString = Options['Waypoints']['Filtering'][categoryKey][rarityKey]['WaypointTitle']
     return Messages.TextFilters(formatString, {loot=loot})
 end

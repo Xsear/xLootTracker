@@ -73,7 +73,7 @@ function LootPanelManager.OnTrackerNew(args)
     end
 
     -- Continue if passes filtering options
-    if LootFiltering(loot, Options['Panels']) then
+    if Filtering.Filter(loot, Options['Panels']) then
         LootPanelManager.Create(loot)
     end
 end

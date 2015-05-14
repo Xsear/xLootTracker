@@ -140,7 +140,7 @@ function HUDTracker.OnTrackerNew(args)
         return
     end
 
-    if LootFiltering(loot, Options['HUDTracker']) then
+    if Filtering.Filter(loot, Options['HUDTracker']) then
 
         -- Hide tooltip if is currently being displayed, whilst we are modifying stuff.
         if State.tooltipActive then
@@ -721,7 +721,7 @@ end
 
 -- Gets filtered display name of loot from options
 function GetHUDTrackerTitle(loot)
-    local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['HUDTracker']['Filtering'])
+    local categoryKey, rarityKey = Filtering.GetFilteringOptionsKeys(loot, Options['HUDTracker']['Filtering'])
     local formatString = Options['HUDTracker']['Filtering'][categoryKey][rarityKey]['HUDTrackerTitle']
     return tostring(Messages.TextFilters(formatString, {loot=loot}), true)
 end

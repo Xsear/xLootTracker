@@ -16,9 +16,9 @@ function Sounds.OnTrackerNew(args)
 
         local loot = Tracker.GetLootById(args.lootId)
 
-        if not Options['Blacklist']['Sounds'][tostring(loot:GetTypeId())] and LootFiltering(loot, Options['Sounds']) then
+        if not Options['Blacklist']['Sounds'][tostring(loot:GetTypeId())] and Filtering.Filter(loot, Options['Sounds']) then
 
-            local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Sounds']['Filtering'])
+            local categoryKey, rarityKey = Filtering.GetFilteringOptionsKeys(loot, Options['Sounds']['Filtering'])
 
             System.PlaySound(Options['Sounds']['Filtering'][categoryKey][rarityKey]['SoundsNewLoot'])
         end

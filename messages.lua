@@ -49,13 +49,13 @@ function Messages.MessageEvent(eventClass, eventName, eventArgs)
                 end
 
                 -- Filtering Check
-                if not LootFiltering(loot, Options['Messages']['Events'][eventClass][eventName]) then
+                if not Filtering.Filter(loot, Options['Messages']['Events'][eventClass][eventName]) then
                     --Debug.Log('Not sending message because it did not pass filters')
                     return
                 end
 
                 -- Setup filtering options ref
-                local categoryKey, rarityKey = GetLootFilteringOptionsKeys(loot, Options['Messages']['Events'][eventClass][eventName]['Filtering'])
+                local categoryKey, rarityKey = Filtering.GetFilteringOptionsKeys(loot, Options['Messages']['Events'][eventClass][eventName]['Filtering'])
                 local optionsRef = Options['Messages']['Events'][eventClass][eventName]['Filtering'][categoryKey][rarityKey]
 
                 -- OnLootLooted Ignore Others Check
