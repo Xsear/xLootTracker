@@ -570,12 +570,14 @@ function Slash_Blacklist(args)
 
                         if not itemInfo then
                             reason = 'Could not get itemInfo, unable to find an item with the name ' .. tostring(searchName)
+                        elseif _table.empty(itemInfo) then
+                            reason = 'This does not seem like a valid item, no information was found for ' .. tostring(searchName)
                         end
 
                     end
 
                     -- If we have itemInfo, add to blacklist.
-                    if itemInfo then
+                    if itemInfo and not _table.empty(itemInfo) then
 
                         if actionKey == 'add' then
                             local result = Blacklist.Add({scopeKey=scopeKey, itemTypeId=itemInfo.itemTypeId})
