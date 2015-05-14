@@ -2397,6 +2397,12 @@ function Options.Setup()
 end
 
 
+function Options.ToggleFilteringUI(args)
+    FiltUI.ToggleWindow(true)
+end
+
+
+
 --[[
     BuildInterfaceOptions()
     Separate everything

@@ -51,6 +51,7 @@
         <Color name="textColor"     value="#FFFFFF"/>
         <Color name="RowDefault"    value="#000000"/>
         <Color name="RowHover"      value="#0E89C7"/>
+        <Color name="RowSelected"    value="#0F23C7"/>
     </Colors>
 
     <Styles>
@@ -131,6 +132,14 @@
 
         <StyleSheet name="Tracker_PlateBorder" parent="ButtonBorder">
         </StyleSheet>
+    
+        <StyleSheet name="FilteringUI_BlacklistScope">  
+            font:Demi_12;
+            halign:center;
+            valign:top;
+            color:FFFFFF;
+        </StyleSheet>
+
 
     </Styles>
     
@@ -184,7 +193,12 @@
             <StillArt name="bg" dimensions="dock:fill" style="texture:colors; tint:#ff000000; region:white; alpha:0.2;"/>
             <Text    name="text"   key="WINDOW_TITE"  dimensions="dock:fill" class="FilterRowText" />
         </BluePrint>
-
+    
+        <BluePrint name="BlacklistScopeButton" instantiable="true">
+            <StillArt name="bg"         dimensions="dock:fill" style="texture:colors; tint:#ff000000; region:white; alpha:0.6;"/>
+            <Text     name="text"       dimensions="top:35%;left:0;bottom:40%;right:100%;" class="FilteringUI_BlacklistScope"/>
+            <FocusBox name="focusBox"   dimensions="dock:fill" />
+        </BluePrint>
 
     </BluePrints>
 
@@ -224,12 +238,12 @@
                     <Group dimensions="left:0; top:40; height:100%; width:100%">                        
                         <Group dimensions="left:0; top:0; height:100%; width:100%" blueprint="Panel">
                             <Group id="Tabs" dimensions="left:0; top:0; bottom:45; right:100%"/>
-                            <Group id="Body" dimensions="left:0; top:0; bottom:100%; right:100%">
-                                <Group id="LeftColumn" dimensions="left:0; top:52; height:100%; width:25%;" blueprint="Panel">
+                            <Group id="Body" dimensions="left:0; top:45; bottom:100%; right:100%">
+                                <Group id="LeftColumn" dimensions="left:0; top:0; height:100%; width:25%;" blueprint="Panel" style="alpha:1">
                                     <Group id="ButtonAdd" dimensions="right:50%-5; top:0%+9; height:24; width:120"/>
                                     <Group id="ButtonDel" dimensions="right:50%-5; top:0%+38; height:24; width:120"/>
                                 </Group>
-                                <Group id="MainArea" dimensions="left:25%+1; top:52; height:100%; width:75%;" blueprint="Panel">
+                                <Group id="MainArea" dimensions="left:25%+1; top:0; height:100%; width:75%;" blueprint="Panel">
                                     <Group id="FilterList" dimensions="dock:fill;"/>
                                 </Group>
                             </Group>
