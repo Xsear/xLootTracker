@@ -6,6 +6,8 @@ v1.20
     - Fixed a bug where Panels were following the Waypoints blacklist.
     - Fixed a display issue when setting HUDTracker Icon mode to none.
     - Improved tooltips for some of the tracker options.
+    - Fixed a bug where the Blacklist View command would sometimes not properly send its output.
+    - Blacklist Add command should no longer allow adding invalid items.
 
 v1.19
     Public Release 19

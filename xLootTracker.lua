@@ -101,10 +101,6 @@ function OnComponentLoad()
     Blacklist.Setup()
 end
 
-function OnClose(args)
-    ToggleWindow(false);
-end
-
 --[[
     OnOptionsLoaded()
     Called when Interface Options sends the __LOADED signal.
@@ -188,6 +184,14 @@ function OnSquadRosterUpdate(args)
 
     State.isSquadLeader = (State.inSquad and namecompare(State.playerName, Squad.GetLeader()))
     State.isPlatoonLeader = (State.inPlatoon and namecompare(State.playerName, Platoon.GetLeader()))
+end
+
+--[[
+    OnClose()
+    Called when user presses close or escape button on filtering ui.
+]]--
+function OnClose(args)
+    Options.ToggleFilteringUI(false);
 end
 
 --[[
@@ -643,7 +647,7 @@ end
 
 function Slash_Filtering(args)
     Debug.Log('Slash_Filtering')
-    Options.ToggleFilteringUI(args)
+    Options.ToggleFilteringUI(true)
     Messages.SendSystemMessage('Filtering')
 end
 

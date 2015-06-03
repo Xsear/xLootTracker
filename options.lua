@@ -2397,8 +2397,8 @@ function Options.Setup()
 end
 
 
-function Options.ToggleFilteringUI(args)
-    FiltUI.ToggleWindow(true)
+function Options.ToggleFilteringUI(show)
+    FiltUI.ToggleWindow(show)
 end
 
 
