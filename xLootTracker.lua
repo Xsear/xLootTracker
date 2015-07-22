@@ -9,7 +9,7 @@ require 'lib/lib_Items'            -- Item library, used to get color-by-quality
 require 'lib/lib_MapMarker'        -- Map Marker library, used for waypoint creation.
 require 'lib/lib_Slash'            -- Slash commands
 require 'lib/lib_Vector'           -- Vector coordinates
-require 'lib/lib_Button'           -- Buttons used by Tracker
+--require 'lib/lib_Button'           -- Buttons used by Tracker
 require 'lib/lib_Tooltip'          -- Tooltip used by Tracker
 require 'lib/lib_ChatLib'          -- Used to send some chat messages
 require 'lib/lib_table'            -- Common table functions
