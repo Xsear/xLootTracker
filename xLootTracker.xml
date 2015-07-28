@@ -129,6 +129,12 @@
             region-slider-min:black;
             region-slider-mid:black;
             region-slider-max:black;
+            region-thumb-min-h:white;
+            region-thumb-mid-h:white;
+            region-thumb-max-h:white;
+            region-slider-min-h:black;
+            region-slider-mid-h:black;
+            region-slider-max-h:black;
             horizontal:false;
             inverted:false;
             visible:true;
