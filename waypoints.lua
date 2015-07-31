@@ -152,9 +152,14 @@ function WaypointManager.Create(loot)
 
     -- Icon
     local MULTIART = MARKER:GetIcon()
-    MULTIART:SetUrl(loot:GetWebIcon())
+    local webIcon = loot:GetWebIcon()
+    if type(webIcon) == "string" then
+        MULTIART:SetUrl(webIcon)
+    else
+        MULTIART:SetIcon(webIcon)
+    end
 
-    if Options['Waypoints']['IconGlow'] then
+    if Options['Waypoints']['IconGlow'] then -- rip :(
         MULTIART:SetParam('glow', loot:GetColor())
     end
 

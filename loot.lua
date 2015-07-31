@@ -21,6 +21,9 @@ local Private = {
 }
 
 
+
+
+
 --[[
 ***************************
     Static Functions
@@ -195,7 +198,7 @@ function Loot:GetColor()
 end
 
 function Loot:GetWebIcon()
-    return self.itemInfo.web_icon
+    return self.itemInfo.web_icon or self.itemInfo.web_icon_id
 end
 
 function Loot:GetMultiArt(PARENT, forceWebIcon)
@@ -215,7 +218,14 @@ function Loot:GetMultiArt(PARENT, forceWebIcon)
     end
 
     -- Otherwise, use web icon
-    ICON:SetUrl(self:GetWebIcon())
+
+    local webIcon = self:GetWebIcon()
+    if type(webIcon) == "string" then
+        ICON:SetUrl(webIcon)
+    else
+        ICON:SetIcon(webIcon)
+    end
+
     return ICON
 end
 
