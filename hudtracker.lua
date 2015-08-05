@@ -19,7 +19,7 @@ local SCROLLER = nil
 local TOOLTIP_ITEM = nil
 
 -- Callback cycles
-local CYCLE_HUDTrackerUpdate = nil 
+local CYCLE_HUDTrackerUpdate = nil -- Note: Deprecated
 
 -- y u no options D:
 local DimensionOptions = {
