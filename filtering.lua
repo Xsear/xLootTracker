@@ -65,12 +65,220 @@ end
 
 
 
+NewFilteringCategory = {
+    Armor = SubTypeIds.BattleframeCores, -- Is parent category for the new 4 slots
+    Weapons = 58, -- NOT VERIFIED
+    Abilities = 61, -- NOT VERIFIED
+    Equipment = SubTypeIds.Equipment,
+    Modules = SubTypeIds.Modules, -- Needs to be verified to be the actual modules and not some other kinda generic category
+    Currency = SubTypeIds.Currency,
+}
+
+--[[
+SubTypeIds = {
+    PrimaryWeapon       = 59,
+    SecondaryWeapon     = 60,
+    Abilities           = 61,
+    BattleframeCores    = 3623,
+    Modules             = 3625,
+    Consumable          = 82,
+    Resource            = 15,
+    Salvage             = 3617,
+    Unlocks             = 3667,
+    Thumping            = 80,
+    Vehicles            = 83,
+    Deployables         = 81,
+    Pets                = 89,
+    Currency            = 207,
+    Equipment           = 3,
+    AccountItems        = 3708,
+    WeaponComponent     = 3724,
+    AbilityComponent    = 3723,
+    TinkerTools         = 3732,
+    AuxiliaryWeapons    = 3736,
+    MedicalSystem       = 3744,
+    Fragments           = 3746,
+    Gliders             = 3709,
+}
+--]]
+
+
+
+Filtering.HUDFilters = {}
+Filtering.HUDFilters[1] = {
+    enabled = true,
+    name = "Green lvl 30 Armor",
+    parameters = {
+        {
+            ["type"] = "CATEGORY",
+            ["mode"] = "EQUALS", -- not used
+            ["value"] = NewFilteringCategory.Armor, -- Modules? Gear?
+        },
+        {
+            ["type"] = "ITEM_LEVEL",
+            ["mode"] = "LARGER_OR_EQUALS",
+            ["value"] = 30,
+        },
+        {
+            ["type"] = "RARITY",
+            ["mode"] = "LARGER_OR_EQUALS",
+            ["value"] = Loot.GetRarityIndex(LootRarity.Uncommon),
+        },
+    }
+}
+
+
+Filtering.Comparators = {
+    ["LARGER_OR_EQUALS"] = function(a, b) return a >= b end,
+    ["LESS_OR_EQUALS"] = function(a, b) return a <= b end,
+    ["LARGER"] = function(a, b) return a > b end,
+    ["LESS"] = function(a, b) return a < b end,
+    ["EQUALS"] = function(a, b) return a == b end,
+}
+
+
+function NewDetermineCategory(loot)
+    local itemTypeId = loot:GetTypeId()
+    local mostSpecificCategory = -1
+    local mostSpecificCategoryKey = nil
+    for category, subTypeId in pairs(NewFilteringCategory) do
+        if Game.IsItemOfType(itemTypeId, subTypeId) then
+            if subTypeId > mostSpecificCategory then 
+                mostSpecificCategory = subTypeId
+                mostSpecificCategoryKey = category
+            end
+        end
+    end
+
+    if mostSpecificCategory == -1 then
+        Debug.Error("No Loot Category for ", loot:ToString())
+        return -1
+    else
+        return mostSpecificCategoryKey
+    end
+end
+
+-- indev function name
+function Filtering.Filt2(loot)
+
+    Debug.Log("Filtering.Filt2 : ", loot:ToString())
+
+    Debug.Log("Begin filtering loop")
+    for i, filter in ipairs(Filtering.HUDFilters) do
+
+        if filter.enabled then
+
+            Debug.Log("Now checking Filter with name ", filter.name)
+
+            local passesFilterParameters = true
+
+            for j, parameter in ipairs(filter.parameters) do
+                Debug.Divider()
+                Debug.Table("Parameter " .. tostring(j), parameter)
+
+                if parameter.type == "CATEGORY" then
+
+                    local lootCategory = NewFilteringCategory[NewDetermineCategory(loot)]
+                    local comparator = Filtering.Comparators.EQUALS
+                    if not comparator(lootCategory, parameter.value) then
+                        Debug.Log("lootValue ", lootCategory, " " .. parameter.mode .. " paramValue ", parameter.value, " : FALSE")
+                        passesFilterParameters = false
+                    end
+
+                elseif parameter.type == "RARITY" then
+
+                    local rarity = loot:GetRarityValue()
+                    local comparator = Filtering.Comparators[parameter.mode]
+                    if not comparator(rarity, parameter.value) then
+                        Debug.Log("lootValue ", rarity, " " .. parameter.mode .. " paramValue ", parameter.value, " : FALSE")
+                        passesFilterParameters = false
+                    end
+
+                elseif parameter.type == "ITEM_LEVEL" then
+
+                    local ilvl = loot:GetItemLevel()
+                    local comparator = Filtering.Comparators[parameter.mode]
+                    if not comparator(ilvl, parameter.value) then
+                        Debug.Log("lootValue ", ilvl, " " .. parameter.mode .. " paramValue ", parameter.value, " : FALSE")
+                        passesFilterParameters = false
+                    end
+
+                elseif parameter.type == "ITEM_REQUIRED_LEVEL" then
+
+                    local reqlvl = loot:GetRequiredLevel()
+                    local comparator = Filtering.Comparators[parameter.mode]
+                    if not comparator(reqlvl, parameter.value) then
+                        Debug.Log("lootValue ", reqlvl, " " .. parameter.mode .. " paramValue ", parameter.value, " : FALSE")
+                        passesFilterParameters = false
+                    end
+
+                end
+
+                if not passesFilterParameters then
+                    Debug.Log("Failed Parameter " .. tostring(j))
+                    Debug.Divider()
+                    break
+                end
+
+                Debug.Log("Passed Parameter " .. tostring(j))
+                Debug.Divider()
+            end
+
+            if passesFilterParameters then
+                Debug.Log("Passed Filter with name " .. filter.name)
+                Debug.Divider()
+                return true
+            end
+
+            Debug.Log("Failed Filter with name " .. filter.name)
+            Debug.Divider()
+        end
+    end
+    Debug.Log("End filtering loop")
+
+    Debug.Log("Must not have passed any filter :(")
+    return false              
+
+end
 
 
 
 
+function RunFilteringTest()
+
+    Debug.Log("RunFilteringTest")
+
+    local testItems = {
+        98002, -- lvl 29 epic bio needler
+        98743, -- lvl 30 epic bio crossbow
+        98725, -- lvl 30 rare bio crossbow
+        98965, -- lvl 30 epic shotgun
+        130178, -- lvl 30 rare chemical grenade
+        102927, -- lvl 30 epic creeping death
+        129010, -- lvl 30 rare medical system
+        128440, -- lvl 30 epic reactor
+        128678, -- lvl 30 rare legs
+        136858, -- lvl 30 rare operating system
+        123369, -- capacity booster mk 2
+    }
+
+    Debug.Log("Building lootTable")
+    local lootTable = {}
+    for i, itemTypeId in ipairs(testItems) do
+
+        lootTable[#lootTable +1] = Loot.Create(i, {itemTypeId=itemTypeId}, Game.GetItemInfoByType(itemTypeId))
+
+    end
+
+    Debug.Log("Beginning test!")
+    for i, loot in ipairs(lootTable) do
+        Debug.Log("Filtering.Filt2 for ", loot:ToString(), " result = ", Filtering.Filt2(loot))
+    end
 
 
+    Debug.Log("Test over")
+
+end
 
 
 
@@ -287,6 +495,11 @@ function FiltUI.Setup(args)
 --]]
 
 
+    -- Filtering
+    local filteringTestButton = Component.CreateWidget('<Button dimensions="dock:fill" />', ref.PANE_FILTERING)
+    filteringTestButton:SetText("Filtering Test")
+    filteringTestButton:BindEvent("OnMouseDown", RunFilteringTest)
+
     --
     Debug.Log('filtui setup complete')
     
@@ -393,7 +606,7 @@ function FiltUI.ChangeView(page, section)
 
 
                     local ICON = MultiArt.Create(content:GetChild("icon"))
-                    ICON:SetUrl(itemInfo.web_icon)
+                    ICON:SetIcon(itemInfo.web_icon_id)
 
                     Component.CreateWidget("RowField", content:GetChild("name")):GetChild("text"):SetText(tostring(itemInfo.name));
                     Component.CreateWidget("RowField", content:GetChild("typeid")):GetChild("text"):SetText(tostring(itemInfo.itemTypeId));

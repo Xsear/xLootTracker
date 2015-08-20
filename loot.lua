@@ -54,7 +54,7 @@ function Loot.Create(entityId, targetInfo, itemInfo)
     self.targetInfo      = targetInfo
     self.itemInfo        = itemInfo
 
-    self.category        = Loot.DetermineCategory(targetInfo, itemInfo)
+    self.category        = NewDetermineCategory(self) -- Loot.DetermineCategory(targetInfo, itemInfo)
     
     self.state           = Private.DetermineState(self)
 
@@ -154,7 +154,7 @@ function Loot:GetTypeId()
 end
 
 function Loot:GetName()
-    return self.targetInfo.name
+    return self.targetInfo.name or self.itemInfo.name
 end
 
 function Loot:GetCategory()
