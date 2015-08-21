@@ -1,5 +1,5 @@
 require "lib/lib_Tabs"
-
+require "./lib/lib_SimpleDialog";
 
 Filtering = {}
 
@@ -323,10 +323,16 @@ local ref = {
 
 local blacklist_ref = {
     filterList,
+    filterActionBar,
     scopeList,
     TEST,
 }
 
+local filtering_ref = {
+    filterList,
+    filterActionBar,
+    scopeList,
+}
 
 
 
@@ -372,9 +378,6 @@ function FiltUI.Setup(args)
 
 
     ref.PANE_BLACKLIST = ref.TABS:GetBody(1)
-
-    if not ref.PANE_BLACKLIST then Debug.Error("missing ref") end 
-
     ref.PANE_FILTERING = ref.TABS:GetBody(2)
     --ref.PANE_KEYBINDS = ref.TABS:GetBody(3)
 
@@ -384,125 +387,139 @@ function FiltUI.Setup(args)
 
     -- Create Views
 
-    
-
     -- BLACKLIST
     blacklist_ref.PANE = ref.PANE_BLACKLIST
     blacklist_ref.LAYOUT = Component.CreateWidget("TabPanelLayout_Main", blacklist_ref.PANE)
     blacklist_ref.LEFT_COLUMN = blacklist_ref.LAYOUT:GetChild("LeftColumn")
     blacklist_ref.MAIN_AREA = blacklist_ref.LAYOUT:GetChild("MainArea")
-
     blacklist_ref.FILTER_LIST = blacklist_ref.MAIN_AREA:GetChild("FilterList")
 
+        -- Create filterlist header
+        local header = Component.CreateWidget("BlacklistRow", blacklist_ref.MAIN_AREA)
+        header:SetDims("width:100%; height:64;top:0;")
+        local content = header:GetChild("content");
+        Component.CreateWidget("RowField", content:GetChild("icon")):GetChild("text"):SetText("  Icon");
+        Component.CreateWidget("RowField", content:GetChild("name")):GetChild("text"):SetText("Name");
+        Component.CreateWidget("RowField", content:GetChild("typeid")):GetChild("text"):SetText("Type Id");
+        Component.CreateWidget("RowField", content:GetChild("actions")):GetChild("text"):SetText("Actions");
 
-    -- create filterlist header
-    local header = Component.CreateWidget("BlacklistRow", blacklist_ref.MAIN_AREA)
-    header:SetDims("width:100%; height:64;top:0;")
-    local content = header:GetChild("content");
-    Component.CreateWidget("RowField", content:GetChild("icon")):GetChild("text"):SetText("  Icon");
-    Component.CreateWidget("RowField", content:GetChild("name")):GetChild("text"):SetText("Name");
-    Component.CreateWidget("RowField", content:GetChild("typeid")):GetChild("text"):SetText("Type Id");
-    Component.CreateWidget("RowField", content:GetChild("actions")):GetChild("text"):SetText("Actions");
+        -- Create filterlist
+        blacklist_ref.filterList = RowScroller.Create(blacklist_ref.FILTER_LIST);
+        blacklist_ref.filterList:SetSpacing(2);
+        blacklist_ref.filterList:ShowSlider(true);
 
+        -- Filtering Action Bar :D
+        blacklist_ref.filterActionBar = blacklist_ref.MAIN_AREA:GetChild("FilterActionBar")
+        CreateLabelButton("width:23; height:16", "FilledButtonPrint", Component.CreateWidget('<Group dimensions="left:10%; width:20%; top:10%; height:80%"/>', blacklist_ref.filterActionBar), BlacklistAddButtonOnClick, "DialogWidgets", "accept")
+        CreateLabelButton("width:23; height:16", "FilledButtonPrint", Component.CreateWidget('<Group dimensions="left:60%; width:20%; top:10%; height:80%"/>', blacklist_ref.filterActionBar), BlacklistClearButtonOnClick, "DialogWidgets", "cancel")
 
-    -- init filterlist
-    blacklist_ref.filterList = RowScroller.Create(blacklist_ref.FILTER_LIST);
-    blacklist_ref.filterList:SetSpacing(2);
-    blacklist_ref.filterList:ShowSlider(true);
+        -- Scope Selection
+        blacklist_ref.scopeList = {}
+        local margin = 70;
+        local itMargin = 0;
+        for key, value in pairs(Options['Blacklist']) do
 
+            local widget = Component.CreateWidget("BlacklistScopeButton", blacklist_ref.LEFT_COLUMN)
+            widget:SetTag("")
+            widget:SetDims("width:98%; height:64; top:"..tostring(itMargin)..";")
 
+            local text = widget:GetChild("text");
+            local focus = widget:GetChild("focusBox");
+            local bg = widget:GetChild("bg");
+            local defaultBgAlpha = 0.4;
+            -- Note: These buttons are updated in ChangeView as well, so note that when doping stuff in these events
+            focus:BindEvent("OnMouseEnter", function()
+                bg:ParamTo("tint", Component.LookupColor("RowHover"), 0.15);
+                text:SetTextColor(Component.LookupColor("ScopeRowHoverText"));
+                bg:ParamTo("alpha", 0.3, 0.15);
+            end);
+            focus:BindEvent("OnMouseLeave", function()
+                bg:ParamTo("tint", Component.LookupColor("RowDefault"), 0.15);
+                if widget:GetTag() == "selected" then
+                    text:SetTextColor(Component.LookupColor("ScopeRowSelectedText"));
+                else
+                    text:SetTextColor(Component.LookupColor("ScopeRowDefaultText"));
+                end
+                bg:ParamTo("alpha", defaultBgAlpha, 0.15);
+            end);
+            focus:BindEvent("OnMouseDown", function() 
+                FiltUI.ChangeView("Blacklist", key)
+            end)
+            text:SetText(key);
 
-    -- Scope Selection
-    local margin = 70;
-    local itMargin = 0;
-    blacklist_ref.scopeList = {}
-    for key, value in pairs(Options['Blacklist']) do
+            blacklist_ref.scopeList[key] = widget;
 
-        local widget = Component.CreateWidget("BlacklistScopeButton", blacklist_ref.LEFT_COLUMN)
-        widget:SetTag("")
-        widget:SetDims("width:98%; height:64; top:"..tostring(itMargin)..";")
-
-        local text = widget:GetChild("text");
-        local focus = widget:GetChild("focusBox");
-        local bg = widget:GetChild("bg");
-        local defaultBgAlpha = 0.4;
-        -- Note: These buttons are updated in ChangeView as well, so note that when doping stuff in these events
-        focus:BindEvent("OnMouseEnter", function()
-            bg:ParamTo("tint", Component.LookupColor("RowHover"), 0.15);
-            text:SetTextColor(Component.LookupColor("ScopeRowHoverText"));
-            bg:ParamTo("alpha", 0.3, 0.15);
-        end);
-        focus:BindEvent("OnMouseLeave", function()
-            bg:ParamTo("tint", Component.LookupColor("RowDefault"), 0.15);
-            if widget:GetTag() == "selected" then
-                text:SetTextColor(Component.LookupColor("ScopeRowSelectedText"));
-            else
-                text:SetTextColor(Component.LookupColor("ScopeRowDefaultText"));
-            end
-            bg:ParamTo("alpha", defaultBgAlpha, 0.15);
-        end);
-        focus:BindEvent("OnMouseDown", function() 
-            FiltUI.ChangeView("Blacklist", key)
-        end)
-        text:SetText(key);
-
-        blacklist_ref.scopeList[key] = widget;
-
-        itMargin = itMargin + margin;
-    end
-
-    
-    
+            itMargin = itMargin + margin;
+        end
 
 
 
-    --Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
-
-    --[[
-
-    local addButton = Button.Create(ref.BUTTON_ADD);
-    addButton:SetText("Change Scope");
-    addButton:TintPlate(Button.DEFAULT_GREEN_COLOR);
-    addButton:Bind(function()
-        
-        FiltUI.ChangeView("Blacklist", (FiltUI.State.section == "Tracker" and "Waypoints") or "Tracker") -- Debug input, toggles between "all" and "tracker"
-
-        
-
-    end);
-
-    
-    local delButton = Button.Create(ref.BUTTON_DEL);
-    delButton:SetText("Debug Blacklist");
-    delButton:TintPlate(Button.DEFAULT_RED_COLOR);
-    delButton:Bind(function()
-        Debug.Table(Options['Blacklist'])
-        --]]
-        --[[
-
-        Private.ShowDialog(
-        {
-            body = Component.LookupText("DELETE_FILTER_SET"):format(activeFilterSet or ""),
-            onYes = DeleteFilterSet,
-            onNo = function()
-            
-            end
-        });
-        --]]
-    --[[
-    end);
-
---]]
 
 
-    -- Filtering
-    local filteringTestButton = Component.CreateWidget('<Button dimensions="dock:fill" />', ref.PANE_FILTERING)
+
+
+
+    -- FILTERING
+    filtering_ref.PANE = ref.PANE_FILTERING
+    filtering_ref.LAYOUT = Component.CreateWidget("TabPanelLayout_Main", filtering_ref.PANE)
+    filtering_ref.LEFT_COLUMN = filtering_ref.LAYOUT:GetChild("LeftColumn")
+    filtering_ref.MAIN_AREA = filtering_ref.LAYOUT:GetChild("MainArea")
+    filtering_ref.FILTER_LIST = filtering_ref.MAIN_AREA:GetChild("FilterList")
+
+
+        -- Create filterlist
+        filtering_ref.filterList = RowScroller.Create(filtering_ref.FILTER_LIST);
+        filtering_ref.filterList:SetSpacing(2);
+        filtering_ref.filterList:ShowSlider(true);
+
+        -- Scope Selection
+        filtering_ref.scopeList = {}
+        local margin = 70;
+        local itMargin = 0;
+        for key, value in pairs(Options['Blacklist']) do
+
+            local widget = Component.CreateWidget("BlacklistScopeButton", filtering_ref.LEFT_COLUMN)
+            widget:SetTag("")
+            widget:SetDims("width:98%; height:64; top:"..tostring(itMargin)..";")
+
+            local text = widget:GetChild("text");
+            local focus = widget:GetChild("focusBox");
+            local bg = widget:GetChild("bg");
+            local defaultBgAlpha = 0.4;
+            -- Note: These buttons are updated in ChangeView as well, so note that when doping stuff in these events
+            focus:BindEvent("OnMouseEnter", function()
+                bg:ParamTo("tint", Component.LookupColor("RowHover"), 0.15);
+                text:SetTextColor(Component.LookupColor("ScopeRowHoverText"));
+                bg:ParamTo("alpha", 0.3, 0.15);
+            end);
+            focus:BindEvent("OnMouseLeave", function()
+                bg:ParamTo("tint", Component.LookupColor("RowDefault"), 0.15);
+                if widget:GetTag() == "selected" then
+                    text:SetTextColor(Component.LookupColor("ScopeRowSelectedText"));
+                else
+                    text:SetTextColor(Component.LookupColor("ScopeRowDefaultText"));
+                end
+                bg:ParamTo("alpha", defaultBgAlpha, 0.15);
+            end);
+            focus:BindEvent("OnMouseDown", function() 
+                FiltUI.ChangeView("Filtering", key)
+            end)
+            text:SetText(key);
+
+            filtering_ref.scopeList[key] = widget;
+
+            itMargin = itMargin + margin;
+        end
+
+
+
+
+    local filteringTestButton = Component.CreateWidget('<Button dimensions="dock:fill" />', filtering_ref.LEFT_COLUMN)
     filteringTestButton:SetText("Filtering Test")
     filteringTestButton:BindEvent("OnMouseDown", RunFilteringTest)
 
     --
-    Debug.Log('filtui setup complete')
-    
+    Debug.Log('FiltUI.Setup() complete')
 end
 
 
@@ -520,9 +537,10 @@ function CreateLabelButton(dims, blueprint, parent, action, texture, region)
     LABEL.FOCUS:BindEvent("OnMouseEnter", function() LABEL.BORDER:ParamTo("exposure", .5, .15, "smooth") end)
     LABEL.FOCUS:BindEvent("OnMouseLeave", function() LABEL.BORDER:ParamTo("exposure", .25, .15, "smooth") end)
     LABEL.FOCUS:BindEvent("OnMouseDown", function() LABEL.BORDER:ParamTo("exposure", 1, .15, "smooth") end)
-    LABEL.FOCUS:BindEvent("OnMouseUp", function() 
+    LABEL.FOCUS:BindEvent("OnMouseUp", function(args) 
         LABEL.BORDER:ParamTo("exposure", .5, .25, "smooth") 
-        action() 
+        args.parentWidget = parent
+        action(args) 
     end)
 
     return LABEL
@@ -530,7 +548,62 @@ end
 
 
 -- lel onclick func
-local deleteFunction = function() Debug.Log("We should delete " .. tostring(itemTypeId)) end
+function BlacklistRemoveButtonOnClick(args)
+    Debug.Table("BlacklistRemoveButtonOnClick", args)
+
+    local itemTypeId = args.parentWidget:GetTag()
+
+    if Blacklist.Remove({scopeKey=FiltUI.State.section, itemTypeId=itemTypeId}) then
+        -- Trigger UI update
+        FiltUI.UpdateView()
+    else
+        Debug.Error("Failed to remove from blacklist on click :(")
+    end
+
+end
+
+function BlacklistAddButtonOnClick(args)
+    Debug.Table("BlacklistAddButtonOnClick", args)
+
+end
+
+function BlacklistClearButtonOnClick(args)
+    Debug.Table("BlacklistClearButtonOnClick", args)
+
+    ShowDialog(
+    {
+        body = "Do you want to clear this section?",
+        onYes = function()
+            Blacklist.Clear({scopeKey=FiltUI.State.section})
+            FiltUI.UpdateView()
+        end,
+        onNo = function()
+
+        end
+    });
+
+end
+
+function ShowDialog(args)
+    SimpleDialog.Display(args.body);
+    SimpleDialog.SetTitle("Confirm");
+
+    SimpleDialog.AddOption("ABORT", function()
+        if args.onNo then args.onNo(); end
+        SimpleDialog.Hide();
+    end, {color = "#ffffff"});
+
+    SimpleDialog.AddOption("YES", function()
+        if args.onYes then args.onYes(); end
+        SimpleDialog.Hide();
+    end, {color = "#00ff00"});
+
+end
+
+function FiltUI.UpdateView()
+    Debug.Log("FiltUI.UpdateView")
+    FiltUI.ChangeView(FiltUI.State.page, FiltUI.State.section)
+end
 
 function FiltUI.ChangeView(page, section)
 
@@ -547,8 +620,6 @@ function FiltUI.ChangeView(page, section)
 
     -- Update path
     --Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
-
-
 
     -- Do stuffz
     if page == "Blacklist" then
@@ -567,28 +638,24 @@ function FiltUI.ChangeView(page, section)
         end
 
 
-        -- Filter list
-
+        -- Lock Filter List while we update
         blacklist_ref.filterList:LockUpdates()
 
-        -- clear
+        -- Clear existing list data
         blacklist_ref.filterList:Reset()
 
-
-
-
-        -- list active stuff
+        -- Create up-to-date list
         if not _table.empty(Options['Blacklist'][section]) then
 
-
+            -- Loop through section data
             for itemTypeId, value in pairs(Options['Blacklist'][section]) do
+
+                -- Get info
                 local itemInfo = Game.GetItemInfoByType(itemTypeId)
                 if not itemInfo then
-                    Debug.Warn('Invalid itemTypeId in blacklist') 
+                    Debug.Warn('Invalid itemTypeId in blacklist: ', itemTypeId) 
                 else
-                    --results[#results + 1] = tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) ..')'
-
-
+                    -- Create row widget
                     local widget = Component.CreateWidget("BlacklistRow", blacklist_ref.FILTER_LIST)
                     widget:SetDims("width:100%; height:64;")
                     local content = widget:GetChild("content");
@@ -603,41 +670,30 @@ function FiltUI.ChangeView(page, section)
                         bg:ParamTo("tint", Component.LookupColor("RowDefault"), 0.15);
                         bg:ParamTo("alpha", defaultBgAlpha, 0.15);
                     end);
+                    content:GetChild("icon"):SetIcon(itemInfo.web_icon_id)
 
-
-                    local ICON = MultiArt.Create(content:GetChild("icon"))
-                    ICON:SetIcon(itemInfo.web_icon_id)
-
+                    -- Create row field widgets
                     Component.CreateWidget("RowField", content:GetChild("name")):GetChild("text"):SetText(tostring(itemInfo.name));
                     Component.CreateWidget("RowField", content:GetChild("typeid")):GetChild("text"):SetText(tostring(itemInfo.itemTypeId));
 
-
-
-                    
-
-                   
-
-                    -- action button :D
+                    -- Create Action Buttons :D
                     local actions = content:GetChild("actions")
                     local removeButtonRef = actions:GetChild("removeButton")
-                    
-                    local removeButton = CreateLabelButton("width:23; height:16", "FilledButtonPrint", removeButtonRef, deleteFunction, "DialogWidgets", "cancel")
+                    removeButtonRef:SetTag(tostring(itemTypeId))
+                    local removeButton = CreateLabelButton("width:23; height:16", "FilledButtonPrint", removeButtonRef, BlacklistRemoveButtonOnClick, "DialogWidgets", "cancel")
 
-
-                     blacklist_ref.filterList:AddRow(widget)
+                    -- Append to list
+                    blacklist_ref.filterList:AddRow(widget)
 
                 end
 
             end
-            
-             
 
         end
 
 
+        -- We're done updating, so unlock list
         blacklist_ref.filterList:UnlockUpdates()
-
-
 
     end
 

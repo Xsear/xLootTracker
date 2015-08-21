@@ -56,9 +56,6 @@
         <Color name="ScopeRowHoverText"    value="#FF9900"/>
         <Color name="ScopeRowSelectedText" value="#FFAA00"/>
         <Color name="ScopeRowDefaultText"  value="#FFFFFF"/>
-
-
-
     </Colors>
 
     <Styles>
@@ -198,7 +195,7 @@
                 <StillArt name="bg" dimensions="dock:fill" style="texture:colors; tint:RowDefault; region:white; alpha:0.4;"/>
                 <FocusBox name="focusBox"   dimensions="dock:fill"/>
                 <Group name="content" dimensions="dock:fill">
-                    <Group name="icon" dimensions="left:0; top:0; height:100%; width:64" style="fixed-bounds:true;"/>
+                    <Icon name="icon" dimensions="left:0; top:0; height:100%; width:64" style="fixed-bounds:true;"/>
                     <Group name="name" dimensions="left:68; top:0; height:100%; width:20%-4"/>
                     <Group name="typeid" dimensions="left:20%+68; top:0; height:100%; width:15%-4"/>
                     <Group name="actions" dimensions="left:45%+68; top:0; height:100%; width:20%-4">
@@ -229,7 +226,8 @@
             <Group name="LeftColumn" dimensions="left:0; top:0; height:100%; width:25%;" blueprint="Panel" style="alpha:1">
             </Group>
             <Group name="MainArea" dimensions="left:25%+1; top:0; height:100%; width:75%;" blueprint="Panel" style="tint:F94042">
-                <Group name="FilterList" dimensions="width:100%;height:100%-68;top:68;"/>
+                <Group name="FilterList" dimensions="width:100%;height:80%-68;top:68;"/>
+                <Group name="FilterActionBar" dimensions="width:100%;height:20%;top:80%;"/>
             </Group>
         </BluePrint>
 
@@ -277,6 +275,12 @@
                         </Group>
                     </Group>
                 </Group>
+
+                <!-- Popup -->
+                <Group id="PopupParent" dimensions="center-x:50%; center-y:47%; width:100%-60; height:200">
+
+                </Group>
+
             </Children>
             <OnClose bind="OnClose"/>
             <OnEscape bind="OnClose"/>
