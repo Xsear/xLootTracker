@@ -56,6 +56,8 @@
         <Color name="ScopeRowHoverText"    value="#FF9900"/>
         <Color name="ScopeRowSelectedText" value="#FFAA00"/>
         <Color name="ScopeRowDefaultText"  value="#FFFFFF"/>
+
+        <Color name="InputBorder" value="B8B8B8"/>
     </Colors>
 
     <Styles>
@@ -154,6 +156,24 @@
             tint:#121318;
             exposure:1.0;
         </StyleSheet>
+
+
+        <StyleSheet name="InputLabel" parent="#Text">
+            font:Demi_10;
+            valign:center;
+            halign:left;
+            alpha:0.3;
+            padding:7;
+        </StyleSheet>
+        <StyleSheet name="SearchInput" parent="#TextInput">
+            font:UbuntuRegular_10; 
+            valign:center; 
+            halign:left; 
+            texture:colors; 
+            region:transparent;
+            maxlen:64;
+        </StyleSheet>
+
     </Styles>
     
     <BluePrints>
@@ -277,7 +297,7 @@
                 </Group>
 
                 <!-- Popup -->
-                <Group id="PopupParent" dimensions="center-x:50%; center-y:47%; width:100%-60; height:200">
+                <Group id="PopupParent" dimensions="center-x:50%; center-y:47%; width:100%-60; height:400">
 
                 </Group>
 

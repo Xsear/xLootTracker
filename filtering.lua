@@ -9,7 +9,7 @@ function Filtering.Filter(loot, moduleOptions)
     local categoryKey = nil
     local rarityKey = nil
     moduleOptions = moduleOptions['Filtering'] -- Note: this is gonna bite me in the ass someday
-
+    if true then return true end -- MEGA TEMPOARY WORKAROUND
     -- Determine keys
     categoryKey, rarityKey = Filtering.GetFilteringOptionsKeys(loot, moduleOptions)
 
@@ -564,6 +564,83 @@ end
 
 function BlacklistAddButtonOnClick(args)
     Debug.Table("BlacklistAddButtonOnClick", args)
+
+
+
+
+    local theBody = Component.CreateWidget([[
+                            <Group dimensions="top:26; width:269; center-x:50%; height:26;">
+                                <StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#111111; eatsmice:false"/>
+                                <Border dimensions="dock:fill" class="ButtonBorder" style="tint:InputBorder; alpha:.25 eatsmice:false"/>
+                                <StillArt dimensions="left:8; center-y:50%; width:15; height:15;" style="texture:search_icon"/>
+                                <TextInput name="SearchInput" dimensions="left:23; top:0; width:100%-23; height:100%" class="SearchInput" style="valign:center; maxlen:254; clip:true;">
+                                    <Events>
+                                        <OnGotFocus bind="SearchGotFocus"/>
+                                        <OnLostFocus bind="SearchLostFocus"/>
+                                        <OnTextChange bind="SearchTextChanged"/>
+                                    </Events>
+                                </TextInput>
+                                <Text name="SearchLabel" dimensions="left:20; top:0; right:100%; height:100%;" key="SB_SEARCH" class="InputLabel"/>
+                            </Group>]]
+                                           , args.parentWidget)
+    
+    SEARCH_LABEL = theBody:GetChild("SearchLabel")
+    SEARCH_INPUT = theBody:GetChild("SearchInput")
+
+    local c_SearchDelay = 1
+
+    function SearchGotFocus(args)
+        Debug.Event(args)
+        SEARCH_LABEL:Show(false)
+    end
+
+    function SearchLostFocus(args)
+        Debug.Event(args)
+        if unicode.len(args.widget:GetText()) == 0 then
+            SEARCH_LABEL:Show(true)
+        end
+    end
+
+    function SearchTextChanged(args)
+        Debug.Event(args)
+        if args.user then
+            UpdateSearchString(args.widget:GetText())
+        end
+    end
+
+    function UpdateSearchString(text)
+        g_SearchString = text
+        if g_SearchCallback then
+            cancel_callback(g_SearchCallback)
+        end
+
+        g_SearchCallback = callback(DoSearch, nil, c_SearchDelay)
+    end
+
+    function DoSearch()
+        g_SearchCallback = nil
+        
+
+
+    end
+
+
+
+    ShowDialog(
+    {
+
+        body = theBody,
+        onYes = function()
+            Debug.Log("BlacklistAddButtonDialog Yes!")
+        end,
+        onNo = function()
+            Debug.Log("BlacklistAddButtonDialog No :(")
+            Component.SetTextInput(nil)
+            Component.RemoveWidget(SEARCH_LABEL)
+            Component.RemoveWidget(SEARCH_INPUT)
+        end,
+
+    })
 
 end
 
