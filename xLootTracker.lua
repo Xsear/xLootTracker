@@ -99,6 +99,9 @@ function OnComponentLoad()
 
     -- Setup Blacklist
     Blacklist.Setup()
+
+
+     FiltUI.ToggleWindow(true) -- DEBUG TEMP TODO: REMOVE: FIMX:E
 end
 
 --[[
@@ -135,6 +138,17 @@ end
 ]]--
 function OnPlayerReady(args)
     State.playerName = Player.GetInfo()
+    
+
+
+
+
+   
+
+
+
+
+
 end
 
 --[[

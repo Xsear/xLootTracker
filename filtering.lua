@@ -104,37 +104,82 @@ SubTypeIds = {
 
 
 
+Filtering.FilterParam = {
+    Type = "type",
+    Mode = "mode",
+    Value = "value",
+}
+
+Filtering.FilterType = {
+    Category = "CATEGORY",
+    ItemLevel = "ITEM_LEVEL",
+    Rarity = "RARITY",
+    ItemRequiredLevel = "ITEM_REQUIRED_LEVEL",
+}
+
+Filtering.FilterMode = {
+    LargerOrEqual = "LARGER_OR_EQUAL",
+    LessOrEqual = "LESS_OR_EQUAL",
+    Larger = "LARGER",
+    Less = "LESS",
+    Equal = "EQUAL",
+}
+
+Filtering.Comparators = {
+    [Filtering.FilterMode.LargerOrEqual] = function(a, b) return a >= b end,
+    [Filtering.FilterMode.LessOrEqual] = function(a, b) return a <= b end,
+    [Filtering.FilterMode.Larger] = function(a, b) return a > b end,
+    [Filtering.FilterMode.Less] = function(a, b) return a < b end,
+    [Filtering.FilterMode.Equal] = function(a, b) return a == b end,
+}
+
+Filtering.UIRule = {}
+Filtering.UIRule.FilterTypeAllowsMode = { -- Can you select a Mode for this filter Type selection? 
+    [Filtering.FilterType.Category] = false, -- We cant have "larger than" "Abilities", so this must be false
+    [Filtering.FilterType.ItemLevel] = true, -- Everything else has numerical values and should be fine
+    [Filtering.FilterType.Rarity] = true, -- This should be numeric too but depending on values gotta be careful
+    [Filtering.FilterType.ItemRequiredLevel] = true,
+}
+
+Filtering.UIRule.FilterTypeFixedValues = { -- For this filter Type, are the possible Values predefined?
+    [Filtering.FilterType.Category] = true, -- "Armor", "Abilities", etc.
+    [Filtering.FilterType.ItemLevel] = false, -- "43"
+    [Filtering.FilterType.Rarity] = true, -- "Green", "Blue"
+    [Filtering.FilterType.ItemRequiredLevel] = false, -- "40",
+}
+
+
+
+
+
+
+
+
+
 Filtering.HUDFilters = {}
 Filtering.HUDFilters[1] = {
     enabled = true,
     name = "Green lvl 30 Armor",
     parameters = {
         {
-            ["type"] = "CATEGORY",
-            ["mode"] = "EQUALS", -- not used
-            ["value"] = NewFilteringCategory.Armor, -- Modules? Gear?
+            [Filtering.FilterParam.Type] = Filtering.FilterType.Category,
+            [Filtering.FilterParam.Mode] = Filtering.FilterMode.Equal, -- not used
+            [Filtering.FilterParam.Value] = NewFilteringCategory.Armor, -- Modules? Gear?
         },
         {
-            ["type"] = "ITEM_LEVEL",
-            ["mode"] = "LARGER_OR_EQUALS",
-            ["value"] = 30,
+            [Filtering.FilterParam.Type] = Filtering.FilterType.ItemLevel,
+            [Filtering.FilterParam.Mode] = Filtering.FilterMode.LargerOrEqual,
+            [Filtering.FilterParam.Value] = 30,
         },
         {
-            ["type"] = "RARITY",
-            ["mode"] = "LARGER_OR_EQUALS",
-            ["value"] = Loot.GetRarityIndex(LootRarity.Uncommon),
+            [Filtering.FilterParam.Type] = Filtering.FilterType.Rarity,
+            [Filtering.FilterParam.Mode] = Filtering.FilterMode.LargerOrEqual,
+            [Filtering.FilterParam.Value] = Loot.GetRarityIndex(LootRarity.Uncommon),
         },
     }
 }
 
 
-Filtering.Comparators = {
-    ["LARGER_OR_EQUALS"] = function(a, b) return a >= b end,
-    ["LESS_OR_EQUALS"] = function(a, b) return a <= b end,
-    ["LARGER"] = function(a, b) return a > b end,
-    ["LESS"] = function(a, b) return a < b end,
-    ["EQUALS"] = function(a, b) return a == b end,
-}
 
 
 function NewDetermineCategory(loot)
@@ -142,8 +187,8 @@ function NewDetermineCategory(loot)
     local mostSpecificCategory = -1
     local mostSpecificCategoryKey = nil
     for category, subTypeId in pairs(NewFilteringCategory) do
-        if Game.IsItemOfType(itemTypeId, subTypeId) then
-            if subTypeId > mostSpecificCategory then 
+        if Game.IsItemOfType(itemTypeId, subTypeId) then 
+            if subTypeId > mostSpecificCategory then -- Good thing I wrote a comment about what the fuck I'm doing here, thanks
                 mostSpecificCategory = subTypeId
                 mostSpecificCategoryKey = category
             end
@@ -176,7 +221,7 @@ function Filtering.Filt2(loot)
                 Debug.Divider()
                 Debug.Table("Parameter " .. tostring(j), parameter)
 
-                if parameter.type == "CATEGORY" then
+                if parameter.type == Filtering.FilterType.Category then
 
                     local lootCategory = NewFilteringCategory[NewDetermineCategory(loot)]
                     local comparator = Filtering.Comparators.EQUALS
@@ -185,7 +230,7 @@ function Filtering.Filt2(loot)
                         passesFilterParameters = false
                     end
 
-                elseif parameter.type == "RARITY" then
+                elseif parameter.type == Filtering.FilterType.Rarity then
 
                     local rarity = loot:GetRarityValue()
                     local comparator = Filtering.Comparators[parameter.mode]
@@ -194,7 +239,7 @@ function Filtering.Filt2(loot)
                         passesFilterParameters = false
                     end
 
-                elseif parameter.type == "ITEM_LEVEL" then
+                elseif parameter.type == Filtering.FilterType.ItemLevel then
 
                     local ilvl = loot:GetItemLevel()
                     local comparator = Filtering.Comparators[parameter.mode]
@@ -203,7 +248,7 @@ function Filtering.Filt2(loot)
                         passesFilterParameters = false
                     end
 
-                elseif parameter.type == "ITEM_REQUIRED_LEVEL" then
+                elseif parameter.type == Filtering.FilterType.ItemRequiredLevel then
 
                     local reqlvl = loot:GetRequiredLevel()
                     local comparator = Filtering.Comparators[parameter.mode]
@@ -294,6 +339,14 @@ FiltUI.State = {
     scope = "Tracker",
 }
 
+
+FiltUI.FilteringState = {
+    dialogOpen = false,
+
+}
+
+
+
 local ref = {
     MAIN = Component.GetFrame("Options"),
     WINDOW = Component.GetWidget("Window"),
@@ -338,7 +391,7 @@ local filtering_ref = {
 
 function FiltUI.ToggleWindow(show)
     if FiltUI.firstOpen then
-        FiltUI.ChangeView("Blacklist", "Tracker")
+        FiltUI.ChangeView("Filtering", "Tracker")
         FiltUI.firstOpen = false
     end
     FiltUI.Show(show);
@@ -382,7 +435,7 @@ function FiltUI.Setup(args)
     --ref.PANE_KEYBINDS = ref.TABS:GetBody(3)
 
     -- Default to first tab
-    ref.TABS:Select(1)
+    ref.TABS:Select(2)
 
 
     -- Create Views
@@ -427,7 +480,7 @@ function FiltUI.Setup(args)
             local focus = widget:GetChild("focusBox");
             local bg = widget:GetChild("bg");
             local defaultBgAlpha = 0.4;
-            -- Note: These buttons are updated in ChangeView as well, so note that when doping stuff in these events
+            -- Note: These buttons are updated in ChangeView as well, so note that when doing stuff in these events
             focus:BindEvent("OnMouseEnter", function()
                 bg:ParamTo("tint", Component.LookupColor("RowHover"), 0.15);
                 text:SetTextColor(Component.LookupColor("ScopeRowHoverText"));
@@ -472,6 +525,18 @@ function FiltUI.Setup(args)
         filtering_ref.filterList:SetSpacing(2);
         filtering_ref.filterList:ShowSlider(true);
 
+        -- Filtering Action Bar :D
+        filtering_ref.filterActionBar = filtering_ref.MAIN_AREA:GetChild("FilterActionBar")
+        CreateLabelButton("width:23; height:16", "FilledButtonPrint", Component.CreateWidget('<Group dimensions="left:10%; width:20%; top:10%; height:80%"/>', filtering_ref.filterActionBar), FilteringAddButtonOnClick, "DialogWidgets", "accept")
+
+
+        --CreateSimpleButton("width:23; height:12", Component.CreateWidget('<Group dimensions="left:10%; width:20%; top:10%; height:80%"/>', filtering_ref.filterActionBar), "Add Filter", FilteringAddButtonOnClick)
+
+
+        --CreateLabelButton("width:23; height:16", "FilledButtonPrint", Component.CreateWidget('<Group dimensions="left:60%; width:20%; top:10%; height:80%"/>', filtering_ref.filterActionBar), FilteringClearButtonOnClick, "DialogWidgets", "cancel")
+
+
+
         -- Scope Selection
         filtering_ref.scopeList = {}
         local margin = 70;
@@ -514,12 +579,19 @@ function FiltUI.Setup(args)
 
 
 
-    local filteringTestButton = Component.CreateWidget('<Button dimensions="dock:fill" />', filtering_ref.LEFT_COLUMN)
-    filteringTestButton:SetText("Filtering Test")
-    filteringTestButton:BindEvent("OnMouseDown", RunFilteringTest)
+        local filteringTestButton = Component.CreateWidget('<Button dimensions="width:98%; height:64; top:'..tostring(itMargin)..';" />', filtering_ref.LEFT_COLUMN)
+        filteringTestButton:SetText("Filtering Test")
+        filteringTestButton:BindEvent("OnMouseDown", RunFilteringTest)
 
     --
     Debug.Log('FiltUI.Setup() complete')
+end
+
+
+function CreateSimpleButton(dims, parent, text, clickEvent)
+    local button = Component.CreateWidget('<Button dimensions="'..dims..'" />', parent)
+    button:SetText(text)
+    button:BindEvent("OnMouseDown", clickEvent)
 end
 
 
@@ -584,20 +656,20 @@ function BlacklistAddButtonOnClick(args)
                             </Group>]]
                                            , args.parentWidget)
     
-    SEARCH_LABEL = theBody:GetChild("SearchLabel")
-    SEARCH_INPUT = theBody:GetChild("SearchInput")
+    VALUE_INPUT_LABEL = theBody:GetChild("SearchLabel")
+    VALUE_INPUT = theBody:GetChild("SearchInput")
 
     local c_SearchDelay = 1
 
     function SearchGotFocus(args)
         Debug.Event(args)
-        SEARCH_LABEL:Show(false)
+        VALUE_INPUT_LABEL:Show(false)
     end
 
     function SearchLostFocus(args)
         Debug.Event(args)
         if unicode.len(args.widget:GetText()) == 0 then
-            SEARCH_LABEL:Show(true)
+            VALUE_INPUT_LABEL:Show(true)
         end
     end
 
@@ -636,8 +708,8 @@ function BlacklistAddButtonOnClick(args)
         onNo = function()
             Debug.Log("BlacklistAddButtonDialog No :(")
             Component.SetTextInput(nil)
-            Component.RemoveWidget(SEARCH_LABEL)
-            Component.RemoveWidget(SEARCH_INPUT)
+            Component.RemoveWidget(VALUE_INPUT_LABEL)
+            Component.RemoveWidget(VALUE_INPUT)
         end,
 
     })
@@ -661,19 +733,285 @@ function BlacklistClearButtonOnClick(args)
 
 end
 
+
+
+function FilteringAddButtonOnClick(args)
+    Debug.Table("FilteringAddButtonOnClick", args)
+
+    if FiltUI.FilteringState.dialogOpen then
+        Debug.Warn("Dialog already open")
+        return
+    end
+
+
+    local theBody = Component.CreateWidget([[
+                        <!-- Container -->
+                        <Group dimensions="top:0; width:300; height:150;">
+                            
+                            <!-- Param Type -->
+                            <Group dimensions="top:20; width:269; center-x:50%; height:26;">
+                                <DropDown name="DropDownType" dimensions="left:0; top:0; right:100%; height:100%;"/>
+                            </Group>
+
+                            <!-- Param Mode -->
+                            <Group dimensions="top:60; width:269; center-x:50%; height:26;">
+                                <DropDown name="DropDownMode" dimensions="left:0; top:0; right:100%; height:100%;"/>
+                            </Group>
+
+                            <!-- Param Value (Dropdown) -->
+                            <Group dimensions="top:100; width:269; center-x:50%; height:26;">
+                                <DropDown name="DropDownValue" dimensions="left:0; top:0; right:100%; height:100%;"/>
+                            </Group>
+
+                            <!-- Param Value (TextInput) -->
+                            <Group dimensions="top:140; width:269; center-x:50%; height:26;">
+                                <StillArt dimensions="dock:fill" style="texture:colors; region:white; tint:#111111; eatsmice:false"/>
+                                <Border dimensions="dock:fill" class="ButtonBorder" style="tint:InputBorder; alpha:.25 eatsmice:false"/>
+                                <StillArt dimensions="left:8; center-y:50%; width:15; height:15;" style="texture:search_icon"/>
+                                <TextInput name="TextInputValue" dimensions="left:23; top:0; width:100%-23; height:100%" class="SearchInput" style="valign:center; maxlen:254; clip:true;">
+                                    <Events>
+                                        <OnGotFocus bind="SearchGotFocus"/>
+                                        <OnLostFocus bind="SearchLostFocus"/>
+                                        <OnTextChange bind="SearchTextChanged"/>
+                                    </Events>
+                                </TextInput>
+                                <Text name="TextInputValueLabel" dimensions="left:20; top:0; right:100%; height:100%;" key="SB_SEARCH" class="InputLabel"/>
+                            </Group>
+
+                        </Group>]], args.parentWidget)
+    
+
+
+    TYPE_DROPDOWN = theBody:GetChild(1):GetChild("DropDownType")
+    for k, v in pairs(Filtering.FilterType) do
+        TYPE_DROPDOWN:AddItem(v)
+    end
+    TYPE_DROPDOWN:BindEvent("OnSelect", function()
+            local charName, charIdx = TYPE_DROPDOWN:GetSelected();
+            Debug.Table("OnSelect Type", {charName=charName, charIdx=charIdx})
+            UpdateAddFilterParamPopup(Filtering.FilterParam.Type, charName)
+        end)
+
+    MODE_DROPDOWN = theBody:GetChild(2):GetChild("DropDownMode")
+    for k, v in pairs(Filtering.FilterMode) do
+        MODE_DROPDOWN:AddItem(v)
+    end
+
+    VALUE_DROPDOWN = theBody:GetChild(3):GetChild("DropDownValue")
+    for k, v in pairs(NewFilteringCategory) do
+        VALUE_DROPDOWN:AddItem(k)
+    end
+
+    VALUE_INPUT_LABEL = theBody:GetChild(4):GetChild("TextInputValueLabel")
+    VALUE_INPUT_LABEL:SetText("Manual Value");
+    VALUE_INPUT = theBody:GetChild(4):GetChild("TextInputValue")
+    VALUE_INPUT_GROUP = theBody:GetChild(4)
+
+
+
+
+    function UpdateAddFilterParamPopup(paramChanged, paramNewValue)
+        
+        -- If user changed type, we will need to change things up a bit
+        if paramChanged == Filtering.FilterParam.Type then
+
+            Debug.Log("New type selected")
+
+            -- If the new type does not allow mode, set mode to equals and lock it
+            if not Filtering.UIRule.FilterTypeAllowsMode[paramNewValue] then
+                Debug.Log("Forcing equals and disabling mode")
+
+                -- Force equals
+                --MODE_DROPDOWN:Set(Filtering.FilterMode.Equals) -- Hardcoded reference to Equals 
+
+                -- Hide dropdown
+                MODE_DROPDOWN:Disable()
+                MODE_DROPDOWN:SetFocusable(false) -- TODO: Doesn't actually lock the drop down :<
+                MODE_DROPDOWN:ParamTo("alpha", 0.2, 0.5)
+
+                
+
+
+            -- Otherwise, ensure its selectable
+            else
+                Debug.Log("Allowing mode")
+                
+                
+
+                -- Show dropdown
+                MODE_DROPDOWN:Enable()
+                MODE_DROPDOWN:SetFocusable(true)
+                MODE_DROPDOWN:ParamTo("alpha", 1, 0.5)
+            end
+
+            -- If this type only allows fixed values, prepare the value dropdown and hide the text input field
+            if Filtering.UIRule.FilterTypeFixedValues[paramNewValue] then
+
+                -- Hide textinput
+                --VALUE_INPUT:Enable(false) -- TODO: Figure out what function is used to disable/enable textinput
+                VALUE_INPUT_GROUP:Show(false)
+
+                -- Show value dropdown
+                VALUE_DROPDOWN:Show(true)
+                SetupTheValueDropdownForType(paramNewValue)
+
+            -- Else, show text input field
+            else
+
+                -- Hide dropdown
+                VALUE_DROPDOWN:Show(false)
+
+                -- Show textinput
+                --VALUE_INPUT:Enable(true) -- TODO: Figure out what function is used to disable/enable textinput
+                VALUE_INPUT_GROUP:Show(true)
+
+            end
+
+
+
+        -- If the user just changed mode or value, we don't need to do anything
+        else
+
+        end
+
+    end
+
+
+    function GetSelectedDropdownValue(DROPDOWN)
+        local value, index = DROPDOWN:GetSelected();
+        return value
+    end
+
+    function GetFilterParamState()
+        local state = {
+                        [Filtering.FilterParam.Type] = GetSelectedDropdownValue(TYPE_DROPDOWN),
+                        [Filtering.FilterParam.Mode] = GetSelectedDropdownValue(MODE_DROPDOWN),
+                        }
+
+        if(Filtering.UIRule.FilterTypeFixedValues[state[Filtering.FilterParam.Type]]) then
+            state[Filtering.FilterParam.Value] = GetSelectedDropdownValue(VALUE_DROPDOWN)
+        else
+            state[Filtering.FilterParam.Value] = VALUE_INPUT:GetText()
+        end
+    end
+
+
+    function SetupTheValueDropdownForType(paramTypeValue)
+        VALUE_DROPDOWN:ClearItems()
+
+        if paramTypeValue == Filtering.FilterType.Category then
+   
+            for k, v in pairs(NewFilteringCategory) do
+                VALUE_DROPDOWN:AddItem(k)
+            end
+
+        elseif paramTypeValue == Filtering.FilterType.Rarity then
+
+            for k, v in pairs(LootRarity) do
+                VALUE_DROPDOWN:AddItem(k)
+            end
+
+        end
+
+    end
+
+
+    local c_SearchDelay = 1
+
+    function SearchGotFocus(args)
+        Debug.Event(args)
+        VALUE_INPUT_LABEL:Show(false)
+    end
+
+    function SearchLostFocus(args)
+        Debug.Event(args)
+        if unicode.len(args.widget:GetText()) == 0 then
+            VALUE_INPUT_LABEL:Show(true)
+        end
+    end
+
+    function SearchTextChanged(args)
+        Debug.Event(args)
+        if args.user then
+            UpdateSearchString(args.widget:GetText())
+        end
+    end
+
+    function UpdateSearchString(text)
+        g_SearchString = text
+        if g_SearchCallback then
+            cancel_callback(g_SearchCallback)
+        end
+
+        g_SearchCallback = callback(DoSearch, nil, c_SearchDelay)
+    end
+
+    function DoSearch()
+        g_SearchCallback = nil
+        
+
+
+    end
+
+
+    -- init
+    UpdateAddFilterParamPopup(Filtering.FilterParam.Type, Filtering.FilterType.LargerOrEqual)
+
+
+    FiltUI.FilteringState.dialogOpen = true
+    ShowDialog(
+    {
+
+        body = theBody,
+        title = "New Filter Parameter",
+        onYes = function()
+            Debug.Log("FilteringAddButtonDialog Yes!")
+            FiltUI.FilteringState.dialogOpen = false
+
+            Debug.Table("Data: ", {
+                        [Filtering.FilterParam.Type] = GetSelectedDropdownValue(TYPE_DROPDOWN),
+                        [Filtering.FilterParam.Mode] = GetSelectedDropdownValue(MODE_DROPDOWN),
+                        [Filtering.FilterParam.Value] = GetSelectedDropdownValue(VALUE_DROPDOWN),
+                        })
+
+        end,
+        onNo = function()
+            Debug.Log("FilteringAddButtonDialog No :(")
+            Component.SetTextInput(nil)
+            FiltUI.FilteringState.dialogOpen = false
+        end,
+        onClose = function() Debug.Log("FilteringAddButtonDialog Close") FiltUI.FilteringState.dialogOpen = false end
+    })
+
+end
+
+
+
+
+
 function ShowDialog(args)
-    SimpleDialog.Display(args.body);
-    SimpleDialog.SetTitle("Confirm");
+    local closeFunc = function()
+        args.onClose()
+        SimpleDialog.Hide();
+        Component.RemoveWidget(args.body);
+    end
+
+    SimpleDialog.Display(args.body, closeFunc);
+    SimpleDialog.SetTitle(args.title or "Confirm");
+
+    SimpleDialog.AddOption("CONFIRM", function()
+        if args.onYes then args.onYes(); end
+        SimpleDialog.Hide();
+        Component.RemoveWidget(args.body);
+    end, {color = "#00ff00"});
 
     SimpleDialog.AddOption("ABORT", function()
         if args.onNo then args.onNo(); end
         SimpleDialog.Hide();
-    end, {color = "#ffffff"});
+        Component.RemoveWidget(args.body);
+    end, {color = "#ff3000"});
 
-    SimpleDialog.AddOption("YES", function()
-        if args.onYes then args.onYes(); end
-        SimpleDialog.Hide();
-    end, {color = "#00ff00"});
+    
 
 end
 

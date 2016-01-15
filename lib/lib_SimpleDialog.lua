@@ -36,7 +36,9 @@ local DEFAULT_ERROR_BUTTON_COLOR = "#FF8060";
 SimpleDialog.CLOSE_OPTION = {label=Component.LookupText("Close"), OnPress=function() SimpleDialog.Hide() end};
 
 function OnExit()
+	Debug.Log("SimpleDialog OnExit")
 	if (g_OnEscape) then
+		Debug.Log("Executing g_OnEscape")
 		g_OnEscape();
 	end
 	SimpleDialog.Hide();
@@ -51,6 +53,9 @@ DIALOG_FRAME:BindEvent("OnClose", function()
 end);
 
 function SimpleDialog.Display(err, OnEscape)
+
+	Debug.Table("SimpleDialoGDisplay", {OnEscape=OnEscape})
+
 	-- unfoster error
 	if (g_FOSTER_ERR) then
 		Component.FosterWidget(g_FOSTER_ERR, nil);
@@ -124,6 +129,10 @@ end
 
 function SimpleDialog.Hide()
 	if (o_POPUP) then
+		if (g_FOSTER_ERR) then
+			Component.FosterWidget(g_FOSTER_ERR, nil);
+			g_FOSTER_ERR = nil;
+		end
 		local dur = RoundedPopupWindow.CLOSE_DUR;
 		o_POPUP:Close(dur);
 		CB2_CleanUp:Reschedule(dur);
