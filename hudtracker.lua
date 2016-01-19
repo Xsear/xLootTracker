@@ -183,7 +183,7 @@ function HUDTracker.OnTrackerNew(args)
             -- Determine which index our new entry should have
             local ourEntryIndex = nil
             for index, ENTRY_OTHER in pairs(indexList) do
-                if HUDTrackerSort2(ENTRY, ENTRY_OTHER) then
+                if HUDTrackerSort(ENTRY, ENTRY_OTHER) then
                     ourEntryIndex = index
                     break
                 end
@@ -726,60 +726,9 @@ function GetHUDTrackerTitle(loot)
     return tostring(Messages.TextFilters(formatString, {loot=loot}), true)
 end
 
+
 -- Return true if lootA should come before lootB
 function HUDTrackerSort(lootA, lootB)
-
-
-    --Debug.Log('************** HUDTrackerSort *********** ')
-    -- Handle nil values
-    if lootA == nil and lootB == nil then
-        --Debug.Log('A and B are nil, result: false')
-        return false
-    end
-    if lootA == nil then
-        --Debug.Log('A is nil, result: false')
-        return false
-    end
-    if lootB == nil then
-        --Debug.Log('B is nil, result: true')
-        return true
-    end
-
-    -- Non Nil Results
-    --Debug.Log('A: '..tostring(lootA:ToString())..' | Rarity:'..tostring(lootA:GetRarityValue()) .. ' | ItemLevel:' .. tostring(lootA:GetItemLevel()))
-    --Debug.Log('B: '..tostring(lootB:ToString())..' | Rarity:'..tostring(lootB:GetRarityValue()) .. ' | ItemLevel:' .. tostring(lootB:GetItemLevel()))
-    
-    -- Rarer items first
-    local rarityA = lootA:GetRarityValue()
-    local rarityB = lootB:GetRarityValue()
-
-    if rarityA ~= rarityB then
-        --Debug.Log('Prioritizing rarity')
-        --Debug.Log('A: Rarity ' .. tostring(rarityA))
-        --Debug.Log('B: Rarity ' .. tostring(rarityB))
-        --Debug.Log('A before B? : ' .. tostring((rarityA > rarityB)))
-        return (rarityA > rarityB)
-    end
-
-    -- Better items second
-    local ilvlA = lootA:GetItemLevel()
-    local ilvlB = lootB:GetItemLevel()
-    if ilvlA ~= ilvlB then
-        --Debug.Log('Prioritizing ItemLevel')
-        --Debug.Log('A: ItemLevel ' .. tostring(ilvlA))
-        --Debug.Log('B: ItemLevel ' .. tostring(ilvlB))
-        --Debug.Log('A before B? : ' .. tostring((ilvlA > ilvlB)))
-        return (ilvlA > ilvlB)
-    end
-
-    -- Alphabetic third
-    --Debug.Log('Prioritizing alphabetic')
-    return (lootA:GetName() < lootB:GetName())
-end
-
-
--- Return true if lootA should come before lootB
-function HUDTrackerSort2(lootA, lootB)
 
 
     --Debug.Log('************** HUDTrackerSort *********** ')
