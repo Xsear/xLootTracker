@@ -179,6 +179,29 @@ Filtering.HUDFilters[1] = {
     }
 }
 
+Filtering.HUDFilters[2] = {
+    enabled = true,
+    name = "Green lvl 40 Weapons",
+    parameters = {
+        {
+            [Filtering.FilterParam.Type] = Filtering.FilterType.Category,
+            [Filtering.FilterParam.Mode] = Filtering.FilterMode.Equal, -- not used
+            [Filtering.FilterParam.Value] = NewFilteringCategory.Weapons, -- Modules? Gear?
+        },
+        {
+            [Filtering.FilterParam.Type] = Filtering.FilterType.ItemLevel,
+            [Filtering.FilterParam.Mode] = Filtering.FilterMode.LargerOrEqual,
+            [Filtering.FilterParam.Value] = 40,
+        },
+        {
+            [Filtering.FilterParam.Type] = Filtering.FilterType.Rarity,
+            [Filtering.FilterParam.Mode] = Filtering.FilterMode.LargerOrEqual,
+            [Filtering.FilterParam.Value] = Loot.GetRarityIndex(LootRarity.Uncommon),
+        },
+    }
+}
+
+
 
 
 
@@ -337,6 +360,7 @@ FiltUI.firstOpen = true
 FiltUI.State = {
     pane = "Blacklist",
     scope = "Tracker",
+    subpane = nil,
 }
 
 
@@ -1032,6 +1056,8 @@ function FiltUI.ChangeView(page, section)
     FiltUI.State.page = page
     FiltUI.State.section = section
 
+    -- Force reset because that seems like a good idea
+    if FiltUI.State.subpane ~= nil and page ~= "Filtering" then FiltUI.State.subpane = nil end
 
     -- Update path
     --Component.GetWidget("pathText"):SetText("Filtering >> " .. FiltUI.State.page .. " >> " .. FiltUI.State.section)
@@ -1109,6 +1135,79 @@ function FiltUI.ChangeView(page, section)
 
         -- We're done updating, so unlock list
         blacklist_ref.filterList:UnlockUpdates()
+
+    
+    elseif page == "Filtering" then
+
+        if FiltUI.State.subpane == nil then
+
+            -- Lock Filter List while we update
+            filtering_ref.filterList:LockUpdates()
+
+            -- Clear existing list data
+            filtering_ref.filterList:Reset()
+
+
+            -- Generate list items
+            for index, filter in pairs(Filtering.HUDFilters) do
+
+                -- Create row widget
+                local widget = Component.CreateWidget("FilterOverviewRow", filtering_ref.FILTER_LIST)
+                widget:SetDims("width:100%; height:64;")
+                local content = widget:GetChild("content");
+                local focus = widget:GetChild("focusBox");
+                local bg = widget:GetChild("bg");
+                local defaultBgAlpha = 0.4;
+                focus:BindEvent("OnMouseEnter", function()
+                    bg:ParamTo("tint", Component.LookupColor("RowHover"), 0.15);
+                    bg:ParamTo("alpha", 0.3, 0.15);
+                end);
+                focus:BindEvent("OnMouseLeave", function()
+                    bg:ParamTo("tint", Component.LookupColor("RowDefault"), 0.15);
+                    bg:ParamTo("alpha", defaultBgAlpha, 0.15);
+                end);
+                focus:BindEvent("OnMouseDown", function()
+                    Debug.Log("Hiyagiyahia")
+                    FiltUI.State.subpane = {subpane="filter/edit", filter=filter}
+                    FiltUI.UpdateView()
+
+                end);
+
+                -- Create row field widgets
+                Component.CreateWidget("RowField", content:GetChild("name")):GetChild("text"):SetText("Filter # " .. tostring(index) .. " - " .. filter.name );
+
+                -- Create Action Buttons :D
+                local actions = content:GetChild("actions")
+
+                local toggleButtonRef = actions:GetChild("toggleButton")
+                toggleButtonRef:SetTag(tostring(itemTypeId))
+                local toggleButton = CreateLabelButton("width:23; height:16", "FilledButtonPrint", toggleButtonRef, BlacklistRemoveButtonOnClick, "DialogWidgets", "checkbox")
+
+                local editButtonRef = actions:GetChild("editButton")
+                editButtonRef:SetTag(tostring(itemTypeId))
+                local editButton = CreateLabelButton("width:23; height:16", "FilledButtonPrint", editButtonRef, BlacklistRemoveButtonOnClick, "DialogWidgets", "clearinput")
+
+                local removeButtonRef = actions:GetChild("removeButton")
+                removeButtonRef:SetTag(tostring(itemTypeId))
+                local removeButton = CreateLabelButton("width:23; height:16", "FilledButtonPrint", removeButtonRef, BlacklistRemoveButtonOnClick, "DialogWidgets", "cancel")
+
+                -- Append to list
+                filtering_ref.filterList:AddRow(widget)
+
+            end
+
+
+            -- We're done updating, so unlock list
+            filtering_ref.filterList:UnlockUpdates()
+
+        -- this looks worse than it was supposed to
+        elseif FiltUI.State.subpane.subpane and FiltUI.State.subpane.subpane == "filter/edit" then
+
+            -- FiltUI.State.subpane = {subpane="filter/edit", filter=filter}
+
+            Debug.Log("Showing the filter/edit view!")
+
+        end
 
     end
 

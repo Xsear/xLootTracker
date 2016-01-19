@@ -235,6 +235,19 @@
             <FocusBox name="focusBox"   dimensions="dock:fill"/>
         </BluePrint>
 
+        <BluePrint name="FilterOverviewRow" instantiable="true">
+                <StillArt name="bg" dimensions="dock:fill" style="texture:colors; tint:RowDefault; region:white; alpha:0.4;"/>
+                <FocusBox name="focusBox"   dimensions="dock:fill"/>
+                <Group name="content" dimensions="dock:fill">
+                    <Group name="name" dimensions="left:68; top:0; height:100%; width:20%-4"/>
+                    <Group name="actions" dimensions="left:45%+68; top:0; height:100%; width:20%-4">
+                        <Group name="toggleButton" dimensions="left:10; width:42; top:9.5%; height:40"/>
+                        <Group name="editButton" dimensions="left:60; width:42; top:9.5%; height:40"/>
+                        <Group name="removeButton" dimensions="left:110; width:42; top:9.5%; height:40"/>
+                    </Group>
+                </Group>
+        </BluePrint>
+
     
         <BluePrint name="FilledButtonPrint" instantiable="true">
             <Border name="outer" dimensions="dock:fill" class="FadedBorder" style="eatsmice:false; padding:5; exposure:.25; tint:394042"/>
