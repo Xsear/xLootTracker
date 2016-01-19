@@ -9,7 +9,6 @@ require 'lib/lib_Items'            -- Item library, used to get color-by-quality
 require 'lib/lib_MapMarker'        -- Map Marker library, used for waypoint creation.
 require 'lib/lib_Slash'            -- Slash commands
 require 'lib/lib_Vector'           -- Vector coordinates
---require 'lib/lib_Button'           -- Buttons used by Tracker
 require 'lib/lib_Tooltip'          -- Tooltip used by Tracker
 require 'lib/lib_ChatLib'          -- Used to send some chat messages
 require 'lib/lib_table'            -- Common table functions
@@ -20,10 +19,6 @@ require 'lib/lib_MultiArt'         -- Used for icons
 require 'lib/lib_SubTypeIds'       -- Used for determining loot categories
 require 'lib/lib_ContextMenu'      -- Used for hudtracker context menu
 require 'lib/lib_HudManager'       -- Used to handle HUD visibility state
-
-require "lib/lib_MovablePanel";
-require "lib/lib_PanelManager";
-
 
 -- Custom Libs
 require './lib/Lokii'              -- Localization
@@ -38,9 +33,9 @@ require './lootpanel'              -- Loot Panel object
 
 -- Addon Meta
 AddonInfo = {
-    release  = '2015-07-31',
-    version = '1.19.p2',
-    patch = '1.3.1310 (pts)',
+    release  = '2016-01-20',
+    version = '1.20',
+    patch = '1.6.14XX',
     save = 1.0,
 }
 
