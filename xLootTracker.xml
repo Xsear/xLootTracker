@@ -91,6 +91,7 @@
             color:FFFFFF;
             scaleX:2;
             scaleY:2;
+            drop-shadow:true;
         </StyleSheet>
 
         <StyleSheet name="LootPanel_Text_Timer">

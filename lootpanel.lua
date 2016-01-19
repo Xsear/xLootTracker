@@ -32,7 +32,7 @@ LOOTPANEL =
 						
 						<StillArt name='headerBar' dimensions='width:100%-5; height:100%-5' style='texture:colors; region:white; tint:#000000; alpha:0.8;'/>
 
-						<Text name='itemName' dimensions='top:16; left:0; width:100%; height:64;' style='wrap:true' class='LootPanel_Text_Large' />
+						<Text name='itemName' dimensions='top:16; left:0; width:100%; height:64;' style='wrap:true;' class='LootPanel_Text_Large' />
 						<Text name='itemAssignedTo' dimensions='top:70; left:0; width:100%; height:32;' style='relative:bottom' class='LootPanel_Text_Large' />
 
 					</Group>
