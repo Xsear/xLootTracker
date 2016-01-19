@@ -461,11 +461,16 @@ local bp_ENTRY = [[
             <Group name='icon' dimensions='dock:fill;' style='fixed-bounds:true; valign:center;'/>
         </Group>
 
-        <!-- Stack -->
-        <Text name='stack' dimensions='width:4%; height:100%-2; top:2; left:10%;' class='Tracker_Text'/>
+        <!-- Text -->
+        <Group name='text' dimensions='width:100%-32; height:28; left:32; top:2;'>
+            <!-- Stack -->
+            <Text name='stack' dimensions='width:10%; height:100%-2; top:0; left:10%;' class='Tracker_Text'/>
         
-        <!-- Title -->
-        <Text name='title' dimensions='width:80%; height:100%-2; top:2; left:20%;' class='Tracker_Text'/>
+            <!-- Title -->
+            <Text name='title' dimensions='width:80%; height:100%-2; top:0; left:20%;' class='Tracker_Text'/>
+        </Group>    
+
+        
     </Group>
 ]]
 
@@ -484,10 +489,11 @@ function Private.CreateEntry(loot, stackInfo)
         GROUP = GROUP,
         PLATE = GROUP:GetChild('plate'),
         BOX = GROUP:GetChild('box'),
-        STACK = GROUP:GetChild('stack'),
-        TITLE = GROUP:GetChild('title'),
+        TEXT = GROUP:GetChild('text'),
         stackInfo = stackInfo,
     }
+    ENTRY.STACK = ENTRY.TEXT:GetChild('stack')
+    ENTRY.TITLE = ENTRY.TEXT:GetChild('title')
 
     -- Setup plate tooltip tag
     ENTRY.PLATE:SetTag(loot:GetId())
@@ -660,6 +666,10 @@ function Private.SetEntrySize(ENTRY)
     -- Box (affecting Icon)
     local boxDimms = 'width:'..sizeAsText..'; height:'..sizeAsText..';' .. 'left:0; top:0;'
     ENTRY.BOX:SetDims(boxDimms)
+
+    -- Text
+    local textDimms = 'width:100%-'..sizeAsText..'; height:'..plateHeightReduced..';top:'..tostring(DimensionOptions.plateHeightBorderReduction)..';left:'..plateLeftOffset
+    ENTRY.TEXT:SetDims(textDimms)
 end
 
 
