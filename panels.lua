@@ -136,10 +136,10 @@ function LootPanelManager.Create(loot)
 
     -- Setup panel timer
     if Options['Panels']['TimerMode'] == PanelsTimerMode.Countdown then
-         panel.timer = GTimer.Create(function(time) if panel ~= nil then LOOT_PANEL_ICONBAR:GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', -1)
-         panel.timer:SetTime(tonumber(Options['Panels']['TimerCountdownTime']))
+        panel.timer = GTimer.Create(function(time) if panel ~= nil and LOOT_PANEL_ICONBAR ~= nil then LOOT_PANEL_ICONBAR:GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', -1)
+        panel.timer:SetTime(tonumber(Options['Panels']['TimerCountdownTime']))
     else
-        panel.timer = GTimer.Create(function(time) if panel ~= nil then LOOT_PANEL_ICONBAR:GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1)
+        panel.timer = GTimer.Create(function(time) if panel ~= nil and LOOT_PANEL_ICONBAR ~= nil then LOOT_PANEL_ICONBAR:GetChild('timer'):SetText(time) end end, '%02iq60p:%02iq1p', 1)
     end
     panel.timer:StartTimer()
 
@@ -189,7 +189,7 @@ function LootPanelManager.Create(loot)
     -- Build Iconbar
 
         -- Item Icon
-        LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetUrl(loot:GetWebIcon())
+        LOOT_PANEL_ICONBAR:GetChild('itemIcon'):SetIcon(loot:GetWebIcon())
 
         -- Category / Battleframe Icon
         local MUTLIART = MultiArt.Create(LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('icon'))
@@ -210,15 +210,13 @@ function LootPanelManager.Create(loot)
 
                 if not _table.empty(certInfo) then
 
-                    local webIcon = certInfo.web_icon or ''
-                    local webUrl = GetIconUrl(webIcon, 96)
-
+                    local icon = tostring(certInfo.web_icon_id)
                     local name = certInfo.name or 'I broke :('
                     local description = certInfo.description or ''
 
-                    if webUrl and name and description then
+                    if icon and name and description then
 
-                        MUTLIART:SetUrl(webUrl)
+                        MUTLIART:SetIcon(icon)
                         LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):Show(true)
 
                         LOOT_PANEL_ICONBAR:GetChild('battleframeIcon'):GetChild('fb'):SetTag(name..'\n'..description)

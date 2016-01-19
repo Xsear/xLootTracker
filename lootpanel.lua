@@ -41,9 +41,7 @@ LOOTPANEL =
 
 					<Group name='IconBar' dimensions='left:0; top:20%; width:100%; height:30%;' style='clip-children:true;'>
 
-						<WebImage name='itemIcon'         dimensions='left:10%; width:120; height:120;' style='fixed-bounds:true; valign:center;'>
-
-						</WebImage>
+						<Icon name='itemIcon' dimensions='left:10%; width:120; height:120;' style='fixed-bounds:true; valign:center;'/>
 
 						<!-- width:20%; height:30%;-->
 						<Group name='battleframeIcon' dimensions='left:40%+60; width:80; height:80;' style='fixed-bounds:true; valign:center;'>
