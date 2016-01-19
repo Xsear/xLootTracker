@@ -100,8 +100,6 @@ function OnComponentLoad()
     -- Setup Blacklist
     Blacklist.Setup()
 
-
-     FiltUI.ToggleWindow(true) -- DEBUG TEMP TODO: REMOVE: FIMX:E
 end
 
 --[[

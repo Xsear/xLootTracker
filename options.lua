@@ -2393,12 +2393,12 @@ function Options.Setup()
     BuildInterfaceOptions()
 
     -- Configure the filtering ui
-    FiltUI.Setup()
+    --FiltUI.Setup() -- TODO: NOTE: FIXME: Disabled
 end
 
 
 function Options.ToggleFilteringUI(show)
-    FiltUI.ToggleWindow(show)
+    --FiltUI.ToggleWindow(show) -- TODO: NOTE: FIXME: Disabled
 end
 
 
