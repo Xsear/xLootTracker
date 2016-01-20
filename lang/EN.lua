@@ -293,7 +293,7 @@ LANG = {
 
 
     Options_Debug_Enabled_Label                                                                 =    "Debug",
-    Options_Debug_Enabled_Tooltip                                                               =    "The addon will enter Debug mode, logging messages in the console that are helpful for the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
+    Options_Debug_Enabled_Tooltip                                                               =    "The addon will enter Debug mode, logging messages in the console that are helpful to the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
 
     Options_Debug_FakeOnSquadRoster_Label                                                       =    "Fake Squad Roster",
     Options_Debug_FakeOnSquadRoster_Tooltip                                                     =    "If not in a squad but override squad leader, put fake squad members in the roster",

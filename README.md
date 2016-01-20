@@ -1,7 +1,7 @@
 Loot Tracker
 =========
 
-Loot Tracker is Firefall addon focused on keeping the user informed on all the shiny (and less so) loot that drops while playing. 
+A Firefall addon that tracks in-world loot drops and provides tools to make them more prominent to the user.
 
 
 Note: This readme isn't particularily complete.

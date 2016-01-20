@@ -2377,7 +2377,7 @@ function Options.Setup()
     --InterfaceOptions.NotifyOnDisplay(true) -- Notify us when the user opens the interface options
 
     -- Callback
-    InterfaceOptions.SetCallbackFunc(function(id, val) OnOptionChange({id=id,val=val}) end, 'xLootTracker') -- Callback for when user changes settings
+    InterfaceOptions.SetCallbackFunc(function(id, val) OnOptionChange({id=id,val=val}) end, 'Loot Tracker') -- Callback for when user changes settings
 
     -- Save version
     InterfaceOptions.SaveVersion(AddonInfo.save) -- Settings save-version, increment if behavior changes

@@ -7,7 +7,7 @@
     <Info
         title="LootTracker"
         author="Xsear"
-        description="Tracks loot drops."
+        description="Tracks in-world loot drops and provides tools to make them more prominent to the user."
         url="//forums.firefall.com/community/threads/4880421"
         uiVersion="1000"
     />
