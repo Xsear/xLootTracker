@@ -4,7 +4,6 @@ A Firefall addon that tracks in-world loot drops and provides tools to make them
 You are welcome and encouraged to [leave feedback / ask for help / report issues in the addon thread](//forums.firefall.com/community/threads/4880421) on the official Firefall forums.
 
 ## Features
-
 * Tracks Equipment, Modules, Components, Salvage and Consumable item drops.
 * Highly customizable, features can be enabled or disabled separately.
 * Attaches Waypoints to tracked items, helping you quickly locate drops over larger distances.
@@ -13,7 +12,6 @@ You are welcome and encouraged to [leave feedback / ask for help / report issues
 * Most of the features can have different kinds of behavior depending on what kind of loot it is acting on (Filtering).
 
 ## Interface Options
-
 ** TODO: ** Finish this section. There's a lot of Options. Nearly all of them have tooltip description that you can view in-game, and many of them are similar to the descriptions here. 
 
 ### Loot Tracker
@@ -63,6 +61,8 @@ For most purposes, you do not need to modify these settings.
 | Ignore Metals in Tornado | When enabled, the Tracker ignores any Metals when you are inside a (known) Melding Tornado Pocket. |
 
 #### Waypoints
+This section contains options related to the Waypoints subsystem.
+These settings affect all Waypoints created by the addon.
 
 | Option  | Description |
 |------------- | ------------- |
@@ -80,6 +80,7 @@ For an overview of how the Filtering section of each subsystem works, see Genera
 | Waypoint Title Format | Customize the title of the waypoints. In-game, you will be able to view a list of message replacements in the tooltip that is displayed when you hover over this field. |
 
 #### Panels
+This section contains options related to the Panels subsystem.
 
 | Option  | Description |
 |------------- | ------------- |
@@ -90,8 +91,8 @@ For an overview of how the Filtering section of each subsystem works, see Genera
 | Timer Mode | Set the timer mode. Normal - The timer starts at 0 and counts to infinity. Countdown - The time starts at the specified timestamp and counts down to 0. (Useful as an indication of the risk of despawn.) |
 | Countdown Time | The time to begin counting down from when Timer Mode is set to Countdown. |
 
-
 #### HUDTracker
+This section contains options related to the HUDTracker subsystem.
 
 | Option  | Description |
 |------------- | ------------- |
@@ -112,7 +113,6 @@ For an overview of how the Filtering section of each subsystem works, see Genera
 | Option  | Description |
 |------------- | ------------- |
 | HUDTracker Title Format | Customize the title of each entry in the hudtracker. In-game, you will be able to view a list of message replacements in the tooltip that is displayed when you hover over this field. |
-
 
 #### Sounds
 The sound section itself doesn't have any options at this time.
@@ -187,7 +187,6 @@ In Advanced Mode, you must proceed to the Advanced tab to configure Filtering Pa
 | Required Level Threshold | Set the minimum required level an item must have in order to pass filtering. |
 
 #### How to filter
-
 ##### Waypoints only for Equipment
 To achieve this, you would only need to use Category level filtering.
 You would navigate to the Filtering tab of Waypoints (Loot Tracker \> Waypoints \> Filtering).
@@ -210,7 +209,6 @@ Unforatunately, you have to go through quite a few subtabs to achieve this effec
 You can adjust the position of the HUDTRacker through the interface options menu, by moving the frame labeled "Loot Tracker" to the desired location. You can also scale the HUDTracker with the scrollwheel through this frame.
 
 ## Slash Commands
-
 **Slash handles**: xlt,lt,xloottracker,loottracker
 
 | Command  | Description |
@@ -276,9 +274,7 @@ These slash commands are only available if you have enabled Debug mode in the op
 ## History
 Loot Tracker succeeds Xsear's Squad Loot Manager. Originally, the addon was written to give organized groups a system to distribute loot with. It was built in anticipation for a different kind of endgame than what Firefall eventually developed into. Additionally, an official need/greed system was implemented, eliminating the need for the systems that the addon was providing. Therefore, those systems were scrapped and the focus shifted towards improving the tracking system and providing more convenience features than before. The change of direction and feature set warranted a change of addon name, and thus, Loot Tracker was born.
 
-
 ## Acknowledgements
-
 ### Arkii
 For her work on Lokii, a localization tool which is used by xLootTracker.
 Her work on Airii, which inspired me to implement Panels.
@@ -318,7 +314,7 @@ For his help with testing the addon, as well as feedback and ideas.
 
 ### TwoShoes
 For his help with testing the addon, as well as feedback, ideas and encouragement.
-Also for the new slogan.
+Also for the slogan of xLootTracker.
 
 *And the many other friends who gave me feedback on the way.* :)
 
