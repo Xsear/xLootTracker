@@ -170,6 +170,7 @@ OptionsFontTypes = {
     Demi = 'Demi',
     Bold = 'Bold',
     Wide = 'Wide',
+    Narrow = 'Narrow',
 }
 
 OptionsFontTypeDropdown = {
@@ -179,7 +180,9 @@ OptionsFontTypeDropdown = {
     [4] = OptionsFontTypes.Demi,
     [5] = OptionsFontTypes.Bold,
     [6] = OptionsFontTypes.Wide,
+    [7] = OptionsFontTypes.Narrow,
 }
+
 
 TrackerUpdateMode = {
     Global = 'global',
