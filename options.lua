@@ -2239,6 +2239,13 @@ function SetOptionsAvailability(args)
     local timerModeToggler = (Options['Panels']['TimerMode'] == PanelsTimerMode.Countdown)
     InterfaceOptions.EnableOption('Panels_TimerCountdownTime', timerModeToggler)
 
+    -- Messages Send on <channel> only when Leader
+    local squadOnlyWhenLeaderToggler = (Options['Messages']['Channels']['Squad'])
+    local platoonOnlyWhenLeaderToggler = (Options['Messages']['Channels']['Platoon'])
+    InterfaceOptions.EnableOption('Messages_OnlyWhenSquadLeader', squadOnlyWhenLeaderToggler)
+    InterfaceOptions.EnableOption('Messages_OnlyWhenPlatoonLeader', platoonOnlyWhenLeaderToggler)
+
+
 
     -- Summary: If simple disable advanced options
     for i, moduleArg in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds', {parent='Messages', 'OnLootNew', 'OnLootLooted', 'OnLootLost'}}) do
