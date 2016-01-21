@@ -4,33 +4,10 @@
 --]]
 
 
-
 -- Parameters used for the functions below
-
-
-
 Simple             =    "Simple"
 
-
-
-
---[[
-
-
-LootRarity
-    Salvage
-    Common
-    Uncommon
-    Rare
-    Epic
-    Prototype
-    Legendary
-
---]]
-
-
-
-
+-- Message format options, appended to tooltips.
 Generic_MessageFormat = [[
 The following replacement variables exist, please note that some may only apply under certain conditions.
 General:
@@ -46,20 +23,15 @@ Looted Items Only:
   {lootedTo}
 ]]
 
-
-
-SystemMessagePrefix = "[xLT] "
-
+-- Language Table for Lokii
 LANG = {
 
     -- System Messages
     SystemMessage_Prefix = "[xLT] ",
     SystemMessage_Tracker_HitLimit = "Hit the limit on number of tracked items!",
 
-
     -- UI
     UI_Waypoints_Subtitle                                                           =    "Loot",
-
 
     -- Options
     Options_MoveableFrame_Tracker_Label                                                         =     "Loot Tracker",
@@ -72,10 +44,7 @@ LANG = {
     Options_Core_SlashHandles_Label                                                             = "Slash Handles",
     Options_Core_SlashHandles_Tooltip                                                           = "The slash handles that the addon will register for. Requires that you reload the UI to update.",
 
-
-    
     Options_Group_Features_Label                                                        =    "Features",
-
 
     Options_Tracker_TrackDelay_Label  = "Track Delay",
     Options_Tracker_TrackDelay_Tooltip = "Upon detecting a new item, how long to wait before starting the procedure to begin tracking it. A delay is recommended because the game sometimes gives out incorrect information, and by waiting a little before taking action those can be weeded out. However, the delay is quite noticeable when playing, so a lower value feels better.",
@@ -213,10 +182,6 @@ LANG = {
     Options_Messages_OnlyWhenPlatoonLeader_Label                    =  "Send on Platoon only when Leader",
     Options_Messages_OnlyWhenPlatoonLeader_Tooltip                  =  "When checked, messages will not be sent on the Platoon channel, unless you are the Platoon leader.",
 
-
-    Options_Messages_Events_Tracker_OnLootClaimed_Enabled_Label                               =    "Loot Claimed",
-    Options_Messages_Events_Tracker_OnLootClaimed_Enabled_Tooltip                             =    "When somebody loots an item that the addon had not found",
-
     Options_Messages_Events_Tracker_OnLootLost_Enabled_Label                               =    "Loot Lost",
     Options_Messages_Events_Tracker_OnLootLost_Enabled_Tooltip                             =    "When a tracked item disappears without being looted / despawns",
 
@@ -227,16 +192,9 @@ LANG = {
     Options_Messages_Events_Tracker_OnLootNew_Enabled_Tooltip                                =    "When the addon has discovered a new item",
 
 
-
-
     Options_Panels_Enabled_Label                                                                =    "Enable Panels",
     Options_Panels_Enabled_Tooltip                                                              =    "The addon will attach Panels onto item drops, allowing you to inspect the item in detail when up close.",
 
-
-    Options_Panels_Display_AssignedTo_Label                                                     =    "Display AssignedTo",
-    Options_Panels_Display_AssignedTo_Tooltip                                                   =    "Display who the item has been assigned to on the panel header.",
-    Options_Panels_Display_AssignedToHideNil_Label                                              =    "Hide AssignedTo Not assigned",
-    Options_Panels_Display_AssignedToHideNil_Tooltip                                            =    "Only show AssignedTo text when item has been assigned - don\'t display \"Not assigned\".",
 
     Options_Panels_Mode_Label                               =    "Mode",
     Options_Panels_Mode_Tooltip                             =    "Overall Panel display mode\nStandard: Full view\nSmall: Only header is shown",
@@ -248,16 +206,6 @@ LANG = {
     Options_Panels_ColorMode_HeaderBar_Tooltip                                                   =    "Set the color of the background of the panel header.",
     Options_Panels_ColorMode_HeaderBarCustomValue_Label                                          =    "Custom Header Color",
     Options_Panels_ColorMode_HeaderBarCustomValue_Tooltip                                        =    "Set the color of the background of the panel header for the Custom option.",
-
-
-    Options_Panels_Color_AssignedTo_Nil_Label                                             =    "AssignedTo Color Not assigned",
-    Options_Panels_Color_AssignedTo_Nil_Tooltip                                           =    "Set the color of the Assigned To text when the item has not been assigned.",
-    Options_Panels_Color_AssignedTo_Free_Label                                            =    "AssignedTo Color Free for all",
-    Options_Panels_Color_AssignedTo_Free_Tooltip                                          =    "Set the color of the Assigned To text when the item has been declared free for all.",
-    Options_Panels_Color_AssignedTo_Player_Label                                          =    "AssignedTo Color For you",
-    Options_Panels_Color_AssignedTo_Player_Tooltip                                        =    "Set the color of the Assigned To text when the item has been assigned to you.",
-    Options_Panels_Color_AssignedTo_Other_Label                                           =    "AssignedTo Color For other",
-    Options_Panels_Color_AssignedTo_Other_Tooltip                                         =    "Set the color of the Assigned To text when the item has been assigned to someone else.",
 
     Options_Panels_TimerMode_Label    = "Timer Mode",
     Options_Panels_TimerMode_Tooltip  = "Set the timer mode.\nNormal - The timer starts at 0 and counts to infinity.\nCountdown - The time starts at the specified timestamp and counts down to 0. (Useful as an indication of the risk of despawn.)",
@@ -282,11 +230,7 @@ LANG = {
     Options_Waypoints_ShowOnWorldMap_Tooltip                =    "Show Waypoints on the World Map",
     Options_Waypoints_ShowOnRadar_Label                     =    "Show On Radar",
     Options_Waypoints_ShowOnRadar_Tooltip                   =    "Show Waypoints on the Radar",
-    Options_Waypoints_TrailAssigned_Label                   =    "Trail when loot is assigned to me",
-    Options_Waypoints_TrailAssigned_Tooltip                 =    "When an item is assigned to you, the navigation trail is set to its waypoint. Requires 'Display Navigation' setting in 'Gameplay' options checked.",
-    Options_Waypoints_PingAssigned_Label                    =    "Ping when loot is assigned to me",
-    Options_Waypoints_PingAssigned_Tooltip                  =    "When an item is assigned to you, its waypoint will be pinged - drawing attention to it.",                          
-
+    
 
     Options_Waypoints_RadarEdgeMode_Label                   =    "Radar Edge Mode",
     Options_Waypoints_RadarEdgeMode_Tooltip                 =    "Behavior for Waypoint icons on the radar when outside range and the icon attaches to the radar edge\nNone : Hidden \nArrow: Nonspecific arrow icon \nIcon : Keep showing the same icon",
@@ -294,37 +238,6 @@ LANG = {
     Options_Waypoints_IconGlow_Label                = "Enable Icon Glow",
     Options_Waypoints_IconGlow_Tooltip              = "If you have UI Glow Effects enabled in the game's Video settings, this will cause the icon displayed on your hud, worldmap and radar to glow in its rarities color.",
 
-
-    Options_Debug_Enabled_Label                                                                 =    "Debug",
-    Options_Debug_Enabled_Tooltip                                                               =    "The addon will enter Debug mode, logging messages in the console that are helpful to the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
-
-    Options_Debug_FakeOnSquadRoster_Label                                                       =    "Fake Squad Roster",
-    Options_Debug_FakeOnSquadRoster_Tooltip                                                     =    "If not in a squad but override squad leader, put fake squad members in the roster",
-    Options_Debug_SquadToArmy_Label                                                             =    "Squad To Army",
-    Options_Debug_SquadToArmy_Tooltip                                                           =    "Redirect messages on Squad channel to Army",
-    Options_Debug_UndefinedFilterArguments_Label                                                =    "Undefined Filter Arguments",
-    Options_Debug_UndefinedFilterArguments_Tooltip                                              =    "Output NOT_SET when filter arguments are undefined, rather than an empty string.",
-    Options_Debug_LogLootableTargets_Label                                                      =    "Log Loot Detected",
-    Options_Debug_LogLootableTargets_Tooltip                                                    =    "Extra debug messages, spammy.\nLogs info on detected items, helpful when errors are occuring during item detection.",
-    Options_Debug_LogLootableCollection_Label                                                   =    "Log Loot Collected",
-    Options_Debug_LogLootableCollection_Tooltip                                                 =    "Extra debug messages, spammy.\nLogs info on looted items, helpful when errors are occuring during item removal.",
-    Options_Debug_LogOptionChange_Label                                                         =    "Log Option Changes",
-    Options_Debug_LogOptionChange_Tooltip                                                       =    "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
-
-
-    Options_Debug_LogLootCreateData_Label  = "Log Loot Created",
-    Options_Debug_LogLootCreateData_Tooltip = "Extra debug messages, spammy.\nLogs stored info about loot upon creation, helpful when errors are occuring in the various features of the addon (post detection).",
-
-
-
-    Options_Debug_CommunicationExtra_Label                                                      =    "Log Communication Extra",
-    Options_Debug_CommunicationExtra_Tooltip                                                    =    "Extra Communication messages, spammy.\nLogs encoding and decoding of communication links more closely, helpful when errors are occuring in this department.",
-
-    Options_Debug_RoundRobin_Label                                                      =    "Log Round Robin",
-    Options_Debug_RoundRobin_Tooltip                                                    =    "Extra logging for Round Robin, spammy.\nDetailed logging of Round Robin logic, helpful if its giving out unexpected results.",
-
-    Options_Debug_LogLootDetermineCategory_Label                                        =        "Log Loot Determine Category",
-    Options_Debug_LogLootDetermineCategory_Tooltip                                      =        "Extra debug messages, spammy.\nLogs info on the process of determining what category an item is, helpful when items are not of the category you expect.",
 
     Options_Sounds_Enabled_Label                                                                =    "Enable Sounds",
     Options_Sounds_Enabled_Tooltip                                                              =    "The addon will play sounds in order to notify you when certain events occur.",
@@ -343,7 +256,7 @@ LANG = {
     Options_HUDTracker_Visibility_Tooltip                      =    "When to display the HUDTracker.\nHUD - Standard HUD behavior (hidden in cinematics, loadscreens etc.)\nMouse Mode - Like HUD, but also requires Mouse Mode\nSin View - Like HUD, but also requires Sin View\nAlways - Remains visible as long as there is loot to display.",
 
     Options_HUDTracker_Tooltip_Enabled_Label           =  "Enable Tooltips",
-    Options_HUDTracker_Tooltip_Enabled_Tooltip         =  "When hovering over an entry in the Tracker list, a tooltip representation of the item will be displayed on the cursor.",
+    Options_HUDTracker_Tooltip_Enabled_Tooltip         =  "When hovering over an entry in the HUDTracker list, a tooltip representation of the item will be displayed on the cursor.",
     Options_HUDTracker_PlateMode_Label                 =  "Plate Style",
     Options_HUDTracker_PlateMode_Tooltip               =  "Changes the look of the plate of entries in the Tracker.",
     Options_HUDTracker_IconMode_Label                  =  "Icon Style ",
@@ -359,8 +272,8 @@ LANG = {
     Options_HUDTracker_EntryFontSize_Label             = "Entry Font Size",
     Options_HUDTracker_EntryFontSize_Tooltip           = "Sets the font size of the text in the HUDTracker.",
 
-    Options_HUDTracker_ForceWebIcons_Label             = "Force Web Icons",
-    Options_HUDTracker_ForceWebIcons_Tooltip           = "When getting the icon for the entry, the addon gets the ability icon if the item is an ability. Checking this will ignore that procedure and force the usage of web icon.",
+    Options_HUDTracker_ForceWebIcons_Label             = "Don't Use Ability Icons for Items",
+    Options_HUDTracker_ForceWebIcons_Tooltip           = "When getting the icon for the entry, the addon gets the ability icon if the item is an ability. Checking this will ignore that procedure and force the usage of an item icon instead.",
 
     Options_HUDTracker_Frame_Width_Label       = "Frame Width",
     Options_HUDTracker_Frame_Width_Tooltip     = "Sets the frame width",
@@ -375,6 +288,35 @@ LANG = {
 
     Options_Tracker_UpdateMode_Label            = "Update Mode",
     Options_Tracker_UpdateMode_Tooltip          = "Select which mode to use for the periodic updating of loot (a saftey system that for most purposes is probably redundant).\nUnified mode (Refresh) updates all loot at once on a single cycle.\nIndividual mode (Loot Update Interval) places a cycle on each loot, checking each piece of loot on a consistent interval.",
+
+
+
+
+    -- Debug stuff
+    Options_Debug_Enabled_Label                                                                 =    "Debug",
+    Options_Debug_Enabled_Tooltip                                                               =    "The addon will enter Debug mode, logging messages in the console that are helpful to the addon creator in order to track down problems. Additional Debug options in this group will also become available.",
+
+    Options_Debug_FakeOnSquadRoster_Label                                                       =    "Fake Squad Roster",
+    Options_Debug_FakeOnSquadRoster_Tooltip                                                     =    "If not in a squad but override squad leader, put fake squad members in the roster",
+    Options_Debug_SquadToArmy_Label                                                             =    "Squad To Army",
+    Options_Debug_SquadToArmy_Tooltip                                                           =    "Redirect messages on Squad channel to Army",
+    Options_Debug_UndefinedFilterArguments_Label                                                =    "Undefined Filter Arguments",
+    Options_Debug_UndefinedFilterArguments_Tooltip                                              =    "Output NOT_SET when filter arguments are undefined, rather than an empty string.",
+    Options_Debug_LogLootableTargets_Label                                                      =    "Log Loot Detected",
+    Options_Debug_LogLootableTargets_Tooltip                                                    =    "Extra debug messages, spammy.\nLogs info on detected items, helpful when errors are occuring during item detection.",
+    Options_Debug_LogLootableCollection_Label                                                   =    "Log Loot Collected",
+    Options_Debug_LogLootableCollection_Tooltip                                                 =    "Extra debug messages, spammy.\nLogs info on looted items, helpful when errors are occuring during item removal.",
+    Options_Debug_LogOptionChange_Label                                                         =    "Log Option Changes",
+    Options_Debug_LogOptionChange_Tooltip                                                       =    "Extra debug messages, spammy.\nLogs option changes, helpful when errors are occuring with the interface options.",
+
+    Options_Debug_LogLootCreateData_Label  = "Log Loot Created",
+    Options_Debug_LogLootCreateData_Tooltip = "Extra debug messages, spammy.\nLogs stored info about loot upon creation, helpful when errors are occuring in the various features of the addon (post detection).",
+
+    Options_Debug_LogLootDetermineCategory_Label                                        =        "Log Loot Determine Category",
+    Options_Debug_LogLootDetermineCategory_Tooltip                                      =        "Extra debug messages, spammy.\nLogs info on the process of determining what category an item is, helpful when items are not of the category you expect.",
+
+
+
 
     -- Subtabs
     Options_Subtab_Messages                                         =    "Messages",
@@ -413,7 +355,7 @@ LANG = {
 
 
     -- Dropdown Choices
-    -- Due to some issues these have really bad names that I hope to correct at some point.
+    -- Due to some issues these have really bad names (basedon values?) that I hope to correct at some point.
 
 
 
@@ -431,7 +373,6 @@ LANG = {
     Options_Dropdown_RarityThreshold_Choice_prototype_Tooltip         = "<<WRITE ME>>",
     Options_Dropdown_RarityThreshold_Choice_legendary_Label           = "Legendary",
     Options_Dropdown_RarityThreshold_Choice_legendary_Tooltip         = "<<WRITE ME>>",
-
 
 
     Mode_Choice_Simple_Label                                =    "Simple",
@@ -483,6 +424,7 @@ LANG = {
     Options_Dropdown_OptionsFontTypes_Choice_Demi_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_DEMI'),
     Options_Dropdown_OptionsFontTypes_Choice_Bold_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_BOLD'),
     Options_Dropdown_OptionsFontTypes_Choice_Wide_Label           = Component.LookupText('CHAT_FONT_TYPE_EUROSTILE_WIDEBOLD'),
+    Options_Dropdown_OptionsFontTypes_Choice_Narrow_Label           = "Eurostile Narrow",
 
     Options_Dropdown_TrackerUpdateMode_Choice_global_Label      = "Unified",
     Options_Dropdown_TrackerUpdateMode_Choice_individual_Label  = "Individual",
@@ -596,20 +538,4 @@ LANG = {
     Sounds_Option_SlotMachine_InsertCoin                =    "Slot Machine Insert Coin",
     Sounds_Option_SlotMachine_EpicDecryption            =    "Slot Machine Epic Decrypt",
     Sounds_Option_SlotMachine_Decryption                =    "Slot Machine Decrypt",
-
-
-
-
-
-
--- to remove
-UI_AssignedTo_nil                                                               =    "Not yet assigned",
-UI_AssignedTo_false                                                             =    "Free for all",
-UI_AssignedTo_true                                                              =    "Free for all",
-UI_AssignedTo_Prefix                                                            =    "Assigned To: ",
-UI_Messages_System_NoRollableForDistribute                                      =    "No Rollable Loot to distribute",
-UI_Messages_System_NoIdentifiedForDistribute                                    =    "No Identified Loot to distribute"
-
-
-
 }

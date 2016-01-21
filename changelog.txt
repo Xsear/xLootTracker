@@ -9,6 +9,8 @@ v1.20
     - Improved tooltips for some of the tracker options.
     - Fixed a bug where the Blacklist View command would sometimes not properly send its output.
     - Blacklist Add command should no longer allow adding invalid items.
+    - Rename HUDTracker "Force Web Icons" option to "Don't Use Ability Icons for Items", which makes more sense.
+    - Add Narrow font option to HUDTracker.
 
 v1.19
     Public Release 19

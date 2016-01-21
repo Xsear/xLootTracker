@@ -2689,31 +2689,6 @@ function BuildInterfaceOptions_Tracker()
 end
 
 function BuildInterfaceOptions_Panels()
-    --[[
-    -- Display Assigned To
-    InterfaceOptions.AddCheckBox({
-        id      = 'Panels_Display_AssignedTo',
-        default = Options['Panels']['Display']['AssignedTo'],
-        label   = Lokii.GetString('Options_Panels_Display_AssignedTo_Label'),
-        tooltip = Lokii.GetString('Options_Panels_Display_AssignedTo_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Options_Subtab_Panels')
-        },
-    })
-
-    -- Display Assigned To Hide Nil
-    InterfaceOptions.AddCheckBox({
-        id      = 'Panels_Display_AssignedToHideNil',
-        default = Options['Panels']['Display']['AssignedToHideNil'],
-        label   = Lokii.GetString('Options_Panels_Display_AssignedToHideNil_Label'),
-        tooltip = Lokii.GetString('Options_Panels_Display_AssignedToHideNil_Tooltip'),
-        subtab  = {
-            Lokii.GetString('Options_Subtab_Panels')
-        },
-    })
-    --]]
-    
-
     -- Color Mode Headerbar
     UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', 'Options_Panels_ColorMode_HeaderBar', Options['Panels']['ColorMode']['HeaderBar'], OptionsColorModesDropdown, 'ColorModes', Lokii.GetString('Options_Subtab_Panels'))
     
@@ -2738,44 +2713,10 @@ function BuildInterfaceOptions_Panels()
         subtab  = Lokii.GetString('Options_Subtab_Panels'),
     })
 
-    --[[
-    -- Custom Colors Assigned To 
-    InterfaceOptions.AddColorPicker({
-        id      = 'Panels_Color_AssignedTo_Nil',
-        default = Options['Panels']['Color']['AssignedTo']['Nil'],
-        label   = Lokii.GetString('Options_Panels_Color_AssignedTo_Nil_Label'),
-        tooltip = Lokii.GetString('Options_Panels_Color_AssignedTo_Nil_Tooltip'),
-        subtab  = Lokii.GetString('Options_Subtab_Panels'),
-    })
-
-    InterfaceOptions.AddColorPicker({
-        id      = 'Panels_Color_AssignedTo_Free',
-        default = Options['Panels']['Color']['AssignedTo']['Free'],
-        label   = Lokii.GetString('Options_Panels_Color_AssignedTo_Free_Label'),
-        tooltip = Lokii.GetString('Options_Panels_Color_AssignedTo_Free_Tooltip'),
-        subtab  = Lokii.GetString('Options_Subtab_Panels'),
-    })
-
-    InterfaceOptions.AddColorPicker({
-        id      = 'Panels_Color_AssignedTo_Player',
-        default = Options['Panels']['Color']['AssignedTo']['Player'],
-        label   = Lokii.GetString('Options_Panels_Color_AssignedTo_Player_Label'),
-        tooltip = Lokii.GetString('Options_Panels_Color_AssignedTo_Player_Tooltip'),
-        subtab  = Lokii.GetString('Options_Subtab_Panels'),
-    })
-
-    InterfaceOptions.AddColorPicker({
-        id      = 'Panels_Color_AssignedTo_Other',
-        default = Options['Panels']['Color']['AssignedTo']['Other'],
-        label   = Lokii.GetString('Options_Panels_Color_AssignedTo_Other_Label'),
-        tooltip = Lokii.GetString('Options_Panels_Color_AssignedTo_Other_Tooltip'),
-        subtab  = Lokii.GetString('Options_Subtab_Panels'),
-    })
-    --]]
-
-
+    -- Timer Mode
     UIHELPER_DropdownFromTable('Panels_TimerMode', 'Options_Panels_TimerMode', Options['Panels']['TimerMode'], OptionsPanelsTimerModeDropdown, 'PanelsTimerMode', Lokii.GetString('Options_Subtab_Panels'))
     
+    -- Timer Countdown Time
      InterfaceOptions.AddSlider({
         id      = 'Panels_TimerCountdownTime',
         min     = 1,
@@ -2790,8 +2731,7 @@ function BuildInterfaceOptions_Panels()
         },
     })    
 
-
-
+    -- Filtering
     UIHELPER_Filtering('Panels')
 end
 
