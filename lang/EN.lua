@@ -48,12 +48,12 @@ Looted Items Only:
 
 
 
-SystemMessagePrefix = "[xLT]: "
+SystemMessagePrefix = "[xLT] "
 
 LANG = {
 
     -- System Messages
-    SystemMessage_Prefix = "[xLT]: ",
+    SystemMessage_Prefix = "[xLT] ",
     SystemMessage_Tracker_HitLimit = "Hit the limit on number of tracked items!",
 
 
@@ -62,9 +62,9 @@ LANG = {
 
 
     -- Options
-    Options_MoveableFrame_Tracker_Label                                                         =     "Xsear\'s Loot Tracker",
+    Options_MoveableFrame_Tracker_Label                                                         =     "Loot Tracker",
 
-    Options_Group_Core_Label                                                                    =    "Xsear\'s Loot Tracker",
+    Options_Group_Core_Label                                                                    =    "Loot Tracker",
     Options_Core_Enabled_Label                                                                  =    "Enabled",
     Options_Core_Enabled_Tooltip                                                                =    "The addon will be enabled. This option is mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. If you are suspecting compatability issues with other addons, it would be better to tempoarily remove the addon in order to verify whether or not it is part of the issue.",
     Options_Core_VersionMessage_Label                                                           =    "Version Message",
@@ -80,7 +80,7 @@ LANG = {
     Options_Tracker_TrackDelay_Label  = "Track Delay",
     Options_Tracker_TrackDelay_Tooltip = "Upon detecting a new item, how long to wait before starting the procedure to begin tracking it. A delay is recommended because the game sometimes gives out incorrect information, and by waiting a little before taking action those can be weeded out. However, the delay is quite noticeable when playing, so a lower value feels better.",
     Options_Tracker_UpdateDelay_Label  = "Update Delay",
-    Options_Tracker_UpdateDelay_Tooltip = "Serves little purpose. Keep it low.",
+    Options_Tracker_UpdateDelay_Tooltip = "Delay before updating an item. Serves little purpose. Keep it low.",
     Options_Tracker_RemoveDelay_Label  = "Remove Delay",
     Options_Tracker_RemoveDelay_Tooltip = "How long to wait before removing an item after it has been looted or has despawned. A short delay is neccessary for other parts of the addon to work properly. A long delay serves no real purpose at this point.",
     Options_Tracker_Limit_Label = "Limit",
@@ -193,7 +193,7 @@ LANG = {
     Options_Messages_Generic_IgnoreOthers_Tooltip = "If checked, the message will not be sent unless the event is triggered by the local player.",
 
     Options_Messages_Enabled_Label                                                          =    "Enable Messages",
-    Options_Messages_Enabled_Tooltip                                                        =    "The addon will send customizable Messages to the Chat when certain events occur, keeping you and your Squad members in the loop of what is going on with the item drops.",
+    Options_Messages_Enabled_Tooltip                                                        =    "The addon will send customizable Messages to the Chat when items are dropped or looted.",
     Options_Messages_Prefix_Label                                                           =    "Generic Prefix",
     Options_Messages_Prefix_Tooltip                                                         =    "Set the prefix for all public facing messages.",
     Options_Messages_Channels_Squad_Label                                                   =    "Send on Squad Channel",
@@ -239,9 +239,12 @@ LANG = {
     Options_Panels_Display_AssignedToHideNil_Tooltip                                            =    "Only show AssignedTo text when item has been assigned - don\'t display \"Not assigned\".",
 
     Options_Panels_Mode_Label                               =    "Mode",
-    Options_Panels_Mode_Tooltip                             =    "Overall Panel display mode\nStandard: Full view\nSmall: Only header is shown", Panels_ColorMode_ItemName_Label                                                      =    "Item Name Color",
+    Options_Panels_Mode_Tooltip                             =    "Overall Panel display mode\nStandard: Full view\nSmall: Only header is shown",
+    Options_Panels_ColorMode_ItemName_Label                                                      =    "Item Name Color",
     Options_Panels_ColorMode_ItemName_Tooltip                                                    =    "Set the color of the item name text on the panel header.",
-    Options_Panels_ColorMode_ItemNameCustomValue_Label                                           =    "Custom Item Name Color",    Panels_ColorMode_ItemNameCustomValue_Tooltip                                         =    "Set the color of the item name text on the panel header for the Custom option.",    Panels_ColorMode_HeaderBar_Label                                                     =    "Header Color",
+    Options_Panels_ColorMode_ItemNameCustomValue_Label                                           =    "Custom Item Name Color",
+    Options_Panels_ColorMode_ItemNameCustomValue_Tooltip                                         =    "Set the color of the item name text on the panel header for the Custom option.",
+    Options_Panels_ColorMode_HeaderBar_Label                                                     =    "Header Color",
     Options_Panels_ColorMode_HeaderBar_Tooltip                                                   =    "Set the color of the background of the panel header.",
     Options_Panels_ColorMode_HeaderBarCustomValue_Label                                          =    "Custom Header Color",
     Options_Panels_ColorMode_HeaderBarCustomValue_Tooltip                                        =    "Set the color of the background of the panel header for the Custom option.",

@@ -103,7 +103,7 @@ end
 ]]--
 function OnOptionsLoaded()
     -- Setup Slash
-    LIB_SLASH.BindCallback({slash_list=Options['Core']['SlashHandles'], description='Xsear\'s Loot Tracker', func=OnSlash})
+    LIB_SLASH.BindCallback({slash_list=Options['Core']['SlashHandles'], description='Loot Tracker', func=OnSlash})
 
     -- Setup Tracker
     Tracker.Setup()
@@ -113,7 +113,7 @@ function OnOptionsLoaded()
 
     -- Print version message
     if Options['Core']['VersionMessage'] then
-        Messages.SendSystemMessage('Xsear\'s Loot Tracker v'..AddonInfo.version..' p'..AddonInfo.patch..' r'..AddonInfo.release..' Loaded')
+        Messages.SendSystemMessage('Loot Tracker v'..AddonInfo.version..' p'..AddonInfo.patch..' r'..AddonInfo.release..' Loaded')
     end
 end
 

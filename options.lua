@@ -2,7 +2,7 @@ Options = {
     ['Core'] = {
         ['Enabled'] = true,
         ['VersionMessage'] = true,
-        ['SlashHandles'] = 'xlt,lt',
+        ['SlashHandles'] = 'xlt,lt,xloottracker,loottracker',
     },
 
     ['Tracker'] = {
@@ -2715,7 +2715,7 @@ function BuildInterfaceOptions_Panels()
     
 
     -- Color Mode Headerbar
-    UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', 'Panels_ColorMode_HeaderBar', Options['Panels']['ColorMode']['HeaderBar'], OptionsColorModesDropdown, 'ColorModes', Lokii.GetString('Options_Subtab_Panels'))
+    UIHELPER_DropdownFromTable('Panels_ColorMode_HeaderBar', 'Options_Panels_ColorMode_HeaderBar', Options['Panels']['ColorMode']['HeaderBar'], OptionsColorModesDropdown, 'ColorModes', Lokii.GetString('Options_Subtab_Panels'))
     
     -- Custom Color Headerbar
     InterfaceOptions.AddColorPicker({
@@ -2727,7 +2727,7 @@ function BuildInterfaceOptions_Panels()
     })
 
     -- Color Mode ItemName
-    UIHELPER_DropdownFromTable('Panels_ColorMode_ItemName', 'Panels_ColorMode_ItemName', Options['Panels']['ColorMode']['ItemName'], OptionsColorModesDropdown, 'ColorModes', Lokii.GetString('Options_Subtab_Panels'))
+    UIHELPER_DropdownFromTable('Panels_ColorMode_ItemName', 'Options_Panels_ColorMode_ItemName', Options['Panels']['ColorMode']['ItemName'], OptionsColorModesDropdown, 'ColorModes', Lokii.GetString('Options_Subtab_Panels'))
 
     -- Custom Color Item Name
     InterfaceOptions.AddColorPicker({
