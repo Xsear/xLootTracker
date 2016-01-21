@@ -186,7 +186,7 @@ function Messages.SendMessageToChat(channel, message, alert)
     channel = unicode.lower(channel)
     if Options['Debug']['Enabled'] and Options['Debug']['SquadToArmy'] and channel == 'squad' then channel = 'army' end
     local alertprefix = ''
-    if alert and (channel == 'squad' or channel == 'platoon') then alertprefix = '!' end
+    if alert and (channel == 'squad' or channel == 'platoon') then alertprefix = '' end -- NOTE: Alert capability removed :<
     if channel == 'system' then
         ChatLib.SystemMessage({text=message})
     elseif channel == 'notification' or channel == 'notifications' then
