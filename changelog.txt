@@ -11,6 +11,7 @@ v1.20
     - Blacklist Add command should no longer allow adding invalid items.
     - Rename HUDTracker "Force Web Icons" option to "Don't Use Ability Icons for Items", which makes more sense.
     - Add Narrow font option to HUDTracker.
+    - Removed Waypoint Icon Glow option because UI Glow Effects have been removed. RIP.
 
 v1.19
     Public Release 19

@@ -159,10 +159,6 @@ function WaypointManager.Create(loot)
         MULTIART:SetIcon(webIcon)
     end
 
-    if Options['Waypoints']['IconGlow'] then -- rip :(
-        MULTIART:SetParam('glow', loot:GetColor())
-    end
-
     -- Visibility
     Private.SetHudVisibility(waypoint)
 

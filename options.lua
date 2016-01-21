@@ -67,9 +67,6 @@ Options = {
         ['ShowOnWorldMap'] = true,
         ['ShowOnRadar'] = true,
         ['RadarEdgeMode'] = RadarEdgeModes.Icon,
-
-        ['IconGlow'] = true,
-
     },
 
     ['Messages'] = {
@@ -2762,14 +2759,6 @@ function BuildInterfaceOptions_Waypoints()
     })
 
     UIHELPER_DropdownFromTable('Waypoints_RadarEdgeMode', 'Options_Waypoints_RadarEdgeMode', Options['Waypoints']['RadarEdgeMode'], OptionsRadarEdgeModesDropdown, 'RadarEdgeModes', Lokii.GetString('Options_Subtab_Waypoints'))
-
-    InterfaceOptions.AddCheckBox({
-        id      = 'Waypoints_IconGlow',
-        default = Options['Waypoints']['IconGlow'],
-        label   = Lokii.GetString('Options_Waypoints_IconGlow_Label'),
-        tooltip = Lokii.GetString('Options_Waypoints_IconGlow_Tooltip'),
-        subtab  = {Lokii.GetString('Options_Subtab_Waypoints')}
-    })
 
     UIHELPER_Filtering('Waypoints')
 end
