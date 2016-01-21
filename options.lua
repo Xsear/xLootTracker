@@ -2123,7 +2123,11 @@ function OnOptionChange(args)
         -- Todo: Fixme:
 
     elseif args.id == '__DISPLAY' then
-        -- Todo: Fixme:
+        if args.val then
+            HUDTracker.EnterFakeMode()
+        else
+            HUDTracker.ExitFakeMode()
+        end
 
     -- Addon Options
     else
@@ -2229,7 +2233,6 @@ end
 ]]--
 function SetOptionsAvailability(args)
 
-
     -- Tracker Update Mode
     local updateModeToggler = (Options['Tracker']['UpdateMode'] == TrackerUpdateMode.Global)
     InterfaceOptions.EnableOption('Tracker_RefreshInterval', updateModeToggler)
@@ -2244,8 +2247,6 @@ function SetOptionsAvailability(args)
     local platoonOnlyWhenLeaderToggler = (Options['Messages']['Channels']['Platoon'])
     InterfaceOptions.EnableOption('Messages_OnlyWhenSquadLeader', squadOnlyWhenLeaderToggler)
     InterfaceOptions.EnableOption('Messages_OnlyWhenPlatoonLeader', platoonOnlyWhenLeaderToggler)
-
-
 
     -- Summary: If simple disable advanced options
     for i, moduleArg in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds', {parent='Messages', 'OnLootNew', 'OnLootLooted', 'OnLootLost'}}) do

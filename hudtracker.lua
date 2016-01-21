@@ -8,6 +8,8 @@ HUDTracker = {}
 local Private = {
     lastUpdate = 0,
     minUpdateCB = nil,
+    testMode = false,
+    testEntries = {},
     entries = {}
 }   
 
@@ -781,3 +783,71 @@ function HUDTrackerSort(lootA, lootB)
     return (lootA.name < lootB.name)
 end
 
+
+
+
+
+function HUDTracker.ExitFakeMode()
+    Debug.Log("HUDTracker.ExitFakeMode()")
+
+
+    for key, value in pairs(Private.testEntries) do
+        HUDTracker.OnTrackerRemove({lootId=key})
+    end
+
+    Private.testMode = false
+    HUDTracker.UpdateVisibility()
+end
+
+function HUDTracker.EnterFakeMode()
+    Debug.Log("HUDTracker.EnterFakeMode()")
+
+    Private.testMode = true
+
+    -- Make
+    local fakeData = {
+        {entityId=-1, targetInfo={entityId=-5, itemTypeId=114176}},
+        {entityId=-2, targetInfo={entityId=-6, itemTypeId=103075}},
+        {entityId=-3, targetInfo={entityId=-8, itemTypeId=106163}},
+    }
+
+    -- Generate them
+    for index, lootData in ipairs(fakeData) do
+
+        lootData.itemInfo = Game.GetItemInfoByType(lootData.targetInfo.itemTypeId)
+
+        local loot = Loot.Create(lootData.entityId, lootData.targetInfo, lootData.itemInfo)
+
+        -- Create entry
+        local ENTRY = Private.CreateEntry(loot)
+
+        -- Get the index of each entry in the rowscroller
+        local indexList = {}
+        for typeId, ENTRY_OTHER in pairs(Private.entries) do
+            local index = ENTRY_OTHER.ROW:GetIdx()
+            indexList[index] = ENTRY_OTHER
+        end
+
+        -- Determine which index our new entry should have
+        local ourEntryIndex = nil
+        for index, ENTRY_OTHER in pairs(indexList) do
+            if HUDTrackerSort(ENTRY, ENTRY_OTHER) then
+                ourEntryIndex = index
+                break
+            end
+        end
+
+        -- Insert entry as row
+        local ROW = SCROLLER:AddRow(ENTRY.GROUP, ourEntryIndex)
+
+        -- Save a row reference
+        ENTRY.ROW = ROW
+        
+        -- Store entry
+        Private.entries[tostring(loot:GetTypeId())] = ENTRY
+
+        -- Store test entry
+        Private.testEntries[tostring(loot:GetId())] = true
+    end
+    HUDTracker.UpdateVisibility()
+end
