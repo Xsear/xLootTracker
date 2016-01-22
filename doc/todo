@@ -2,18 +2,14 @@ SLM TODO
 
     Look intos
 
-        Test that version message disabling works
 
     Improvements
 
         HUDTracker
-            Add support for new PTE font in hud tracker :D
         
             Add options to make hudtracker similar to that guy who requested stuffz in the thread, it will be nice
 
         Messages
-
-            Move "Send on Squad/Platoon only" options to underneath the masterswitches, and disable them if master is not checked
 
             Add option to toggle the prefix of system messages - use long prefix xLootTracker by default?
 
