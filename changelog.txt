@@ -1,7 +1,7 @@
 
 v1.20
     Public Release 20
-    2016-01-20
+    2016-01-22
     - Fixed errors related to icons and buttons, caused by changes in patch 1.6.
     - Fixed error preventing Panel options from saving properly.
     - Fixed a bug where Panels were following the Waypoints blacklist.
