@@ -1,4 +1,9 @@
 
+v1.21
+    Public Release 21
+    2016-01-22
+    - Fix melder_info.ini issue
+
 v1.20
     Public Release 20
     2016-01-22

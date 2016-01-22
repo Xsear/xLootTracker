@@ -14,7 +14,7 @@ require 'lib/lib_ChatLib'          -- Used to send some chat messages
 require 'lib/lib_table'            -- Common table functions
 require 'lib/lib_UserKeybinds'     -- User keybinds
 require 'lib/lib_Colors'           -- Colors, used by markers
-require 'lib/lib_RowScroller'      -- Row Scroller, used by Tacker
+require 'lib/lib_RowScroller'      -- Row Scroller, used by Tracker
 require 'lib/lib_MultiArt'         -- Used for icons
 require 'lib/lib_SubTypeIds'       -- Used for determining loot categories
 require 'lib/lib_ContextMenu'      -- Used for hudtracker context menu
@@ -34,7 +34,7 @@ require './lootpanel'              -- Loot Panel object
 -- Addon Meta
 AddonInfo = {
     release  = '2016-01-22',
-    version = '1.20',
+    version = '1.21',
     patch = '1.6.1931',
     save = 1.0,
 }
