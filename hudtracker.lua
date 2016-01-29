@@ -890,9 +890,11 @@ function HUDTracker.EnterFakeMode()
 
     -- Make
     local fakeData = {
-        {entityId=-1, targetInfo={entityId=-5, itemTypeId=114176}},
-        {entityId=-2, targetInfo={entityId=-6, itemTypeId=103075}},
-        {entityId=-3, targetInfo={entityId=-8, itemTypeId=106163}},
+        {entityId=-1, targetInfo={entityId=-1, itemTypeId=125917}},
+        {entityId=-2, targetInfo={entityId=-2, itemTypeId=123219}},
+        {entityId=-3, targetInfo={entityId=-3, itemTypeId=123384}},
+        {entityId=-4, targetInfo={entityId=-4, itemTypeId=123818}},
+        {entityId=-5, targetInfo={entityId=-5, itemTypeId=123874}},
     }
 
     -- Generate them

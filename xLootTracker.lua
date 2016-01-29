@@ -716,42 +716,61 @@ function Slash_Test(args)
 
 
         local numberOfItems = 3
+        if args[1] ~= nil then numberOfItems = tonumber(args[1]) end
 
         local targetInfoData = {
-            {itemTypeId = 86681},
-            {itemTypeId = 86682},
-            {itemTypeId = 86695},
-            {itemTypeId = 86698},
-            {itemTypeId = 77344},
-            {itemTypeId = 52206},
-            {itemTypeId = 30408},
-            {itemTypeId = 100061},
-            {itemTypeId = 100479},
-            {itemTypeId = 103075},
-            {itemTypeId = 105253},
-            {itemTypeId = 106163},
-            {itemTypeId = 114314},
-            {itemTypeId = 114020},
-            {itemTypeId = 114176},
-            {itemTypeId = 113722},
-            {itemTypeId = 99979},
-            {itemTypeId = 99899},
-            {itemTypeId = 99659},
-            {itemTypeId = 98622},
-            {itemTypeId = 95088},
+
+            -- Equipment
+            {itemTypeId = 116407}, -- Necro Crossbow
+            {itemTypeId = 114020}, -- Smart Blaster
+            {itemTypeId = 114314}, -- Assault Rifle Secondary
+            {itemTypeId = 114176}, -- Remote Explosive
+
+            {itemTypeId = 114075}, -- epic bolt driver
+            {itemTypeId = 98732}, -- blue bolt driver
+            {itemTypeId = 97936}, -- epic marksman rifle
+            {itemTypeId = 98122}, -- green fusion cannon
+
+            {itemTypeId = 129494}, -- aux energy sword
+            {itemTypeId = 130224}, -- aux chem grenade
+            {itemTypeId = 129640}, -- aux scan hammer
+
+            {itemTypeId = 125917}, -- epic headgear
+            {itemTypeId = 125683}, -- blue headgear
+            {itemTypeId = 125550}, -- green headger
+
+            {itemTypeId = 113517}, -- ability
+            {itemTypeId = 114120}, -- hkm
+
+            -- Modules
+            {itemTypeId = 123219}, -- green module
+            {itemTypeId = 123384}, -- crap module
+            {itemTypeId = 123818}, -- legendary module
+            {itemTypeId = 123874}, -- blue module
+
+
+
+            {itemTypeId = 54003}, -- sonic detonator
+
 
             -- Moduled Item
-            {itemTypeId = 98937, modules = {94145}},
+            --{itemTypeId = 98937, modules = {94145}},
+
+            -- Components
+            --[[
+            {itemTypeId = 86695}, -- Biomass Samples
+            {itemTypeId = 86681},
+            {itemTypeId = 86682},
+            {itemTypeId = 86698}, -- Crystatic Bio fluids?
+            --]]
 
             -- Salvage
+            --[[
             {itemTypeId = 52206}, -- Recovered Chosen Tech
             {itemTypeId = 30408}, -- Broken Bandit Gear
             {itemTypeId = 86398}, -- Half Digested Module
-
-            -- Epics
-            {itemTypeId = 116407}, -- Necro Crossbow
-            {itemTypeId = 116378}, -- Thermal Needler (Epic)
-            {itemTypeId = 107786}, -- Thermal Needler (Rare)
+            --]]
+            
         }
 
 
