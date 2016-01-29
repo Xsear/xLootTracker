@@ -54,6 +54,9 @@ State = {
     playerName    = '',      -- The name of the local player
 }
 
+-- Constants
+RELOADUI_FLAG = "_ReloadUI"
+
 -- Addon
 require './util'       -- Various functions that need to be cleaned up.
 require './types'      -- Types
@@ -67,6 +70,7 @@ require './panels'     -- Panels
 require './waypoints'  -- Waypoints
 require './hudtracker' -- HUDTracker
 require './sounds'     -- Sounds
+
 -- Functions
 --[[
     OnComponentLoad()
@@ -95,7 +99,37 @@ function OnComponentLoad()
     -- Setup Blacklist
     Blacklist.Setup()
 
+    -- Handle ReloadUI
+    if Component.GetSetting(RELOADUI_FLAG) then OnPostReloadUI() end
 end
+
+--[[
+    OnComponentUnload()
+    Event handler for ON_COMPONENT_UNLOAD
+    Testing...
+]]--
+function OnComponentUnload()
+    -- Unbind Slash
+    LIB_SLASH.UnbindCallback(Options['Core']['SlashHandles'])
+end
+
+--[[
+    OnPreReloadUI()
+    Event handler for ON_PRE_RELOADUI
+]]--
+function OnPreReloadUI()
+    Component.SaveSetting(RELOADUI_FLAG, true)
+end
+
+--[[
+    OnPostReloadUI()
+    Called by OnComponentLoad if we just experienced a ReloadUI.
+]]--
+function OnPostReloadUI()
+    Component.SaveSetting(RELOADUI_FLAG, false)
+    --State.loaded = true -- Workaround
+end
+
 
 --[[
     OnOptionsLoaded()

@@ -15,6 +15,8 @@
     <Events>
         <!-- Firefall -->
         <Event name="ON_COMPONENT_LOAD"            bind="OnComponentLoad"     />
+        <Event name="ON_COMPONENT_UNLOAD"          bind="OnComponentUnload"   />
+        <Event name="ON_PRE_RELOADUI"              bind="OnPreReloadUI"       />
         <Event name="ON_SIN_VIEW"                  bind="OnSinView"           />
         <Event name="ON_PLAYER_READY"              bind="OnPlayerReady"       />
         <Event name="ON_ENTER_ZONE"                bind="OnEnterZone"         />
