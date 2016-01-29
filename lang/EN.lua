@@ -473,6 +473,8 @@ LANG = {
     Options_Dropdown_AnimationTypeOptions_Choice_linear_Label = "Linear",
 
 
+    Options_HUDTracker_DisplaySlider_Label = "Display Slider",
+    Options_HUDTracker_DisplaySlider_Tooltip = "Whether or not to display a scrollbar in the Tracker. If enabled, will only be displayed when appropriate (enough items in the list to scroll. Even if this is disabled, you can still scroll the tracker with the mouse wheel.",
 
 
     Sounds_Option_none                                  =    "None",
