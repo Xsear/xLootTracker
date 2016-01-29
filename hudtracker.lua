@@ -57,7 +57,8 @@ function HUDTracker.Setup()
     SCROLLER:SetSlider(SLIDER)
     SCROLLER:SetSliderMargin(DimensionOptions.ScrollerSliderMarginVisible, DimensionOptions.ScrollerSliderMarginHidden)
     SCROLLER:SetSpacing(DimensionOptions.ScrollerSpacing)
-    SCROLLER:ShowSlider('auto')
+    SCROLLER:ShowSlider(Options['HUDTracker']['DisplaySlider'] and 'auto' or false)
+    SCROLLER:SetScrollStep(Options['HUDTracker']['EntrySize'])
 
     -- Tooltip
     TOOLTIP_ITEM = LIB_ITEMS.CreateToolTip(FRAME)
@@ -122,9 +123,17 @@ function HUDTracker.OnOptionChange(id, value)
         InterfaceOptions.ChangeFrameHeight(FRAME, value)
         SCROLLER:UpdateSize()
 
-    -- For standard behavior options just update
+    elseif id == 'HUDTracker_DisplaySlider'
+    then
+        SCROLLER:ShowSlider(Options['HUDTracker']['DisplaySlider'] and 'auto' or false)
+
+    -- For general options we rebuild the tracker
     else
-        --Debug.Log('Unhandled Option Id '..tostring(id))
+        if id == 'HUDTracker_EntrySize' then
+            SCROLLER:SetScrollStep(Options['HUDTracker']['EntrySize'])
+        end
+
+        -- Rebuild tracker
         HUDTracker.Rebuild()
     end
 end

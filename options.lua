@@ -191,6 +191,8 @@ Options = {
 
         ['ForceWebIcons'] = false,
 
+        ['DisplaySlider'] = true,
+
         ['FadeFrame'] = {
             ['Enabled'] = true,
             ['FadeIn'] = {
@@ -2944,6 +2946,14 @@ function BuildInterfaceOptions_HUDTracker()
         subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
     })
 
+    -- Slider
+    InterfaceOptions.AddCheckBox({
+        id      = 'HUDTracker_DisplaySlider',
+        default = Options['HUDTracker']['DisplaySlider'],
+        label   = Lokii.GetString('Options_HUDTracker_DisplaySlider_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_DisplaySlider_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
 
     -- Fade Frame
     InterfaceOptions.StartGroup({
