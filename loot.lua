@@ -274,6 +274,10 @@ function Loot:GetCoordLink()
     return tostring(self:GetPos())
 end
 
+function Loot:GetCoordLinkText()
+
+end
+
 function Loot:ToString()
 
     local output = {}
@@ -297,8 +301,32 @@ end
 
 
 function Loot:AppendToChat()
-    Debug.Log('LootAppendToChat')
     ChatLib.AddItemLinkToChatInput(self:GetTypeId(), self.itemInfo.hidden_modules, self.itemInfo.slotted_modules)
+end
+
+function Loot:AppendCoordToChat()
+    local pos = self:GetPos()
+
+    local text = tostring(self:GetPos())
+    local replace = ''
+
+    local zone = State.zoneId
+    local instance = Chat.WriteInstanceKey()
+    local player = Player.GetCharacterId()
+    if zone and instance and player then
+        text = ChatLib.CreateCoordText(pos, zoneId, true)
+        replace = ChatLib.EncodeCoordLink(pos, zoneId, instance, player)
+    end
+
+
+    local args = {
+        text = text,
+        replaces = {{
+            match = text,
+            replace = replace
+        }},
+    }
+    ChatLib.AddTextToChatInput(args)
 end
 
 

@@ -600,15 +600,19 @@ function Private.CreateEntry(loot, stackInfo)
             MENU:BindOnRequest(function(MENU, id)
                 if id == 'root' then
 
-                    -- Waypoints
+                    -- Personal Waypoint
                     MENU:AddButton({id='self_waypoint', label_key='SET_WAYPOINT'})
                     
+                    -- Squad Waypoint (Platoons?)
                     if State.isSquadLeader then
                         MENU:AddButton({id='squad_waypoint', label_key='SET_SQUAD_WAYPOINT'})
                     end
 
-                    -- Append link to Chat
+                    -- Append item link to Chat
                     MENU:AddButton({id='add_item_link', label_key='ADD_ITEM_LINK'})
+
+                    -- Append coord link to Chat
+                    MENU:AddButton({id='add_coord_link', label='Add Coordinates Link'})
 
                     -- Debug
                     if Options['Debug']['Enabled'] then
@@ -628,9 +632,13 @@ function Private.CreateEntry(loot, stackInfo)
                         Squad.SetWayPoint(lootPos.x, lootPos.y, lootPos.z+1)
 
 
-                    -- Append link to Chat
+                    -- Append item link to Chat
                     elseif args.id == 'add_item_link' then
                         loot:AppendToChat()
+
+                    -- Append coord link to Chat
+                    elseif args.id == 'add_coord_link' then
+                        loot:AppendCoordToChat()
 
                     -- Debug - Remove
                     elseif args.id == 'debug_remove' then
