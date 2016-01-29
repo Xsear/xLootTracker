@@ -490,6 +490,11 @@ function HUDTracker.UpdateTooltip(lootId)
     -- Get info
     --Debug.Log('UpdateTrackerTooltip called for lootId '..tostring(lootId))
     local loot = Tracker.GetLootById(lootId)
+    if HUDTracker.IsInFakeMode() then
+        if Private.testEntries[lootId] then
+            loot = Private.testEntries[lootId]
+        end
+    end
     if loot == nil or loot == false then Debug.Error('UpdateTrackerTooltip unable to get identified item') end
 
     -- Setup Tooltip
@@ -928,7 +933,7 @@ function HUDTracker.EnterFakeMode()
         Private.entries[tostring(loot:GetTypeId())] = ENTRY
 
         -- Store test entry
-        Private.testEntries[tostring(loot:GetId())] = true
+        Private.testEntries[tostring(loot:GetId())] = loot
     end
     HUDTracker.UpdateVisibility()
 end
