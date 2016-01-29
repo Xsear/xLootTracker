@@ -20,8 +20,6 @@ local LIST = FRAME:GetChild('List')
 local SCROLLER = nil
 local TOOLTIP_ITEM = nil
 
--- Callback cycles
-local CYCLE_HUDTrackerUpdate = nil -- Note: Deprecated
 
 -- y u no options D:
 local DimensionOptions = {
@@ -743,7 +741,7 @@ function Private.SetEntrySize(ENTRY)
     ENTRY.BOX:SetDims(boxDimms)
 
     -- Text
-    local textDimms = 'width:100%-'..sizeAsText..'; height:'..plateHeightReduced..';top:'..tostring(DimensionOptions.plateHeightBorderReduction)..';left:'..plateLeftOffset
+    local textDimms = 'width:100%-'..sizeAsText..'; height:'..plateHeightReduced..';top:'..tostring(DimensionOptions.plateHeightBorderReduction)..';left:'..sizeAsText
     ENTRY.TEXT:SetDims(textDimms)
 end
 
