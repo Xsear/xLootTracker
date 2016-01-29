@@ -2379,7 +2379,7 @@ function Options.Setup()
     -- Notifications
     InterfaceOptions.NotifyOnLoaded(true) -- Notify us when all options have been loaded (we don't play sounds before that)
     --InterfaceOptions.NotifyOnDefaults(true) -- Notify us when user resets the options
-    --InterfaceOptions.NotifyOnDisplay(true) -- Notify us when the user opens the interface options
+    InterfaceOptions.NotifyOnDisplay(true) -- Notify us when the user opens the interface options
 
     -- Callback
     InterfaceOptions.SetCallbackFunc(function(id, val) OnOptionChange({id=id,val=val}) end, 'Loot Tracker') -- Callback for when user changes settings

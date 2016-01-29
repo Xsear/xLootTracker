@@ -363,6 +363,11 @@ function HUDTracker.Rebuild(args)
 
         SCROLLER:UnlockUpdates()
         HUDTracker.UpdateVisibility()
+
+        -- Fake mode extra
+        if HUDTracker.IsInFakeMode() then
+            HUDTracker.EnterFakeMode()
+        end
     end
 end
 
@@ -785,7 +790,9 @@ end
 
 
 
-
+function HUDTracker.IsInFakeMode()
+    return Private.testMode
+end
 
 function HUDTracker.ExitFakeMode()
     Debug.Log("HUDTracker.ExitFakeMode()")

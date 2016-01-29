@@ -286,6 +286,13 @@ function OnSlash(args)
     elseif args[1] == 'no' or args[1] == 'stfu' or args[1] == 'silence' then
         Messages.SendSystemMessage('Forcefully disabling Messages.')
         Options['Messages']['Enabled'] = false
+
+    elseif args[1] == 'fake' or 'htFake' then
+        if HUDTracker.IsInFakeMode() then
+            HUDTracker.ExitFakeMode()
+        else
+            HUDTracker.EnterFakeMode()
+        end
     end
 
 end
