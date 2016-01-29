@@ -202,3 +202,16 @@ OptionsPanelsTimerModeDropdown = {
     [1] = PanelsTimerMode.Normal,
     [2] = PanelsTimerMode.Countdown,
 }
+
+AnimationType = {
+    EaseIn = "ease-in",
+    EaseOut = "ease-out",
+    Linear = "linear",
+    Smooth = "smooth",
+}
+OptionsAnimationTypeDropdown = {
+    [1] = AnimationType.EaseIn,
+    [2] = AnimationType.EaseOut,
+    [3] = AnimationType.Linear,
+    [4] = AnimationType.Smooth,
+}

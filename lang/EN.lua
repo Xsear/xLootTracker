@@ -431,6 +431,50 @@ LANG = {
     Options_Dropdown_PanelsTimerMode_Choice_normal_Label    = "Normal",
     Options_Dropdown_PanelsTimerMode_Choice_disabled_Label  = "Disabled",
 
+
+
+
+
+
+
+
+    Options_HUDTracker_FadeFrame_Enabled_Label                = "Fade Frame",
+    Options_HUDTracker_FadeFrame_Enabled_Tooltip              = "Toggle whether or not to use fade-in and fade-out effects for the frame of the HUDTracker (the whole container).",
+    Options_HUDTracker_FadeFrame_FadeIn_Duration_Label        = "Fade In Duration",
+    Options_HUDTracker_FadeFrame_FadeIn_Duration_Tooltip      = " ",
+    Options_HUDTracker_FadeFrame_FadeIn_Animation_Label       = "Fade In Animation",
+    Options_HUDTracker_FadeFrame_FadeIn_Animation_Tooltip     = " ",
+    Options_HUDTracker_FadeFrame_FadeOut_Duration_Label       = "Fade Out Duration",
+    Options_HUDTracker_FadeFrame_FadeOut_Duration_Tooltip     = " ",
+    Options_HUDTracker_FadeFrame_FadeOut_Animation_Label      = "Fade Out Animation",
+    Options_HUDTracker_FadeFrame_FadeOut_Animation_Tooltip    = " ",
+
+    Options_HUDTracker_FadeEntry_Enabled_Label                = "Fade Entries",
+    Options_HUDTracker_FadeEntry_Enabled_Tooltip              = "Toggle whether or not to use fade-in and fade-out effects for the entries of the HUDTracker.",
+    Options_HUDTracker_FadeEntry_FadeIn_Duration_Label        = "Fade In Duration",
+    Options_HUDTracker_FadeEntry_FadeIn_Duration_Tooltip      = " ",
+    Options_HUDTracker_FadeEntry_FadeIn_Animation_Label       = "Fade In Animation",
+    Options_HUDTracker_FadeEntry_FadeIn_Animation_Tooltip     = " ",
+    Options_HUDTracker_FadeEntry_FadeOut_Duration_Label       = "Fade Out Duration",
+    Options_HUDTracker_FadeEntry_FadeOut_Duration_Tooltip     = " ",
+    Options_HUDTracker_FadeEntry_FadeOut_Animation_Label      = "Fade Out Animation",
+    Options_HUDTracker_FadeEntry_FadeOut_Animation_Tooltip    = " ",
+
+    Options_AnimationType_FadeIn_Label = "Fade In Animation",
+    Options_AnimationType_FadeIn_Tooltip = "Fade In Animation",
+    Options_AnimationType_FadeOut_Label = "Fade Out Animation",
+    Options_AnimationType_FadeOut_Tooltip = "Fade Out Animation",
+
+
+
+    ["Options_Dropdown_AnimationTypeOptions_Choice_ease-in_Label"] = "Ease-in",
+    ["Options_Dropdown_AnimationTypeOptions_Choice_ease-out_Label"] = "Ease-out",
+    Options_Dropdown_AnimationTypeOptions_Choice_smooth_Label = "Smooth",
+    Options_Dropdown_AnimationTypeOptions_Choice_linear_Label = "Linear",
+
+
+
+
     Sounds_Option_none                                  =    "None",
     Sounds_Option_UI_Beep_06                            =    "Beep 06",
     Sounds_Option_UI_Beep_08                            =    "Beep 08",

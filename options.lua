@@ -39,7 +39,7 @@ Options = {
             ['AssignedToHideNil'] = true,
         },
 
-        ['Color'] = {
+        ['Color'] = { -- FIXME: Remove, should not be in use anymore
             ['AssignedTo'] = {
                 ['Nil'] = {alpha=1, tint='FFFFFF'},
                 ['Free'] = {alpha=1, tint='00FF00'},
@@ -190,6 +190,29 @@ Options = {
         ['EntryFontSize'] = 10,
 
         ['ForceWebIcons'] = false,
+
+        ['FadeFrame'] = {
+            ['Enabled'] = true,
+            ['FadeIn'] = {
+                ['Duration'] = 0.5,
+                ['Animation'] = AnimationType.Smooth
+            },
+            ['FadeOut'] = {
+                ['Duration'] = 0.5,
+                ['Animation'] = AnimationType.Linear
+            },
+        },
+        ['FadeEntry'] = {
+            ['Enabled'] = true,
+            ['FadeIn'] = {
+                ['Duration'] = 0.5,
+                ['Animation'] = AnimationType.EaseIn
+            },
+            ['FadeOut'] = {
+                ['Duration'] = 0.5,
+                ['Animation'] = AnimationType.EaseOut
+            },
+        },
 
         ['Frame'] = {
             ['Width'] = 450,
@@ -2921,6 +2944,100 @@ function BuildInterfaceOptions_HUDTracker()
         subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
     })
 
+
+    -- Fade Frame
+    InterfaceOptions.StartGroup({
+        id       = 'HUDTracker_FadeFrame_Enabled',
+        checkbox = true,
+        default  = Options['HUDTracker']['FadeFrame']['Enabled'],
+        label    = Lokii.GetString('Options_HUDTracker_FadeFrame_Enabled_Label'),
+        tooltip  = Lokii.GetString('Options_HUDTracker_FadeFrame_Enabled_Tooltip'),
+        subtab   = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
+        InterfaceOptions.AddSlider({
+            id      = 'HUDTracker_FadeFrame_FadeIn_Duration',
+            min     = 0,
+            max     = 5.0,
+            inc     = 0.1,
+            suffix  = 's',
+            default = Options['HUDTracker']['FadeFrame']['FadeIn']['Duration'],
+            label   = Lokii.GetString('Options_HUDTracker_FadeFrame_FadeIn_Duration_Label'),
+            tooltip = Lokii.GetString('Options_HUDTracker_FadeFrame_FadeIn_Duration_Tooltip'),
+            subtab  = {
+                Lokii.GetString('Options_Subtab_HUDTracker')
+            },
+        })
+
+        UIHELPER_DropdownFromTable('HUDTracker_FadeFrame_FadeIn_Animation', 'Options_AnimationType_FadeIn', Options['HUDTracker']['FadeFrame']['FadeIn']['Animation'], OptionsAnimationTypeDropdown, 'AnimationTypeOptions',  Lokii.GetString('Options_Subtab_HUDTracker'))
+        
+        InterfaceOptions.AddSlider({
+            id      = 'HUDTracker_FadeFrame_FadeOut_Duration',
+            min     = 0,
+            max     = 5.0,
+            inc     = 0.1,
+            suffix  = 's',
+            default = Options['HUDTracker']['FadeFrame']['FadeOut']['Duration'],
+            label   = Lokii.GetString('Options_HUDTracker_FadeFrame_FadeOut_Duration_Label'),
+            tooltip = Lokii.GetString('Options_HUDTracker_FadeFrame_FadeOut_Duration_Tooltip'),
+            subtab  = {
+                Lokii.GetString('Options_Subtab_HUDTracker')
+            },
+        })
+
+        UIHELPER_DropdownFromTable('HUDTracker_FadeFrame_FadeOut_Animation', 'Options_AnimationType_FadeOut', Options['HUDTracker']['FadeFrame']['FadeOut']['Animation'], OptionsAnimationTypeDropdown, 'AnimationTypeOptions',  Lokii.GetString('Options_Subtab_HUDTracker'))
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
+    -- Fade Entry
+    InterfaceOptions.StartGroup({
+        id       = 'HUDTracker_FadeEntry_Enabled',
+        checkbox = true,
+        default = Options['HUDTracker']['FadeEntry']['Enabled'],
+        label   = Lokii.GetString('Options_HUDTracker_FadeEntry_Enabled_Label'),
+        tooltip = Lokii.GetString('Options_HUDTracker_FadeEntry_Enabled_Tooltip'),
+        subtab  = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
+        InterfaceOptions.AddSlider({
+            id      = 'HUDTracker_FadeEntry_FadeIn_Duration',
+            min     = 0,
+            max     = 5.0,
+            inc     = 0.1,
+            suffix  = 's',
+            default = Options['HUDTracker']['FadeEntry']['FadeIn']['Duration'],
+            label   = Lokii.GetString('Options_HUDTracker_FadeEntry_FadeIn_Duration_Label'),
+            tooltip = Lokii.GetString('Options_HUDTracker_FadeEntry_FadeIn_Duration_Tooltip'),
+            subtab  = {
+                Lokii.GetString('Options_Subtab_HUDTracker')
+            },
+        })
+
+        UIHELPER_DropdownFromTable('HUDTracker_FadeEntry_FadeIn_Animation', 'Options_AnimationType_FadeIn', Options['HUDTracker']['FadeEntry']['FadeIn']['Animation'], OptionsAnimationTypeDropdown, 'AnimationTypeOptions',  Lokii.GetString('Options_Subtab_HUDTracker'))
+        
+        InterfaceOptions.AddSlider({
+            id      = 'HUDTracker_FadeEntry_FadeOut_Duration',
+            min     = 0,
+            max     = 5.0,
+            inc     = 0.1,
+            suffix  = 's',
+            default = Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'],
+            label   = Lokii.GetString('Options_HUDTracker_FadeEntry_FadeOut_Duration_Label'),
+            tooltip = Lokii.GetString('Options_HUDTracker_FadeEntry_FadeOut_Duration_Tooltip'),
+            subtab  = {
+                Lokii.GetString('Options_Subtab_HUDTracker')
+            },
+        })
+
+        UIHELPER_DropdownFromTable('HUDTracker_FadeEntry_FadeOut_Animation', 'Options_AnimationType_FadeOut', Options['HUDTracker']['FadeEntry']['FadeOut']['Animation'], OptionsAnimationTypeDropdown, 'AnimationTypeOptions',  Lokii.GetString('Options_Subtab_HUDTracker'))
+
+    InterfaceOptions.StopGroup({
+        subtab = {Lokii.GetString('Options_Subtab_HUDTracker')}
+    })
+
+    -- Filtering
     UIHELPER_Filtering('HUDTracker')
 end
 

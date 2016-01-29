@@ -199,6 +199,11 @@ function HUDTracker.OnTrackerNew(args)
             
             -- Store entry
             Private.entries[tostring(loot:GetTypeId())] = ENTRY
+
+            -- Fade in effect
+            if Options['HUDTracker']['FadeEntry']['Enabled'] then
+                ENTRY.GROUP:ParamTo("alpha", 1.0, Options['HUDTracker']['FadeEntry']['FadeIn']['Duration'], Options['HUDTracker']['FadeEntry']['FadeIn']['Animation'])
+            end
         end
 
     end
@@ -249,10 +254,29 @@ function HUDTracker.OnTrackerLooted(args)
 
             -- Otherwise, just remove
             else
-                Component.RemoveWidget(ENTRY.GROUP)
-                ENTRY.ROW:Remove()
-                ENTRY = nil
+
+                -- Fade out effect
+                if Options['HUDTracker']['FadeEntry']['Enabled'] then
+                    -- Start fade out effect
+                    ENTRY.GROUP:ParamTo("alpha", 0.0, Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'], Options['HUDTracker']['FadeEntry']['FadeOut']['Animation'])
+                end
+
+                -- Removal
                 Private.entries[tostring(loot:GetTypeId())] = nil
+
+                if Options['HUDTracker']['FadeEntry']['Enabled'] then
+                    callback(function() 
+                        Component.RemoveWidget(ENTRY.GROUP)
+                        ENTRY.ROW:Remove()
+                        ENTRY = nil
+                    end, nil, Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'])
+                else -- I really shouldn't be repeating myself, but...
+                    Component.RemoveWidget(ENTRY.GROUP)
+                    ENTRY.ROW:Remove()
+                    ENTRY = nil
+                end
+                
+                
             end
         end
     end
@@ -300,10 +324,28 @@ function HUDTracker.OnTrackerRemove(args)
 
             -- Otherwise, just remove
             else
-                Component.RemoveWidget(ENTRY.GROUP)
-                ENTRY.ROW:Remove()
-                ENTRY = nil
+
+                -- Fade out effect
+                if Options['HUDTracker']['FadeEntry']['Enabled'] then
+                    -- Start fade out effect
+                    ENTRY.GROUP:ParamTo("alpha", 0.0, Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'], Options['HUDTracker']['FadeEntry']['FadeOut']['Animation'])
+                end
+
+                -- Removal
                 Private.entries[typeId] = nil
+
+                if Options['HUDTracker']['FadeEntry']['Enabled'] then
+                    callback(function() 
+                        Component.RemoveWidget(ENTRY.GROUP)
+                        ENTRY.ROW:Remove()
+                        ENTRY = nil
+                    end, nil, Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'])
+                else -- I really shouldn't be repeating myself, but...
+                    Component.RemoveWidget(ENTRY.GROUP)
+                    ENTRY.ROW:Remove()
+                    ENTRY = nil
+                end
+
             end
             
             -- Exit
@@ -383,7 +425,7 @@ function HUDTracker.UpdateVisibility()
         --Debug.Log('State.hud == '..tostring(State.hud))
         --Debug.Log('State.cursor == '..tostring(State.cursor))
         --Debug.Log('State.sin == '..tostring(State.sin))
-        if SCROLLER:GetRowCount() > 0 and (
+        if SCROLLER ~= nil and SCROLLER:GetRowCount() > 0 and (
                (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.MouseMode and State.cursor and State.hud)
@@ -392,12 +434,24 @@ function HUDTracker.UpdateVisibility()
         then
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
-            FRAME:Show(true)
+            --FRAME:Show(true)
+
+            if Options['HUDTracker']['FadeFrame']['Enabled'] then
+                -- Fade in effect
+                FRAME:ParamTo("alpha", 1.0, Options['HUDTracker']['FadeFrame']['FadeIn']['Duration'], Options['HUDTracker']['FadeFrame']['FadeIn']['Animation'])
+            else
+                FRAME:Show(true) 
+            end
 
         else
             --Debug.Log('No, hide the tracker')
             -- No, hide the tracker
-            FRAME:Show(false)
+             if Options['HUDTracker']['FadeFrame']['Enabled'] then
+                -- Fade out effect
+                FRAME:ParamTo("alpha", 0.0, Options['HUDTracker']['FadeFrame']['FadeOut']['Duration'], Options['HUDTracker']['FadeFrame']['FadeOut']['Animation'])
+            else
+                FRAME:Show(true) 
+            end
 
             -- Ensure no tooltip is displayed
             TOOLTIP_ITEM.GROUP:Show(false)
@@ -818,6 +872,7 @@ end
 
 function HUDTracker.EnterFakeMode()
     Debug.Log("HUDTracker.EnterFakeMode()")
+    if Private.testMode then HUDTracker.ExitFakeMode() end
 
     Private.testMode = true
 
