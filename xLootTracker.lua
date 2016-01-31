@@ -75,8 +75,14 @@ require './sounds'     -- Sounds
 function OnComponentLoad()
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
+    Lokii.AddLang('zh', './lang/ZH');
     Lokii.SetBaseLang('en');
-    Lokii.SetToLocale();
+    local locale = Component.GetSetting("Core_Locale")
+    if locale and locale ~= Locale.SystemDefault then
+        Lokii.SetLang(locale)
+    else
+        Lokii.SetToLocale()
+    end
 
     -- Setup LKObjects
     --LKObjects.SetMemoryWarning(20) -- Ehh, the amount of panels is too high now!

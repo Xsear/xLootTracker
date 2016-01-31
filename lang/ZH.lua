@@ -17,13 +17,17 @@ Looted Items Only:
   {lootedTo}
 ]]
 
+-- !!! {itemName}, {itemRarity}, ... Do not translate. Can add description, example "{itemName} - 项目名". No idea if correct :)
+
+-- 把看中中国在这里！ <-- Google Translate \o/
+
 -- Language Table for Lokii
 LANG = {
 
     -- Locales
     Options_Locale_Choice_DEFAULT = "Default",
     Options_Locale_Choice_en = "English",
-    Options_Locale_Choice_zh = "Chinese",
+    Options_Locale_Choice_zh = "Chinese 中国中国中国中国",
 
 
     -- System Messages

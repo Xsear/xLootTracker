@@ -4,6 +4,19 @@
 uiSounds = xSounds.GetSounds()
 
 
+Locale = {
+    SystemDefault = 'DEFAULT',
+    English = 'en',
+    Chinese = 'zh',
+}
+
+OptionsLocaleDropdown = {
+    [1] = Locale.SystemDefault,
+    [2] = Locale.English,
+    [3] = Locale.Chinese,
+}
+
+
 TornadoPocketZoneIds = {
     805, -- Epicenter
     865, -- Abyss
