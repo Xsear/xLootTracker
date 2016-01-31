@@ -347,7 +347,7 @@ function Tracker.Track(args)
     end
 
     -- Be sure it still exists
-    if not Game.IsTargetAvailable(entityId) and not (Options['Debug']['Enabled'] and tonumber(entityId) <= 2000) then
+    if not Game.IsTargetAvailable(entityId) and not IsDebugLoot({entityId=entityId}) then
         return
     end
 
@@ -773,3 +773,11 @@ end
 
 
 
+-- Verify if loot is fake or not
+-- args.entityId - Verify by entityId
+function IsDebugLoot(args)
+    if args.entityId then
+        return (Options['Debug']['Enabled'] and tonumber(entityId) <= 2000)
+    end
+    return false
+end

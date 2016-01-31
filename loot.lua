@@ -329,7 +329,7 @@ function Private.DetermineState(loot)
     if loot:GetEntityId() then
         if Game.IsTargetAvailable(loot:GetEntityId()) then
             state = LootState.Available
-        elseif Options['Debug']['Enabled'] and tonumber(loot:GetEntityId()) <= 2000 and tonumber(System.GetElapsedTime(loot.createdAt)) < 30 then
+        elseif IsDebugLoot({entityId=loot:GetEntityId()}) and tonumber(System.GetElapsedTime(loot.createdAt)) < 30 then
             state = LootState.Available -- Debug
         else
             if loot.lootedBy then
