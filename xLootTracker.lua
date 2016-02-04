@@ -33,9 +33,9 @@ require './lootpanel'              -- Loot Panel object
 
 -- Addon Meta
 AddonInfo = {
-    release  = '2016-01-3',
-    version = '1.21-ZH',
-    patch = '1.6.1934',
+    release  = '2016-02-05',
+    version = '1.22',
+    patch = '1.6.1940',
     save = 1.0,
 }
 
@@ -79,7 +79,10 @@ require './sounds'     -- Sounds
 function OnComponentLoad()
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
-    Lokii.AddLang('zh', './lang/ZH');
+    --Lokii.AddLang('zh', './lang/ZH');
+    --Lokii.AddLang('de', './lang/DE');
+    --Lokii.AddLang('fr', './lang/FR');
+    --Lokii.AddLang('es', './lang/ES');
     Lokii.SetBaseLang('en');
     local locale = Component.GetSetting("Core_Locale")
     if locale and locale ~= Locale.SystemDefault then

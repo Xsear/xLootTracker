@@ -8,12 +8,18 @@ Locale = {
     SystemDefault = 'DEFAULT',
     English = 'en',
     Chinese = 'zh',
+    German = 'de',
+    French = 'fr',
+    Spanish = 'es',
 }
 
 OptionsLocaleDropdown = {
     [1] = Locale.SystemDefault,
     [2] = Locale.English,
-    [3] = Locale.Chinese,
+    --[3] = Locale.Chinese,
+    --[3] = Locale.German,
+    --[3] = Locale.French,
+    --[3] = Locale.Spanish,
 }
 
 

@@ -24,7 +24,9 @@ LANG = {
     Options_Locale_Choice_DEFAULT = "Default",
     Options_Locale_Choice_en = "English",
     Options_Locale_Choice_zh = "Chinese",
-
+    Options_Locale_Choice_de = "German",
+    Options_Locale_Choice_fr = "French",
+    Options_Locale_Choice_es = "Spanish",
 
     -- System Messages
     SystemMessage_Prefix = "[xLT] ",
