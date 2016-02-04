@@ -33,9 +33,9 @@ require './lootpanel'              -- Loot Panel object
 
 -- Addon Meta
 AddonInfo = {
-    release  = '2016-01-22',
-    version = '1.21',
-    patch = '1.6.1931',
+    release  = '2016-01-3',
+    version = '1.21-ZH',
+    patch = '1.6.1934',
     save = 1.0,
 }
 
@@ -79,8 +79,14 @@ require './sounds'     -- Sounds
 function OnComponentLoad()
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
+    Lokii.AddLang('zh', './lang/ZH');
     Lokii.SetBaseLang('en');
-    Lokii.SetToLocale();
+    local locale = Component.GetSetting("Core_Locale")
+    if locale and locale ~= Locale.SystemDefault then
+        Lokii.SetLang(locale)
+    else
+        Lokii.SetToLocale()
+    end
 
     -- Setup LKObjects
     --LKObjects.SetMemoryWarning(20) -- Ehh, the amount of panels is too high now!

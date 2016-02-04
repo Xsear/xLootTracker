@@ -3,6 +3,7 @@ Options = {
         ['Enabled'] = true,
         ['VersionMessage'] = true,
         ['SlashHandles'] = 'xlt,lt,xloottracker,loottracker',
+        ['Locale'] = Locale.SystemDefault,
     },
 
     ['Tracker'] = {
@@ -2172,6 +2173,11 @@ function OnOptionChange(args)
         Component.SaveSetting('Core_VersionMessage', args.val)
     elseif args.id == 'Core_SlashHandles' then
         Component.SaveSetting('Core_SlashHandles', args.val)
+    elseif args.id == 'Core_Locale' then
+        Component.SaveSetting('Core_Locale', args.val)
+        if State.loaded then
+            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Core_LocaleChanged'))
+        end
     end
 
     -- Perform extra actions
@@ -2476,6 +2482,17 @@ function BuildInterfaceOptions_Front()
             tooltip = Lokii.GetString('Options_Core_SlashHandles_Tooltip'),
             default = Options['Core']['SlashHandles'],
         })
+
+        InterfaceOptions.AddChoiceMenu({
+            id='Core_Locale',
+            label=Lokii.GetString('Options_Core_Locale_Label'),
+            default=Options['Core']['Locale'],
+        })
+
+            for index, locale in ipairs(OptionsLocaleDropdown) do
+                local label = 'Options_Locale_Choice_' .. locale
+                InterfaceOptions.AddChoiceEntry({menuId='Core_Locale', label=Lokii.GetString(label), val=locale});
+            end
 
     InterfaceOptions.StopGroup()
 
