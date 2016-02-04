@@ -6,11 +6,19 @@
 --[[
 	API:
 		Lokii.AddLang(ID, langPath); [string] [string]
-			Add a new localy stored language, id is a string ID used to refrance this language pack.
-			langPath should be a string poining to the lua file for that language
+			Add a new locally stored language, id is a string ID used to reference this language pack.
+			langPath should be a string pointing to the Lua file for that language
 	
+		Lokii.ForceLocalFiles(bool) [bool]
+			Force lokii to only use the local lang files.
+			Usefull for dev builds
+			
+		Lokii.SetLocalVersion(ver) [int]
+			Only usefull if you are using web lang packs.
+			Sets what version is the local lang files at.
+		
 		Lokii.SetBaseLang(ID); [string]
-			The base language is used incase the selected language doesn't have a replacement string.
+			The base language is used in case the selected language doesn't have a replacement string.
 			The ID should be one of the ids that you provided to Lokii.AddLang.
 				
 		Lokii.SetLang(ID); [string]
@@ -35,6 +43,11 @@
 			Set a function to be called when the webpack is downloaded.
 			Only called if a pack is downloaded so if the packs are up to date then it won't be called
 			
+		Lokii.ReplaceKeysOnFrame(frame); [Frame]
+			Will auto set any text widgets to the key set in the widgets "tag" field.
+			eg. tag="$TITLE" will set that widgets text to the text linked to the "TITLE" key
+			This is handy for once of lables.
+			
 	Lang file example:
 		LANG = jsontotable(
 		{
@@ -49,7 +62,7 @@
 			STRING_ID = "string :D",
 		};
 		
-		The first is preferable as you can just copy the json to a file on a webserver for use with Lokii.LoadWebPack.
+		The first is preferable as you can just copy the json to a file on a web server for use with Lokii.LoadWebPack.
 	
 	Usage example:
 		Lokii.AddLang("en", "./lang/EN");
@@ -71,14 +84,14 @@
 				"jp" : "JP.json",
 				"fr" : "FR.json",
 			}
-		The version number is used to check if Lokii should update, increase it evertime you changes the files on the server.
-		After that is an entry for each lang pack you want added to Lokii. ID then the url reltive to the current directory.
+		The version number is used to check if Lokii should update, increase it every time you changes the files on the server.
+		After that is an entry for each lang pack you want added to Lokii. ID then the url relative to the current directory.
 		
 		Then create a file for each lang pack at the place you specified in the index.json
-		make sure your web server will server these files as "applaction/json" or FireFall will reject them.
-		Thats it ^^
+		make sure your web server will server these files as "application/json" or FireFall will reject them.
+		That's it ^^
 		
-		Oh and for refrance the lang codes for firefall are:
+		Oh and for reference the lang codes for Firefall are:
 			English = en
 			German = de
 			French = fr
@@ -102,7 +115,10 @@ PRIVATE.ActiveLang = "";
 PRIVATE.VERSION_ID = "Lokii_Lang_Ver";
 PRIVATE.CACHED_PREFIX = "Lokii_Lang_";
 PRIVATE.CACHED_LANG_LIST = "Lokii_Lang_List";
+PRIVATE.TAG_IS_KEY_MARKER = "$";
 PRIVATE.HTTP_MAX_RETRIES = 3;
+PRIVATE.ForceLocal = false;
+PRIVATE.LocalLangVer = 1;
 
 -- Register a new lang pack
 function Lokii.AddLang(id, langPath)
@@ -111,12 +127,21 @@ function Lokii.AddLang(id, langPath)
 	LANG = nil;
 end
 
--- This sets the base lang, if a replacment lang doesn't have all the strings defined
+-- Force Lokii to only use local Lang files
+function Lokii.ForceLocalFiles(bool)
+	PRIVATE.ForceLocal = bool;
+end
+
+function Lokii.SetLocalVersion(ver)
+	PRIVATE.LocalLangVer = ver;
+end
+
+-- This sets the base lang, if a replacement lang doesn't have all the strings defined
 -- then the string in the base will be used instead
 function Lokii.SetBaseLang(id)
 	-- Check if we have any new lang data cached
 	local langList = Component.GetSetting(PRIVATE.CACHED_LANG_LIST);
-	if (langList ~= nil) then
+	if (langList ~= nil and not PRIVATE.ForceLocal) then
 		for i = 1, #langList, 1 do
 			PRIVATE.Langs[langList[i]] = Component.GetSetting(PRIVATE.CACHED_PREFIX..langList[i]);
 		end
@@ -134,7 +159,7 @@ function Lokii.SetLang(id)
 	-- Copy the base, but don't drop it! We ain't no Skrillex :p (base, bass, close enough)
 	Lokii.Lang = PRIVATE.SimpleCopy(PRIVATE.Langs[PRIVATE.BaseLang]);
 	
-	-- Now overide those strings with there replacements
+	-- Now override those strings with there replacements
 	if (PRIVATE.Langs[id] == nil) then
 		Debug.Warn("That lang pack doesn't exist :/", "["..id.."]");
 	else
@@ -148,11 +173,8 @@ function Lokii.SetToLocale()
 	Lokii.SetLang(System.GetLocale());
 end
 
--- Function modified by Xsear
--- Return id if it fails to find a matching string, so I see which ones are missing
 function Lokii.GetString(id)
-	if Lokii.Lang[id] then return Lokii.Lang[id] end
-	return id;
+	return Lokii.Lang[id] or id; -- Xsear modified this to return the id in case the string isn't found.
 end
 
 function Lokii.GetLangList()
@@ -172,6 +194,11 @@ function Lokii.LoadWebPack(HOST)
 	local CurrentVersion = Component.GetSetting(PRIVATE.VERSION_ID);
 	PRIVATE.WebRequest({url = HOST .. "/index.json", cb =
 	function(args)
+	
+		if (PRIVATE.LocalLangVer > args.Version) then
+			return;
+		end
+			
 		if (CurrentVersion == nil or args.Version > CurrentVersion) then
 			CurrentVersion = args.Version;
 			args.Version = nil;
@@ -197,11 +224,15 @@ function Lokii.LoadWebPack(HOST)
 						if (PRIVATE.cb_Loaded) then
 							PRIVATE.cb_Loaded();
 						end
-					end
+					end -- Nest
 				end});
-			end
+			end -- Nest all the things!
 		end
 	end});
+end -- The end of the ends end end
+
+function Lokii.ReplaceKeysOnFrame(frame)
+	PRIVATE.SetTextOnFrameChildren(frame)
 end
 
 function PRIVATE.SimpleCopy(orig)
@@ -226,12 +257,12 @@ function PRIVATE.WebRequest(prams)
 	if (HTTP.IsRequestPending()) then
 		local delay = math.random(2, 8);
 		if (not prams.tries) then prams.tries = 0; end
-		if (prams.tries > PRIVATE.HTTP_MAX_RETRIES) then
-			Debug.Warn("A HTTP Request is pending retrying in", delay, "seconds", "Retry numer", prams.tries);
+		if (prams.tries < PRIVATE.HTTP_MAX_RETRIES) then
+			Debug.Warn("A HTTP Request is pending retrying in", delay, "seconds", "Retry number", prams.tries);
 			prams.tries = prams.tries + 1;
 			Callback2.FireAndForget(PRIVATE.WebRequest, prams, delay);
 		else
-			Debug.Warn("The HTTP request failed", prams.tries, "time. Sorry but i'm call 404 on that guy :<");
+			Debug.Warn("The HTTP request failed", prams.tries, "times. Sorry but I'm call 404 on that guy :< (", prams.url, ")");
 		end
 	else
 		HTTP.IssueRequest(prams.url, "GET", nil,
@@ -239,8 +270,37 @@ function PRIVATE.WebRequest(prams)
 			if args then
 				prams.cb(args);
 			else
-				Debug.Error("Error trying to get", prams.url, "Error message:", tostring(err), "Retring.");
+				Debug.Error("Error trying to get", prams.url, "Error message:", tostring(err), "Retrying.");
 			end 
 		end);
+	end
+end
+
+
+--============================================================
+-- Replace keys on text widgets with a localized string
+--============================================================
+function PRIVATE.SetTextOnFrameChildren(frame) -- Can't think of a nice name
+	for i = 1, frame:GetChildCount(), 1 do
+		PRIVATE.RecurseWidget(frame:GetChild(i))
+	end
+end
+
+function PRIVATE.RecurseWidget(widget)
+	if widget:GetType() == "Text" then
+		local tagKey = widget:GetTag();
+
+		if tagKey and tagKey ~= "" and tagKey:sub(1, #PRIVATE.TAG_IS_KEY_MARKER) == PRIVATE.TAG_IS_KEY_MARKER then
+			local key = tagKey:sub(#PRIVATE.TAG_IS_KEY_MARKER+1);
+			local text = Lokii.GetString(key);
+
+			widget:SetText(text);
+		end
+	end
+
+	for i = 1, widget:GetChildCount(), 1 do
+		local child = widget:GetChild(i)
+
+		PRIVATE.RecurseWidget(child)
 	end
 end
