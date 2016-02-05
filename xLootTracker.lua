@@ -213,15 +213,10 @@ end
     Event handler for ON_SQUAD_ROSTER_UPDATE
 ]]--
 function OnSquadRosterUpdate(args)
-    State.inSquad = Squad.IsInSquad()
     State.inPlatoon = Platoon.IsInPlatoon()
-
-    if State.inSquad and State.inPlatoon then
-        State.inSquad = false
-    end
-
-    State.isSquadLeader = (State.inSquad and namecompare(State.playerName, Squad.GetLeader()))
+    State.inSquad = Squad.IsInSquad() and not State.inPlatoon
     State.isPlatoonLeader = (State.inPlatoon and namecompare(State.playerName, Platoon.GetLeader()))
+    State.isSquadLeader = (State.inSquad and namecompare(State.playerName, Squad.GetLeader()))
 end
 
 --[[
