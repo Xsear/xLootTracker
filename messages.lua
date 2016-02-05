@@ -177,6 +177,13 @@ function Messages.SendSystemMessage(message)
     Messages.SendMessageToChat('system', prefix..message)
 end
 
+function Messages.SendFormattedSystemMessage(message, vars)
+    local prefix = Lokii.GetString('SystemMessage_Prefix')
+    message = Private.replace_vars(message, vars)
+    Messages.SendMessageToChat('system', prefix..message)
+end
+
+
 --[[
     Messages.SendMessageToChat(channel, message, alert)
     Function to handle the actual sending of messages to chat.

@@ -31,12 +31,16 @@ LANG = {
     -- System Messages
     SystemMessage_Prefix = "[xLT] ",
     SystemMessage_Tracker_HitLimit = "Hit the limit on number of tracked items!",
-    SystemMessage_Core_LocaleChanged = "Reload the UI with '/rui' in order to apply new locale",
+    SystemMessage_Core_LocaleChanged = "Locale changed to %s. Reload the UI with '/rui' to update.",
+    SystemMessage_Core_Version = 'Loot Tracker v{version} p{patch} r{release} Loaded',
+
 
     -- UI
     UI_Waypoints_Subtitle                                                           =    "Loot",
 
+
     -- Options
+    Options_Label = "Loot Tracker", -- This is the label of the top-level Loot Tracker tab in the interface options, under Addons.
     Options_MoveableFrame_Tracker_Label                                                         =     "Loot Tracker",
 
     Options_Group_Core_Label                                                                    =    "Loot Tracker",

@@ -2176,6 +2176,7 @@ function OnOptionChange(args)
     elseif args.id == 'Core_Locale' then
         Component.SaveSetting('Core_Locale', args.val)
         if State.loaded then
+            Lokii.SetLang(args.val)
             Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Core_LocaleChanged'))
         end
     end
@@ -2413,7 +2414,7 @@ function Options.Setup()
     InterfaceOptions.NotifyOnDisplay(true) -- Notify us when the user opens the interface options
 
     -- Callback
-    InterfaceOptions.SetCallbackFunc(function(id, val) OnOptionChange({id=id,val=val}) end, 'Loot Tracker') -- Callback for when user changes settings
+    InterfaceOptions.SetCallbackFunc(function(id, val) OnOptionChange({id=id,val=val}) end, Lokii.GetString('Options_Label')) -- Callback for when user changes settings
 
     -- Save version
     InterfaceOptions.SaveVersion(AddonInfo.save) -- Settings save-version, increment if behavior changes
