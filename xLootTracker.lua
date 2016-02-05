@@ -41,8 +41,9 @@ AddonInfo = {
 
 -- Global State
 State = {
-    loaded        = false,   -- Set by the __LOADED message through options, allowing me to hold back sounds when the addon loads all the settings
-    hud           = true,   -- Whether game wants HUD to be displayed or not, updated by OnHudShow
+    inOptions     = false,   -- Set by the __DISPLAY message from lib_InterfaceOptions, whether the user is viewing the options.
+    loaded        = false,   -- Set by the __LOADED message from lib_InterfaceOptions, allowing me to hold back sounds when the addon loads all the settings
+    hud           = true,    -- Whether game wants HUD to be displayed or not, updated by OnHudShow
     cursor        = false,   -- Whether game is in cursor mode or not, updated by OnInputModeChanged
     sin           = false,   -- Whether game is in Sin view or not, updated by OnSinView
     tooltipActive = false,   -- Whether addon is currently utilizing the Tooltip. Updated manually within the addon when Tooltip.Show is called. There are situations unrelated to mouse location where I might want to hide the tooltip if it is displaying. Just calling Tooltip.Show(false) could interfere with other addons, so I use this variable to keep track of when I've called it. As long as no other addon/ui element randomly calls Tooltip.Show (without mine being unfocused first!) it should serve its purpose.

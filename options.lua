@@ -2097,13 +2097,12 @@ function OnOptionChange(args)
 
     elseif args.id == '__DEFAULT' then
         -- Todo: Add support for reseting options to the defaults. OptionSection(118): assert failed (message "Addons Option Tab was not setup to support the default button")
+        return
 
     elseif args.id == '__DISPLAY' then
-        if args.val then
-            HUDTracker.EnterFakeMode()
-        else
-            HUDTracker.ExitFakeMode()
-        end
+        State.inOptions = args.val
+        HUDTracker.OnDisplayOptions()
+        return
 
     -- Addon Options
     else
@@ -2229,6 +2228,10 @@ function SetOptionsAvailability(args)
     local platoonOnlyWhenLeaderToggler = (Options['Messages']['Channels']['Platoon'])
     InterfaceOptions.EnableOption('Messages_OnlyWhenSquadLeader', squadOnlyWhenLeaderToggler)
     InterfaceOptions.EnableOption('Messages_OnlyWhenPlatoonLeader', platoonOnlyWhenLeaderToggler)
+
+    -- HUDTracker Disable frame when disabled
+    local hudtrackerFrameToggler = not (Options['HUDTracker']['Enabled'])
+    --InterfaceOptions.DisableFrameMobility(HUDTracker.GetFrame(), hudtrackerFrameToggler)
 
     -- Summary: If simple disable advanced options
     for i, moduleArg in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds', {parent='Messages', 'OnLootNew', 'OnLootLooted', 'OnLootLost'}}) do

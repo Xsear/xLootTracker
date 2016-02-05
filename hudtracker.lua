@@ -104,6 +104,13 @@ end
 function HUDTracker.Enable()
     -- Build
     HUDTracker.Rebuild()
+
+    -- Fnter fakemode if in options
+    if State.inOptions then
+        HUDTracker.EnterFakeMode()
+    end
+
+    HUDTracker.UpdateVisibility()
 end
 
 --[[
@@ -111,6 +118,11 @@ end
     Called when HUDTracker is Disabled in the Options, cleans up.
 --]]
 function HUDTracker.Disable()
+    -- Exit fakemode if in
+    if HUDTracker.IsInFakeMode() then
+        HUDTracker.ExitFakeMode()
+    end
+
     -- Hide tooltip if is currently being displayed
     if State.tooltipActive then
         Tooltip.Show(false)
@@ -155,6 +167,7 @@ function HUDTracker.OnOptionChange(id, value)
 
     -- For general options we rebuild the tracker
     else
+        -- Entry Size
         if id == 'HUDTracker_EntrySize' then
             SCROLLER:SetScrollStep(Options['HUDTracker']['EntrySize'] + DimensionOptions.ScrollerSpacing)
         end
@@ -164,14 +177,32 @@ function HUDTracker.OnOptionChange(id, value)
     end
 end
 
+function HUDTracker.OnDisplayOptions()
+    if Options['HUDTracker']['Enabled'] then
+        if State.inOptions then
+            HUDTracker.EnterFakeMode()
+        else
+            HUDTracker.ExitFakeMode()
+        end
+    end
+end
+
 --[[
     HUDTracker.OnTrackerNew(args)
     Called when Tracker has added a new item.
     Updates the HUDTracker to reflect the new state, creating an entry if applicable.
 --]]
 function HUDTracker.OnTrackerNew(args)
-    
+    args.event = 'HUDTracker.OnTrackerNew'
+    Debug.Event(args)
+
     local loot = Tracker.GetLootById(args.lootId)
+    if HUDTracker.IsInFakeMode() then
+        if Private.testEntries[args.lootId] then
+            loot = Private.testEntries[args.lootId]
+        end
+    end
+    if not loot then return end
 
     if Options['Blacklist']['HUDTracker'][tostring(loot:GetTypeId())] then
         return
@@ -301,9 +332,11 @@ function HUDTracker.OnTrackerLooted(args)
 
                 if Options['HUDTracker']['FadeEntry']['Enabled'] then
                     callback(function() 
-                        Component.RemoveWidget(ENTRY.GROUP)
-                        ENTRY.ROW:Remove()
-                        ENTRY = nil
+                        if ENTRY then
+                            if ENTRY.GROUP and Component.IsWidget(ENTRY.GROUP) then Component.RemoveWidget(ENTRY.GROUP) end
+                            if ENTRY.ROW and ENTRY.ROW.Remove then ENTRY.ROW:Remove() end
+                            ENTRY = nil
+                        end
                     end, nil, Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'])
                 else -- I really shouldn't be repeating myself, but...
                     Component.RemoveWidget(ENTRY.GROUP)
@@ -325,8 +358,8 @@ end
     Updates the HUDTracker to reflect the new state.
 --]]
 function HUDTracker.OnTrackerRemove(args)
-    --args.event = 'HUDTracker.OnTrackerRemove'
-    --Debug.Event(args)
+    args.event = 'HUDTracker.OnTrackerRemove'
+    Debug.Event(args)
 
     --Debug.Table('HUDTracker Private.entries', Private.entries)
 
@@ -370,10 +403,12 @@ function HUDTracker.OnTrackerRemove(args)
                 Private.entries[typeId] = nil
 
                 if Options['HUDTracker']['FadeEntry']['Enabled'] then
-                    callback(function() 
-                        Component.RemoveWidget(ENTRY.GROUP)
-                        ENTRY.ROW:Remove()
-                        ENTRY = nil
+                    callback(function()
+                        if ENTRY then
+                            if ENTRY.GROUP and Component.IsWidget(ENTRY.GROUP) then Component.RemoveWidget(ENTRY.GROUP) end
+                            if ENTRY.ROW and ENTRY.ROW.Remove then ENTRY.ROW:Remove() end
+                            ENTRY = nil
+                        end
                     end, nil, Options['HUDTracker']['FadeEntry']['FadeOut']['Duration'])
                 else -- I really shouldn't be repeating myself, but...
                     Component.RemoveWidget(ENTRY.GROUP)
@@ -405,8 +440,16 @@ function HUDTracker.Rebuild(args)
     if Options['HUDTracker']['Enabled'] then
         --Debug.Log('HUDTracker Update called and HUDTracker is enabled')
 
+
         -- Stop scroller updates whilst we update
         SCROLLER:LockUpdates()  
+
+        -- Exit fake mode if in
+        local shouldReFake = false
+        if HUDTracker.IsInFakeMode() then
+            shouldReFake = true
+            HUDTracker.ExitFakeMode()
+        end
 
         -- Clear
         for typeId, ENTRY in pairs(Private.entries) do
@@ -425,11 +468,14 @@ function HUDTracker.Rebuild(args)
             end
         end
 
+        -- Restore scroller updates
         SCROLLER:UnlockUpdates()
+
+        -- Update visibility
         HUDTracker.UpdateVisibility()
 
-        -- Fake mode extra
-        if HUDTracker.IsInFakeMode() then
+        -- What we just did fucked up the fake mode, so reset
+        if shouldReFake then
             HUDTracker.EnterFakeMode()
         end
     end
@@ -534,9 +580,9 @@ end
 function HUDTracker.ExitFakeMode()
     Debug.Log("HUDTracker.ExitFakeMode()")
 
-
     for key, value in pairs(Private.testEntries) do
         HUDTracker.OnTrackerRemove({lootId=key})
+        Private.testEntries[key] = nil
     end
 
     Private.testMode = false
@@ -545,7 +591,7 @@ end
 
 function HUDTracker.EnterFakeMode()
     Debug.Log("HUDTracker.EnterFakeMode()")
-    if Private.testMode then HUDTracker.ExitFakeMode() end
+    --if Private.testMode then HUDTracker.ExitFakeMode() HUDTracker.EnterFakeMode() return end
 
     Private.testMode = true
 
@@ -564,7 +610,7 @@ function HUDTracker.EnterFakeMode()
         lootData.itemInfo = Game.GetItemInfoByType(lootData.targetInfo.itemTypeId)
 
         local loot = Loot.Create(lootData.entityId, lootData.targetInfo, lootData.itemInfo)
-
+--[[
         -- Create entry
         local ENTRY = Private.CreateEntry(loot)
 
@@ -592,9 +638,11 @@ function HUDTracker.EnterFakeMode()
         
         -- Store entry
         Private.entries[tostring(loot:GetTypeId())] = ENTRY
-
+--]]
         -- Store test entry
         Private.testEntries[tostring(loot:GetId())] = loot
+
+        HUDTracker.OnTrackerNew({lootId = loot:GetId()})
     end
     HUDTracker.UpdateVisibility()
 end
