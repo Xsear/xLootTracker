@@ -5,9 +5,9 @@ v1.22
     2016-
 
 
-    - When viewing the Interface Options, the HUDTracker will be populated with some fake items.
+    - While in the InterfaceOptions, the HUDTracker will now always be displayed if it is Enabled. It will also be populated with some fake items. If it is disabled, the moveable frame will now also be hidden.
     - Changed text positioning in the HUDTracker in hopes of fixing an overlap issue.
-    - Add fade-in and fade-out effects to the HUDTracker. Can enable/disable, set duration and animation.
+    - Add fade-in and fade-out effects to the HUDTracker, with options to enable/disable, set duration and animation.
     - Add option to toggle the display of the slider/scrollbar in the HUDTracker.
     - Scrolling the HUDTracker will factor in the size of the entries better.
     - Added "Add Coordinates Link" to the right-click context menu of the HUDTracker entries.
