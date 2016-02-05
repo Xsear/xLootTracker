@@ -780,7 +780,7 @@ end
 -- args.entityId - Verify by entityId
 function IsDebugLoot(args)
     if args.entityId then
-        return (Options['Debug']['Enabled'] and tonumber(entityId) <= 2000)
+        return (Options['Debug']['Enabled'] and tonumber(args.entityId) <= 2000)
     end
     return false
 end
