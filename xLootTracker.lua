@@ -410,7 +410,7 @@ end
     Called by the Tracker when an item has been looted.
 --]]
 function OnTrackerLooted(args)
-    --Debug.Event(args)
+    Debug.Event(args)
 
     -- Waypoints
     WaypointManager.OnTrackerLooted(args)
