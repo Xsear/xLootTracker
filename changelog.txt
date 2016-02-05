@@ -5,12 +5,13 @@ v1.22
     2016-
 
 
-    - While in the InterfaceOptions, the HUDTracker will now always be displayed if it is Enabled. It will also be populated with some fake items. If it is disabled, the moveable frame will now also be hidden.
-    - Changed text positioning in the HUDTracker in hopes of fixing an overlap issue.
+    - Added a keybind "Toggle Waypoint Visibility", which when pressed will toggle the visibility of active waypoints on the HUD.
     - Add fade-in and fade-out effects to the HUDTracker, with options to enable/disable, set duration and animation.
+    - While in the InterfaceOptions, the HUDTracker will now always be displayed if it is Enabled. It will also be populated with some fake items. If it is disabled, the moveable frame will now also be hidden.
     - Add option to toggle the display of the slider/scrollbar in the HUDTracker.
-    - Scrolling the HUDTracker will factor in the size of the entries better.
     - Added "Add Coordinates Link" to the right-click context menu of the HUDTracker entries.
+    - Changed text positioning in the HUDTracker in hopes of fixing an overlap issue.
+    - Scrolling the HUDTracker will factor in the size of the entries better.
     - Add proper support for localization in the addon, though no localizations have been made yet.
 
 
