@@ -11,6 +11,7 @@ v1.22
     - Add option to toggle the display of the slider/scrollbar in the HUDTracker.
     - Scrolling the HUDTracker will factor in the size of the entries better.
     - Added "Add Coordinates Link" to the right-click context menu of the HUDTracker entries.
+    - Add proper support for localization in the addon, though no localizations have been made yet.
 
 
 
