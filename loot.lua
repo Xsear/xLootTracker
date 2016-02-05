@@ -249,13 +249,6 @@ function Loot:GetCerts()
     return self.itemInfo.certifications or false
 end
 
-
-function Loot:GetAsText()
-    --Debug.Log('Loot:GetAsText not yet implemented')
-    -- Todo: Fixme: Remove?
-    return self:GetName()
-end
-
 function Loot:GetAsLink()
     return ChatLib.EncodeItemLink(self:GetTypeId(), self.itemInfo.hidden_modules, self.itemInfo.slotted_modules) or self:GetName()
 end
@@ -272,10 +265,6 @@ function Loot:GetCoordLink()
     end
 
     return tostring(self:GetPos())
-end
-
-function Loot:GetCoordLinkText()
-
 end
 
 function Loot:ToString()

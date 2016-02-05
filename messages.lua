@@ -226,7 +226,6 @@ function Messages.TextFilters(formatString, args)
         itemLevel = tostring(loot:GetItemLevel()),
         itemReqLevel = tostring(loot:GetRequiredLevel()),
         itemAsLink = loot:GetAsLink(),
-        itemAsText = loot:GetAsText(),
         itemCoordLink = loot:GetCoordLink(),
         lootedBy = loot:GetLootedBy(),
         lootedTo = loot:GetLootedTo(),

@@ -54,7 +54,7 @@ function WaypointManager.OnOptionChange(id, value)
         end
     
     else
-        -- Todo:
+        -- Todo: Add support for updating Waypoints on the fly as their options are being changed.
     end
 end
 

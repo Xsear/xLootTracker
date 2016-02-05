@@ -4,7 +4,7 @@
 --]]
 HUDTracker = {}
 
--- Lots of stuff that should be in Private that isn't yet
+-- Private variables
 local Private = {
     lastUpdate = 0,
     minUpdateCB = nil,
@@ -13,28 +13,57 @@ local Private = {
     entries = {}
 }   
 
--- Frames
+-- UI references, these should really be in Private but it is easier to work with them like this.
 local FRAME = Component.GetFrame('Tracker')
 local SLIDER = FRAME:GetChild('Slider')
 local LIST = FRAME:GetChild('List')
 local SCROLLER = nil
 local TOOLTIP_ITEM = nil
 
-
--- y u no options D:
+-- The table of magic numbers.
 local DimensionOptions = {
     ScrollerSpacing = 8,
     ScrollerSliderMarginVisible = 5,
     ScrollerSliderMarginHidden = 5,
     EntryDimsWidth = '100%',
     EntryDimsHeight = '32',
-
     plateLeftOverlap = 4, -- Plate is offset by the size of the icon subtracted by this value, in order to have the icon overlap the edge of the plate
     plateHeightBorderReduction = 2, -- Plate height is reduced by 2 times this value, in order to free up space for the top and bottom borders.
-
+    textAutoSizeHeightIncrease = 20, -- 
 }
 
+-- Blueprint for the HUDTracker Entries
+local bp_ENTRY = [[
+    <Group name='EntryGroup' dimensions='width:100%; height:32;'>
 
+        <!-- Plate -->
+        <FocusBox name='plate' dimensions='width:100%-30; height:28; left:30; top:2;'>
+            <StillArt name='bg' dimensions='width:100%-2.2; height:99%-2;' style='texture:colors; region:white; tint:#000000; alpha:0.7;'/>
+            <Border name='outer' dimensions='dock:fill' class='Tracker_PlateBorder'/>
+            <Border name='shade' dimensions='dock:fill' class='ButtonFade'/>
+        </FocusBox>
+
+        <!-- Box -->
+        <Group name='box' dimensions='width:32; height:32; left:0; top:0;'>
+            <StillArt name='bg' dimensions='width:96%; height:96%;' style='texture:colors; region:white; tint:#000000; alpha:1;'/>
+            <StillArt name='backplate' dimensions='width:99%; height:99%;' style='texture:ItemPlate; region:Square;'/>
+            <Border name='outer' dimensions='dock:fill;' class='ButtonBorder'/>
+            <Border name='shade' dimensions='width:0;height:0;' class='ButtonFade'/>
+            <Group name='icon' dimensions='dock:fill;' style='fixed-bounds:true; valign:center;'/>
+        </Group>
+
+        <!-- Text -->
+        <Group name='text' dimensions='width:100%-32; height:28; left:32; top:2;'>
+            <!-- Stack -->
+            <Text name='stack' dimensions='width:10%; height:100%-2; top:0; left:10%;' class='Tracker_Text'/>
+        
+            <!-- Title -->
+            <Text name='title' dimensions='width:80%; height:100%-2; top:0; left:20%;' class='Tracker_Text'/>
+        </Group>    
+
+        
+    </Group>
+]]
 
 
 --[[
@@ -67,7 +96,6 @@ function HUDTracker.Setup()
     InterfaceOptions.ChangeFrameHeight(FRAME, Options['HUDTracker']['Frame']['Height'])
     SCROLLER:UpdateSize()
 end
-
 
 --[[
     HUDTracker.Enable()
@@ -363,19 +391,6 @@ function HUDTracker.OnTrackerRemove(args)
     HUDTracker.UpdateVisibility()
 end
 
--- For visual refresh / settings changes only
--- Breaks when size settings are changed (doesnt update row size?)
--- No longer used / to be deprecated?
-function HUDTracker.Update(args)
-    Debug.Log('HUDTracker.Update called, this shouldnt be often unless settings are being changed')
-    for typeId, ENTRY in pairs(Private.entries) do
-        Private.UpdateEntry(ENTRY)
-        Private.SetEntrySize(ENTRY)
-        Private.SetEntryFont(ENTRY)
-        Private.SetEntryVisibility(ENTRY)
-    end 
-end
-
 --[[
     HUDTracker.Rebuild(args)
     Rebuilds the HUDTracker entries, removing them and recreating entries for available loot.
@@ -512,40 +527,77 @@ function HUDTracker.UpdateTooltip(lootId)
     return TOOLTIP_ITEM.GROUP, tip_args
 end
 
+function HUDTracker.IsInFakeMode()
+    return Private.testMode
+end
+
+function HUDTracker.ExitFakeMode()
+    Debug.Log("HUDTracker.ExitFakeMode()")
 
 
--- Blueprint for the HUDTracker Entries
-local bp_ENTRY = [[
-    <Group name='EntryGroup' dimensions='width:100%; height:32;'>
+    for key, value in pairs(Private.testEntries) do
+        HUDTracker.OnTrackerRemove({lootId=key})
+    end
 
-        <!-- Plate -->
-        <FocusBox name='plate' dimensions='width:100%-30; height:28; left:30; top:2;'>
-            <StillArt name='bg' dimensions='width:100%-2.2; height:99%-2;' style='texture:colors; region:white; tint:#000000; alpha:0.7;'/>
-            <Border name='outer' dimensions='dock:fill' class='Tracker_PlateBorder'/>
-            <Border name='shade' dimensions='dock:fill' class='ButtonFade'/>
-        </FocusBox>
+    Private.testMode = false
+    HUDTracker.UpdateVisibility()
+end
 
-        <!-- Box -->
-        <Group name='box' dimensions='width:32; height:32; left:0; top:0;'>
-            <StillArt name='bg' dimensions='width:96%; height:96%;' style='texture:colors; region:white; tint:#000000; alpha:1;'/>
-            <StillArt name='backplate' dimensions='width:99%; height:99%;' style='texture:ItemPlate; region:Square;'/>
-            <Border name='outer' dimensions='dock:fill;' class='ButtonBorder'/>
-            <Border name='shade' dimensions='width:0;height:0;' class='ButtonFade'/>
-            <Group name='icon' dimensions='dock:fill;' style='fixed-bounds:true; valign:center;'/>
-        </Group>
+function HUDTracker.EnterFakeMode()
+    Debug.Log("HUDTracker.EnterFakeMode()")
+    if Private.testMode then HUDTracker.ExitFakeMode() end
 
-        <!-- Text -->
-        <Group name='text' dimensions='width:100%-32; height:28; left:32; top:2;'>
-            <!-- Stack -->
-            <Text name='stack' dimensions='width:10%; height:100%-2; top:0; left:10%;' class='Tracker_Text'/>
+    Private.testMode = true
+
+    -- Make
+    local fakeData = {
+        {entityId=-1, targetInfo={entityId=-1, itemTypeId=125917}},
+        {entityId=-2, targetInfo={entityId=-2, itemTypeId=123219}},
+        {entityId=-3, targetInfo={entityId=-3, itemTypeId=123384}},
+        {entityId=-4, targetInfo={entityId=-4, itemTypeId=123818}},
+        {entityId=-5, targetInfo={entityId=-5, itemTypeId=123874}},
+    }
+
+    -- Generate them
+    for index, lootData in ipairs(fakeData) do
+
+        lootData.itemInfo = Game.GetItemInfoByType(lootData.targetInfo.itemTypeId)
+
+        local loot = Loot.Create(lootData.entityId, lootData.targetInfo, lootData.itemInfo)
+
+        -- Create entry
+        local ENTRY = Private.CreateEntry(loot)
+
+        -- Get the index of each entry in the rowscroller
+        local indexList = {}
+        for typeId, ENTRY_OTHER in pairs(Private.entries) do
+            local index = ENTRY_OTHER.ROW:GetIdx()
+            indexList[index] = ENTRY_OTHER
+        end
+
+        -- Determine which index our new entry should have
+        local ourEntryIndex = nil
+        for index, ENTRY_OTHER in pairs(indexList) do
+            if HUDTrackerSort(ENTRY, ENTRY_OTHER) then
+                ourEntryIndex = index
+                break
+            end
+        end
+
+        -- Insert entry as row
+        local ROW = SCROLLER:AddRow(ENTRY.GROUP, ourEntryIndex)
+
+        -- Save a row reference
+        ENTRY.ROW = ROW
         
-            <!-- Title -->
-            <Text name='title' dimensions='width:80%; height:100%-2; top:0; left:20%;' class='Tracker_Text'/>
-        </Group>    
+        -- Store entry
+        Private.entries[tostring(loot:GetTypeId())] = ENTRY
 
-        
-    </Group>
-]]
+        -- Store test entry
+        Private.testEntries[tostring(loot:GetId())] = loot
+    end
+    HUDTracker.UpdateVisibility()
+end
 
 function Private.CreateEntry(loot, stackInfo)
     -- Handle arguments
@@ -699,7 +751,6 @@ function Private.CreateEntry(loot, stackInfo)
     return ENTRY
 end
 
-
 function Private.UpdateEntry(ENTRY)
 
     local stackInfo = ENTRY.stackInfo
@@ -730,7 +781,6 @@ function Private.UpdateEntry(ENTRY)
     end
 end
 
-
 function Private.SetEntrySize(ENTRY)
     -- Get height from options
     local sizeAsNumber = tonumber(Options['HUDTracker']['EntrySize'])
@@ -753,8 +803,6 @@ function Private.SetEntrySize(ENTRY)
     ENTRY.TEXT:SetDims(textDimms)
 end
 
-
-
 function Private.SetEntryFont(ENTRY)
     local fontType = tostring(Options['HUDTracker']['EntryFontType'])
     local fontSize = tostring(Options['HUDTracker']['EntryFontSize'])
@@ -771,43 +819,27 @@ function Private.SetEntryFont(ENTRY)
 end
 
 function Private.SetEntryVisibility(ENTRY)
-    -- Visibility
+    -- Text Visibility
     ENTRY.STACK:Show(true)
     ENTRY.TITLE:Show(true)
 
-
+    -- Plate
     local plateMode = Options['HUDTracker']['PlateMode']
-    
     ENTRY.PLATE:GetChild('bg'):Show( (plateMode ~= HUDTrackerPlateModeOptions.None ) )
     ENTRY.PLATE:GetChild('outer'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
     ENTRY.PLATE:GetChild('shade'):Show( (plateMode == HUDTrackerPlateModeOptions.Decorated) )
 
-
+    -- Icon Box
     local boxMode = Options['HUDTracker']['IconMode']
-
     ENTRY.BOX:GetChild('bg'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
                                     or boxMode == HUDTrackerIconModeOptions.Simple) )
     ENTRY.BOX:GetChild('backplate'):Show( (   boxMode == HUDTrackerIconModeOptions.Decorated
                                            or boxMode == HUDTrackerIconModeOptions.Simple) )
-    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) ) -- Fixme: not sure if this should really be platemodeoptions
-    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerPlateModeOptions.Decorated) ) -- ^ this too.
+    ENTRY.BOX:GetChild('outer'):Show( (boxMode == HUDTrackerIconModeOptions.Decorated) )
+    ENTRY.BOX:GetChild('shade'):Show( (boxMode == HUDTrackerIconModeOptions.Decorated) )
     ENTRY.BOX:GetChild('icon'):Show( boxMode ~= HUDTrackerIconModeOptions.None)
 end
 
-
-
---ENTRY.ICON:Destroy()
-
-
-
-
-
-
-
--- Fix text size
-function AutosizeText(TEXT)
-    TEXT:SetDims('top:_; height:'..(TEXT:GetTextDims().height+20)) -- Fixme: Magic number
-end
 
 
 -- Gets filtered display name of loot from options
@@ -816,7 +848,6 @@ function GetHUDTrackerTitle(loot)
     local formatString = Options['HUDTracker']['Filtering'][categoryKey][rarityKey]['HUDTrackerTitle']
     return tostring(Messages.TextFilters(formatString, {loot=loot}), true)
 end
-
 
 -- Return true if lootA should come before lootB
 function HUDTrackerSort(lootA, lootB)
@@ -874,74 +905,7 @@ end
 
 
 
-function HUDTracker.IsInFakeMode()
-    return Private.testMode
-end
-
-function HUDTracker.ExitFakeMode()
-    Debug.Log("HUDTracker.ExitFakeMode()")
-
-
-    for key, value in pairs(Private.testEntries) do
-        HUDTracker.OnTrackerRemove({lootId=key})
-    end
-
-    Private.testMode = false
-    HUDTracker.UpdateVisibility()
-end
-
-function HUDTracker.EnterFakeMode()
-    Debug.Log("HUDTracker.EnterFakeMode()")
-    if Private.testMode then HUDTracker.ExitFakeMode() end
-
-    Private.testMode = true
-
-    -- Make
-    local fakeData = {
-        {entityId=-1, targetInfo={entityId=-1, itemTypeId=125917}},
-        {entityId=-2, targetInfo={entityId=-2, itemTypeId=123219}},
-        {entityId=-3, targetInfo={entityId=-3, itemTypeId=123384}},
-        {entityId=-4, targetInfo={entityId=-4, itemTypeId=123818}},
-        {entityId=-5, targetInfo={entityId=-5, itemTypeId=123874}},
-    }
-
-    -- Generate them
-    for index, lootData in ipairs(fakeData) do
-
-        lootData.itemInfo = Game.GetItemInfoByType(lootData.targetInfo.itemTypeId)
-
-        local loot = Loot.Create(lootData.entityId, lootData.targetInfo, lootData.itemInfo)
-
-        -- Create entry
-        local ENTRY = Private.CreateEntry(loot)
-
-        -- Get the index of each entry in the rowscroller
-        local indexList = {}
-        for typeId, ENTRY_OTHER in pairs(Private.entries) do
-            local index = ENTRY_OTHER.ROW:GetIdx()
-            indexList[index] = ENTRY_OTHER
-        end
-
-        -- Determine which index our new entry should have
-        local ourEntryIndex = nil
-        for index, ENTRY_OTHER in pairs(indexList) do
-            if HUDTrackerSort(ENTRY, ENTRY_OTHER) then
-                ourEntryIndex = index
-                break
-            end
-        end
-
-        -- Insert entry as row
-        local ROW = SCROLLER:AddRow(ENTRY.GROUP, ourEntryIndex)
-
-        -- Save a row reference
-        ENTRY.ROW = ROW
-        
-        -- Store entry
-        Private.entries[tostring(loot:GetTypeId())] = ENTRY
-
-        -- Store test entry
-        Private.testEntries[tostring(loot:GetId())] = loot
-    end
-    HUDTracker.UpdateVisibility()
+-- Fix text size
+function AutosizeText(TEXT)
+    TEXT:SetDims('top:_; height:'..(TEXT:GetTextDims().height+DimensionOptions.textAutoSizeHeightIncrease))
 end

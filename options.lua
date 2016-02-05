@@ -332,47 +332,6 @@ for i, eventKey in ipairs({'OnLootNew', 'OnLootLooted', 'OnLootLost'}) do
 
 
 end
---Debug.Table('MessagesEventPost', Options['Messages']['Events'])
-
-
-
-
-
-
-
---_table.copy
-
-
--- Create filtering template
--- Todo: maybe one day...
---[[
-local filteringTemplate = {}
-for categoryKey, categoryValue in pairs(FilterableLootCategories) do
-    filteringTemplate['Enabled'] = true,
-    filteringTemplate['Mode'] = TriggerModeOptions.Simple,
-
-    filteringTemplate['Simple'] = {
-        ['RarityThreshold'] = LootRarity.Salvage,
-        ['ItemLevelThreshold'] = 0,
-        ['RequiredLevelThreshold'] = 0,
-    },
-
-    local rarityFilterTemplate = {
-        ['ItemLevelThreshold'] = 0,
-        ['RequiredLevelThreshold'] = 0,
-    }
-
-    for rarityKey, rarityValue  in pairs(LootRarity) do
-        filteringTemplate[rarityKey] = {
-
-        }
-    end
-
-end
---]]
-
-
-
 
 Options['Waypoints']['Filtering'] = {
             [LootCategory.Equipment] = {
@@ -2146,7 +2105,7 @@ function OnOptionChange(args)
         return
 
     elseif args.id == '__DEFAULT' then
-        -- Todo: Fixme:
+        -- Todo: Add support for reseting options to the defaults. OptionSection(118): assert failed (message "Addons Option Tab was not setup to support the default button")
 
     elseif args.id == '__DISPLAY' then
         if args.val then
