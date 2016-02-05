@@ -326,16 +326,13 @@ end
 --]]
 
 function Private.GenerateId()
-
-    -- local player = tostring(Player.GetInfo()) -- Fixme: Get rid of army tag
-
     local time = tostring(System.GetLocalUnixTime())
 
     Private.idCounter = Private.idCounter + 1
     local occurance = tostring(Private.idCounter)
 
     -- Put it all together
-    local id = time..occurance -- player..
+    local id = time..occurance
 
     return id
 end

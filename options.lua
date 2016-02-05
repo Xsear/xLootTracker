@@ -40,15 +40,6 @@ Options = {
             ['AssignedToHideNil'] = true,
         },
 
-        ['Color'] = { -- FIXME: Remove, should not be in use anymore
-            ['AssignedTo'] = {
-                ['Nil'] = {alpha=1, tint='FFFFFF'},
-                ['Free'] = {alpha=1, tint='00FF00'},
-                ['Player'] = {alpha=1, tint='00FF00'},
-                ['Other'] = {alpha=1, tint='FF0000'},
-            },
-        },
-
         ['ColorMode'] = {
             ['HeaderBar'] = ColorModes.MatchItem,
             ['HeaderBarCustomValue'] = {alpha=1, tint='00000'},
@@ -2308,7 +2299,6 @@ function SetOptionsAvailability(args)
                         --Debug.Log(moduleKey..'_'..categoryKey)
 
                         -- Disable/Enable logic
-                        -- Fixme: bluuuuuurgh
                         local disable = false
 
                         -- If type not enabled, disable everything
