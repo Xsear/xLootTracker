@@ -71,6 +71,7 @@ require './panels'     -- Panels
 require './waypoints'  -- Waypoints
 require './hudtracker' -- HUDTracker
 require './sounds'     -- Sounds
+require './KeyBinder'
 
 -- Functions
 --[[
@@ -153,6 +154,9 @@ function OnOptionsLoaded()
 
     -- Setup HUDTracker
     HUDTracker.Setup()
+
+    -- Setup KeyBinder
+    KeyBinder_Setup()
 
     -- Print version message
     if Options['Core']['VersionMessage'] then

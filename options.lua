@@ -230,6 +230,27 @@ Options = {
 
     },
 
+    ['Keybinds'] = {
+        ['WaypointVisibilityToggle'] = {
+            ['Bind'] = {
+                [1] = nil,
+                [2] = nil,
+            },
+        },
+        ['HUDTrackerVisibilityToggle'] = {
+            ['Bind'] = {
+                [1] = nil,
+                [2] = nil,
+            },
+        },
+        ['WaypointVisibilityCycle'] = {
+            ['Bind'] = {
+                [1] = nil,
+                [2] = nil,
+            },
+        },
+    },
+
     ['Debug'] = {
         ['Enabled'] = false,
         ['SquadToArmy'] = false,
@@ -2104,6 +2125,16 @@ function OnOptionChange(args)
         HUDTracker.OnDisplayOptions()
         return
 
+
+    -- InterfaceOptions Addon Special Values
+    elseif args.id == 'Keybinds_WaypointVisibilityToggle_Button'
+        or args.id == 'Keybinds_HUDTrackerVisibilityToggle_Button'
+        or args.id == 'Keybinds_WaypointVisibilityCycle_Button'
+    then
+        -- Todo: Open the keybinding interface
+        KeyBinder_Open({id=args.id})
+        return
+
     -- Addon Options
     else
         -- Find and update the setting within the Options table
@@ -2404,6 +2435,7 @@ function BuildInterfaceOptions()
     BuildInterfaceOptions_HUDTracker()
     BuildInterfaceOptions_Sounds()
     BuildInterfaceOptions_Messages()
+    BuildInterfaceOptions_Keybinds()
 end
 
 
@@ -3024,6 +3056,36 @@ end
 function BuildInterfaceOptions_Sounds()
     UIHELPER_Filtering('Sounds')
 end
+
+function BuildInterfaceOptions_Keybinds()
+
+
+    InterfaceOptions.AddButton({
+        id       = 'Keybinds_WaypointVisibilityToggle_Button',
+        label    = Lokii.GetString('Options_Keybinds_WaypointVisibilityToggle_Button_Label'),
+        tooltip  = Lokii.GetString('Options_Keybinds_WaypointVisibilityToggle_Button_Tooltip'),
+        subtab   = {Lokii.GetString('Options_Subtab_Keybinds')}
+    })
+
+    --[[
+    InterfaceOptions.AddButton({
+        id       = 'Keybinds_HUDTrackerVisibilityToggle_Button',
+        label    = Lokii.GetString('Options_Keybinds_HUDTrackerVisibilityToggle_Button_Label'),
+        tooltip  = Lokii.GetString('Options_Keybinds_HUDTrackerVisibilityToggle_Button_Tooltip'),
+        subtab   = {Lokii.GetString('Options_Subtab_Keybinds')}
+    })
+
+    InterfaceOptions.AddButton({
+        id       = 'Keybinds_WaypointVisibilityCycle_Button',
+        label    = Lokii.GetString('Options_Keybinds_WaypointVisibilityCycle_Button_Label'),
+        tooltip  = Lokii.GetString('Options_Keybinds_WaypointVisibilityCycle_Button_Tooltip'),
+        subtab   = {Lokii.GetString('Options_Subtab_Keybinds')}
+    })
+    --]]
+
+
+end
+
 
 
 function UIHELPER_Filtering(moduleArg)

@@ -176,6 +176,10 @@
             region:transparent;
             maxlen:64;
         </StyleSheet>
+    
+        <StyleSheet name="KeyBinderText">
+            font:Narrow_10; halign:center; valign:center; clip:true; alpha:0
+        </StyleSheet>
 
     </Styles>
     
@@ -321,5 +325,63 @@
             <OnClose bind="OnClose"/>
             <OnEscape bind="OnClose"/>
         </PanelFrame>
+
+        <!-- Keybinding Popup -->
+        <PanelFrame name="KeybindPopup" dimensions="left:50%-385; width:325; center-y:50%; height:194; relative:screen" visible="false" permanent="true" topmost="true"><!-- PanelLayer5 -->
+            <Children>
+                <!-- Keycatcher -->
+                <KeyCatcher name="KeyCatcher" dimensions="left:0; right:1; top:0; bottom:1;" style="eatsmice:false"/>
+
+                <!-- Background Art -->
+                <Group name="Art" dimensions="dock:fill">
+                    <Border dimensions="left:-1; right:100%+1; top:-1; bottom:100%+1;" class="PanelSubBackDrop" style="alpha:0.5; tint:#FFFFFF; glow:33FFFFFF"/>
+                    <Border dimensions="dock:fill" class="PanelSubBackDrop" style="alpha:1;"/>
+                </Group>
+
+                
+                <Text name="Title" dimensions="width:50%;center-x:55%;center-y:20%;height:36"/>
+
+                <!-- Bindings -->
+                <Group name="Bindings" dimensions="left:15; right:100%-15; center-y:50%; height:0">
+                    <StillArt name="BG" dimensions="dock:fill" class="Option_BG"/>
+                    <Text name="Label" dimensions="dock:fill" class="Option_Label"/>
+                    <FocusBox dimensions="dock:fill">
+                    </FocusBox>
+                    <Group name="Box_1" dimensions="left:50%; right:74%; center-y:50%; height:25.6;">
+                        <StillArt name="Plate" dimensions="left:0; right:100%; top:-1; bottom:100%+1;" style="texture:colors; region:white; alpha:0.1"/>
+                        <Group name="Icon" dimensions="dock:fill"/>
+                        <Text name="Text" dimensions="dock:fill" style="KeyBinderText"/>
+                        <FocusBox dimensions="dock:fill" tag="1">
+                            <Events>
+                                <OnMouseDown bind="KeyBinder_MouseDown"/>
+                                <OnMouseEnter bind="KeyBinder_MouseEnter"/>
+                                <OnMouseLeave bind="KeyBinder_MouseLeave"/>
+                            </Events>
+                        </FocusBox>
+                    </Group>
+                    <Group name="Box_2" dimensions="left:75%; right:100%-2; center-y:50%; height:25.6;">
+                        <StillArt name="Plate" dimensions="left:0; right:100%; top:-1; bottom:100%+1;" style="texture:colors; region:white; alpha:0.1"/>
+                        <Group name="Icon" dimensions="dock:fill"/>
+                        <Text name="Text" dimensions="dock:fill" style="KeyBinderText"/>
+                        <FocusBox dimensions="dock:fill" tag="2">
+                            <Events>
+                                <OnMouseDown bind="KeyBinder_MouseDown"/>
+                                <OnMouseEnter bind="KeyBinder_MouseEnter"/>
+                                <OnMouseLeave bind="KeyBinder_MouseLeave"/>
+                            </Events>
+                        </FocusBox>
+                    </Group>
+                </Group>
+
+                <!-- Buttons -->
+                <Group name="Buttons" dimensions="left:45; right:100%-15; bottom:165; height:0">
+                    <Button name="LeftButton" dimensions="left:0;right:35%; center-y:50%; height:24;" /> <!-- dimensions="left:30%;right:65%; center-y:50%; height:24;" -->
+                    <Button name="RightButton" dimensions="left:50%;right:85%; center-y:50%; height:24;" />
+                </Group>
+            </Children>
+            <OnEscape bind="KeyBinder_OnEscape"/>
+        </PanelFrame>
+
+
     </Frames>
 </Component>

@@ -335,6 +335,7 @@ LANG = {
     Options_Subtab_Tracker                                          =    "Tracking",
     Options_Subtab_HUDTracker                                       =    "HUDTracker",
     Options_Subtab_Sounds                                           =    "Sounds",
+    Options_Subtab_Keybinds                                         =    "Keybinds",
     Options_Subtab_Filtering                                        =    "Filtering",
 
     Options_Subtab_equipment    = "Equipment",
@@ -486,6 +487,24 @@ LANG = {
 
     Options_HUDTracker_DisplaySlider_Label = "Display Slider",
     Options_HUDTracker_DisplaySlider_Tooltip = "Whether or not to display a scrollbar in the Tracker. If enabled, will only be displayed when appropriate (enough items in the list to scroll. Even if this is disabled, you can still scroll the tracker with the mouse wheel.",
+
+
+
+    Keybinds_WaypointVisibilityToggle_Button                    = "Toggle Waypoint Visibility",
+    Keybinds_HUDTrackerVisibilityToggle_Button                  = "Toggle HUDTracker Visibility",
+    Keybinds_WaypointVisibilityCycle_Button                     = "Cycle Waypoint Visibility",
+
+    Options_Keybinds_WaypointVisibilityToggle_Button_Label      = "Bind Toggle Waypoint Visibility",
+    Options_Keybinds_WaypointVisibilityToggle_Button_Tooltip    = "Allows you to toggle the HUD visibility of all current Waypoints on/off with a keypress, good for clearing up the screen while in combat.",
+    Options_Keybinds_HUDTrackerVisibilityToggle_Button_Label    = "Bind Toggle HUDTracker Visibility",
+    Options_Keybinds_HUDTrackerVisibilityToggle_Button_Tooltip  = " ",
+    Options_Keybinds_WaypointVisibilityCycle_Button_Label       = "Bind Cycle Waypoint Visibility",
+    Options_Keybinds_WaypointVisibilityCycle_Button_Tooltip     = " ",
+
+    KeyBinder_Title = "Keybind Configuration",
+    KeyBinder_AcceptButton = "Save",
+    KeyBinder_DeclineButton = "Cancel",
+
 
 
     Sounds_Option_none                                  =    "None",
