@@ -4,21 +4,25 @@
 --]]
 HUDTracker = {}
 
--- Private variables
-local Private = {
-    lastUpdate = 0,
-    minUpdateCB = nil,
-    testMode = false,
-    testEntries = {},
-    entries = {}
-}   
-
 -- UI references, these should really be in Private but it is easier to work with them like this.
 local FRAME = Component.GetFrame('Tracker')
 local SLIDER = FRAME:GetChild('Slider')
 local LIST = FRAME:GetChild('List')
 local SCROLLER = nil
 local TOOLTIP_ITEM = nil
+
+-- Private variables
+local Private = {
+    lastUpdate = 0,
+    minUpdateCB = nil,
+    testMode = false,
+    testEntries = {},
+    entries = {},
+    hideFrameCB = nil,
+}
+
+Private.hideFrameCB = Callback2.Create()
+Private.hideFrameCB:Bind(function() FRAME:Show(false) end)
 
 -- The table of magic numbers.
 local DimensionOptions = {
@@ -486,39 +490,52 @@ end
     Reads current state, determines and updates the visibility of the HUDTracker.
 --]]
 function HUDTracker.UpdateVisibility()
+    
+    -- Fade callbacks
+    if Private.hideFrameCB:Pending() then Private.hideFrameCB:Cancel() end
+    
+    -- Tracker enabled, check if should be displayed
     if Options['HUDTracker']['Enabled'] then
-     -- Should we display the tracker?
+        -- Should we display the tracker?
         --Debug.Log('Should we display the Tracker?')
         --Debug.Log('Options Tracker Visibility == '..Options['HUDTracker']['Visibility'])
         --Debug.Log('State.hud == '..tostring(State.hud))
         --Debug.Log('State.cursor == '..tostring(State.cursor))
         --Debug.Log('State.sin == '..tostring(State.sin))
-        if SCROLLER ~= nil and SCROLLER:GetRowCount() > 0 and (
+        if SCROLLER:GetRowCount() > 0 and (
                (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.MouseMode and State.cursor and State.hud)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.SinMode and State.sin and State.hud)
+            or (State.inOptions)
             )
         then
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
-            --FRAME:Show(true)
-
+            -- Fade in effect
             if Options['HUDTracker']['FadeFrame']['Enabled'] then
-                -- Fade in effect
+                FRAME:SetParam("alpha", 0.0)
                 FRAME:ParamTo("alpha", 1.0, Options['HUDTracker']['FadeFrame']['FadeIn']['Duration'], Options['HUDTracker']['FadeFrame']['FadeIn']['Animation'])
+                FRAME:Show(true)
+
+            -- Instant show if no fade
             else
-                FRAME:Show(true) 
+                FRAME:Show(true)
             end
 
         else
             --Debug.Log('No, hide the tracker')
             -- No, hide the tracker
-             if Options['HUDTracker']['FadeFrame']['Enabled'] then
-                -- Fade out effect
+            
+
+            -- Fade out effect
+            if Options['HUDTracker']['FadeFrame']['Enabled'] then
                 FRAME:ParamTo("alpha", 0.0, Options['HUDTracker']['FadeFrame']['FadeOut']['Duration'], Options['HUDTracker']['FadeFrame']['FadeOut']['Animation'])
+                Private.hideFrameCB:Schedule(Options['HUDTracker']['FadeFrame']['FadeOut']['Duration'])
+
+            -- Instant hide if no fade
             else
-                FRAME:Show(true) 
+                FRAME:Show(false)
             end
 
             -- Ensure no tooltip is displayed

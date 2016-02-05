@@ -2231,7 +2231,7 @@ function SetOptionsAvailability(args)
 
     -- HUDTracker Disable frame when disabled
     local hudtrackerFrameToggler = not (Options['HUDTracker']['Enabled'])
-    --InterfaceOptions.DisableFrameMobility(HUDTracker.GetFrame(), hudtrackerFrameToggler)
+    InterfaceOptions.DisableFrameMobility(HUDTracker.GetFrame(), hudtrackerFrameToggler)
 
     -- Summary: If simple disable advanced options
     for i, moduleArg in pairs({'HUDTracker', 'Panels', 'Waypoints', 'Sounds', {parent='Messages', 'OnLootNew', 'OnLootLooted', 'OnLootLost'}}) do
