@@ -230,7 +230,7 @@ function Tracker.OnEntityLost(args)
         end
 
         -- Get that shit.
-        Debug.Log('Tracker.OnEntityLost found a previous loot event that matches! Assuming looted by '..tostring(event.lootedBy)..' and to '..tostring(event.lootedTo)..', detected through '..tostring(event.event))
+        --Debug.Log('Tracker.OnEntityLost found a previous loot event that matches! Assuming looted by '..tostring(event.lootedBy)..' and to '..tostring(event.lootedTo)..', detected through '..tostring(event.event))
         Private.SetLooted({loot = loot, lootedTo = event.lootedTo, lootedBy = event.lootedBy})
     end
 
@@ -259,9 +259,8 @@ function Tracker.OnLootEvent(args)
     if itemInfo and IsTrackableItem(itemInfo) then
 
         -- Debug
-        if Options['Debug']['LogLootableCollection'] then 
-            --Debug.Table('Tracker.OnLootEvent', {itemInfo = itemInfo})
-            Debug.Log('Tracker.OnLootEvent', "Name:" .. itemInfo.name, "SDBID:" ..  itemInfo.itemTypeId, "lootedBy:" .. args.lootedBy, "lootedTo:" .. args.lootedTo)
+        if Options['Debug']['LogLootableCollection'] then
+            Debug.Log('Tracker.OnLootEvent', 'Name:' .. itemInfo.name, 'TypeId:' ..  itemInfo.itemTypeId, 'lootedBy:' .. args.lootedBy, 'lootedTo:' .. args.lootedTo)
         end
 
         -- Okay, do we have any identified loot?
@@ -271,7 +270,7 @@ function Tracker.OnLootEvent(args)
             local loot = nil
             local matches = {}
             -- So, are we tracking anything like this?
-            Debug.Log('Scanning for match: Available and typeId ' .. tostring(args.itemTypeId))
+            --Debug.Log('Scanning for match: Available and typeId ' .. tostring(args.itemTypeId))
             for id, item in pairs(Private.trackedLoot) do
                 if item.state == LootState.Available and tostring(item:GetTypeId()) == tostring(args.itemTypeId) then
                     loot = item
@@ -279,13 +278,13 @@ function Tracker.OnLootEvent(args)
                 end
             end
 
-            Debug.Log('Scan Result: ' .. tostring(#matches))
+            --Debug.Log('Scan Result: ' .. tostring(#matches))
 
             -- Do we have more than one matches?
             if #matches > 1 then
                 -- Shit.
                 -- Okay, we're gonna have to store this lootevent for now.
-                Debug.Log('Tracker.OnLootEvent Multiple potential matches (' .. tostring(count) .. ') for ' .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+                --Debug.Log('Tracker.OnLootEvent Multiple potential matches (' .. tostring(count) .. ') for ' .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
                 
                 -- If we haven't recently stored any lootevents of this type, create the table
                 if not Private.lootEventHistory[args.itemTypeId] then
@@ -312,8 +311,8 @@ function Tracker.OnLootEvent(args)
             -- Is this the one?
             elseif #matches == 1 then
                 -- Aww yeah! Get that shit.
-                Debug.Log('Tracker.OnLootEvent for '..loot:GetName()..', '..tostring(loot:GetEntityId())..', '..loot:GetId())
-                Debug.Log('It is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
+                --Debug.Log('Tracker.OnLootEvent for '..loot:GetName()..', '..tostring(loot:GetEntityId())..', '..loot:GetId())
+                --Debug.Log('It is being looted by '..tostring(args.lootedBy)..' and to '..tostring(args.lootedTo)..' and it was detected through '..tostring(args.event))
 
                 -- Set the looted status
                 Private.SetLooted({loot = loot, lootedTo = args.lootedTo, lootedBy = args.lootedBy})
@@ -324,7 +323,7 @@ function Tracker.OnLootEvent(args)
             -- No matches?
             else
                 -- Hmm, so we weren't tracking this item
-                Debug.Log('Tracker.OnLootEvent found no matches for ' .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
+                --Debug.Log('Tracker.OnLootEvent found no matches for ' .. tostring(itemInfo.name) .. ', ' .. tostring(args.itemTypeId))
             end
         end
     end
