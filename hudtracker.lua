@@ -19,6 +19,7 @@ local Private = {
     testEntries = {},
     entries = {},
     hideFrameCB = nil,
+    previouslyVisible = false,
 }
 
 Private.hideFrameCB = Callback2.Create()
@@ -502,6 +503,7 @@ function HUDTracker.UpdateVisibility()
         --Debug.Log('State.hud == '..tostring(State.hud))
         --Debug.Log('State.cursor == '..tostring(State.cursor))
         --Debug.Log('State.sin == '..tostring(State.sin))
+        --Debug.Log('State.inOptions == '..tostring(State.inOptions))
         if SCROLLER:GetRowCount() > 0 and (
                (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.Always)
             or (Options['HUDTracker']['Visibility'] == HUDTrackerVisibilityOptions.HUD and State.hud)
@@ -513,15 +515,17 @@ function HUDTracker.UpdateVisibility()
             --Debug.Log('Yes, display the tracker')
             -- Yes, display tracker
             -- Fade in effect
-            if Options['HUDTracker']['FadeFrame']['Enabled'] then
+            if Options['HUDTracker']['FadeFrame']['Enabled'] and not Private.previouslyVisible then
                 FRAME:SetParam("alpha", 0.0)
                 FRAME:ParamTo("alpha", 1.0, Options['HUDTracker']['FadeFrame']['FadeIn']['Duration'], Options['HUDTracker']['FadeFrame']['FadeIn']['Animation'])
                 FRAME:Show(true)
-
             -- Instant show if no fade
             else
                 FRAME:Show(true)
             end
+
+            -- Remember state
+            Private.previouslyVisible = true
 
         else
             --Debug.Log('No, hide the tracker')
@@ -529,7 +533,7 @@ function HUDTracker.UpdateVisibility()
             
 
             -- Fade out effect
-            if Options['HUDTracker']['FadeFrame']['Enabled'] then
+            if Options['HUDTracker']['FadeFrame']['Enabled'] and Private.previouslyVisible then
                 FRAME:ParamTo("alpha", 0.0, Options['HUDTracker']['FadeFrame']['FadeOut']['Duration'], Options['HUDTracker']['FadeFrame']['FadeOut']['Animation'])
                 Private.hideFrameCB:Schedule(Options['HUDTracker']['FadeFrame']['FadeOut']['Duration'])
 
@@ -538,6 +542,9 @@ function HUDTracker.UpdateVisibility()
                 FRAME:Show(false)
             end
 
+            -- Remember state
+            Private.previouslyVisible = false
+            
             -- Ensure no tooltip is displayed
             TOOLTIP_ITEM.GROUP:Show(false)
             Tooltip.Show(false)
@@ -549,6 +556,9 @@ function HUDTracker.UpdateVisibility()
         --Debug.Log('Tracker not enabled, hide')
         -- Hide tracker
         FRAME:Show(false)
+
+        -- Remember state
+        Private.previouslyVisible = false
 
         -- Ensure no tooltip is displayed
         TOOLTIP_ITEM.GROUP:Show(false)
