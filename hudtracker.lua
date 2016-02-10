@@ -199,7 +199,7 @@ end
 --]]
 function HUDTracker.OnTrackerNew(args)
     args.event = 'HUDTracker.OnTrackerNew'
-    Debug.Event(args)
+    --Debug.Event(args)
 
     local loot = Tracker.GetLootById(args.lootId)
     if HUDTracker.IsInFakeMode() then
@@ -364,7 +364,7 @@ end
 --]]
 function HUDTracker.OnTrackerRemove(args)
     args.event = 'HUDTracker.OnTrackerRemove'
-    Debug.Event(args)
+    --Debug.Event(args)
 
     --Debug.Table('HUDTracker Private.entries', Private.entries)
 
@@ -439,7 +439,7 @@ end
 function HUDTracker.Rebuild(args)
     args = args or {}
     args.event = 'HUDTracker.Rebuild'
-    Debug.Event(args)
+    --Debug.Event(args)
 
     -- Only update and show tracker if enabled
     if Options['HUDTracker']['Enabled'] then
