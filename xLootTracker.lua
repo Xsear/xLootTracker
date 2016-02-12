@@ -95,7 +95,7 @@ function OnComponentLoad()
     --Lokii.AddLang('fr', './lang/FR');
     --Lokii.AddLang('es', './lang/ES');
     Lokii.SetBaseLang('en');
-    local locale = Component.GetSetting("Core_Locale")
+    local locale = Component.GetSetting('Core_Locale')
     if locale and locale ~= Locale.SystemDefault then
         Lokii.SetLang(locale)
     else
@@ -147,7 +147,7 @@ end
 ]]--
 function OnOptionsLoaded()
     -- Setup Slash
-    LIB_SLASH.BindCallback({slash_list=Options['Core']['SlashHandles'], description='Loot Tracker', func=OnSlash})
+    LIB_SLASH.BindCallback({slash_list=Options['Core']['SlashHandles'], description=Lokii.GetString('UI_Slash_Description'), func=OnSlash})
 
     -- Setup Tracker
     Tracker.Setup()
@@ -160,7 +160,7 @@ function OnOptionsLoaded()
 
     -- Print version message
     if Options['Core']['VersionMessage'] then
-        Messages.SendFormattedSystemMessage(Lokii.GetString('SystemMessage_Core_Version'), AddonInfo)
+        Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Core_Version'), AddonInfo)
     end
 end
 
@@ -222,110 +222,6 @@ function OnSquadRosterUpdate(args)
     State.inSquad = Squad.IsInSquad() and not State.inPlatoon
     State.isPlatoonLeader = (State.inPlatoon and namecompare(State.playerName, Platoon.GetLeader()))
     State.isSquadLeader = (State.inSquad and namecompare(State.playerName, Squad.GetLeader()))
-end
-
---[[
-    OnClose()
-    Called when user presses close or escape button on filtering ui.
-]]--
-function OnClose(args)
-    Options.ToggleFilteringUI(false);
-end
-
---[[
-    OnSlash(args)
-    Callback handler for LIB_SLASH.
-]]--
-function OnSlash(args)
-    -- Help / command list
-    if not args[1] or args[1] == 'help' or args[1] == '?' then
-        Messages.SendSystemMessage('Xsear\'s Loot Tracker v'..AddonInfo.version)
-        Messages.SendSystemMessage('Slash Commands')
-        Messages.SendSystemMessage('/lt : Version message and command list.')
-        Messages.SendSystemMessage('/lt clear : Force the tracker to remove all loot.')
-        Messages.SendSystemMessage('/lt blacklist <action> <scope> [itemName|itemTypeId].')
-        Messages.SendSystemMessage('/lt refresh : Force the tracker to update all loot.')
-
-        if Options['Debug']['Enabled'] then
-            Messages.SendSystemMessage('Debug Commands')
-            Messages.SendSystemMessage('/lt test [filter|any] [number|any] : Fake detection of items.')
-            Messages.SendSystemMessage('/lt stat : Log variables.')
-        end
-
-    -- Refresh
-    elseif args[1] == 'refresh' then
-        Slash_Refresh(args)
-
-    -- Clear
-    elseif args[1] == 'clear' then
-        Slash_Clear(args)
-
-    -- Blacklist
-    elseif args[1] == 'blacklist' then
-        Slash_Blacklist(args)
-
-    -- Filtering
-    elseif args[1] == 'filtering' or args[1] == 'f2' then
-        Slash_Filtering(args)
-
-
-    -- Debug/testing commands, subject to change
-    elseif args[1] == 'test' then
-        Slash_Test(args)
-
-    elseif args[1] == 'stat' then
-        Slash_Stat(args)
-
-    elseif args[1] == 'wp' or args[1] == 'wps' or args[1] == 'waypoints' or args[1] == 'wayman' or args[1] == 'way' then
-        if not args[2] then
-            WaypointManager.ToggleVisibility()
-        end
-
-    elseif args[1] == 't' or args[1] == 'toggle' then
-        if not args[2] then
-            Options['Core']['Enabled'] = not Options['Core']['Enabled']
-
-        elseif args[2] == 'wp' or args[2] == 'wps' or args[2] == 'waypoints' or args[2] == 'wayman' or args[2] == 'way' then
-            Options['Waypoints']['Enabled'] = not Options['Waypoints']['Enabled']
-
-        elseif args[2] == 'hud' or args[2] == 'hudtracker' or args[2] == 'tracker' then
-            Options['HUDTracker']['Enabled'] = not Options['HUDTracker']['Enabled']
-
-        elseif args[2] == 'sound' or args[2] == 'sounds' or args[2] == 'snd' then
-            Options['Sounds']['Enabled'] = not Options['Sounds']['Enabled']
-
-        elseif args[2] == 'messages' or args[2] == 'msg' or args[2] == 'msgs' or args[2] == 'message' then
-            Options['Messages']['Enabled'] = not Options['Messages']['Enabled']
-
-        elseif args[2] == 'panels' or args[2] == 'pan' or args[2] == 'panman' or args[2] == 'pans' then
-            Options['Panels']['Enabled'] = not Options['Panels']['Enabled']
-
-        end
-        -- local respKey
-        Messages.SendSystemMessage('Toggled.')
-
-    elseif args[1] == 'stop' then
-        Messages.SendSystemMessage('Stopping')
-        Options['Core']['Enabled'] = false
-        Options['Tracker']['Enabled'] = false
-        Options['Waypoints']['Enabled'] = false
-        Options['HUDTracker']['Enabled'] = false
-        Options['Sounds']['Enabled'] = false
-        Options['Messages']['Enabled'] = false
-        Options['Panels']['Enabled'] = false
-
-    elseif args[1] == 'no' or args[1] == 'stfu' or args[1] == 'silence' then
-        Messages.SendSystemMessage('Forcefully disabling Messages.')
-        Options['Messages']['Enabled'] = false
-
-    elseif args[1] == 'fake' or 'htFake' then
-        if HUDTracker.IsInFakeMode() then
-            HUDTracker.ExitFakeMode()
-        else
-            HUDTracker.EnterFakeMode()
-        end
-    end
-
 end
 
 --[[
@@ -445,15 +341,113 @@ function OnTrackerRemove(args)
     HUDTracker.OnTrackerRemove(args)
 end
 
+--[[
+    OnClose()
+    Called when user presses close or escape button on filtering ui.
+]]--
+function OnClose(args)
+    Options.ToggleFilteringUI(false);
+end
+
+--[[
+    OnSlash(args)
+    Callback handler for LIB_SLASH.
+]]--
+function OnSlash(args)
+    -- Help / command list
+    if not args[1] or args[1] == 'help' or args[1] == '?' then
+        Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Core_Version'), AddonInfo)
+        Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Help_TitleStandard'))
+        Messages.SendSystemMessage('/lt : '..Lokii.GetString('SystemMessage_Slash_Help_Command_Help'))
+        Messages.SendSystemMessage('/lt blacklist : '..Lokii.GetString('SystemMessage_Slash_Help_Command_Blacklist'))
+        Messages.SendSystemMessage('/lt clear : '..Lokii.GetString('SystemMessage_Slash_Help_Command_Clear'))
+        Messages.SendSystemMessage('/lt refresh : '..Lokii.GetString('SystemMessage_Slash_Help_Command_Refresh'))
+        Messages.SendSystemMessage('/lt wp : '..Lokii.GetString('SystemMessage_Slash_Help_Command_WaypointVisibility'))
+
+        if Options['Debug']['Enabled'] then
+            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Help_TitleDebug'))
+            Messages.SendSystemMessage('/lt fake : Toggle HUDTracker fake mode.')
+            Messages.SendSystemMessage('/lt stat : Log state.')
+            Messages.SendSystemMessage('/lt test [number|any] : Fake detection of items.')
+        end
+
+    -- Refresh
+    elseif args[1] == 'refresh' then
+        Slash_Refresh(args)
+
+    -- Clear
+    elseif args[1] == 'clear' then
+        Slash_Clear(args)
+
+    -- Waypoint Visiblity
+    elseif args[1] == 'wp' or args[1] == 'wps' or args[1] == 'waypoints' or args[1] == 'wayman' or args[1] == 'way' then
+        if not args[2] then
+            WaypointManager.ToggleVisibility()
+        end
+
+    -- Blacklist
+    elseif args[1] == 'blacklist' then
+        Slash_Blacklist(args)
+
+    -- Filtering
+    elseif args[1] == 'filtering' or args[1] == 'f2' then
+        Slash_Filtering(args)
 
 
+    -- Debug/testing commands, subject to change
+    elseif args[1] == 'test' then
+        Slash_Test(args)
 
+    elseif args[1] == 'stat' then
+        Slash_Stat(args)
 
+    elseif args[1] == 'fake' or args[1] == 'htFake' then
+        if HUDTracker.IsInFakeMode() then
+            HUDTracker.ExitFakeMode()
+        else
+            HUDTracker.EnterFakeMode()
+        end
 
+    -- Note: To be removed
+    elseif args[1] == 't' or args[1] == 'toggle' then
+        if not args[2] then
+            Options['Core']['Enabled'] = not Options['Core']['Enabled']
 
+        elseif args[2] == 'wp' or args[2] == 'wps' or args[2] == 'waypoints' or args[2] == 'wayman' or args[2] == 'way' then
+            Options['Waypoints']['Enabled'] = not Options['Waypoints']['Enabled']
 
+        elseif args[2] == 'hud' or args[2] == 'hudtracker' or args[2] == 'tracker' then
+            Options['HUDTracker']['Enabled'] = not Options['HUDTracker']['Enabled']
 
+        elseif args[2] == 'sound' or args[2] == 'sounds' or args[2] == 'snd' then
+            Options['Sounds']['Enabled'] = not Options['Sounds']['Enabled']
 
+        elseif args[2] == 'messages' or args[2] == 'msg' or args[2] == 'msgs' or args[2] == 'message' then
+            Options['Messages']['Enabled'] = not Options['Messages']['Enabled']
+
+        elseif args[2] == 'panels' or args[2] == 'pan' or args[2] == 'panman' or args[2] == 'pans' then
+            Options['Panels']['Enabled'] = not Options['Panels']['Enabled']
+
+        end
+        Messages.SendSystemMessage('Toggled a feature in-memory (maybe).')
+
+    -- Note: To be removed
+    elseif args[1] == 'stop' then
+        Messages.SendSystemMessage('Setting features to disabled in-memory.')
+        Options['Core']['Enabled'] = false
+        Options['Tracker']['Enabled'] = false
+        Options['Waypoints']['Enabled'] = false
+        Options['HUDTracker']['Enabled'] = false
+        Options['Sounds']['Enabled'] = false
+        Options['Messages']['Enabled'] = false
+        Options['Panels']['Enabled'] = false
+
+    -- Note: To be removed
+    elseif args[1] == 'no' or args[1] == 'stfu' or args[1] == 'silence' then
+        Messages.SendSystemMessage('Setting messages to disabled in-memory.')
+        Options['Messages']['Enabled'] = false
+    end
+end
 
 --[[
     Slash_Clear(args)
@@ -463,7 +457,7 @@ end
 function Slash_Clear(args)
     Debug.Log('Slash_Clear')
     Tracker.Clear()
-    Messages.SendSystemMessage('Clear')
+    Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Clear'))
 end
 
 --[[
@@ -473,14 +467,15 @@ end
 --]]
 function Slash_Blacklist(args)
     Debug.Table('Slash_Blacklist', args)
-    Messages.SendSystemMessage('Blacklist')
+    Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist'))
     -- args[2] == action
     -- args[3] == scope
     -- args[4+] == itemTypeId or string to use to find itemTypeId
     -- args.text entire thing
 
     if not args[2] or not args[3] then
-        Messages.SendSystemMessage('Incorrect syntax. First, provide an action (add, remove, view, clear). Then, specify (one) scope (all, panels, sounds, hudtracker, messages, waypoints). Finally, for add and remove, provide either the exact item name, or the itemTypeId.')
+        Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_Syntax'))
+        Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_Error_NoArgs'))
         return
     end
 
@@ -534,15 +529,13 @@ function Slash_Blacklist(args)
 
         -- If we have the scopeKey, move on to the itemTypeId
         if scopeKey then
-
-
             if actionKey == 'list' or actionKey == 'view' then
 
                 local data = Blacklist.Get({scopeKey=scopeKey})
                 if not _table.empty(data) then
-                    local results = {'Viewing blacklist entries in scope ' .. tostring(scopeKey)}
+                    Debug.Table('blacklist list', data)
 
-                    Debug.Table(data)
+                    local results = {Messages.GetFormattedMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_View'), {scope=scopeKey})}
 
                     for itemTypeId, value in pairs(data) do
                         local itemInfo = Game.GetItemInfoByType(itemTypeId)
@@ -551,34 +544,30 @@ function Slash_Blacklist(args)
                         else
                             results[#results + 1] = tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) ..')'
                         end
-
                     end
 
                     local message = table.concat(results, '\n')
 
                     Messages.SendSystemMessage(message)
                     return
-
                 else
-                    reason = 'Nothing to list.'
-
+                    reason = Lokii.GetString('SystemMessage_Slash_Blacklist_View_Error_Empty')
                 end
 
             elseif actionKey == 'clear' then
 
-
                 local count = Blacklist.Clear({scopeKey=scopeKey})
                 if count > 0 then
-                    Messages.SendSystemMessage('Success! Cleared ' .. tostring(count) .. ' entries from the ' .. tostring(scopeKey) .. ' scope.')
+                    Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_Clear'), {count=tostring(count), scope=scopeKey})
                     return
                 else
-                    reason = 'The scope is bloody empty!'
+                    reason = Lokii.GetString('SystemMessage_Slash_Blacklist_Clear_Error_Empty')
                 end
 
             else
 
                 if not args[4] then
-                    reason = 'Missing itemName or itemTypeId argument.'
+                    reason = Lokii.GetString('SystemMessage_Slash_Blacklist_AddOrRem_Error_NoArg')
 
                 else
 
@@ -619,9 +608,9 @@ function Slash_Blacklist(args)
                         end
 
                         if not itemInfo then
-                            reason = 'Could not get itemInfo, unable to find an item with the name ' .. tostring(searchName)
+                            reason = Messages.GetFormattedMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_AddOrRem_Error_NoItemInfo'), {query=searchName})
                         elseif _table.empty(itemInfo) then
-                            reason = 'This does not seem like a valid item, no information was found for ' .. tostring(searchName)
+                            reason = Messages.GetFormattedMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_AddOrRem_Error_BadItemInfo'), {query=searchName})
                         end
 
                     end
@@ -634,28 +623,28 @@ function Slash_Blacklist(args)
                             if result then
                                 success = true
                             elseif result == false then
-                                reason = 'Already blacklisted in this scope'
+                                reason = Lokii.GetString('SystemMessage_Slash_Blacklist_Add_Error_AlreadyExists')
                             else
-                                reason = 'Unexpected error'
+                                reason = Lokii.GetString('SystemMessage_Slash_Blacklist_AddOrRem_Error_UnknownError')
                             end
                         elseif actionKey == 'remove' or actionKey == 'rem' then
                             local result = Blacklist.Remove({scopeKey=scopeKey, itemTypeId=itemInfo.itemTypeId})
                             if result then
                                 success = true
                             elseif result == false then
-                                reason = 'This typeId was not blacklisted in this scope'
+                                reason = Lokii.GetString('SystemMessage_Slash_Blacklist_Rem_Error_NotListed')
                             else
-                                reason = 'Unexpected error'
+                                reason = Lokii.GetString('SystemMessage_Slash_Blacklist_AddOrRem_Error_UnknownError')
                             end
                         end
                     end
 
                     if success then
                         if actionKey == 'add' then
-                            Messages.SendSystemMessage('Success! Added ' .. tostring(itemInfo.name) .. '(' .. tostring(itemInfo.itemTypeId) .. ') to the ' .. tostring(scopeKey) .. ' blacklist.')
+                            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_Add'), {name=tostring(itemInfo.name), typeId=tostring(itemInfo.itemTypeId), scope=scopeKey})
 
                         elseif actionKey == 'remove' or actionKey == 'rem' then
-                            Messages.SendSystemMessage('Success! Removed ' .. tostring(itemInfo.name) .. ' (' .. tostring(itemInfo.itemTypeId) .. ') from the ' .. tostring(scopeKey) .. ' blacklist.')
+                            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_Rem'), {name=tostring(itemInfo.name), typeId=tostring(itemInfo.itemTypeId), scope=scopeKey})
                         end
                         return
                     end
@@ -667,15 +656,16 @@ function Slash_Blacklist(args)
 
         -- If we don't have the scopeKey, invalid input!
         else
-            reason = 'Invalid scope argument'
+            reason = Lokii.GetString('SystemMessage_Slash_Blacklist_Error_NoScope')
         end
 
     else
-        reason = 'Invalid actionKey. Use add or remove.'
+        reason = Lokii.GetString('SystemMessage_Slash_Blacklist_Error_NoAction')
     end
 
 
-    Messages.SendSystemMessage('Failure. Reason: ' .. reason)
+
+    Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Blacklist_Error_Reason'), {reason=reason})
 end
 
 --[[
@@ -686,7 +676,7 @@ end
 function Slash_Refresh(args)
     Debug.Log('Slash_Refresh')
     Tracker.Refresh()
-    Messages.SendSystemMessage('Refresh')
+    Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Slash_Refresh'))
 end
 
 

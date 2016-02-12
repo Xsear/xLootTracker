@@ -2157,7 +2157,7 @@ function OnOptionChange(args)
         Component.SaveSetting('Core_Locale', args.val)
         if State.loaded then
             Lokii.SetLang(args.val)
-            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Core_LocaleChanged'))
+            Messages.SendSystemMessage(Lokii.GetString('SystemMessage_Core_LocaleChanged'), {locale=args.val})
         end
     end
 

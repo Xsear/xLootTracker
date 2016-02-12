@@ -739,11 +739,11 @@ function Private.CreateEntry(loot, stackInfo)
                     MENU:AddButton({id='add_item_link', label_key='ADD_ITEM_LINK'})
 
                     -- Append coord link to Chat
-                    MENU:AddButton({id='add_coord_link', label='Add Coordinates Link'})
+                    MENU:AddButton({id='add_coord_link', label=Lokii.GetString('UI_HUDTracker_AddCoordinatesLink')})
 
                     -- Debug
                     if Options['Debug']['Enabled'] then
-                        MENU:AddButton({id='debug_remove', label='Debug - Remove'})
+                        MENU:AddButton({id='debug_remove', label=Lokii.GetString('UI_HUDTracker_DebugRemove')})
                     end
 
                 end

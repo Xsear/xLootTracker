@@ -31,31 +31,65 @@ LANG = {
     -- System Messages
     SystemMessage_Prefix = "[xLT] ",
     SystemMessage_Tracker_HitLimit = "Hit the limit on number of tracked items!",
-    SystemMessage_Core_LocaleChanged = "Locale changed to %s. Reload the UI with '/rui' to update.",
-    SystemMessage_Core_Version = 'Loot Tracker v{version} p{patch} r{release} Loaded',
+    SystemMessage_Core_LocaleChanged = "Locale changed to {locale}. Reload the UI with '/rui' to update.", -- {locale} - New language 
+    SystemMessage_Core_Version = 'Loot Tracker v{version} p{patch} r{release} Loaded', -- AddonInfo is accessible with {}.
+
+    SystemMessage_Slash_Help_TitleStandard = "Slash Commands",
+    SystemMessage_Slash_Help_Command_Help = "Version message and command list.",
+    SystemMessage_Slash_Help_Command_Clear = "Force the tracker to remove all loot.",
+    SystemMessage_Slash_Help_Command_Refresh = "Force the tracker to update all loot.",
+    SystemMessage_Slash_Help_Command_Blacklist = "Configure specific items to ignore.",
+    SystemMessage_Slash_Help_Command_WaypointVisibility = "Toggle Waypoint HUD Visbility.",
+    SystemMessage_Slash_Help_TitleDebug = "Debug Commands",
+
+    SystemMessage_Slash_Clear = "Removing all tracked loot and resetting Tracker data.",
+
+    SystemMessage_Slash_Blacklist = "Blacklist",
+    SystemMessage_Slash_Blacklist_Syntax = "Syntax: <action> <scope> [itemName|itemTypeId].", -- (help message, no variables)
+    SystemMessage_Slash_Blacklist_Error_NoArgs = "Incorrect syntax. First, provide an action (add, remove, view, clear). Then, specify a scope (all, panels, sounds, hudtracker, messages, waypoints). Finally, for add and remove, provide either the exact item name, or the itemTypeId.",
+    SystemMessage_Slash_Blacklist_View = "Viewing blacklist entries in scope {scope}", -- {scope}
+    SystemMessage_Slash_Blacklist_View_Error_Empty = "Nothing to list.",
+    SystemMessage_Slash_Blacklist_Clear = "Success! Cleared {count} entries from the {scope} scope.", -- {scope}
+    SystemMessage_Slash_Blacklist_Clear_Error_Empty = "The scope was already empty.",
+    SystemMessage_Slash_Blacklist_AddOrRem_Error_NoItemInfo = "Could not get itemInfo, unable to find an item with the name {query}", -- {query} - User input
+    SystemMessage_Slash_Blacklist_AddOrRem_Error_BadItemInfo = "This does not seem like a valid item, no information was found for {query}", -- {query} - User input
+    SystemMessage_Slash_Blacklist_AddOrRem_Error_NoArg = "Missing itemName or itemTypeId argument.", 
+    SystemMessage_Slash_Blacklist_Add_Error_AlreadyExists = "Already blacklisted in this scope",
+    SystemMessage_Slash_Blacklist_Rem_Error_NotListed = "The item was not blacklisted in this scope",
+    SystemMessage_Slash_Blacklist_AddOrRem_Error_UnknownError = "Unexpected error",
+    SystemMessage_Slash_Blacklist_Add = "Success! Added {name} ({typeId}) to the {scope} blacklist.", -- {name}, {typeId}, {scope}
+    SystemMessage_Slash_Blacklist_Rem = "Success! Removed {name} ({typeId}) from the {scope} blacklist.", -- {name}, {typeId}, {scope}
+    SystemMessage_Slash_Blacklist_Error_NoScope = "Invalid scope argument",
+    SystemMessage_Slash_Blacklist_Error_NoAction = "Invalid actionKey. Use add or remove.",
+    SystemMessage_Slash_Blacklist_Error_Reason = "Failure - Reason: {reason}", -- {reason} contains error message text
+
+    SystemMessage_Slash_Refresh = "Refreshing the status of all tracked loot.",
+
 
 
     -- UI
-    UI_Waypoints_Subtitle                                                           =    "Loot",
+    UI_Waypoints_Subtitle = "Loot", -- When mouseovering a Waypoint on the WorldMap, this Subtitle is displayed.
+    UI_HUDTracker_AddCoordinatesLink = "Add Coordinates Link", -- Right-click context menu for HUDTracker Entries, the others use standard translations.
+    UI_HUDTracker_DebugRemove = "Debug - Remove", -- Right-click context menu for HUDTracker Entries
+    UI_Slash_Description = "Loot Tracker", -- Displayed when using /help
 
 
     -- Options
     Options_Label = "Loot Tracker", -- This is the label of the top-level Loot Tracker tab in the interface options, under Addons.
-    Options_MoveableFrame_Tracker_Label                                                         =     "Loot Tracker",
+    Options_MoveableFrame_Tracker_Label = "Loot Tracker", -- Label for the moveable frame in the interface options that controls the position of the HUDTracker. 
 
-    Options_Group_Core_Label                                                                    =    "Loot Tracker",
-    Options_Core_Enabled_Label                                                                  =    "Enabled",
-    Options_Core_Enabled_Tooltip                                                                =    "The addon will be enabled. This option is mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. If you are suspecting compatability issues with other addons, it would be better to tempoarily remove the addon in order to verify whether or not it is part of the issue.",
-    Options_Core_VersionMessage_Label                                                           =    "Version Message",
-    Options_Core_VersionMessage_Tooltip                                                         =    "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
-    Options_Core_SlashHandles_Label                                                             = "Slash Handles",
-    Options_Core_SlashHandles_Tooltip                                                           = "The slash handles that the addon will register for. Requires that you reload the UI to update.",
-
-
+    Options_Group_Core_Label = "Loot Tracker",
+    Options_Core_Enabled_Label = "Enabled",
+    Options_Core_Enabled_Tooltip = "The addon will be enabled. This option is mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. If you are suspecting compatability issues with other addons, it would be better to tempoarily remove the addon in order to verify whether or not it is part of the issue.",
+    Options_Core_VersionMessage_Label = "Version Message",
+    Options_Core_VersionMessage_Tooltip = "Upon being loaded, the addon will send a System message announcing it is active, including its version number.",  
+    Options_Core_SlashHandles_Label = "Slash Handles",
+    Options_Core_SlashHandles_Tooltip = "The slash handles that the addon will register for. Requires that you reload the UI to update.",
     Options_Core_Locale_Label  = "Language",
+    Options_Core_Locale_Tooltip  = "Set the Language to be used by the addon. The UI must be reloaded after changing this value in order for all changes to take effect.",
 
 
-    Options_Group_Features_Label                                                        =    "Features",
+    Options_Group_Features_Label =    "Features",
 
     Options_Tracker_TrackDelay_Label  = "Track Delay",
     Options_Tracker_TrackDelay_Tooltip = "Upon detecting a new item, how long to wait before starting the procedure to begin tracking it. A delay is recommended because the game sometimes gives out incorrect information, and by waiting a little before taking action those can be weeded out. However, the delay is quite noticeable when playing, so a lower value feels better.",
