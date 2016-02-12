@@ -394,13 +394,6 @@ Options['Waypoints']['Filtering'] = {
                     ['WaypointTitle'] = '[{itemReqLevel}] {itemName}',
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '[{itemReqLevel}] {itemName}',
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -452,13 +445,6 @@ Options['Waypoints']['Filtering'] = {
                 },
 
                 [LootRarity.Epic] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '{itemName}',
-                },
-
-                [LootRarity.Prototype] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
@@ -522,13 +508,6 @@ Options['Waypoints']['Filtering'] = {
                     ['WaypointTitle'] = '[{itemReqLevel}] {itemName}',
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '[{itemReqLevel}] {itemName}',
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -585,13 +564,6 @@ Options['Waypoints']['Filtering'] = {
                     ['WaypointTitle'] = '{itemName}',
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '{itemName}',
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -642,13 +614,6 @@ Options['Waypoints']['Filtering'] = {
                 },
 
                 [LootRarity.Epic] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '{itemName}',
-                },
-
-                [LootRarity.Prototype] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
@@ -712,13 +677,6 @@ Options['Waypoints']['Filtering'] = {
                     ['WaypointTitle'] = '{itemName}',
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '{itemName}',
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -769,13 +727,6 @@ Options['Waypoints']['Filtering'] = {
                 },
 
                 [LootRarity.Epic] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                    ['WaypointTitle'] = '{itemName}',
-                },
-
-                [LootRarity.Prototype] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
@@ -845,13 +796,6 @@ Options['HUDTracker']['Filtering'] = {
             ['HUDTrackerTitle'] = '{itemName}',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -903,13 +847,6 @@ Options['HUDTracker']['Filtering'] = {
         },
 
         [LootRarity.Epic] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
-        [LootRarity.Prototype] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
@@ -973,13 +910,6 @@ Options['HUDTracker']['Filtering'] = {
             ['HUDTrackerTitle'] = '{itemName}',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1036,13 +966,6 @@ Options['HUDTracker']['Filtering'] = {
             ['HUDTrackerTitle'] = '{itemName}',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1093,13 +1016,6 @@ Options['HUDTracker']['Filtering'] = {
         },
 
         [LootRarity.Epic] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
-        [LootRarity.Prototype] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
@@ -1163,13 +1079,6 @@ Options['HUDTracker']['Filtering'] = {
             ['HUDTrackerTitle'] = '{itemName}',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1220,13 +1129,6 @@ Options['HUDTracker']['Filtering'] = {
         },
 
         [LootRarity.Epic] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['HUDTrackerTitle'] = '{itemName}',
-        },
-
-        [LootRarity.Prototype] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
@@ -1295,13 +1197,6 @@ Options['Sounds']['Filtering'] = {
             ['SoundsNewLoot'] = 'Play_UI_Beep_13',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1353,13 +1248,6 @@ Options['Sounds']['Filtering'] = {
         },
 
         [LootRarity.Epic] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
-        [LootRarity.Prototype] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
@@ -1423,13 +1311,6 @@ Options['Sounds']['Filtering'] = {
             ['SoundsNewLoot'] = 'Play_UI_Beep_13',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1486,13 +1367,6 @@ Options['Sounds']['Filtering'] = {
             ['SoundsNewLoot'] = 'Play_UI_Beep_13',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1543,13 +1417,6 @@ Options['Sounds']['Filtering'] = {
         },
 
         [LootRarity.Epic] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
-        [LootRarity.Prototype] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
@@ -1613,13 +1480,6 @@ Options['Sounds']['Filtering'] = {
             ['SoundsNewLoot'] = 'Play_UI_Beep_13',
         },
 
-        [LootRarity.Prototype] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
         [LootRarity.Legendary] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
@@ -1670,13 +1530,6 @@ Options['Sounds']['Filtering'] = {
         },
 
         [LootRarity.Epic] = {
-            ['Enabled'] = true,
-            ['ItemLevelThreshold'] = 0,
-            ['RequiredLevelThreshold'] = 0,
-            ['SoundsNewLoot'] = 'Play_UI_Beep_13',
-        },
-
-        [LootRarity.Prototype] = {
             ['Enabled'] = true,
             ['ItemLevelThreshold'] = 0,
             ['RequiredLevelThreshold'] = 0,
@@ -1737,12 +1590,6 @@ Options['Panels']['Filtering'] = {
                     ['RequiredLevelThreshold'] = 0,
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -1788,12 +1635,6 @@ Options['Panels']['Filtering'] = {
                 },
 
                 [LootRarity.Epic] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
@@ -1849,12 +1690,6 @@ Options['Panels']['Filtering'] = {
                     ['RequiredLevelThreshold'] = 0,
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -1904,12 +1739,6 @@ Options['Panels']['Filtering'] = {
                     ['RequiredLevelThreshold'] = 0,
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -1954,12 +1783,6 @@ Options['Panels']['Filtering'] = {
                 },
 
                 [LootRarity.Epic] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
-                [LootRarity.Prototype] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
@@ -2015,12 +1838,6 @@ Options['Panels']['Filtering'] = {
                     ['RequiredLevelThreshold'] = 0,
                 },
 
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,
@@ -2069,13 +1886,7 @@ Options['Panels']['Filtering'] = {
                     ['ItemLevelThreshold'] = 0,
                     ['RequiredLevelThreshold'] = 0,
                 },
-
-                [LootRarity.Prototype] = {
-                    ['Enabled'] = true,
-                    ['ItemLevelThreshold'] = 0,
-                    ['RequiredLevelThreshold'] = 0,
-                },
-
+                
                 [LootRarity.Legendary] = {
                     ['Enabled'] = true,
                     ['ItemLevelThreshold'] = 0,

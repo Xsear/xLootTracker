@@ -16,10 +16,10 @@ Locale = {
 OptionsLocaleDropdown = {
     [1] = Locale.SystemDefault,
     [2] = Locale.English,
-    --[3] = Locale.Chinese,
-    --[3] = Locale.German,
-    --[3] = Locale.French,
-    --[3] = Locale.Spanish,
+    [3] = Locale.Chinese,
+    --[4] = Locale.German,
+    --[4] = Locale.French,
+    --[4] = Locale.Spanish,
 }
 
 
@@ -70,13 +70,12 @@ FilterableLootCategories = { -- Used by options to generate filtering options
     Currency   = LootCategory.Currency,
 }
 
-LootRarity = {
+LootRarity = { -- Note: This is used in UIHELPER_FilterCategory to generate Rarity filters, so don't carelessly add new rarity values.
     Salvage = 'salvage',
     Common = 'common',
     Uncommon = 'uncommon',
     Rare = 'rare',
     Epic = 'epic',
-    Prototype = 'prototype',
     Legendary = 'legendary',
 }
 
@@ -86,18 +85,7 @@ OptionsLootRarityDropdown = {
     [3] = LootRarity.Uncommon,
     [4] = LootRarity.Rare,
     [5] = LootRarity.Epic,
-    [6] = LootRarity.Prototype,
-    [7] = LootRarity.Legendary,
-}
-
-LootRarityIndex = {
-    [LootRarity.Salvage] = 1,
-    [LootRarity.Common] = 2,
-    [LootRarity.Uncommon] = 3,
-    [LootRarity.Rare] = 4,
-    [LootRarity.Epic] = 5,
-    [LootRarity.Prototype] = 6,
-    [LootRarity.Legendary] = 7,
+    [6] = LootRarity.Legendary,
 }
 
 TriggerModeOptions = {

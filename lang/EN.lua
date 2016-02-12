@@ -23,7 +23,7 @@ LANG = {
     -- Locales
     Options_Locale_Choice_DEFAULT = "Default",
     Options_Locale_Choice_en = "English",
-    Options_Locale_Choice_zh = "Chinese",
+    Options_Locale_Choice_zh = "中文",
     Options_Locale_Choice_de = "German",
     Options_Locale_Choice_fr = "French",
     Options_Locale_Choice_es = "Spanish",
@@ -156,8 +156,6 @@ LANG = {
     Options_Filtering_rare_Enabled_Tooltip                  = "Rare Enabled",
     Options_Filtering_epic_Enabled_Label                    = "Epic Enabled",
     Options_Filtering_epic_Enabled_Tooltip                  = "Epic Enabled",
-    Options_Filtering_prototype_Enabled_Label               = "Prototype Enabled",
-    Options_Filtering_prototype_Enabled_Tooltip             = "Prototype Enabled",
     Options_Filtering_legendary_Enabled_Label               = "Legendary Enabled",
     Options_Filtering_legendary_Enabled_Tooltip             = "Legendary Enabled",
 
@@ -412,8 +410,6 @@ LANG = {
     Options_Dropdown_RarityThreshold_Choice_rare_Tooltip              = "<<WRITE ME>>",
     Options_Dropdown_RarityThreshold_Choice_epic_Label                = "Epic",
     Options_Dropdown_RarityThreshold_Choice_epic_Tooltip              = "<<WRITE ME>>",
-    Options_Dropdown_RarityThreshold_Choice_prototype_Label           = "Prototype",
-    Options_Dropdown_RarityThreshold_Choice_prototype_Tooltip         = "<<WRITE ME>>",
     Options_Dropdown_RarityThreshold_Choice_legendary_Label           = "Legendary",
     Options_Dropdown_RarityThreshold_Choice_legendary_Tooltip         = "<<WRITE ME>>",
 

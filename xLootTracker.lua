@@ -84,13 +84,13 @@ function OnComponentLoad()
 
     -- Setup Lokii
     Lokii.AddLang('en', './lang/EN');
+    Lokii.AddLang('zh', './lang/ZH');
     --[[
         To enable another language, you must do the following:
         Uncomment one of the lines below or make your own if your language isn't listed.
         Copy the ./lang/EN.lua file into the appropriate ./lang/XX.lua file, as declared in the line below.
         Finally, in types.lua, your language needs to be in the Locale and OptionsLocaleDropdown tables. In the case of one of the listed languages here, you only need to uncomment the appropriate line in OptionsLocaleDropdown.
     --]]
-    --Lokii.AddLang('zh', './lang/ZH');
     --Lokii.AddLang('de', './lang/DE');
     --Lokii.AddLang('fr', './lang/FR');
     --Lokii.AddLang('es', './lang/ES');
