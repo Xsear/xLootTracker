@@ -60,7 +60,7 @@ local bp_ENTRY = [[
         <!-- Text -->
         <Group name='text' dimensions='width:100%-32; height:28; left:32; top:2;'>
             <!-- Stack -->
-            <Text name='stack' dimensions='width:10%; height:100%-2; top:0; left:10%;' class='Tracker_Text'/>
+            <Text name='stack' dimensions='width:10%; height:100%-2; top:0; left:5%;' class='Tracker_Text'/>
         
             <!-- Title -->
             <Text name='title' dimensions='width:80%; height:100%-2; top:0; left:20%;' class='Tracker_Text'/>
