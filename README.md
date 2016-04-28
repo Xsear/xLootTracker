@@ -23,6 +23,7 @@ It contains several "master-switches" for various features.
 | Enabled | Enable/Disable the addon. Mainly suitable if you wish to tempoarily disable the addon, without modifying any other options. Please note that this doesn't truly stop the addon from functioning - it merely suppresses actions that would otherwise signify that the addon is active. |
 | Version Message | Enable/Disable the version system message sent when the addon is loaded, announcing it is active. |
 | Slash Handles | Comma separated list of slash handles that the addon will register for. Requires that you reload the UI to update. |
+| Language | Allows you to change the language of the addon. The "Default" setting should match the language used by the client. After changing the setting, you must reload the ui for everything to be updated. |
 
 ##### Features
 This is a little section containing master switches for subsystems of the addon.
