@@ -12,8 +12,7 @@ Options['Keybinds'] = {
 
 
 --]]
-require 'lib/lib_UserKeybinds'
-require 'lib/lib_InputIcon'
+
 
 local POPUP = Component.GetFrame('KeybindPopup')
 local KEYCATCHER = POPUP:GetChild('KeyCatcher')

@@ -309,6 +309,9 @@ For [the slogan of xSquadLootManager](//i.imgur.com/RKiLPGb.png').
 ### thiconZ
 For his work on the early API reference, which I made use of numerous times during the development of xSquadLootManager.
 
+### Tomohisa
+For his work on Chinese localization.
+
 ### Tomonor
 For his help with testing the addon, as well as feedback and ideas.
 

@@ -19,6 +19,8 @@ require 'lib/lib_MultiArt'         -- Used for icons
 require 'lib/lib_SubTypeIds'       -- Used for determining loot categories
 require 'lib/lib_ContextMenu'      -- Used for hudtracker context menu
 require 'lib/lib_HudManager'       -- Used to handle HUD visibility state
+require 'lib/lib_UserKeybinds'     -- Used by keybinder
+require 'lib/lib_InputIcon'        -- Used to display keybinds
 
 -- Custom Libs
 require './lib/Lokii'              -- Localization
