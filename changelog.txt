@@ -2,19 +2,16 @@
 
 v1.22
     Public Release 22
-    2016-
-
-
-    - Added a keybind "Toggle Waypoint Visibility", which when pressed will toggle the visibility of active waypoints on the HUD.
+    2016-04-29
+    - Added the ability to keybind a "Toggle Waypoint Visibility" command, which when pressed will toggle the visibility of active waypoints on the HUD. Can also be toggled by slash command: "/lt wp"
     - Add fade-in and fade-out effects to the HUDTracker, with options to enable/disable, set duration and animation.
     - While in the InterfaceOptions, the HUDTracker will now always be displayed if it is Enabled. It will also be populated with some fake items. If it is disabled, the moveable frame will now also be hidden.
     - Add option to toggle the display of the slider/scrollbar in the HUDTracker.
     - Added "Add Coordinates Link" to the right-click context menu of the HUDTracker entries.
     - Changed text positioning in the HUDTracker in hopes of fixing an overlap issue.
-    - Scrolling the HUDTracker will factor in the size of the entries better.
-    - Add proper support for localization in the addon, though no localizations have been made yet.
-
-
+    - Scrolling the HUDTracker should factor in the size of the entries better.
+    - Add localization support, and an early Chinese localization by Tomohisa.
+    - Remove unused texture references, some of which were removed in patch 1.7.
 
 v1.21
     Public Release 21
