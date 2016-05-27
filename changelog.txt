@@ -2,7 +2,7 @@
 
 v1.22
     Public Release 22
-    2016-04-29
+    2016-05-27
     - Added the ability to keybind a "Toggle Waypoint Visibility" command, which when pressed will toggle the visibility of active waypoints on the HUD. Can also be toggled by slash command: "/lt wp"
     - Add fade-in and fade-out effects to the HUDTracker, with options to enable/disable, set duration and animation.
     - While in the InterfaceOptions, the HUDTracker will now always be displayed if it is Enabled. It will also be populated with some fake items. If it is disabled, the moveable frame will now also be hidden.
